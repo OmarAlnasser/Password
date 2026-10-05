@@ -1,0 +1,177 @@
+{
+  "@@locale": "en",
+  "appTitle": "VaultSnap",
+  "createVault": "Create your vault",
+  "masterPassword": "Master password",
+  "confirmPassword": "Confirm master password",
+  "passwordsDontMatch": "Passwords do not match",
+  "passwordTooWeak": "Choose a stronger password (at least \"strong\")",
+  "masterPasswordHint": "This password is never sent anywhere and cannot be reset. If you forget it, only your recovery key can unlock the vault.",
+  "create": "Create",
+  "signInExisting": "Sign in to an existing vault",
+  "recoveryKeyTitle": "Your recovery key",
+  "recoveryKeyExplain": "Write this down and keep it somewhere safe. It is shown only once and is the only way back in if you forget your master password.",
+  "recoveryKeyConfirm": "Type the last group ({group}) to confirm you saved it",
+  "@recoveryKeyConfirm": {
+    "placeholders": {
+      "group": {}
+    }
+  },
+  "iSavedIt": "I saved it",
+  "unlock": "Unlock",
+  "unlockWithBiometrics": "Unlock with biometrics",
+  "useRecoveryKey": "Use recovery key",
+  "recoveryKey": "Recovery key",
+  "wrongPassword": "Wrong password",
+  "invalidRecoveryKey": "Invalid recovery key",
+  "tryAgainIn": "Too many attempts. Try again in {seconds}s",
+  "@tryAgainIn": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "search": "Search",
+  "favorites": "Favorites",
+  "allItems": "All items",
+  "noEntries": "No entries yet",
+  "addEntry": "Add entry",
+  "editEntry": "Edit entry",
+  "title": "Title",
+  "username": "Email / username",
+  "password": "Password",
+  "url": "Website",
+  "notes": "Notes",
+  "tags": "Tags (comma separated)",
+  "favorite": "Favorite",
+  "totpSecret": "TOTP secret or otpauth:// URI",
+  "invalidTotp": "Invalid TOTP secret",
+  "save": "Save",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "deleteConfirm": "Delete \"{title}\"?",
+  "@deleteConfirm": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "copied": "Copied. Clipboard clears in {seconds}s",
+  "@copied": {
+    "placeholders": {
+      "seconds": {}
+    }
+  },
+  "copy": "Copy",
+  "show": "Show",
+  "hide": "Hide",
+  "passwordHistory": "Password history",
+  "oneTimeCode": "One-time code",
+  "generator": "Password generator",
+  "generate": "Generate",
+  "length": "Length: {n}",
+  "@length": {
+    "placeholders": {
+      "n": {}
+    }
+  },
+  "lowercase": "Lowercase (a-z)",
+  "uppercase": "Uppercase (A-Z)",
+  "digits": "Digits (0-9)",
+  "symbols": "Symbols",
+  "excludeAmbiguous": "Avoid look-alikes (0/O, l/I/1)",
+  "passphrase": "Passphrase",
+  "words": "Words: {n}",
+  "@words": {
+    "placeholders": {
+      "n": {}
+    }
+  },
+  "useThis": "Use this password",
+  "strength0": "Very weak",
+  "strength1": "Weak",
+  "strength2": "Fair",
+  "strength3": "Strong",
+  "strength4": "Very strong",
+  "settings": "Settings",
+  "theme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "language": "Language",
+  "autoLock": "Auto-lock after inactivity",
+  "minutes": "{n} min",
+  "@minutes": {
+    "placeholders": {
+      "n": {}
+    }
+  },
+  "lockOnBackground": "Lock when app goes to background",
+  "clipboardClear": "Clear clipboard after",
+  "seconds": "{n} s",
+  "@seconds": {
+    "placeholders": {
+      "n": {}
+    }
+  },
+  "biometrics": "Biometric unlock",
+  "changePassword": "Change master password",
+  "currentPassword": "Current master password",
+  "newPassword": "New master password",
+  "passwordChanged": "Master password changed",
+  "lock": "Lock",
+  "importExport": "Import / export",
+  "exportEncrypted": "Export encrypted backup",
+  "importEncrypted": "Import encrypted backup",
+  "importCsv": "Import CSV (Chrome / Bitwarden)",
+  "exportPassword": "Export password",
+  "imported": "Imported {n} entries ({skipped} skipped)",
+  "@imported": {
+    "placeholders": {
+      "n": {},
+      "skipped": {}
+    }
+  },
+  "exported": "Backup saved",
+  "csvWarning": "Delete the CSV file after importing: it contains your passwords in plain text.",
+  "scanScreenshot": "Import from screenshot",
+  "pickImage": "Choose image",
+  "takePhoto": "Take photo",
+  "ocrNoText": "No text found in the image",
+  "ocrTapChip": "Tap a chip to copy it; long-press to use it in a field",
+  "ocrUseAs": "Use as…",
+  "ocrReview": "Review detected values before saving",
+  "ocrAmbiguous": "Highlighted characters are easy to misread (0/O, l/I/1)",
+  "deleteSourceImage": "Delete the source image?",
+  "deleteSourceImageBody": "The screenshot contains your password in plain text. Cloud photo backups may already have a copy.",
+  "keep": "Keep",
+  "imageDeleted": "Image deleted",
+  "securityDashboard": "Security dashboard",
+  "weakPasswords": "Weak passwords",
+  "reusedPasswords": "Reused passwords",
+  "oldPasswords": "Old passwords (> 1 year)",
+  "breachedPasswords": "Found in data breaches",
+  "checkBreaches": "Check for breaches",
+  "hibpExplain": "Only the first 5 characters of each password's SHA-1 hash are sent to Have I Been Pwned. Your passwords never leave the device.",
+  "allGood": "Nothing to fix",
+  "sync": "Sync",
+  "syncNow": "Sync now",
+  "enableSync": "Enable sync",
+  "email": "Email",
+  "syncEnabled": "Synced as {email}",
+  "@syncEnabled": {
+    "placeholders": {
+      "email": {}
+    }
+  },
+  "syncFailed": "Sync failed",
+  "lastSynced": "Last synced {time}",
+  "@lastSynced": {
+    "placeholders": {
+      "time": {}
+    }
+  },
+  "signOut": "Sign out of sync",
+  "quickSearch": "Quick search",
+  "error": "Something went wrong",
+  "close": "Close",
+  "ok": "OK"
+}

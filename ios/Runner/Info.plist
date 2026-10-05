@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>VSKeychainGroup</key>
+	<string>$(AppIdentifierPrefix)app.vaultsnap.shared</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take a photo of a login screen to import it. The photo stays on this device.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pick a screenshot to import a login. Images are processed on this device only.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Unlock your vault with Face ID.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
