@@ -8,17 +8,20 @@ See [docs/SECURITY.md](docs/SECURITY.md) for the design, rationale and known wea
 ## Status
 
 - [x] Phase 1 – crypto layer + known-answer tests (`lib/core/crypto/`)
-- [ ] Phase 2 – local vault (drift + SQLCipher) + UI
-- [ ] Phase 3 – OCR import
-- [ ] Phase 4 – sync
-- [ ] Phase 5 – autofill + biometrics
-- [ ] Phase 6 – security dashboard
+- [x] Phase 2 – local vault (drift + SQLCipher) + UI
+- [x] Phase 3 – OCR import
+- [x] Phase 4 – sync (`supabase/`)
+- [x] Phase 5 – autofill + biometrics
+- [x] Phase 6 – security dashboard
+- [x] Security audit – [docs/SECURITY_AUDIT.md](docs/SECURITY_AUDIT.md) (findings open)
 
 ## Running the tests
 
 ```sh
 flutter pub get
-flutter test test/core/crypto
+flutter test --exclude-tags finding     # full suite (green)
+flutter test test/audit                 # audit: failing tests = open findings
+PGHOST=/path PGPORT=5432 supabase/tests/run_rls_tests.sh   # RLS attack suite
 ```
 
 The first run compiles libsodium from source through `package:sodium`'s build
