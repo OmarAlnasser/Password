@@ -1,0 +1,4 @@
+tags:
+  finding:
+    # Audit tests that demonstrate an open finding (see docs/SECURITY_AUDIT.md for IDs).
+    # They are expected to fail until the finding is fixed.
