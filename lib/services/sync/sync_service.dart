@@ -42,10 +42,7 @@ class SyncException implements Exception {
 class SyncService extends ChangeNotifier {
   SyncService(this.session, this.remote) {
     session.onLocalChange.add(_scheduleSync);
-    session.onLock.add(() async {
-      _debounce?.cancel();
-      _status = remote.isSignedIn ? SyncStatus.idle : _status;
-    });
+    session.onLock.add(_onLock);
   }
 
   final VaultSession session;
@@ -65,19 +62,58 @@ class SyncService extends ChangeNotifier {
   int rejectedItems = 0;
   Timer? _debounce;
   Future<void>? _running;
+  Future<void>? _followUp;
+  bool _disposed = false;
 
   SyncStatus get status => _status;
   bool get enabled => _status != SyncStatus.disabled;
 
   void _set(SyncStatus s) {
     _status = s;
-    notifyListeners();
+    // A pass still in flight when the service is disposed must not notify.
+    if (!_disposed) notifyListeners();
   }
 
   void _scheduleSync() {
-    if (!enabled) return;
+    if (_disposed || !enabled) return;
     _debounce?.cancel();
-    _debounce = Timer(const Duration(seconds: 2), () => unawaited(syncNow()));
+    _debounce = Timer(const Duration(seconds: 2), _syncInBackground);
+  }
+
+  /// A sync nobody awaits (debounce timer, after unlock). A refused mass
+  /// deletion is already reported through [status]; it must not escape as an
+  /// uncaught async error. Every other error is handled inside [_sync].
+  void _syncInBackground() {
+    unawaited(
+      syncNow().catchError(
+        (Object _) {},
+        test: (e) => e is MassDeletionException,
+      ),
+    );
+  }
+
+  Future<void> _onLock() async {
+    _debounce?.cancel();
+    _status = remote.isSignedIn ? SyncStatus.idle : _status;
+  }
+
+  /// Stops reacting to local changes and cancels a pending debounced sync. A
+  /// pass already in flight finishes on its own; await [idle] to wait for it.
+  @override
+  void dispose() {
+    _disposed = true;
+    _debounce?.cancel();
+    _debounce = null;
+    session.onLocalChange.remove(_scheduleSync);
+    session.onLock.remove(_onLock);
+    super.dispose();
+  }
+
+  /// Completes once no sync pass is running or queued.
+  Future<void> get idle async {
+    for (var f = _followUp ?? _running; f != null; f = _followUp ?? _running) {
+      await f.then<void>((_) {}, onError: (Object _) {});
+    }
   }
 
   static String hashRecoveryAuth(String recoveryAuth) =>
@@ -104,7 +140,7 @@ class SyncService extends ChangeNotifier {
     if (await remote.restoreSession(token)) {
       _set(SyncStatus.idle);
       await _saveRefresh();
-      unawaited(syncNow());
+      _syncInBackground();
     } else {
       _set(SyncStatus.needsSignIn);
     }
@@ -194,9 +230,26 @@ class SyncService extends ChangeNotifier {
     _set(SyncStatus.disabled);
   }
 
+  /// Completes when a pass that started after this call has finished, so it
+  /// covers every local change saved and every remote change made before the
+  /// call. A pass already in flight may have pulled, or read the dirty rows,
+  /// before the caller's change; then one follow-up pass is queued behind it,
+  /// shared by every caller that arrives in the meantime.
   Future<void> syncNow() {
-    if (!session.isUnlocked || !remote.isSignedIn) return Future.value();
-    return _running ??= _sync().whenComplete(() => _running = null);
+    if (_disposed || !session.isUnlocked || !remote.isSignedIn) {
+      return Future.value();
+    }
+    final running = _running;
+    if (running == null) {
+      return _running = _sync().whenComplete(() => _running = null);
+    }
+    return _followUp ??= running
+        // The in-flight pass reports its own error to its own callers.
+        .then<void>((_) {}, onError: (Object _) {})
+        .then((_) {
+          _followUp = null;
+          return syncNow();
+        });
   }
 
   Future<void> _sync() async {

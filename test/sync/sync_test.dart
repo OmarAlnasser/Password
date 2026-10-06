@@ -16,9 +16,24 @@ const pw = 'violet-harbor-quantum-71-lantern';
 void main() {
   late VaultCrypto crypto;
   final dirs = <Directory>[];
+  final sessions = <VaultSession>[];
+  final syncs = <SyncService>[];
 
   setUpAll(() async => crypto = VaultCrypto(await loadSodium()));
-  tearDown(() {
+  tearDown(() async {
+    // Every local save arms SyncService's 2 s debounce timer. Cancel it and
+    // close the databases before deleting the directories, or the timer
+    // fires during a later test, syncs a deleted vault, and any error it
+    // throws fails this test after it has completed.
+    for (final s in syncs) {
+      s.dispose();
+      await s.idle;
+    }
+    syncs.clear();
+    for (final s in sessions) {
+      await s.lock();
+    }
+    sessions.clear();
     for (final d in dirs) {
       d.deleteSync(recursive: true);
     }
@@ -34,7 +49,10 @@ void main() {
       throttle: UnlockThrottle(File('${dir.path}/t.json')),
     );
     await s.init();
-    return (s, SyncService(s, FakeRemote(server)));
+    sessions.add(s);
+    final sync = SyncService(s, FakeRemote(server));
+    syncs.add(sync);
+    return (s, sync);
   }
 
   Future<(VaultSession, SyncService, VaultSession, SyncService)> twoDevices(
@@ -320,6 +338,7 @@ void main() {
         final remote = _HeaderSwapRemote(server, evil);
         final (b, _) = await device(server);
         final syncB = SyncService(b, remote);
+        syncs.add(syncB);
         await expectLater(
           syncB.signInExisting('me@example.com', pw),
           throwsA(anything),

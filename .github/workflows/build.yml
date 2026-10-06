@@ -59,3 +59,29 @@ jobs:
         with:
           name: VaultSnap-windows
           path: build/windows/x64/runner/Release/
+
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Show Xcode / CocoaPods versions
+        run: |
+          xcodebuild -version
+          pod --version
+      - run: flutter pub get
+      # Unsigned compile check only: the .app cannot be installed without re-signing.
+      - name: Build iOS app (unsigned compile check)
+        run: flutter build ios --release --no-codesign
+      - name: Zip Runner.app
+        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app VaultSnap-ios-unsigned.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VaultSnap-ios-unsigned
+          path: VaultSnap-ios-unsigned.zip
+          if-no-files-found: error
