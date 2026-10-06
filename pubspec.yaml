@@ -81,6 +81,50 @@ flutter:
   generate: true
   assets:
     - assets/eff_large_wordlist.txt
+    # SIL OFL 1.1 texts for the bundled fonts. They ship inside the app because
+    # the licence requires it, and so an "open-source licences" screen can
+    # register them with LicenseRegistry. See docs/DESIGN.md (Fonts).
+    - assets/fonts/outfit/OFL.txt
+    - assets/fonts/ibm-plex-sans-arabic/OFL.txt
+    - assets/fonts/jetbrains-mono/OFL.txt
+
+  # Fonts are bundled so the app never contacts a font CDN (a password manager
+  # must not tell a third party which fonts, and therefore which app, it uses).
+  # Static instances only: they render identically on Android, iOS and Windows.
+  # The weight: values mirror each file's own OS/2 weight class (Flutter's
+  # FontLoader reads the weight from the font file), so keep the two in sync.
+  fonts:
+    # English / Latin UI text (the portfolio's --font-en).
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/outfit/Outfit-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/outfit/Outfit-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/outfit/Outfit-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/outfit/Outfit-Bold.ttf
+          weight: 700
+    # Arabic UI text (the portfolio's --font-ar). It also contains a Latin
+    # alphabet, so it is the fallback for Outfit.
+    - family: IBMPlexSansArabic
+      fonts:
+        - asset: assets/fonts/ibm-plex-sans-arabic/IBMPlexSansArabic-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/ibm-plex-sans-arabic/IBMPlexSansArabic-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/ibm-plex-sans-arabic/IBMPlexSansArabic-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/ibm-plex-sans-arabic/IBMPlexSansArabic-Bold.ttf
+          weight: 700
+    # Passwords, emails, URLs, codes. Coding ligatures are removed from these
+    # files on purpose (see assets/fonts/README.md).
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/jetbrains-mono/JetBrainsMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/jetbrains-mono/JetBrainsMono-Medium.ttf
+          weight: 500
 
 hooks:
   user_defines:

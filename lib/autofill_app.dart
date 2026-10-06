@@ -7,7 +7,9 @@ import 'l10n/app_localizations.dart';
 import 'services/autofill_matcher.dart';
 import 'services/vault_session.dart';
 import 'ui/app_scope.dart';
+import 'ui/theme/app_theme.dart';
 import 'ui/unlock_screen.dart';
+import 'ui/widgets/app_shell.dart';
 
 /// Minimal UI for Android autofill: unlock, then pick a matching entry.
 class AutofillApp extends StatefulWidget {
@@ -60,12 +62,10 @@ class _AutofillAppState extends State<AutofillApp> {
       services: widget.services,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-        darkTheme: ThemeData(
-          colorSchemeSeed: Colors.indigo,
-          brightness: Brightness.dark,
-          useMaterial3: true,
-        ),
+        theme: AppTheme.light(widget.services.settings.locale),
+        darkTheme: AppTheme.dark(widget.services.settings.locale),
+        themeMode: widget.services.settings.themeMode,
+        builder: (context, child) => AppShell(child: child!),
         locale: widget.services.settings.locale,
         supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: const [
