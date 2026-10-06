@@ -3,6 +3,20 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+/// What [PlatformBridge.readClipboard] found: an image (preferred) or text.
+class ClipboardContent {
+  const ClipboardContent({this.imagePath, this.text});
+
+  /// Plaintext copy of the clipboard image in the app's private temp/cache
+  /// dir. The caller owns it and must delete it as soon as OCR is done.
+  final String? imagePath;
+
+  /// Clipboard text, when there is no image.
+  final String? text;
+
+  bool get isEmpty => imagePath == null && text == null;
+}
+
 /// Single method channel to the native runners (Android MainActivity,
 /// iOS AppDelegate, Windows flutter_window.cpp). All methods degrade
 /// gracefully if the native side is missing (tests, unsupported OS).
@@ -60,6 +74,49 @@ class PlatformBridge {
       await Clipboard.setData(const ClipboardData(text: ''));
     }
   }
+
+  /// Reads what the user copied, for the "Paste" button: a screenshot is
+  /// copied to a temp file ([ClipboardContent.imagePath], delete it after
+  /// OCR), otherwise the text. Call it only from a user action: Android 10+
+  /// returns nothing unless we have focus, and iOS may ask to allow pasting.
+  /// Without the native side only text can be read.
+  Future<ClipboardContent> readClipboard() async {
+    try {
+      final m = await _ch.invokeMapMethod<String, Object?>('readClipboard');
+      if (m != null) {
+        return ClipboardContent(
+          imagePath: _nonEmpty(m['imagePath'] as String?),
+          text: _nonEmpty(m['text'] as String?),
+        );
+      }
+    } on MissingPluginException {
+      // fall through
+    } on PlatformException {
+      // fall through
+    }
+    try {
+      final data = await Clipboard.getData(Clipboard.kTextPlain);
+      return ClipboardContent(text: _nonEmpty(data?.text));
+    } on PlatformException {
+      return const ClipboardContent();
+    }
+  }
+
+  /// Clears the clipboard unconditionally, e.g. after a login read from a
+  /// pasted screenshot was saved (the image still shows the password).
+  Future<void> clearClipboard() async {
+    try {
+      final handled = await _ch.invokeMethod<bool>('clearClipboard');
+      if (handled ?? false) return;
+    } on MissingPluginException {
+      // fall through
+    } on PlatformException {
+      // fall through
+    }
+    await Clipboard.setData(const ClipboardData(text: ''));
+  }
+
+  static String? _nonEmpty(String? s) => (s == null || s.isEmpty) ? null : s;
 
   /// FLAG_SECURE / WDA_EXCLUDEFROMCAPTURE. Enabled natively at startup; this
   /// lets the app re-assert it (e.g. after a window is recreated).

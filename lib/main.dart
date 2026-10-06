@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,6 +16,7 @@ import 'core/crypto/crypto.dart';
 import 'services/biometric_unlock.dart';
 import 'services/breach_checker.dart';
 import 'services/clipboard_service.dart';
+import 'services/favicon_service.dart';
 import 'services/import_export.dart';
 import 'services/ios_autofill_snapshot.dart';
 import 'services/password_generator.dart';
@@ -121,5 +123,14 @@ Future<AppServices> bootstrap({bool forAutofill = false}) async {
     breaches: BreachChecker(),
     biometrics: biometrics,
     sync: sync,
+    // Only the main app shows icons. They come straight from each site and
+    // are stored in the encrypted database.
+    favicons: forAutofill
+        ? null
+        : FaviconService(
+            http.Client(),
+            () => session.db,
+            enabled: () => settings.fetchIcons,
+          ),
   );
 }

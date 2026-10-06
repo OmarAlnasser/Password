@@ -9,6 +9,7 @@ import '../services/import_export.dart';
 import '../services/settings.dart';
 import '../services/sync/sync_service.dart';
 import 'app_scope.dart';
+import 'import/import_review_screen.dart';
 import 'sign_in_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -105,6 +106,17 @@ class SettingsScreen extends StatelessWidget {
                       DropdownMenuItem(value: n, child: Text(l.seconds(n))),
                   ],
                 ),
+              ),
+              SwitchListTile(
+                title: Text(l.fetchIcons),
+                subtitle: Text(l.fetchIconsNote),
+                value: st.fetchIcons,
+                onChanged: (v) async {
+                  await st.update((x) => x.fetchIcons = v);
+                  // Forget the icons in memory; fetch again if turned on.
+                  s.favicons?.clear();
+                  s.prefetchIcons();
+                },
               ),
               if (s.biometrics != null) _BiometricTile(settings: st),
               ListTile(
@@ -216,28 +228,48 @@ class SettingsScreen extends StatelessWidget {
     final l = context.l10n;
     final s = context.services;
     final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
     final picked = await FilePicker.pickFiles(withData: true);
     final file = picked?.files.single;
-    final bytes =
-        file?.bytes ??
-        (file?.path == null ? null : await File(file!.path!).readAsBytes());
+    final Uint8List? bytes;
+    try {
+      bytes =
+          file?.bytes ??
+          (file?.path == null ? null : await File(file!.path!).readAsBytes());
+    } finally {
+      await _clearPickerCopies();
+    }
     if (bytes == null || !context.mounted) return;
     try {
       final text = utf8.decode(bytes, allowMalformed: false);
-      final ImportResult result;
       if (encrypted) {
         final pw = await _askPassword(context, l.exportPassword);
         if (pw == null) return;
-        result = await s.importExport.importEncrypted(text, pw);
-      } else {
-        result = s.importExport.importCsv(text);
+        final result = await s.importExport.importEncrypted(text, pw);
+        await s.session.saveEntries(result.entries);
+        s.prefetchIcons();
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(l.imported(result.entries.length, result.skipped)),
+          ),
+        );
+        return;
       }
-      await s.session.saveEntries(result.entries);
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(l.imported(result.entries.length, result.skipped)),
+      // CSV: nothing is saved until the user has reviewed every login.
+      final result = s.importExport.importCsv(text);
+      final saved = await navigator.push<int>(
+        MaterialPageRoute(
+          builder: (_) => ImportReviewScreen(
+            imported: result.entries,
+            skipped: result.skipped,
+          ),
         ),
       );
+      if (saved == null || !context.mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(l.imported(saved, result.skipped))),
+      );
+      await _remindDeleteCsv(context);
     } on ImportException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));
     } on FormatException {
@@ -245,6 +277,32 @@ class SettingsScreen extends StatelessWidget {
     }
   }
 }
+
+/// file_picker copies the picked file into the app cache on Android and
+/// iOS. For a CSV that copy holds every password in plain text (audit M-6),
+/// so it goes as soon as the bytes are read.
+Future<void> _clearPickerCopies() async {
+  if (!Platform.isAndroid && !Platform.isIOS) return;
+  try {
+    await FilePicker.clearTemporaryFiles();
+  } on Object {
+    // Best effort; the OS clears the cache eventually.
+  }
+}
+
+/// The app cannot delete the user's CSV export (it may be in Downloads, a
+/// cloud folder or an e-mail), so it reminds them.
+Future<void> _remindDeleteCsv(BuildContext context) => showDialog<void>(
+  context: context,
+  builder: (c) => AlertDialog(
+    icon: const Icon(Icons.delete_sweep_outlined),
+    title: Text(c.l10n.deleteCsvTitle),
+    content: Text(c.l10n.deleteCsvBody),
+    actions: [
+      FilledButton(onPressed: () => Navigator.pop(c), child: Text(c.l10n.ok)),
+    ],
+  ),
+);
 
 class _BiometricTile extends StatefulWidget {
   const _BiometricTile({required this.settings});

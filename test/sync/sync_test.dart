@@ -142,6 +142,32 @@ void main() {
     },
   );
 
+  test('erasing the vault signs out; a new vault does not sync into the old '
+      'account', () async {
+    final server = FakeServer();
+    final (a, syncA) = await device(server);
+    await a.createVault(pw);
+    await syncA.enableSync('me@example.com', pw);
+    await a.saveEntry(VaultEntry(id: 'old1', title: 'Mail', password: 'p1'));
+    await syncA.syncNow();
+    expect(server.items.keys, ['old1']);
+
+    // "Forgot password?" -> reset, from the lock screen.
+    await a.lock();
+    await a.wipeLocalVault();
+    expect(syncA.remote.isSignedIn, isFalse);
+    expect(syncA.status, SyncStatus.disabled);
+
+    await a.createVault('copper-meadow-orbit-38-falcon');
+    await syncA.onUnlocked();
+    await a.saveEntry(VaultEntry(id: 'new1', title: 'Bank', password: 'p2'));
+    await syncA.syncNow();
+    await syncA.idle;
+    expect(server.items.keys, ['old1']);
+    expect(await a.db.getKv('sync_refresh'), isNull);
+    expect(syncA.status, SyncStatus.disabled);
+  });
+
   group('malicious or corrupted server data', () {
     test('tampered ciphertext is rejected and local copy kept', () async {
       final server = FakeServer();

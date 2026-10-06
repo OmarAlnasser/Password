@@ -72,7 +72,10 @@ class IosAutofillSnapshot {
     }
   }
 
-  Future<void> clear() async {
+  /// Removes the snapshot, its Keychain key and the credential identities,
+  /// e.g. after the local vault was erased. Static so the unlock screen can
+  /// call it without a vault.
+  static Future<void> clear() async {
     if (!Platform.isIOS) return;
     await _ch.invokeMethod<bool>('clearAutofill');
   }

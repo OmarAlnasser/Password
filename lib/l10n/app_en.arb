@@ -173,5 +173,90 @@
   "quickSearch": "Quick search",
   "error": "Something went wrong",
   "close": "Close",
-  "ok": "OK"
+  "ok": "OK",
+  "pasteLogin": "Paste login",
+  "pasteNothingFound": "No login found on the clipboard. Copy a screenshot or text with the email and password first.",
+  "saveLogin": "Save login",
+  "quickMode": "Quick",
+  "advancedMode": "Advanced",
+  "name": "Name",
+  "nameHint": "e.g. Genshin Odette C2 acc",
+  "whereFrom": "Where is it from? (link)",
+  "whyNotes": "Why / notes",
+  "clearScreenshotTitle": "Clear the screenshot from your clipboard?",
+  "clearTextTitle": "Clear the copied text from your clipboard?",
+  "clearClipboardBody": "It still shows this password, and other apps can read it. Copies already saved in a clipboard history (Windows + V, your keyboard app) are not removed; delete them there.",
+  "clear": "Clear",
+  "clipboardCleared": "Clipboard cleared",
+  "fetchIcons": "Fetch website icons",
+  "fetchIconsNote": "Icons are downloaded directly from each site, so the site sees your IP address.",
+  "reviewImport": "Review import",
+  "importFound": "{n, plural, =1{1 login in the file} other{{n} logins in the file}}",
+  "@importFound": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importSkippedRows": "{n, plural, =1{1 row skipped (empty or not a login)} other{{n} rows skipped (empty or not logins)}}",
+  "@importSkippedRows": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "importReviewHint": "Ticked logins are imported. Tap a login to fix it.",
+  "importN": "Import {n}",
+  "@importN": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "noWebsite": "No website",
+  "noUsername": "(no username)",
+  "reviewNew": "New",
+  "reviewUpdate": "Update",
+  "reviewMerged": "Merged duplicates",
+  "reviewSkip": "Already saved",
+  "reviewAttention": "Needs attention",
+  "reviewUpdates": "Replaces the password of “{title}”; the old one stays in its history",
+  "@reviewUpdates": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "issueMissingPassword": "No password",
+  "issueMissingUsername": "No username",
+  "issueInvalidEmail": "Email looks wrong",
+  "issueUsernameIsUrl": "Username is a link",
+  "issuePasswordLooksLikeEmail": "Password looks like an email",
+  "issueUsernameLooksLikePassword": "Username looks like a password",
+  "issueInvalidUrl": "No valid website",
+  "issueInsecureHttp": "Not secure (http)",
+  "issueDuplicateInFile": "Duplicate in file",
+  "issueExistsWithDifferentPassword": "Saved with another password",
+  "editLogin": "Edit login",
+  "swapUserPassword": "Swap username and password",
+  "deleteCsvTitle": "Now delete the CSV file",
+  "deleteCsvBody": "It holds all your passwords in plain text. Delete it from Downloads, empty the trash or recycle bin, and remove any copy in cloud storage or email.",
+  "forgotPassword": "Forgot password?",
+  "forgotPasswordTitle": "Forgot your master password?",
+  "forgotPasswordBody": "Nobody can recover it, not even the VaultSnap developer. It is never stored or sent anywhere, and your vault is encrypted with it.",
+  "useRecoveryKeyExplain": "Unlock with the recovery key you saved when you created the vault, then choose a new password.",
+  "resetVault": "Reset vault — erase everything",
+  "resetVaultExplain": "Start over with an empty vault. Everything stored in this vault is lost.",
+  "resetVaultTitle": "Erase this vault?",
+  "resetVaultBody": "This permanently deletes every password and note in the vault on this device. It cannot be undone.",
+  "resetConfirmWord": "DELETE",
+  "resetTypeToConfirm": "Type {word} to confirm",
+  "@resetTypeToConfirm": {
+    "placeholders": {
+      "word": {}
+    }
+  },
+  "eraseVault": "Erase vault"
 }

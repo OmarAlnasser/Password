@@ -390,4 +390,205 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ok => 'حسنًا';
+
+  @override
+  String get pasteLogin => 'لصق بيانات دخول';
+
+  @override
+  String get pasteNothingFound =>
+      'لم يُعثر على بيانات دخول في الحافظة. انسخ أولًا لقطة شاشة أو نصًا يحتوي على البريد وكلمة المرور.';
+
+  @override
+  String get saveLogin => 'حفظ بيانات الدخول';
+
+  @override
+  String get quickMode => 'سريع';
+
+  @override
+  String get advancedMode => 'متقدم';
+
+  @override
+  String get name => 'الاسم';
+
+  @override
+  String get nameHint => 'مثال: حساب Genshin Odette C2';
+
+  @override
+  String get whereFrom => 'من أين هو؟ (رابط)';
+
+  @override
+  String get whyNotes => 'لماذا / ملاحظات';
+
+  @override
+  String get clearScreenshotTitle => 'مسح لقطة الشاشة من الحافظة؟';
+
+  @override
+  String get clearTextTitle => 'مسح النص المنسوخ من الحافظة؟';
+
+  @override
+  String get clearClipboardBody =>
+      'ما زالت تُظهر كلمة المرور هذه، ويمكن للتطبيقات الأخرى قراءتها. المسح لا يحذف النسخ المحفوظة مسبقًا في سجل الحافظة (Windows + V أو تطبيق لوحة المفاتيح)؛ احذفها من هناك.';
+
+  @override
+  String get clear => 'مسح';
+
+  @override
+  String get clipboardCleared => 'تم مسح الحافظة';
+
+  @override
+  String get fetchIcons => 'جلب أيقونات المواقع';
+
+  @override
+  String get fetchIconsNote =>
+      'تُنزَّل الأيقونات مباشرةً من كل موقع، لذا يرى الموقع عنوان IP الخاص بك.';
+
+  @override
+  String get reviewImport => 'مراجعة الاستيراد';
+
+  @override
+  String importFound(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n حساب في الملف',
+      many: '$n حسابًا في الملف',
+      few: '$n حسابات في الملف',
+      two: 'حسابان في الملف',
+      one: 'حساب واحد في الملف',
+      zero: 'لا توجد حسابات في الملف',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importSkippedRows(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'تم تخطي $n صف (فارغة أو ليست بيانات دخول)',
+      many: 'تم تخطي $n صفًا (فارغة أو ليست بيانات دخول)',
+      few: 'تم تخطي $n صفوف (فارغة أو ليست بيانات دخول)',
+      two: 'تم تخطي صفين (فارغين أو ليسا بيانات دخول)',
+      one: 'تم تخطي صف واحد (فارغ أو ليس بيانات دخول)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importReviewHint =>
+      'تُستورد الحسابات المحددة فقط. اضغط على أي حساب لتصحيحه.';
+
+  @override
+  String importN(int n) {
+    return 'استيراد $n';
+  }
+
+  @override
+  String get noWebsite => 'بدون موقع';
+
+  @override
+  String get noUsername => '(بدون اسم مستخدم)';
+
+  @override
+  String get reviewNew => 'جديد';
+
+  @override
+  String get reviewUpdate => 'تحديث';
+
+  @override
+  String get reviewMerged => 'تكرارات مدمجة';
+
+  @override
+  String get reviewSkip => 'محفوظ مسبقًا';
+
+  @override
+  String get reviewAttention => 'يحتاج إلى مراجعة';
+
+  @override
+  String reviewUpdates(Object title) {
+    return 'يستبدل كلمة مرور «$title»، وتبقى القديمة في سجله';
+  }
+
+  @override
+  String get issueMissingPassword => 'بدون كلمة مرور';
+
+  @override
+  String get issueMissingUsername => 'بدون اسم مستخدم';
+
+  @override
+  String get issueInvalidEmail => 'البريد يبدو غير صحيح';
+
+  @override
+  String get issueUsernameIsUrl => 'اسم المستخدم رابط';
+
+  @override
+  String get issuePasswordLooksLikeEmail =>
+      'كلمة المرور تشبه بريدًا إلكترونيًا';
+
+  @override
+  String get issueUsernameLooksLikePassword => 'اسم المستخدم يشبه كلمة مرور';
+
+  @override
+  String get issueInvalidUrl => 'لا يوجد موقع صالح';
+
+  @override
+  String get issueInsecureHttp => 'غير آمن (http)';
+
+  @override
+  String get issueDuplicateInFile => 'مكرر في الملف';
+
+  @override
+  String get issueExistsWithDifferentPassword => 'محفوظ بكلمة مرور أخرى';
+
+  @override
+  String get editLogin => 'تعديل بيانات الدخول';
+
+  @override
+  String get swapUserPassword => 'تبديل اسم المستخدم وكلمة المرور';
+
+  @override
+  String get deleteCsvTitle => 'احذف ملف CSV الآن';
+
+  @override
+  String get deleteCsvBody =>
+      'يحتوي على جميع كلمات المرور كنص واضح. احذفه من مجلد التنزيلات، وأفرغ سلة المحذوفات، واحذف أي نسخة منه في التخزين السحابي أو البريد.';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get forgotPasswordTitle => 'نسيت كلمة المرور الرئيسية؟';
+
+  @override
+  String get forgotPasswordBody =>
+      'لا يمكن لأحد استعادتها، ولا حتى مطوّر VaultSnap. فهي لا تُحفظ ولا تُرسل إلى أي مكان، وخزنتك مشفرة بها.';
+
+  @override
+  String get useRecoveryKeyExplain =>
+      'افتح الخزنة بمفتاح الاسترداد الذي حفظته عند إنشائها، ثم اختر كلمة مرور جديدة.';
+
+  @override
+  String get resetVault => 'إعادة تعيين الخزنة — مسح كل شيء';
+
+  @override
+  String get resetVaultExplain =>
+      'ابدأ من جديد بخزنة فارغة. سيضيع كل ما هو محفوظ في هذه الخزنة.';
+
+  @override
+  String get resetVaultTitle => 'مسح هذه الخزنة؟';
+
+  @override
+  String get resetVaultBody =>
+      'سيؤدي هذا إلى حذف كل كلمات المرور والملاحظات في الخزنة على هذا الجهاز نهائيًا. لا يمكن التراجع عن ذلك.';
+
+  @override
+  String get resetConfirmWord => 'حذف';
+
+  @override
+  String resetTypeToConfirm(Object word) {
+    return 'اكتب «$word» للتأكيد';
+  }
+
+  @override
+  String get eraseVault => 'مسح الخزنة';
 }
