@@ -4,8 +4,10 @@
 #include <flutter/flutter_engine.h>
 #include <windows.h>
 
-// Registers the "app.vaultsnap/platform" method channel (clipboard,
-// screen-capture exclusion, on-device OCR via Windows.Media.Ocr).
+// Registers the "app.vaultsnap/platform" method channel (clipboard text and
+// images, screen-capture exclusion, on-device OCR via Windows.Media.Ocr). The
+// methods, their results and error codes are described at the top of
+// platform_channel.cpp.
 void RegisterVaultSnapChannel(flutter::FlutterEngine* engine, HWND window);
 
 // Window message used to run a completion on the platform thread.
