@@ -17,7 +17,9 @@ import 'ui/home_screen.dart';
 import 'ui/ocr/ocr_import_screen.dart';
 import 'ui/quick_search_screen.dart';
 import 'ui/setup_screen.dart';
+import 'ui/theme/app_theme.dart';
 import 'ui/unlock_screen.dart';
+import 'ui/widgets/app_shell.dart';
 
 class VaultSnapApp extends StatefulWidget {
   const VaultSnapApp({super.key, required this.services});
@@ -194,7 +196,7 @@ class _VaultSnapAppState extends State<VaultSnapApp>
 
   @override
   Widget build(BuildContext context) {
-    final seed = Colors.indigo;
+    final locale = s.settings.locale;
     return AppScope(
       services: s,
       child: ListenableBuilder(
@@ -207,14 +209,13 @@ class _VaultSnapAppState extends State<VaultSnapApp>
             navigatorKey: _navigator,
             debugShowCheckedModeBanner: false,
             onGenerateTitle: (c) => AppLocalizations.of(c).appTitle,
-            theme: ThemeData(colorSchemeSeed: seed, useMaterial3: true),
-            darkTheme: ThemeData(
-              colorSchemeSeed: seed,
-              brightness: Brightness.dark,
-              useMaterial3: true,
-            ),
+            // The type scale follows the language (Outfit / IBM Plex Sans
+            // Arabic). AppShell below re-resolves it for the language that is
+            // really in use, which also covers "follow the system language".
+            theme: AppTheme.light(locale),
+            darkTheme: AppTheme.dark(locale),
             themeMode: s.settings.themeMode,
-            locale: s.settings.locale,
+            locale: locale,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [
               AppLocalizations.delegate,
@@ -223,19 +224,25 @@ class _VaultSnapAppState extends State<VaultSnapApp>
               GlobalCupertinoLocalizations.delegate,
             ],
             home: _home(),
-            builder: (context, child) => Stack(
-              children: [
-                ?child,
-                if (_obscured || _captured)
-                  const Positioned.fill(
-                    child: ColoredBox(
-                      color: Colors.black,
-                      child: Center(
-                        child: Icon(Icons.lock, color: Colors.white, size: 64),
+            builder: (context, child) => AppShell(
+              child: Stack(
+                children: [
+                  ?child,
+                  if (_obscured || _captured)
+                    const Positioned.fill(
+                      child: ColoredBox(
+                        color: Colors.black,
+                        child: Center(
+                          child: Icon(
+                            Icons.lock,
+                            color: Colors.white,
+                            size: 64,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

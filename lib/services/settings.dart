@@ -9,7 +9,9 @@ class AppSettings extends ChangeNotifier {
 
   final File _file;
 
-  ThemeMode themeMode = ThemeMode.system;
+  /// Dark is the app's identity, so a new install starts there. A saved
+  /// choice (including "system") always wins.
+  ThemeMode themeMode = ThemeMode.dark;
   Locale? locale; // null = follow system
   int autoLockSeconds = 120;
   bool lockOnBackground = true;
@@ -25,7 +27,7 @@ class AppSettings extends ChangeNotifier {
     try {
       final j = jsonDecode(await _file.readAsString()) as Map<String, Object?>;
       themeMode = ThemeMode.values.byName(
-        (j['theme'] as String?) ?? ThemeMode.system.name,
+        (j['theme'] as String?) ?? ThemeMode.dark.name,
       );
       final lang = j['lang'] as String?;
       locale = lang == null ? null : Locale(lang);
