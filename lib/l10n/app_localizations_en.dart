@@ -303,7 +303,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ocrTapChip =>
-      'Tap a chip to copy it; long-press to use it in a field';
+      'Tap a piece of text to use it as the username, password, link or name.';
 
   @override
   String get ocrUseAs => 'Use as…';
@@ -314,6 +314,131 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ocrAmbiguous =>
       'Highlighted characters are easy to misread (0/O, l/I/1)';
+
+  @override
+  String get ocrChipsTitle => 'Detected text';
+
+  @override
+  String ocrShowAll(int n) {
+    return 'Show all ($n)';
+  }
+
+  @override
+  String get ocrAsUsername => 'Username';
+
+  @override
+  String get ocrAsPassword => 'Password';
+
+  @override
+  String get ocrAsLink => 'Link';
+
+  @override
+  String get ocrAsName => 'Name';
+
+  @override
+  String get ocrOtherReadings => 'Other readings';
+
+  @override
+  String get ocrPickHint =>
+      'Not sure which text is the email or the password. Tap a piece of text below to use it, or type it in.';
+
+  @override
+  String get ocrWhatWasRead => 'What was read';
+
+  @override
+  String get ocrWhatWasReadNote =>
+      'The text the scanner recognised, kept in memory only. It can show why a login was missed.';
+
+  @override
+  String ocrPassTitle(int n, Object name) {
+    return 'Pass $n: $name';
+  }
+
+  @override
+  String get ocrPassNothing => 'Nothing read';
+
+  @override
+  String ocrPassFailed(Object reason) {
+    return 'Failed ($reason)';
+  }
+
+  @override
+  String get ocrTipsTitle => 'Tips';
+
+  @override
+  String get ocrTipCrop =>
+      'Copy a bigger area: leave a little space around the email and password.';
+
+  @override
+  String get ocrTipVisible =>
+      'Make sure the text is clearly visible on screen, not covered, blurred or very small.';
+
+  @override
+  String get ocrTipAgain =>
+      'Copy the image again, then try again. Copying the text itself instead of a screenshot also works.';
+
+  @override
+  String get ocrNoLanguageTitle => 'Windows has no OCR language installed';
+
+  @override
+  String get ocrNoLanguageBody =>
+      'Windows reads text in images with an OCR language pack, and none is installed. To add one:';
+
+  @override
+  String get ocrNoLanguageStep1 =>
+      'Open Settings > Time & language > Language & region.';
+
+  @override
+  String get ocrNoLanguageStep2 =>
+      'Choose Add a language and pick one (English reads email addresses and passwords well).';
+
+  @override
+  String get ocrNoLanguageStep3 =>
+      'Make sure Optical character recognition is ticked while it installs.';
+
+  @override
+  String get ocrNoLanguageStep4 => 'Come back here and paste again.';
+
+  @override
+  String get ocrTooLargeTitle => 'The image is too large to scan';
+
+  @override
+  String get ocrTooLargeBody =>
+      'Copy or crop a smaller area around the email and password, then try again.';
+
+  @override
+  String get ocrUnsupportedTitle => 'This image can\'t be read';
+
+  @override
+  String get ocrUnsupportedBody =>
+      'Copy it again as a normal screenshot (PNG or JPEG) and try again.';
+
+  @override
+  String get ocrUnreadableTitle => 'The image file couldn\'t be opened';
+
+  @override
+  String get ocrUnreadableBody =>
+      'The file may have been moved or deleted. Copy the image again and try again.';
+
+  @override
+  String get ocrTimeoutTitle => 'Scanning took too long';
+
+  @override
+  String get ocrTimeoutBody =>
+      'Scanning was stopped. Copy a smaller area around the email and password and try again.';
+
+  @override
+  String get ocrFailedTitle => 'Text recognition failed';
+
+  @override
+  String get ocrFailedBody =>
+      'Something went wrong while reading the image. Try again, or copy a bigger area.';
+
+  @override
+  String get ocrPasteAgain => 'Paste again';
+
+  @override
+  String get ocrFillByHand => 'Fill in by hand';
 
   @override
   String get deleteSourceImage => 'Delete the source image?';
@@ -411,9 +536,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get name => 'Name';
-
-  @override
-  String get nameHint => 'e.g. Genshin Odette C2 acc';
 
   @override
   String get whereFrom => 'Where is it from? (link)';

@@ -137,19 +137,38 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
     only in the SQLCipher database (fetched again after 30 days, failures
     after 7) and in memory while unlocked. Turning the setting off stops all
     requests; icons already stored are still shown.
-18. **Pasted screenshots are written to a temporary file in plaintext.** OCR
-    needs the image as a file, so the native side copies a pasted screenshot
-    to the app's cache: Android `cacheDir/clip-*.img` (and `ocr-*.img` for
-    the OCR import), iOS `tmp/clip-*.png` with complete file protection,
-    Windows `%TEMP%\vaultsnap-clip-*`, which other programs of the same
-    Windows user can read. Dart deletes the file as soon as OCR has finished,
-    whether it found anything or not. If the app dies in between, the next
-    start deletes copies older than 10 minutes. Recognition and parsing run
-    on the device only. Clipboard text can come from any app or website, so
-    parsing reads at most 16 KB and skips runs of over 256 characters
-    without whitespace. After a save the app offers to clear the clipboard
-    (the default action); that does not remove copies a clipboard history
-    (Windows + V, keyboard apps) or a cloud clipboard has already kept.
+18. **Screenshots are written to temporary files in plaintext.** OCR needs
+    the image as a file, in three places:
+    * *The pasted screenshot.* The native side copies it to the app's cache:
+      Android `cacheDir/clip-*.img` (and `ocr-*.img` for the OCR import), iOS
+      `tmp/clip-*.png` with complete file protection, Windows
+      `%TEMP%\vaultsnap-clip-*`. On Windows an image file copied in
+      Explorer is copied the same way (local drives only, at most 16 MB, the
+      original is only read, and the copy is made after the clipboard is
+      closed again so a slow drive cannot hold it up).
+    * *The scanner's copies.* A small or dark screenshot is read again
+      enlarged, inverted or with more contrast, and a very large one in tiles.
+      Those copies are PNG files in `<temp>/vaultsnap-ocr/s-*/` (Android app
+      cache, iOS `tmp`, Windows `%TEMP%`), without file protection on iOS.
+      Each is deleted when its pass ends and the folder when the scan ends. A
+      file an engine still holds (Windows) is deleted when it lets go.
+    * *What was read.* The recognised lines are kept in memory, shown (in plain
+      text, only when the user opens "What was read") and never logged or
+      stored.
+
+    On Windows `%TEMP%` can be read by other programs of the same user.
+    Dart deletes the pasted copy as soon as OCR has finished, whether it found
+    anything or not, and the scan stops when the screen is left or the vault
+    locks. If the app dies in between, the next start deletes pasted copies
+    and scanner folders older than 10 minutes (Android, iOS and Windows each
+    sweep the pasted copies natively; the scanner folders are swept by Dart at
+    start-up, and again by every scan once they are 15 minutes old).
+    Recognition and parsing run on the device only. Clipboard text can come
+    from any app or website, so parsing reads at most 16 KB and skips runs of
+    over 256 characters without whitespace. After a save the app offers to
+    clear the clipboard (the default action); that does not remove copies a
+    clipboard history (Windows + V, keyboard apps) or a cloud clipboard has
+    already kept.
 19. **The lock screen can erase the vault without a password.** "Forgot
     password?" offers a reset for users who lost both the master password
     and the recovery key, so anyone holding the locked, running app can

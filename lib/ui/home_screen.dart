@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../data/models/vault_entry.dart';
-import '../services/ocr/ocr_engine.dart';
 import '../services/ocr/ocr_parser.dart';
+import '../services/ocr/ocr_scanner.dart';
 import '../services/vault_session.dart';
 import 'app_scope.dart';
 import 'dashboard_screen.dart';
@@ -14,6 +14,7 @@ import 'entry_detail_screen.dart';
 import 'entry_edit_screen.dart';
 import 'generator_screen.dart';
 import 'ocr/ocr_import_screen.dart';
+import 'ocr/ocr_widgets.dart';
 import 'ocr/quick_save_sheet.dart';
 import 'recovery_reset_screen.dart';
 import 'settings_screen.dart';
@@ -31,6 +32,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _tag;
   bool _favoritesOnly = false;
   bool _pasting = false;
+
+  /// The scan of a pasted screenshot in progress, if any.
+  ScanCancelToken? _scanning;
 
   static const _pasteKeys = [
     SingleActivator(LogicalKeyboardKey.keyV, control: true),
@@ -55,6 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    // Locking or leaving the screen: stop reading the screenshot.
+    _scanning?.cancel();
     HardwareKeyboard.instance.removeHandler(_onKey);
     _search.dispose();
     super.dispose();
@@ -93,6 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
   /// Reads what the user copied: a screenshot is OCR'd on the device, text is
   /// parsed as it is. Offers to save the login found, then to clear the
   /// clipboard.
+  ///
+  /// Never a dead end. A screenshot that was read only in part still opens
+  /// the sheet, with what was found and the text to pick from. One that could
+  /// not be read at all gets a message with what to try, and a way forward.
   Future<void> _paste() async {
     if (_pasting) return;
     final s = context.services;
@@ -100,6 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final messenger = ScaffoldMessenger.of(context);
     setState(() => _pasting = true);
     OcrResult? found;
+    ScanResult? scan;
+    ScanError? failure;
     var screenshot = false;
     try {
       final clip = await s.bridge.readClipboard();
@@ -107,18 +119,34 @@ class _HomeScreenState extends State<HomeScreen> {
       final text = clip.text;
       if (image != null) {
         screenshot = true;
+        final token = _scanning = ScanCancelToken();
         try {
           if (mounted) {
-            final lines = await OcrEngine.forPlatform(s.bridge)
-                .recognize(image);
-            found = OcrCredentialParser().parse(lines);
+            scan = await OcrScanner.forPlatform(s.bridge)
+                .scan(image, cancel: token);
           }
+        } on Object {
+          failure = ScanError.failed;
         } finally {
-          // Our plaintext copy of the screenshot: never keep it.
+          // Our plaintext copy of the screenshot: never keep it. (The
+          // scanner removes its own enlarged copies.)
           _deleteQuietly(image);
+          if (identical(_scanning, token)) _scanning = null;
         }
-      } else if (text != null && !s.clipboard.isOwnCopy(text)) {
-        found = OcrCredentialParser().parseText(text);
+      } else {
+        if (text != null && !s.clipboard.isOwnCopy(text)) {
+          found = OcrCredentialParser().parseText(text);
+        }
+        // A screenshot was copied but could not be turned into a file: say
+        // so, rather than asking for a screenshot the user just copied. Text
+        // that holds a login still wins.
+        if (clip.imageError != null &&
+            (found == null ||
+                (found.username == null && found.password == null))) {
+          screenshot = true;
+          failure = ScanError.unsupportedImage;
+          found = null;
+        }
       }
     } on Object {
       found = null;
@@ -126,13 +154,45 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) setState(() => _pasting = false);
     }
     if (!mounted) return;
-    if (found == null || (found.username == null && found.password == null)) {
+
+    if (scan != null || failure != null) {
+      final read = scan;
+      if (read == null || ocrFoundNothing(read)) {
+        final action = await showOcrFailureDialog(
+          context,
+          error: failure ?? ocrFailureOf(read!),
+          passes: read?.passes ?? const [],
+        );
+        if (!mounted) return;
+        switch (action) {
+          case OcrFailureAction.again:
+            return _paste();
+          case OcrFailureAction.byHand:
+            final saved = await QuickSaveSheet.show(
+              context,
+              const OcrResult(chips: []),
+            );
+            if (saved && mounted) {
+              await offerClearClipboard(context, screenshot: true);
+            }
+          case null:
+            break;
+        }
+        return;
+      }
+      found = read.best;
+    } else if (found == null ||
+        (found.username == null && found.password == null)) {
       messenger
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(content: Text(l.pasteNothingFound)));
       return;
     }
-    final saved = await QuickSaveSheet.show(context, found);
+    final saved = await QuickSaveSheet.show(
+      context,
+      found,
+      passes: scan?.passes ?? const [],
+    );
     if (saved && mounted) {
       await offerClearClipboard(context, screenshot: screenshot);
     }

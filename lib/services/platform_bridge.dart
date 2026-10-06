@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 /// What [PlatformBridge.readClipboard] found: an image (preferred) or text.
 class ClipboardContent {
-  const ClipboardContent({this.imagePath, this.text});
+  const ClipboardContent({this.imagePath, this.text, this.imageError});
 
   /// Plaintext copy of the clipboard image in the app's private temp/cache
   /// dir. The caller owns it and must delete it as soon as OCR is done.
@@ -14,7 +14,32 @@ class ClipboardContent {
   /// Clipboard text, when there is no image.
   final String? text;
 
-  bool get isEmpty => imagePath == null && text == null;
+  /// Set when the clipboard held an image that the native side could not
+  /// turn into a file ("image_unreadable"). Never text read from the image.
+  /// Then [imagePath] is null, and [text] may still be there.
+  final String? imageError;
+
+  bool get isEmpty => imagePath == null && text == null && imageError == null;
+}
+
+/// A failure the native OCR reported with a code of its own, such as
+/// `ocr_no_language` (no OCR language pack installed), `ocr_image_too_large`,
+/// `ocr_unsupported_image`, `ocr_file_unreadable`, `ocr_bad_arguments` or
+/// `ocr_failed`.
+class OcrNativeException implements Exception {
+  const OcrNativeException(this.code, [this.detail]);
+
+  /// The prefix of every OCR error code.
+  static const String prefix = 'ocr_';
+
+  final String code;
+
+  /// The native side's short description (a status code, never text read from
+  /// the image), for diagnostics.
+  final String? detail;
+
+  @override
+  String toString() => 'OcrNativeException($code)';
 }
 
 /// Single method channel to the native runners (Android MainActivity,
@@ -87,6 +112,7 @@ class PlatformBridge {
         return ClipboardContent(
           imagePath: _nonEmpty(m['imagePath'] as String?),
           text: _nonEmpty(m['text'] as String?),
+          imageError: _nonEmpty(m['imageError'] as String?),
         );
       }
     } on MissingPluginException {
@@ -153,9 +179,29 @@ class PlatformBridge {
   }
 
   /// Windows only: run Windows.Media.Ocr on an image file. Returns lines.
-  Future<List<String>> windowsOcr(String path) async {
-    final lines = await _ch.invokeListMethod<String>('ocr', {'path': path});
-    return lines ?? const [];
+  ///
+  /// The native side reports what went wrong with a code ("ocr_no_language",
+  /// "ocr_image_too_large", ...): that is thrown as an [OcrNativeException]
+  /// so callers can tell a missing language pack from an image that is
+  /// unreadable. An empty list means the engine really read nothing.
+  ///
+  /// By default the native side may try the image several ways (enlarged,
+  /// inverted, more contrast) and keep the best reading. With [preprocess]
+  /// false it reads the file once, as it is: for a copy the caller has
+  /// already prepared.
+  Future<List<String>> windowsOcr(String path, {bool preprocess = true}) async {
+    try {
+      final lines = await _ch.invokeListMethod<String>('ocr', {
+        'path': path,
+        if (!preprocess) 'preprocess': false,
+      });
+      return lines ?? const [];
+    } on PlatformException catch (e) {
+      if (e.code.startsWith(OcrNativeException.prefix)) {
+        throw OcrNativeException(e.code, e.message);
+      }
+      rethrow;
+    }
   }
 
   bool get isDesktop =>
