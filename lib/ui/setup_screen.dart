@@ -44,25 +44,28 @@ class _SetupScreenState extends State<SetupScreen> {
       _error = null;
     });
     final services = context.services;
+    final navigator = Navigator.of(context);
     try {
       final result = await services.session.createVault(_pw.text);
-      // Kept (hashed, inside the encrypted DB) so sync can register it later.
-      await SyncService.storeRecoveryAuthHash(
-        services.session,
-        result.recoveryAuthSecret,
-      );
       _pw.clear();
       _confirm.clear();
-      if (!mounted) return;
-      // The session is already unlocked; block navigation until the user has
-      // confirmed the recovery key.
-      await Navigator.of(context).push(
+      // createVault has just unlocked the session, so the next frame replaces
+      // this screen with HomeScreen (VaultSnapApp._home) and unmounts it.
+      // Push the recovery key route now, before any further await, or it is
+      // never shown. It blocks navigation until the user has confirmed it.
+      final shown = navigator.push(
         MaterialPageRoute<void>(
           fullscreenDialog: true,
           builder: (_) =>
               RecoveryKeyScreen(recoveryKey: result.recoveryKeyText),
         ),
       );
+      // Kept (hashed, inside the encrypted DB) so sync can register it later.
+      await SyncService.storeRecoveryAuthHash(
+        services.session,
+        result.recoveryAuthSecret,
+      );
+      await shown;
     } on Object {
       if (mounted) setState(() => _error = l.error);
     } finally {

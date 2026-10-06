@@ -5,6 +5,7 @@ import android.app.assist.AssistStructure
 import android.content.Intent
 import android.os.CancellationSignal
 import android.service.autofill.AutofillService
+import android.service.autofill.Dataset
 import android.service.autofill.FillCallback
 import android.service.autofill.FillRequest
 import android.service.autofill.FillResponse
@@ -75,10 +76,16 @@ class VaultSnapAutofillService : AutofillService() {
         val presentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
         presentation.setTextViewText(android.R.id.text1, "Unlock VaultSnap")
 
+        // Dataset-level auth: AutofillAuthActivity returns a Dataset in
+        // EXTRA_AUTHENTICATION_RESULT, which the platform accepts only for an
+        // authenticated dataset (response-level auth needs a FillResponse,
+        // otherwise Session logs "invalid index" and fills nothing).
         @Suppress("DEPRECATION")
-        val response = FillResponse.Builder()
-            .setAuthentication(ids.toTypedArray(), sender, presentation)
-            .build()
+        val locked = Dataset.Builder(presentation).apply {
+            for (id in ids) setValue(id, null)
+            setAuthentication(sender)
+        }.build()
+        val response = FillResponse.Builder().addDataset(locked).build()
         callback.onSuccess(response)
     }
 

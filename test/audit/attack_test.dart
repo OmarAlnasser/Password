@@ -24,8 +24,21 @@ const pw = 'violet-harbor-quantum-71-lantern';
 void main() {
   late VaultCrypto crypto;
   final dirs = <Directory>[];
+  final sessions = <VaultSession>[];
+  final syncs = <SyncService>[];
   setUpAll(() async => crypto = VaultCrypto(await loadSodium()));
-  tearDown(() {
+  tearDown(() async {
+    // Cancel debounced background syncs and close the databases before the
+    // directories go away (see test/sync/sync_test.dart).
+    for (final s in syncs) {
+      s.dispose();
+      await s.idle;
+    }
+    syncs.clear();
+    for (final s in sessions) {
+      await s.lock();
+    }
+    sessions.clear();
     for (final d in dirs) {
       if (d.existsSync()) d.deleteSync(recursive: true);
     }
@@ -41,6 +54,7 @@ void main() {
       throttle: UnlockThrottle(File('${dir.path}/throttle.json')),
     );
     await s.init();
+    sessions.add(s);
     return s;
   }
 
@@ -269,10 +283,12 @@ void main() {
     ) async {
       final a = await newSession();
       final syncA = SyncService(a, FakeRemote(server));
+      syncs.add(syncA);
       await a.createVault(pw);
       await syncA.enableSync('me@example.com', pw);
       final b = await newSession();
       final syncB = SyncService(b, FakeRemote(server));
+      syncs.add(syncB);
       await syncB.signInExisting('me@example.com', pw);
       return (a, syncA, b, syncB);
     }
@@ -392,6 +408,7 @@ void main() {
         await syncA.syncNow();
         final c = await newSession();
         final syncC = SyncService(c, _DescendingRemote(server));
+        syncs.add(syncC);
         await syncC.signInExisting('me@example.com', pw);
         expect(
           c.entries.length,

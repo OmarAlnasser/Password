@@ -14,6 +14,19 @@ import 'package:vaultsnap/services/unlock_throttle.dart';
 import 'package:vaultsnap/services/vault_session.dart';
 import 'package:vaultsnap/ui/app_scope.dart';
 
+/// Lets real async work (Argon2id isolate, drift isolate, file I/O) run in
+/// short slices and pumps a frame after each one, until [finder] matches or
+/// about 30 s of real time have passed (the caller's expect then fails).
+/// Frames keep coming while the work is in flight, as they do on a device.
+Future<void> pumpUntilFound(WidgetTester tester, Finder finder) async {
+  for (var i = 0; i < 600 && finder.evaluate().isEmpty; i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
+    await tester.pump();
+  }
+}
+
 void main() {
   late Directory dir;
   late AppServices services;
@@ -41,7 +54,11 @@ void main() {
       breaches: BreachChecker(),
     );
   });
-  tearDown(() => dir.deleteSync(recursive: true));
+  tearDown(() async {
+    // Close the vault (and its drift isolate) before removing its files.
+    await services.session.lock();
+    dir.deleteSync(recursive: true);
+  });
 
   testWidgets('first run: create vault, confirm recovery key, see empty list', (
     tester,
@@ -61,13 +78,9 @@ void main() {
     const strong = 'violet-harbor-quantum-71-lantern';
     await tester.enterText(fields.at(0), strong);
     await tester.enterText(fields.at(1), strong);
-    await tester.runAsync(() async {
-      await tester.tap(find.text('Create'));
-      // Argon2id runs on a real isolate.
-      for (var i = 0; i < 100 && !services.session.isUnlocked; i++) {
-        await Future<void>.delayed(const Duration(milliseconds: 100));
-      }
-    });
+    // Argon2id and the database run on real isolates.
+    await tester.runAsync(() => tester.tap(find.text('Create')));
+    await pumpUntilFound(tester, find.text('Your recovery key'));
     await tester.pumpAndSettle();
     expect(find.text('Your recovery key'), findsOneWidget);
     final saved = find.widgetWithText(FilledButton, 'I saved it');
@@ -98,10 +111,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Unlock'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'nope');
-    await tester.runAsync(() async {
-      await tester.tap(find.text('Unlock'));
-      await Future<void>.delayed(const Duration(seconds: 2));
-    });
+    await tester.runAsync(() => tester.tap(find.text('Unlock')));
+    await pumpUntilFound(tester, find.text('Wrong password'));
     await tester.pumpAndSettle();
     expect(find.text('Wrong password'), findsOneWidget);
     expect(services.session.isUnlocked, isFalse);
