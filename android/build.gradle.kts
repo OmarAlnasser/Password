@@ -34,6 +34,19 @@ subprojects {
         }
     }
 }
+// Some plugins compile against old SDKs (biometric_storage 5.x uses compileSdk 31) while their
+// AndroidX dependencies require 33+, which fails :<plugin>:checkReleaseAarMetadata. Raise every
+// Android library module to at least 36. This only changes the SDK the plugin is compiled
+// against, not minSdk/targetSdk. Registered before evaluationDependsOn below so it runs before
+// AGP finalizes each plugin's DSL in its own afterEvaluate.
+subprojects {
+    afterEvaluate {
+        extensions.findByType(com.android.build.gradle.LibraryExtension::class.java)?.let { android ->
+            val current = android.compileSdkVersion?.removePrefix("android-")?.toIntOrNull() ?: 0
+            if (current < 36) android.compileSdkVersion(36)
+        }
+    }
+}
 subprojects {
     project.evaluationDependsOn(":app")
 }
