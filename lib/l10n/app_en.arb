@@ -136,10 +136,65 @@
   "pickImage": "Choose image",
   "takePhoto": "Take photo",
   "ocrNoText": "No text found in the image",
-  "ocrTapChip": "Tap a chip to copy it; long-press to use it in a field",
+  "ocrTapChip": "Tap a piece of text to use it as the username, password, link or name.",
   "ocrUseAs": "Use as…",
   "ocrReview": "Review detected values before saving",
   "ocrAmbiguous": "Highlighted characters are easy to misread (0/O, l/I/1)",
+  "ocrChipsTitle": "Detected text",
+  "ocrShowAll": "Show all ({n})",
+  "@ocrShowAll": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "ocrAsUsername": "Username",
+  "ocrAsPassword": "Password",
+  "ocrAsLink": "Link",
+  "ocrAsName": "Name",
+  "ocrOtherReadings": "Other readings",
+  "ocrPickHint": "Not sure which text is the email or the password. Tap a piece of text below to use it, or type it in.",
+  "ocrWhatWasRead": "What was read",
+  "ocrWhatWasReadNote": "The text the scanner recognised, kept in memory only. It can show why a login was missed.",
+  "ocrPassTitle": "Pass {n}: {name}",
+  "@ocrPassTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "name": {}
+    }
+  },
+  "ocrPassNothing": "Nothing read",
+  "ocrPassFailed": "Failed ({reason})",
+  "@ocrPassFailed": {
+    "placeholders": {
+      "reason": {}
+    }
+  },
+  "ocrTipsTitle": "Tips",
+  "ocrTipCrop": "Copy a bigger area: leave a little space around the email and password.",
+  "ocrTipVisible": "Make sure the text is clearly visible on screen, not covered, blurred or very small.",
+  "ocrTipAgain": "Copy the image again, then try again. Copying the text itself instead of a screenshot also works.",
+  "ocrNoLanguageTitle": "Windows has no OCR language installed",
+  "ocrNoLanguageBody": "Windows reads text in images with an OCR language pack, and none is installed. To add one:",
+  "ocrNoLanguageStep1": "Open Settings > Time & language > Language & region.",
+  "ocrNoLanguageStep2": "Choose Add a language and pick one (English reads email addresses and passwords well).",
+  "ocrNoLanguageStep3": "Make sure Optical character recognition is ticked while it installs.",
+  "ocrNoLanguageStep4": "Come back here and paste again.",
+  "ocrTooLargeTitle": "The image is too large to scan",
+  "ocrTooLargeBody": "Copy or crop a smaller area around the email and password, then try again.",
+  "ocrUnsupportedTitle": "This image can't be read",
+  "ocrUnsupportedBody": "Copy it again as a normal screenshot (PNG or JPEG) and try again.",
+  "ocrUnreadableTitle": "The image file couldn't be opened",
+  "ocrUnreadableBody": "The file may have been moved or deleted. Copy the image again and try again.",
+  "ocrTimeoutTitle": "Scanning took too long",
+  "ocrTimeoutBody": "Scanning was stopped. Copy a smaller area around the email and password and try again.",
+  "ocrFailedTitle": "Text recognition failed",
+  "ocrFailedBody": "Something went wrong while reading the image. Try again, or copy a bigger area.",
+  "ocrPasteAgain": "Paste again",
+  "ocrFillByHand": "Fill in by hand",
   "deleteSourceImage": "Delete the source image?",
   "deleteSourceImageBody": "The screenshot contains your password in plain text. Cloud photo backups may already have a copy.",
   "keep": "Keep",
@@ -180,7 +235,6 @@
   "quickMode": "Quick",
   "advancedMode": "Advanced",
   "name": "Name",
-  "nameHint": "e.g. Genshin Odette C2 acc",
   "whereFrom": "Where is it from? (link)",
   "whyNotes": "Why / notes",
   "clearScreenshotTitle": "Clear the screenshot from your clipboard?",

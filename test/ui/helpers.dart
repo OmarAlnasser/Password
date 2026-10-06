@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -75,4 +77,80 @@ Future<void> pumpUntilFound(WidgetTester tester, Finder finder) async {
     );
     await tester.pump();
   }
+}
+
+/// What ML Kit's method channel returns for [lines] (one block).
+Map<String, Object?> mlKitResult(List<String> lines) {
+  Map<String, Object?> node(String text) => {
+    'text': text,
+    'rect': <String, Object?>{},
+    'recognizedLanguages': <Object?>[],
+    'points': <Object?>[],
+  };
+  return {
+    'text': lines.join('\n'),
+    'blocks': [
+      {
+        ...node(lines.join('\n')),
+        'lines': [
+          for (final l in lines) {...node(l), 'elements': <Object?>[]},
+        ],
+      },
+    ],
+  };
+}
+
+/// Plays the OCR engine: ML Kit's method channel, which is the engine on the
+/// test host (it is not Windows). For each image the scanner hands over,
+/// [read] says what the engine reads; [call] counts the images from 0 and
+/// [path] is the file (the original first, then the scanner's enlarged
+/// copies). [read] may throw, like an engine that fails.
+///
+/// The returned list fills with every path the engine was asked to read.
+List<String> mockOcr(
+  WidgetTester tester,
+  FutureOr<List<String>> Function(int call, String path) read,
+) {
+  final seen = <String>[];
+  mockChannel(tester, const MethodChannel('google_mlkit_text_recognizer'), (
+    call,
+  ) async {
+    if (call.method != 'vision#startTextRecognizer') return null;
+    final args = call.arguments as Map<Object?, Object?>;
+    final path =
+        (args['imageData'] as Map<Object?, Object?>)['path']! as String;
+    final n = seen.length;
+    seen.add(path);
+    return mlKitResult(await read(n, path));
+  });
+  return seen;
+}
+
+/// A 175 x 62 PNG like a tiny crop of a dark-mode screenshot: two lines of
+/// light grey "text" (blocks) on a near-black background. Real image work:
+/// call it inside `tester.runAsync`.
+Future<Uint8List> darkCropPng() async {
+  final recorder = ui.PictureRecorder();
+  final canvas = ui.Canvas(recorder);
+  canvas.drawRect(
+    const ui.Rect.fromLTWH(0, 0, 175, 62),
+    ui.Paint()..color = const ui.Color.fromARGB(255, 18, 18, 19),
+  );
+  final ink = ui.Paint()
+    ..color = const ui.Color.fromARGB(255, 200, 200, 200)
+    ..isAntiAlias = false;
+  void line(double top, double height, double x1) {
+    for (var x = 6.0; x < x1; x += 5) {
+      canvas.drawRect(ui.Rect.fromLTWH(x, top, 3, height), ink);
+    }
+  }
+
+  line(0, 14, 150);
+  line(26, 15, 100);
+  final picture = recorder.endRecording();
+  final image = await picture.toImage(175, 62);
+  final data = (await image.toByteData(format: ui.ImageByteFormat.png))!;
+  image.dispose();
+  picture.dispose();
+  return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 }

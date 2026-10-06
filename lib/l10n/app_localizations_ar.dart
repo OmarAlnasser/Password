@@ -302,7 +302,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ocrTapChip =>
-      'اضغط على أي عنصر لنسخه؛ اضغط مطولاً لاستخدامه في حقل';
+      'اضغط على أي جزء من النص لاستخدامه كاسم مستخدم أو كلمة مرور أو رابط أو اسم.';
 
   @override
   String get ocrUseAs => 'استخدم كـ…';
@@ -312,6 +312,131 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ocrAmbiguous => 'الأحرف المميزة سهلة الالتباس (0/O, l/I/1)';
+
+  @override
+  String get ocrChipsTitle => 'النص المكتشف';
+
+  @override
+  String ocrShowAll(int n) {
+    return 'عرض الكل ($n)';
+  }
+
+  @override
+  String get ocrAsUsername => 'اسم المستخدم';
+
+  @override
+  String get ocrAsPassword => 'كلمة المرور';
+
+  @override
+  String get ocrAsLink => 'رابط';
+
+  @override
+  String get ocrAsName => 'الاسم';
+
+  @override
+  String get ocrOtherReadings => 'قراءات أخرى';
+
+  @override
+  String get ocrPickHint =>
+      'لم نتأكد أي نص هو البريد أو كلمة المرور. اضغط على جزء من النص أدناه لاستخدامه، أو اكتبه بنفسك.';
+
+  @override
+  String get ocrWhatWasRead => 'ما تمت قراءته';
+
+  @override
+  String get ocrWhatWasReadNote =>
+      'النص الذي تعرّف عليه الماسح، محفوظ في الذاكرة فقط. يساعد على معرفة سبب فوات بيانات الدخول.';
+
+  @override
+  String ocrPassTitle(int n, Object name) {
+    return 'المحاولة $n: $name';
+  }
+
+  @override
+  String get ocrPassNothing => 'لم تتم قراءة شيء';
+
+  @override
+  String ocrPassFailed(Object reason) {
+    return 'فشلت ($reason)';
+  }
+
+  @override
+  String get ocrTipsTitle => 'نصائح';
+
+  @override
+  String get ocrTipCrop =>
+      'انسخ مساحة أكبر: اترك بعض الفراغ حول البريد وكلمة المرور.';
+
+  @override
+  String get ocrTipVisible =>
+      'تأكد أن النص واضح على الشاشة وغير مغطى أو ضبابي أو صغير جدًا.';
+
+  @override
+  String get ocrTipAgain =>
+      'انسخ الصورة مرة أخرى ثم حاول من جديد. ويمكنك أيضًا نسخ النص نفسه بدل لقطة الشاشة.';
+
+  @override
+  String get ocrNoLanguageTitle => 'لا توجد لغة للتعرّف على النص في Windows';
+
+  @override
+  String get ocrNoLanguageBody =>
+      'يقرأ Windows النص داخل الصور بحزمة لغة للتعرّف الضوئي على الحروف، ولا توجد أي حزمة مثبتة. لإضافة واحدة:';
+
+  @override
+  String get ocrNoLanguageStep1 =>
+      'افتح الإعدادات > الوقت واللغة > اللغة والمنطقة.';
+
+  @override
+  String get ocrNoLanguageStep2 =>
+      'اختر إضافة لغة ثم اختر واحدة (الإنجليزية تقرأ عناوين البريد وكلمات المرور جيدًا).';
+
+  @override
+  String get ocrNoLanguageStep3 =>
+      'تأكد من تفعيل التعرّف الضوئي على الحروف (Optical character recognition) أثناء التثبيت.';
+
+  @override
+  String get ocrNoLanguageStep4 => 'ارجع إلى هنا والصق من جديد.';
+
+  @override
+  String get ocrTooLargeTitle => 'الصورة أكبر من أن تُفحص';
+
+  @override
+  String get ocrTooLargeBody =>
+      'انسخ أو اقتص مساحة أصغر حول البريد وكلمة المرور ثم حاول من جديد.';
+
+  @override
+  String get ocrUnsupportedTitle => 'تعذرت قراءة هذه الصورة';
+
+  @override
+  String get ocrUnsupportedBody =>
+      'انسخها مرة أخرى كلقطة شاشة عادية (PNG أو JPEG) وحاول من جديد.';
+
+  @override
+  String get ocrUnreadableTitle => 'تعذر فتح ملف الصورة';
+
+  @override
+  String get ocrUnreadableBody =>
+      'ربما نُقل الملف أو حُذف. انسخ الصورة مرة أخرى وحاول من جديد.';
+
+  @override
+  String get ocrTimeoutTitle => 'استغرق الفحص وقتًا طويلًا';
+
+  @override
+  String get ocrTimeoutBody =>
+      'تم إيقاف الفحص. انسخ مساحة أصغر حول البريد وكلمة المرور وحاول من جديد.';
+
+  @override
+  String get ocrFailedTitle => 'فشل التعرّف على النص';
+
+  @override
+  String get ocrFailedBody =>
+      'حدث خطأ أثناء قراءة الصورة. حاول من جديد، أو انسخ مساحة أكبر.';
+
+  @override
+  String get ocrPasteAgain => 'لصق من جديد';
+
+  @override
+  String get ocrFillByHand => 'ملء يدويًا';
 
   @override
   String get deleteSourceImage => 'حذف الصورة الأصلية؟';
@@ -409,9 +534,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get name => 'الاسم';
-
-  @override
-  String get nameHint => 'مثال: حساب Genshin Odette C2';
 
   @override
   String get whereFrom => 'من أين هو؟ (رابط)';

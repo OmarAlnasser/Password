@@ -1,0 +1,1531 @@
+{
+ "_doc": "Raw OCR output line-lists for parser and pipeline tests. SYNTHETIC values only. origin=measured: the lines are verbatim output of a local OCR engine (see engine/preprocess) run on a synthetic image from tool/gen_ocr_samples.py; origin=constructed: hand-written to model shapes that Windows.Media.Ocr / ML Kit can produce (letter spacing, split lines) but the local engines did not. truth = what the image contained. recoverable.{email,password} = whether a deterministic, text-only repair (squash spaces, strip junk, join split lines, restore a known provider domain, lower-case the address) can reach the truth. expect.{email,password} = the exact string a robust parser should return, or null when unrecoverable (assert nothing, but the parser must not crash and must not invent a value when must_find_nothing is true). Never put real credentials in this file.",
+ "version": 1,
+ "cases": [
+  {
+   "id": "m01_clean_scaled",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "invert-if-dark, scale so line height is 40 px, pad 16",
+   "sample": {
+    "file": "s0003.png",
+    "font": "liberation",
+    "px": 12,
+    "layout": "real",
+    "ocr_input_size": [
+     723,
+     228
+    ]
+   },
+   "lines": [
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "clean"
+   ],
+   "note": "Best case: both lines exact after upscaling to a line height of about 40 px."
+  },
+  {
+   "id": "m02_space_before_at",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "2x bilinear",
+   "sample": {
+    "file": "s0006.png",
+    "font": "opensans",
+    "px": 13,
+    "layout": "real",
+    "ocr_input_size": [
+     380,
+     122
+    ]
+   },
+   "lines": [
+    "abcde07 @hotmail.com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "space-in-email"
+   ],
+   "note": "Most common tesseract email defect: a space before the @. Squashing spaces inside an email-shaped token fixes it."
+  },
+  {
+   "id": "m03_password_split",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "invert-if-dark, scale so line height is 40 px, pad 16",
+   "sample": {
+    "file": "s0045.png",
+    "font": "liberation",
+    "px": 11,
+    "layout": "roomy",
+    "ocr_input_size": [
+     792,
+     392
+    ]
+   },
+   "lines": [
+    "jdoe.test99@hotmail.com",
+    "pR7wXn 2KfL8q"
+   ],
+   "truth": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "tags": [
+    "space-in-password"
+   ],
+   "note": "A stray space inside the password. The line has no other spaces, so joining it is safe."
+  },
+  {
+   "id": "m04_five_read_as_S",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "2x bilinear",
+   "sample": {
+    "file": "s0090.png",
+    "font": "inter",
+    "px": 11,
+    "layout": "real",
+    "ocr_input_size": [
+     380,
+     102
+    ]
+   },
+   "lines": [
+    "qwert-14@live.com",
+    "gBvSCz2MxA7j"
+   ],
+   "truth": {
+    "email": "qwert-14@live.com",
+    "password": "gBv5Cz2MxA7j"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "qwert-14@live.com",
+    "password": null
+   },
+   "tags": [
+    "confusable"
+   ],
+   "note": "The 5 in the password came back as S. Not repairable from text alone: the UI should let the user fix it."
+  },
+  {
+   "id": "m05_unscaled_junk_and_dropped_dot",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "none (original image)",
+   "sample": {
+    "file": "s0001.png",
+    "font": "opensans",
+    "px": 11,
+    "layout": "tight",
+    "ocr_input_size": [
+     130,
+     48
+    ]
+   },
+   "lines": [
+    "‘abcde07@hotmailcom",
+    "xQmR4ZabCDSk"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "leading-junk",
+    "domain-dot-missing",
+    "confusable"
+   ],
+   "note": "The unscaled 130x48 crop: a leading quote glyph, the dot before com dropped (known provider hotmail.com can be restored), and 2->Z, 5->S in the password."
+  },
+  {
+   "id": "m06_unscaled_garbled_domain",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "none (original image)",
+   "sample": {
+    "file": "s0000.png",
+    "font": "roboto",
+    "px": 11,
+    "layout": "real",
+    "ocr_input_size": [
+     190,
+     50
+    ]
+   },
+   "lines": [
+    "sbedeO7@hotnellcom",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": false,
+    "password": true
+   },
+   "expect": {
+    "email": null,
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "garbled-email"
+   ],
+   "note": "Tiny unscaled text: the e-mail is too damaged to repair, the password happens to be exact."
+  },
+  {
+   "id": "m07_email_digit_as_S_plus_space",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "invert-if-dark, 3x Lanczos, pad 16",
+   "sample": {
+    "file": "s0048.png",
+    "font": "inter",
+    "px": 12,
+    "layout": "roomy",
+    "ocr_input_size": [
+     602,
+     302
+    ]
+   },
+   "lines": [
+    "jdoe.testS9 @h otmail.com",
+    "pR7wXn2KfL8q"
+   ],
+   "truth": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "recoverable": {
+    "email": false,
+    "password": true
+   },
+   "expect": {
+    "email": null,
+    "password": "pR7wXn2KfL8q"
+   },
+   "tags": [
+    "space-in-email",
+    "confusable"
+   ],
+   "note": "Spaces are fixable but the 9 became S: the squashed address is wrong, so no repair can reach the truth."
+  },
+  {
+   "id": "m08_email_question_mark",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "invert-if-dark, 3x Lanczos, pad 16",
+   "sample": {
+    "file": "s0052.png",
+    "font": "lato",
+    "px": 13,
+    "layout": "tight",
+    "ocr_input_size": [
+     515,
+     188
+    ]
+   },
+   "lines": [
+    "jdoe.test?9@hotmail.com",
+    "pR7wXn2KfL8q"
+   ],
+   "truth": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "recoverable": {
+    "email": false,
+    "password": true
+   },
+   "expect": {
+    "email": null,
+    "password": "pR7wXn2KfL8q"
+   },
+   "tags": [
+    "garbled-email"
+   ],
+   "note": "A character replaced by a symbol. The address still matches the e-mail shape, so a naive parser would accept it."
+  },
+  {
+   "id": "m09_zero_read_as_O",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "2x bilinear",
+   "sample": {
+    "file": "s0019.png",
+    "font": "roboto",
+    "px": 12,
+    "layout": "tight",
+    "ocr_input_size": [
+     288,
+     98
+    ]
+   },
+   "lines": [
+    "kmnop12@hotmail.com",
+    "Zt9LqW3vBOyH"
+   ],
+   "truth": {
+    "email": "kmnop12@hotmail.com",
+    "password": "Zt9LqW3vB0yH"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "kmnop12@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "confusable"
+   ],
+   "note": "0 vs O in the password: indistinguishable in most sans fonts at this size."
+  },
+  {
+   "id": "m10_password_fragmented",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "invert-if-dark, 3x Lanczos, pad 16",
+   "sample": {
+    "file": "s0019.png",
+    "font": "roboto",
+    "px": 12,
+    "layout": "tight",
+    "ocr_input_size": [
+     464,
+     179
+    ]
+   },
+   "lines": [
+    "kmnop12@hotmail.com",
+    "Zt9LqW 3vB OyH"
+   ],
+   "truth": {
+    "email": "kmnop12@hotmail.com",
+    "password": "Zt9LqW3vB0yH"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "kmnop12@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "space-in-password",
+    "confusable"
+   ],
+   "note": "Two stray spaces and a 0/O confusion."
+  },
+  {
+   "id": "m11_rapid_spaces_in_email",
+   "origin": "measured",
+   "engine": "rapidocr-onnxruntime (PP-OCR)",
+   "preprocess": "2x bilinear",
+   "sample": {
+    "file": "s0018.png",
+    "font": "roboto",
+    "px": 14,
+    "layout": "roomy",
+    "ocr_input_size": [
+     380,
+     180
+    ]
+   },
+   "lines": [
+    "jdoe.tes t99@ho tmail.com",
+    "pR7wXn2KfL8q"
+   ],
+   "truth": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "tags": [
+    "space-in-email"
+   ],
+   "note": "Word-splitting inside the address (two spaces). Squashing recovers it."
+  },
+  {
+   "id": "m12_lookalike_password",
+   "origin": "measured",
+   "engine": "rapidocr-onnxruntime (PP-OCR)",
+   "preprocess": "2x bilinear",
+   "sample": {
+    "file": "s0010.png",
+    "font": "roboto",
+    "px": 11,
+    "layout": "real",
+    "ocr_input_size": [
+     380,
+     100
+    ]
+   },
+   "lines": [
+    "lil1o0@hotmail.com",
+    "110011100aB"
+   ],
+   "truth": {
+    "email": "lil1o0@hotmail.com",
+    "password": "Il1O0lI1O0aB"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "lil1o0@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "confusable",
+    "lookalike-glyphs"
+   ],
+   "note": "Password whose characters are I/l/1/O/0 look-alikes: unrecoverable by any OCR, even a perfect engine."
+  },
+  {
+   "id": "m13_domain_split_to_next_line",
+   "origin": "measured",
+   "engine": "onnxtr docTR mobile",
+   "preprocess": "grayscale autocontrast, no scaling",
+   "sample": {
+    "file": "s0032.png",
+    "font": "dejavu",
+    "px": 13,
+    "layout": "roomy",
+    "ocr_input_size": [
+     380,
+     180
+    ]
+   },
+   "lines": [
+    "abcde07 @hotmail. - -",
+    ".com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "split-email",
+    "noise-chars"
+   ],
+   "note": "The domain is split across two lines (the .com is on its own line) and noise glyphs follow. A parser that joins a line ending in \".\" with a following \".com\"-like line recovers it."
+  },
+  {
+   "id": "m14_at_read_as_a",
+   "origin": "measured",
+   "engine": "onnxtr docTR mobile",
+   "preprocess": "grayscale autocontrast, no scaling",
+   "sample": {
+    "file": "s0002.png",
+    "font": "lato",
+    "px": 13,
+    "layout": "roomy",
+    "ocr_input_size": [
+     190,
+     90
+    ]
+   },
+   "lines": [
+    "abcde07 a hotmail -",
+    "com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": false,
+    "password": true
+   },
+   "expect": {
+    "email": null,
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "split-email",
+    "garbled-email"
+   ],
+   "note": "The @ became the letter a and the dot was lost: the e-mail cannot be reconstructed. The garbled first line is lower-case letters and digits only, so a parser that prefers the candidate with upper+lower+digit still finds the real password on line 3."
+  },
+  {
+   "id": "m15_empty_result",
+   "origin": "measured",
+   "engine": "rapidocr-onnxruntime (PP-OCR, no detector upscaling)",
+   "preprocess": "none (original image)",
+   "sample": {
+    "file": "s0020.png",
+    "font": "roboto",
+    "px": 11,
+    "layout": "tight",
+    "ocr_input_size": [
+     137,
+     46
+    ]
+   },
+   "lines": [],
+   "truth": {
+    "email": "mnbvc_31@outlook.com",
+    "password": "eLm0Qr4tYu6W"
+   },
+   "recoverable": {
+    "email": false,
+    "password": false
+   },
+   "expect": {
+    "email": null,
+    "password": null
+   },
+   "tags": [
+    "empty"
+   ],
+   "note": "The engine found nothing in the 137x46 crop (original image, no detector upscaling)."
+  },
+  {
+   "id": "m16_password_only",
+   "origin": "measured",
+   "engine": "rapidocr-onnxruntime (PP-OCR, no detector upscaling)",
+   "preprocess": "grayscale autocontrast, no scaling",
+   "sample": {
+    "file": "s0020.png",
+    "font": "roboto",
+    "px": 11,
+    "layout": "tight",
+    "ocr_input_size": [
+     137,
+     46
+    ]
+   },
+   "lines": [
+    "eLm0 Qr4tYu6W"
+   ],
+   "truth": {
+    "email": "mnbvc_31@outlook.com",
+    "password": "eLm0Qr4tYu6W"
+   },
+   "recoverable": {
+    "email": false,
+    "password": true
+   },
+   "expect": {
+    "email": null,
+    "password": "eLm0Qr4tYu6W"
+   },
+   "tags": [
+    "password-only",
+    "space-in-password"
+   ],
+   "note": "Only the second line was found (and split by a space): the owner-reported \"it at least found just the password\" situation."
+  },
+  {
+   "id": "m17_email_trailing_paren_single_line",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "adaptive threshold (a bad preprocessing choice), no scaling",
+   "sample": {
+    "file": "s0126.png",
+    "font": "dejavu",
+    "px": 13,
+    "layout": "real",
+    "ocr_input_size": [
+     190,
+     60
+    ]
+   },
+   "lines": [
+    "fghjk88 @hotmail.com)"
+   ],
+   "truth": {
+    "email": "fghjk88@hotmail.com",
+    "password": "rnM5uVw2SsZz"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "fghjk88@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "single-line",
+    "trailing-junk",
+    "space-in-email",
+    "email-only"
+   ],
+   "note": "Everything on one line, a space before @ and a stray ) after the address. The password line was lost."
+  },
+  {
+   "id": "m18_email_leading_quote_trailing_paren",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "adaptive threshold (a bad preprocessing choice), no scaling",
+   "sample": {
+    "file": "s0158.png",
+    "font": "liberation",
+    "px": 13,
+    "layout": "real",
+    "ocr_input_size": [
+     193,
+     59
+    ]
+   },
+   "lines": [
+    "‘sample_mail42@hotmail.co.uk)"
+   ],
+   "truth": {
+    "email": "sample_mail42@hotmail.co.uk",
+    "password": "hG3fE9aXoO0l"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "sample_mail42@hotmail.co.uk",
+    "password": null
+   },
+   "tags": [
+    "single-line",
+    "trailing-junk",
+    "leading-junk",
+    "email-only"
+   ],
+   "note": "Quote glyph before and ) after the address. Both must be stripped; the two-part TLD co.uk must survive."
+  },
+  {
+   "id": "m19_email_wrong_first_letter",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "adaptive threshold (a bad preprocessing choice), no scaling",
+   "sample": {
+    "file": "s0173.png",
+    "font": "dejavu",
+    "px": 13,
+    "layout": "real",
+    "ocr_input_size": [
+     190,
+     59
+    ]
+   },
+   "lines": [
+    "wbnm.zx65@hotmail.com,"
+   ],
+   "truth": {
+    "email": "vbnm.zx65@hotmail.com",
+    "password": "W2yU6iT8rE1a"
+   },
+   "recoverable": {
+    "email": false,
+    "password": false
+   },
+   "expect": {
+    "email": null,
+    "password": null
+   },
+   "tags": [
+    "single-line",
+    "trailing-junk",
+    "confusable",
+    "email-only"
+   ],
+   "note": "v read as w: the address is well formed but wrong. Trailing comma must still be stripped."
+  },
+  {
+   "id": "m20_password_only_junk_and_spaces",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "adaptive threshold (a bad preprocessing choice), no scaling",
+   "sample": {
+    "file": "s0309.png",
+    "font": "lato",
+    "px": 13,
+    "layout": "roomy",
+    "ocr_input_size": [
+     190,
+     90
+    ]
+   },
+   "lines": [
+    "xQm R42abCD 5k]"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": false,
+    "password": true
+   },
+   "expect": {
+    "email": null,
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "password-only",
+    "space-in-password",
+    "trailing-junk",
+    "single-line"
+   ],
+   "note": "Only the password was read, split by spaces and followed by a bracket: the square bracket is not a password character an OCR parser should keep."
+  },
+  {
+   "id": "m21_garbled_single_line",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "adaptive threshold (a bad preprocessing choice), no scaling",
+   "sample": {
+    "file": "s0048.png",
+    "font": "inter",
+    "px": 12,
+    "layout": "roomy",
+    "ocr_input_size": [
+     190,
+     90
+    ]
+   },
+   "lines": [
+    "Jdoe. test2@@notmall.comy"
+   ],
+   "truth": {
+    "email": "jdoe.test99@hotmail.com",
+    "password": "pR7wXn2KfL8q"
+   },
+   "recoverable": {
+    "email": false,
+    "password": false
+   },
+   "expect": {
+    "email": null,
+    "password": null
+   },
+   "tags": [
+    "single-line",
+    "garbled-email"
+   ],
+   "note": "A double @ and a mangled provider: must not be accepted as a clean address."
+  },
+  {
+   "id": "m22_password_with_braces",
+   "origin": "measured",
+   "engine": "tesseract-5.3.4 (LSTM, eng)",
+   "preprocess": "adaptive threshold (a bad preprocessing choice), no scaling",
+   "sample": {
+    "file": "s0090.png",
+    "font": "inter",
+    "px": 11,
+    "layout": "real",
+    "ocr_input_size": [
+     190,
+     51
+    ]
+   },
+   "lines": [
+    "gBvSCZ2MxA7}}"
+   ],
+   "truth": {
+    "email": "qwert-14@live.com",
+    "password": "gBv5Cz2MxA7j"
+   },
+   "recoverable": {
+    "email": false,
+    "password": false
+   },
+   "expect": {
+    "email": null,
+    "password": null
+   },
+   "tags": [
+    "password-only",
+    "trailing-junk",
+    "confusable",
+    "single-line"
+   ],
+   "note": "Password-like token with two stray braces and 5->S. The braces are noise from the image edge."
+  },
+  {
+   "id": "c01_letter_spaced_both",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "a b c d e 0 7 @ h o t m a i l . c o m",
+    "x Q m R 4 2 a b C D 5 k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "letter-spaced"
+   ],
+   "note": "Tiny text read one glyph at a time: every character is its own word."
+  },
+  {
+   "id": "c02_letter_spaced_email_only",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "a b c d e 0 7 @ h o t m a i l . c o m",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "letter-spaced"
+   ],
+   "note": "Only the e-mail line is letter-spaced; the password is normal."
+  },
+  {
+   "id": "c03_letter_spaced_password_only",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com",
+    "x Q m R 4 2 a b C D 5 k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "letter-spaced"
+   ],
+   "note": "Only the password line is letter-spaced."
+  },
+  {
+   "id": "c04_letter_spaced_double_gaps",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "a b c d e 0 7  @  h o t m a i l . c o m",
+    "x Q m R 4 2  a b C D  5 k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "letter-spaced",
+    "space-in-email"
+   ],
+   "note": "Letter spacing with wider gaps at word-like positions."
+  },
+  {
+   "id": "c05_merged_single_line",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "merged-lines"
+   ],
+   "note": "Both values on one line (a crop where the lines are close together). Test for a complete e-mail token before squashing spaces, otherwise the squash rule would glue the password onto the address."
+  },
+  {
+   "id": "c06_reversed_order",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "xQmR42abCD5k",
+    "abcde07@hotmail.com"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "reversed"
+   ],
+   "note": "Password above the e-mail: pick by shape, not by position."
+  },
+  {
+   "id": "c07_labels",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "Email: abcde07@hotmail.com",
+    "Password: xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "labelled"
+   ],
+   "note": "Labels in front of the values."
+  },
+  {
+   "id": "c08_labels_lowercase_colon_free",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "email abcde07@hotmail.com",
+    "password xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "labelled"
+   ],
+   "note": "Labels without colons."
+  },
+  {
+   "id": "c09_noise_lines_around",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "Account details",
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k",
+    "Copy",
+    "Show"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "noise-lines"
+   ],
+   "note": "UI chrome around the credentials in a cropped screenshot."
+  },
+  {
+   "id": "c10_trailing_eye_icon",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k ©"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "trailing-junk"
+   ],
+   "note": "A show/hide eye icon read as a copyright sign after the password."
+  },
+  {
+   "id": "c11_trailing_icon_as_letter_o",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k O"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "trailing-junk"
+   ],
+   "note": "The eye icon read as a capital O, separated by a space: it is a second word, not part of the password."
+  },
+  {
+   "id": "c12_angle_brackets",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "<abcde07@hotmail.com>",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "wrapped"
+   ],
+   "note": "The address wrapped in angle brackets."
+  },
+  {
+   "id": "c13_trailing_comma",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com,",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "trailing-junk"
+   ],
+   "note": "Trailing comma after the address."
+  },
+  {
+   "id": "c14_bullets",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "• abcde07@hotmail.com",
+    "• xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "leading-junk"
+   ],
+   "note": "List bullets in front of both lines."
+  },
+  {
+   "id": "c15_capitalised_email",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "Abcde07@Hotmail.com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "case"
+   ],
+   "note": "OCR capitalised the first letter and the domain. Addresses are case-insensitive in practice, so lower-case them; the password must keep its case."
+  },
+  {
+   "id": "c16_split_at_at_sign",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@",
+    "hotmail.com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "split-email"
+   ],
+   "note": "Windows OCR breaks lines at wide gaps; here the address is split after the @."
+  },
+  {
+   "id": "c17_split_at_dot",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail",
+    ".com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "split-email"
+   ],
+   "note": "The address is split before the TLD."
+  },
+  {
+   "id": "c18_only_email",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "email-only"
+   ],
+   "note": "The password line was not read at all: must return the e-mail and no password."
+  },
+  {
+   "id": "c19_url_then_credentials",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "https://login.live.com",
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "noise-lines"
+   ],
+   "note": "A URL line above the credentials must not be taken for either value."
+  },
+  {
+   "id": "c20_timestamp_after",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k",
+    "2024-03-17 14:22"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "noise-lines"
+   ],
+   "note": "A date line below the credentials."
+  },
+  {
+   "id": "c21_two_accounts",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com",
+    "xQmR42abCD5k",
+    "kmnop12@hotmail.com",
+    "Zt9LqW3vB0yH"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42abCD5k"
+   },
+   "tags": [
+    "multiple"
+   ],
+   "note": "Two credential pairs: return the first pair."
+  },
+  {
+   "id": "c22_password_with_symbols",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "abcde07@hotmail.com",
+    "xQmR42ab#D5k&"
+   ],
+   "truth": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42ab#D5k&"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "abcde07@hotmail.com",
+    "password": "xQmR42ab#D5k&"
+   },
+   "tags": [
+    "symbols"
+   ],
+   "note": "Passwords may contain symbols; do not strip # or & from a long single token."
+  },
+  {
+   "id": "c23_lookalike_unrecoverable",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "lil1o0@hotmail.com",
+    "lIlO0lIlO0aB"
+   ],
+   "truth": {
+    "email": "lil1o0@hotmail.com",
+    "password": "Il1O0lI1O0aB"
+   },
+   "recoverable": {
+    "email": true,
+    "password": false
+   },
+   "expect": {
+    "email": "lil1o0@hotmail.com",
+    "password": null
+   },
+   "tags": [
+    "confusable",
+    "lookalike-glyphs"
+   ],
+   "note": "I/l and 1, O and 0 swapped: no text-only repair can know which is right. The e-mail local part is made of the same glyphs and happens to be right."
+  },
+  {
+   "id": "c24_no_credentials",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "Settings",
+    "Privacy",
+    "Notifications",
+    "Sign out"
+   ],
+   "truth": {
+    "email": null,
+    "password": null
+   },
+   "recoverable": {
+    "email": false,
+    "password": false
+   },
+   "expect": {
+    "email": null,
+    "password": null
+   },
+   "tags": [
+    "negative"
+   ],
+   "note": "A screenshot without credentials: nothing may be invented.",
+   "must_find_nothing": true
+  },
+  {
+   "id": "c25_empty_strings",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "",
+    "   ",
+    ""
+   ],
+   "truth": {
+    "email": null,
+    "password": null
+   },
+   "recoverable": {
+    "email": false,
+    "password": false
+   },
+   "expect": {
+    "email": null,
+    "password": null
+   },
+   "tags": [
+    "negative",
+    "empty"
+   ],
+   "note": "Blank lines only.",
+   "must_find_nothing": true
+  },
+  {
+   "id": "c26_underscore_email_split",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "mnbvc_31 @outlook.com",
+    "eLm0 Qr4tYu6W"
+   ],
+   "truth": {
+    "email": "mnbvc_31@outlook.com",
+    "password": "eLm0Qr4tYu6W"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "mnbvc_31@outlook.com",
+    "password": "eLm0Qr4tYu6W"
+   },
+   "tags": [
+    "space-in-email",
+    "space-in-password"
+   ],
+   "note": "Spaces in both lines, address with underscore and a non-hotmail provider."
+  },
+  {
+   "id": "c27_letter_spaced_with_uppercase_pair",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "k m n o p 1 2 @ h o t m a i l . c o m",
+    "Z t 9 L q W 3 v B 0 y H"
+   ],
+   "truth": {
+    "email": "kmnop12@hotmail.com",
+    "password": "Zt9LqW3vB0yH"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "kmnop12@hotmail.com",
+    "password": "Zt9LqW3vB0yH"
+   },
+   "tags": [
+    "letter-spaced"
+   ],
+   "note": "Another letter-spaced pair with mixed case and a digit zero."
+  },
+  {
+   "id": "c28_three_part_tld",
+   "origin": "constructed",
+   "engine": "constructed (modelled on Windows.Media.Ocr / ML Kit output shapes)",
+   "lines": [
+    "sample_mail42@hotmail.co.uk",
+    "hG3fE9aXoO0l"
+   ],
+   "truth": {
+    "email": "sample_mail42@hotmail.co.uk",
+    "password": "hG3fE9aXoO0l"
+   },
+   "recoverable": {
+    "email": true,
+    "password": true
+   },
+   "expect": {
+    "email": "sample_mail42@hotmail.co.uk",
+    "password": "hG3fE9aXoO0l"
+   },
+   "tags": [
+    "clean",
+    "two-part-tld"
+   ],
+   "note": "A two-part TLD must stay intact."
+  }
+ ]
+}
