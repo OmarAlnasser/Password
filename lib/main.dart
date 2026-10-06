@@ -19,6 +19,7 @@ import 'services/clipboard_service.dart';
 import 'services/favicon_service.dart';
 import 'services/import_export.dart';
 import 'services/ios_autofill_snapshot.dart';
+import 'services/ocr/image_preprocessor.dart';
 import 'services/password_generator.dart';
 import 'services/platform_bridge.dart';
 import 'services/settings.dart';
@@ -36,6 +37,10 @@ const _supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
 
 Future<void> main() async {
   final services = await bootstrap();
+  // Plaintext copies of a screenshot that a crash or a kill left in the temp
+  // directory in the middle of a scan (the native side sweeps the clipboard
+  // copies the same way). 10 minutes: another window may be scanning.
+  unawaited(ImageWorkspace.sweepStale(olderThan: const Duration(minutes: 10)));
   IosAutofillSnapshot(services.session);
   unawaited(services.session.init());
   runApp(VaultSnapApp(services: services));

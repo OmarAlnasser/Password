@@ -641,7 +641,7 @@ abstract class AppLocalizations {
   /// No description provided for @ocrTapChip.
   ///
   /// In en, this message translates to:
-  /// **'Tap a chip to copy it; long-press to use it in a field'**
+  /// **'Tap a piece of text to use it as the username, password, link or name.'**
   String get ocrTapChip;
 
   /// No description provided for @ocrUseAs.
@@ -661,6 +661,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Highlighted characters are easy to misread (0/O, l/I/1)'**
   String get ocrAmbiguous;
+
+  /// No description provided for @ocrChipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detected text'**
+  String get ocrChipsTitle;
+
+  /// No description provided for @ocrShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all ({n})'**
+  String ocrShowAll(int n);
+
+  /// No description provided for @ocrAsUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get ocrAsUsername;
+
+  /// No description provided for @ocrAsPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get ocrAsPassword;
+
+  /// No description provided for @ocrAsLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Link'**
+  String get ocrAsLink;
+
+  /// No description provided for @ocrAsName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get ocrAsName;
+
+  /// No description provided for @ocrOtherReadings.
+  ///
+  /// In en, this message translates to:
+  /// **'Other readings'**
+  String get ocrOtherReadings;
+
+  /// No description provided for @ocrPickHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure which text is the email or the password. Tap a piece of text below to use it, or type it in.'**
+  String get ocrPickHint;
+
+  /// No description provided for @ocrWhatWasRead.
+  ///
+  /// In en, this message translates to:
+  /// **'What was read'**
+  String get ocrWhatWasRead;
+
+  /// No description provided for @ocrWhatWasReadNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The text the scanner recognised, kept in memory only. It can show why a login was missed.'**
+  String get ocrWhatWasReadNote;
+
+  /// No description provided for @ocrPassTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass {n}: {name}'**
+  String ocrPassTitle(int n, Object name);
+
+  /// No description provided for @ocrPassNothing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing read'**
+  String get ocrPassNothing;
+
+  /// No description provided for @ocrPassFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed ({reason})'**
+  String ocrPassFailed(Object reason);
+
+  /// No description provided for @ocrTipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips'**
+  String get ocrTipsTitle;
+
+  /// No description provided for @ocrTipCrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy a bigger area: leave a little space around the email and password.'**
+  String get ocrTipCrop;
+
+  /// No description provided for @ocrTipVisible.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure the text is clearly visible on screen, not covered, blurred or very small.'**
+  String get ocrTipVisible;
+
+  /// No description provided for @ocrTipAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy the image again, then try again. Copying the text itself instead of a screenshot also works.'**
+  String get ocrTipAgain;
+
+  /// No description provided for @ocrNoLanguageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows has no OCR language installed'**
+  String get ocrNoLanguageTitle;
+
+  /// No description provided for @ocrNoLanguageBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Windows reads text in images with an OCR language pack, and none is installed. To add one:'**
+  String get ocrNoLanguageBody;
+
+  /// No description provided for @ocrNoLanguageStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings > Time & language > Language & region.'**
+  String get ocrNoLanguageStep1;
+
+  /// No description provided for @ocrNoLanguageStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Add a language and pick one (English reads email addresses and passwords well).'**
+  String get ocrNoLanguageStep2;
+
+  /// No description provided for @ocrNoLanguageStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure Optical character recognition is ticked while it installs.'**
+  String get ocrNoLanguageStep3;
+
+  /// No description provided for @ocrNoLanguageStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Come back here and paste again.'**
+  String get ocrNoLanguageStep4;
+
+  /// No description provided for @ocrTooLargeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The image is too large to scan'**
+  String get ocrTooLargeTitle;
+
+  /// No description provided for @ocrTooLargeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy or crop a smaller area around the email and password, then try again.'**
+  String get ocrTooLargeBody;
+
+  /// No description provided for @ocrUnsupportedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This image can\'t be read'**
+  String get ocrUnsupportedTitle;
+
+  /// No description provided for @ocrUnsupportedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy it again as a normal screenshot (PNG or JPEG) and try again.'**
+  String get ocrUnsupportedBody;
+
+  /// No description provided for @ocrUnreadableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The image file couldn\'t be opened'**
+  String get ocrUnreadableTitle;
+
+  /// No description provided for @ocrUnreadableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The file may have been moved or deleted. Copy the image again and try again.'**
+  String get ocrUnreadableBody;
+
+  /// No description provided for @ocrTimeoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning took too long'**
+  String get ocrTimeoutTitle;
+
+  /// No description provided for @ocrTimeoutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning was stopped. Copy a smaller area around the email and password and try again.'**
+  String get ocrTimeoutBody;
+
+  /// No description provided for @ocrFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Text recognition failed'**
+  String get ocrFailedTitle;
+
+  /// No description provided for @ocrFailedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong while reading the image. Try again, or copy a bigger area.'**
+  String get ocrFailedBody;
+
+  /// No description provided for @ocrPasteAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste again'**
+  String get ocrPasteAgain;
+
+  /// No description provided for @ocrFillByHand.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in by hand'**
+  String get ocrFillByHand;
 
   /// No description provided for @deleteSourceImage.
   ///
@@ -841,12 +1051,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name'**
   String get name;
-
-  /// No description provided for @nameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. Genshin Odette C2 acc'**
-  String get nameHint;
 
   /// No description provided for @whereFrom.
   ///
