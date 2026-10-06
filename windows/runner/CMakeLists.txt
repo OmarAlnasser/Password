@@ -35,8 +35,8 @@ target_compile_definitions(${BINARY_NAME} PRIVATE "NOMINMAX")
 # dependencies here.
 target_link_libraries(${BINARY_NAME} PRIVATE flutter flutter_wrapper_app)
 target_link_libraries(${BINARY_NAME} PRIVATE "dwmapi.lib" "windowsapp.lib")
-# C++/WinRT (Windows.Media.Ocr) needs C++17 coroutines support.
-target_compile_options(${BINARY_NAME} PRIVATE /await:strict)
+# C++/WinRT (Windows.Media.Ocr) uses standard C++20 coroutines.
+target_compile_options(${BINARY_NAME} PRIVATE /bigobj)
 set_property(TARGET ${BINARY_NAME} PROPERTY CXX_STANDARD 20)
 target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
