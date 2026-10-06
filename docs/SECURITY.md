@@ -119,6 +119,45 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
 16. **The recovery key is as powerful as the master password.** Anyone who
     has it gets full access. It is shown once, with copy, print and confirm
     steps, and can be rotated (`AccountKeys.rotateRecoveryKey`).
+17. **Website icons tell the network which sites are in the vault.**
+    "Fetch website icons" is on by default. After every unlock, save and
+    import the app requests each entry's site directly (its page, then the
+    icon). DNS resolvers, anyone watching the network and each site learn
+    that this user has an account there and roughly when the vault is
+    unlocked; each site sees the user's IP address. No third-party icon
+    service is used, so no single party learns the whole list.
+    *Mitigation:* HTTPS only; the page, every redirect and the icon must stay
+    on the entry's registrable domain; no cookies, no Referer, a generic
+    User-Agent; size limits. Hosts come from imports and are untrusted: IP
+    literals, single-label and local names, and names that resolve to
+    loopback, private or link-local addresses are skipped. The HTTP client
+    resolves the name again when it connects, so DNS rebinding can still
+    send a TLS handshake to a local address; certificate checks stop it
+    there, leaving a probe of whether port 443 answers. Icons are stored
+    only in the SQLCipher database (fetched again after 30 days, failures
+    after 7) and in memory while unlocked. Turning the setting off stops all
+    requests; icons already stored are still shown.
+18. **Pasted screenshots are written to a temporary file in plaintext.** OCR
+    needs the image as a file, so the native side copies a pasted screenshot
+    to the app's cache: Android `cacheDir/clip-*.img` (and `ocr-*.img` for
+    the OCR import), iOS `tmp/clip-*.png` with complete file protection,
+    Windows `%TEMP%\vaultsnap-clip-*`, which other programs of the same
+    Windows user can read. Dart deletes the file as soon as OCR has finished,
+    whether it found anything or not. If the app dies in between, the next
+    start deletes copies older than 10 minutes. Recognition and parsing run
+    on the device only. Clipboard text can come from any app or website, so
+    parsing reads at most 16 KB and skips runs of over 256 characters
+    without whitespace. After a save the app offers to clear the clipboard
+    (the default action); that does not remove copies a clipboard history
+    (Windows + V, keyboard apps) or a cloud clipboard has already kept.
+19. **The lock screen can erase the vault without a password.** "Forgot
+    password?" offers a reset for users who lost both the master password
+    and the recovery key, so anyone holding the locked, running app can
+    destroy the local vault (after typing a confirmation word). They learn
+    nothing from it. The reset signs out of sync and forgets the sync email,
+    so a vault created afterwards cannot sync into the old account, and the
+    old account's data on the server is untouched: signing in again with
+    the old master password restores it.
 
 ## Test vectors
 

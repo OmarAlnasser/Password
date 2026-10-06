@@ -805,6 +805,330 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
+
+  /// No description provided for @pasteLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste login'**
+  String get pasteLogin;
+
+  /// No description provided for @pasteNothingFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No login found on the clipboard. Copy a screenshot or text with the email and password first.'**
+  String get pasteNothingFound;
+
+  /// No description provided for @saveLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Save login'**
+  String get saveLogin;
+
+  /// No description provided for @quickMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick'**
+  String get quickMode;
+
+  /// No description provided for @advancedMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advancedMode;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get name;
+
+  /// No description provided for @nameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Genshin Odette C2 acc'**
+  String get nameHint;
+
+  /// No description provided for @whereFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Where is it from? (link)'**
+  String get whereFrom;
+
+  /// No description provided for @whyNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Why / notes'**
+  String get whyNotes;
+
+  /// No description provided for @clearScreenshotTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the screenshot from your clipboard?'**
+  String get clearScreenshotTitle;
+
+  /// No description provided for @clearTextTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the copied text from your clipboard?'**
+  String get clearTextTitle;
+
+  /// No description provided for @clearClipboardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It still shows this password, and other apps can read it. Copies already saved in a clipboard history (Windows + V, your keyboard app) are not removed; delete them there.'**
+  String get clearClipboardBody;
+
+  /// No description provided for @clear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clear;
+
+  /// No description provided for @clipboardCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard cleared'**
+  String get clipboardCleared;
+
+  /// No description provided for @fetchIcons.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetch website icons'**
+  String get fetchIcons;
+
+  /// No description provided for @fetchIconsNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Icons are downloaded directly from each site, so the site sees your IP address.'**
+  String get fetchIconsNote;
+
+  /// No description provided for @reviewImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Review import'**
+  String get reviewImport;
+
+  /// No description provided for @importFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 login in the file} other{{n} logins in the file}}'**
+  String importFound(int n);
+
+  /// No description provided for @importSkippedRows.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 row skipped (empty or not a login)} other{{n} rows skipped (empty or not logins)}}'**
+  String importSkippedRows(int n);
+
+  /// No description provided for @importReviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ticked logins are imported. Tap a login to fix it.'**
+  String get importReviewHint;
+
+  /// No description provided for @importN.
+  ///
+  /// In en, this message translates to:
+  /// **'Import {n}'**
+  String importN(int n);
+
+  /// No description provided for @noWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'No website'**
+  String get noWebsite;
+
+  /// No description provided for @noUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'(no username)'**
+  String get noUsername;
+
+  /// No description provided for @reviewNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get reviewNew;
+
+  /// No description provided for @reviewUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get reviewUpdate;
+
+  /// No description provided for @reviewMerged.
+  ///
+  /// In en, this message translates to:
+  /// **'Merged duplicates'**
+  String get reviewMerged;
+
+  /// No description provided for @reviewSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Already saved'**
+  String get reviewSkip;
+
+  /// No description provided for @reviewAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get reviewAttention;
+
+  /// No description provided for @reviewUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Replaces the password of “{title}”; the old one stays in its history'**
+  String reviewUpdates(Object title);
+
+  /// No description provided for @issueMissingPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'No password'**
+  String get issueMissingPassword;
+
+  /// No description provided for @issueMissingUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'No username'**
+  String get issueMissingUsername;
+
+  /// No description provided for @issueInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email looks wrong'**
+  String get issueInvalidEmail;
+
+  /// No description provided for @issueUsernameIsUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is a link'**
+  String get issueUsernameIsUrl;
+
+  /// No description provided for @issuePasswordLooksLikeEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Password looks like an email'**
+  String get issuePasswordLooksLikeEmail;
+
+  /// No description provided for @issueUsernameLooksLikePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Username looks like a password'**
+  String get issueUsernameLooksLikePassword;
+
+  /// No description provided for @issueInvalidUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'No valid website'**
+  String get issueInvalidUrl;
+
+  /// No description provided for @issueInsecureHttp.
+  ///
+  /// In en, this message translates to:
+  /// **'Not secure (http)'**
+  String get issueInsecureHttp;
+
+  /// No description provided for @issueDuplicateInFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate in file'**
+  String get issueDuplicateInFile;
+
+  /// No description provided for @issueExistsWithDifferentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved with another password'**
+  String get issueExistsWithDifferentPassword;
+
+  /// No description provided for @editLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit login'**
+  String get editLogin;
+
+  /// No description provided for @swapUserPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap username and password'**
+  String get swapUserPassword;
+
+  /// No description provided for @deleteCsvTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Now delete the CSV file'**
+  String get deleteCsvTitle;
+
+  /// No description provided for @deleteCsvBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It holds all your passwords in plain text. Delete it from Downloads, empty the trash or recycle bin, and remove any copy in cloud storage or email.'**
+  String get deleteCsvBody;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your master password?'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody can recover it, not even the VaultSnap developer. It is never stored or sent anywhere, and your vault is encrypted with it.'**
+  String get forgotPasswordBody;
+
+  /// No description provided for @useRecoveryKeyExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock with the recovery key you saved when you created the vault, then choose a new password.'**
+  String get useRecoveryKeyExplain;
+
+  /// No description provided for @resetVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset vault — erase everything'**
+  String get resetVault;
+
+  /// No description provided for @resetVaultExplain.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over with an empty vault. Everything stored in this vault is lost.'**
+  String get resetVaultExplain;
+
+  /// No description provided for @resetVaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Erase this vault?'**
+  String get resetVaultTitle;
+
+  /// No description provided for @resetVaultBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently deletes every password and note in the vault on this device. It cannot be undone.'**
+  String get resetVaultBody;
+
+  /// No description provided for @resetConfirmWord.
+  ///
+  /// In en, this message translates to:
+  /// **'DELETE'**
+  String get resetConfirmWord;
+
+  /// No description provided for @resetTypeToConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Type {word} to confirm'**
+  String resetTypeToConfirm(Object word);
+
+  /// No description provided for @eraseVault.
+  ///
+  /// In en, this message translates to:
+  /// **'Erase vault'**
+  String get eraseVault;
 }
 
 class _AppLocalizationsDelegate

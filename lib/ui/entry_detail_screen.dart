@@ -5,6 +5,7 @@ import 'app_scope.dart';
 import 'entry_edit_screen.dart';
 import 'home_screen.dart';
 import 'widgets/secret_text.dart';
+import 'widgets/site_icon.dart';
 import 'widgets/totp_view.dart';
 
 class EntryDetailScreen extends StatefulWidget {
@@ -35,7 +36,13 @@ class _EntryDetailScreenState extends State<EntryDetailScreen> {
         );
         return Scaffold(
           appBar: AppBar(
-            title: Text(e.title),
+            title: Row(
+              children: [
+                SiteIcon(url: e.url, title: e.title, size: 32),
+                const SizedBox(width: 12),
+                Expanded(child: Text(e.title, overflow: TextOverflow.ellipsis)),
+              ],
+            ),
             actions: [
               IconButton(
                 icon: Icon(e.favorite ? Icons.star : Icons.star_border),

@@ -392,4 +392,198 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ok => 'OK';
+
+  @override
+  String get pasteLogin => 'Paste login';
+
+  @override
+  String get pasteNothingFound =>
+      'No login found on the clipboard. Copy a screenshot or text with the email and password first.';
+
+  @override
+  String get saveLogin => 'Save login';
+
+  @override
+  String get quickMode => 'Quick';
+
+  @override
+  String get advancedMode => 'Advanced';
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get nameHint => 'e.g. Genshin Odette C2 acc';
+
+  @override
+  String get whereFrom => 'Where is it from? (link)';
+
+  @override
+  String get whyNotes => 'Why / notes';
+
+  @override
+  String get clearScreenshotTitle =>
+      'Clear the screenshot from your clipboard?';
+
+  @override
+  String get clearTextTitle => 'Clear the copied text from your clipboard?';
+
+  @override
+  String get clearClipboardBody =>
+      'It still shows this password, and other apps can read it. Copies already saved in a clipboard history (Windows + V, your keyboard app) are not removed; delete them there.';
+
+  @override
+  String get clear => 'Clear';
+
+  @override
+  String get clipboardCleared => 'Clipboard cleared';
+
+  @override
+  String get fetchIcons => 'Fetch website icons';
+
+  @override
+  String get fetchIconsNote =>
+      'Icons are downloaded directly from each site, so the site sees your IP address.';
+
+  @override
+  String get reviewImport => 'Review import';
+
+  @override
+  String importFound(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n logins in the file',
+      one: '1 login in the file',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importSkippedRows(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n rows skipped (empty or not logins)',
+      one: '1 row skipped (empty or not a login)',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importReviewHint =>
+      'Ticked logins are imported. Tap a login to fix it.';
+
+  @override
+  String importN(int n) {
+    return 'Import $n';
+  }
+
+  @override
+  String get noWebsite => 'No website';
+
+  @override
+  String get noUsername => '(no username)';
+
+  @override
+  String get reviewNew => 'New';
+
+  @override
+  String get reviewUpdate => 'Update';
+
+  @override
+  String get reviewMerged => 'Merged duplicates';
+
+  @override
+  String get reviewSkip => 'Already saved';
+
+  @override
+  String get reviewAttention => 'Needs attention';
+
+  @override
+  String reviewUpdates(Object title) {
+    return 'Replaces the password of “$title”; the old one stays in its history';
+  }
+
+  @override
+  String get issueMissingPassword => 'No password';
+
+  @override
+  String get issueMissingUsername => 'No username';
+
+  @override
+  String get issueInvalidEmail => 'Email looks wrong';
+
+  @override
+  String get issueUsernameIsUrl => 'Username is a link';
+
+  @override
+  String get issuePasswordLooksLikeEmail => 'Password looks like an email';
+
+  @override
+  String get issueUsernameLooksLikePassword => 'Username looks like a password';
+
+  @override
+  String get issueInvalidUrl => 'No valid website';
+
+  @override
+  String get issueInsecureHttp => 'Not secure (http)';
+
+  @override
+  String get issueDuplicateInFile => 'Duplicate in file';
+
+  @override
+  String get issueExistsWithDifferentPassword => 'Saved with another password';
+
+  @override
+  String get editLogin => 'Edit login';
+
+  @override
+  String get swapUserPassword => 'Swap username and password';
+
+  @override
+  String get deleteCsvTitle => 'Now delete the CSV file';
+
+  @override
+  String get deleteCsvBody =>
+      'It holds all your passwords in plain text. Delete it from Downloads, empty the trash or recycle bin, and remove any copy in cloud storage or email.';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot your master password?';
+
+  @override
+  String get forgotPasswordBody =>
+      'Nobody can recover it, not even the VaultSnap developer. It is never stored or sent anywhere, and your vault is encrypted with it.';
+
+  @override
+  String get useRecoveryKeyExplain =>
+      'Unlock with the recovery key you saved when you created the vault, then choose a new password.';
+
+  @override
+  String get resetVault => 'Reset vault — erase everything';
+
+  @override
+  String get resetVaultExplain =>
+      'Start over with an empty vault. Everything stored in this vault is lost.';
+
+  @override
+  String get resetVaultTitle => 'Erase this vault?';
+
+  @override
+  String get resetVaultBody =>
+      'This permanently deletes every password and note in the vault on this device. It cannot be undone.';
+
+  @override
+  String get resetConfirmWord => 'DELETE';
+
+  @override
+  String resetTypeToConfirm(Object word) {
+    return 'Type $word to confirm';
+  }
+
+  @override
+  String get eraseVault => 'Erase vault';
 }

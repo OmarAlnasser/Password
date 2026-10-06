@@ -33,4 +33,8 @@ class ClipboardService {
   }
 
   bool get hasPendingClear => _timer != null;
+
+  /// Whether [text] is the secret copied last and not cleared yet, so the
+  /// "Paste" action does not offer to save a vault password as a new login.
+  bool isOwnCopy(String text) => text == _lastCopied;
 }

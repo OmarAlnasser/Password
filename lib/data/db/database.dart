@@ -36,7 +36,27 @@ class KvStore extends Table {
   Set<Column<Object>> get primaryKey => {key};
 }
 
-@DriftDatabase(tables: [VaultItems, KvStore])
+/// Website icons fetched directly from each site (see `FaviconService`).
+/// Local only, never synced: which sites the user has accounts with is vault
+/// metadata, so it lives inside the encrypted database and nowhere else.
+class Favicons extends Table {
+  TextColumn get host => text()();
+
+  /// Validated image bytes; null if no usable icon was ever found.
+  BlobColumn get bytes => blob().nullable()();
+  TextColumn get contentType => text().nullable()();
+
+  /// Time of the last fetch attempt (ms since epoch, client clock).
+  IntColumn get fetchedAt => integer()();
+
+  /// The last attempt failed. [bytes] may still hold an older icon.
+  BoolColumn get failed => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column<Object>> get primaryKey => {host};
+}
+
+@DriftDatabase(tables: [VaultItems, KvStore, Favicons])
 class VaultDatabase extends _$VaultDatabase {
   VaultDatabase(super.e);
 
@@ -66,7 +86,15 @@ class VaultDatabase extends _$VaultDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) await m.createTable(favicons);
+    },
+  );
 
   Future<List<VaultItem>> liveItems() =>
       (select(vaultItems)..where((t) => t.deleted.equals(false))).get();
@@ -88,4 +116,27 @@ class VaultDatabase extends _$VaultDatabase {
 
   Future<void> setKv(String key, String value) => into(kvStore)
       .insertOnConflictUpdate(KvStoreCompanion.insert(key: key, value: value));
+
+  Future<Favicon?> favicon(String host) =>
+      (select(favicons)..where((t) => t.host.equals(host))).getSingleOrNull();
+
+  Future<List<Favicon>> allFavicons() => select(favicons).get();
+
+  /// Inserts or replaces the cached icon for [host]. [fetchedAt] is ms since
+  /// epoch.
+  Future<void> putFavicon({
+    required String host,
+    Uint8List? bytes,
+    String? contentType,
+    required int fetchedAt,
+    bool failed = false,
+  }) => into(favicons).insertOnConflictUpdate(
+    FaviconsCompanion.insert(
+      host: host,
+      bytes: Value(bytes),
+      contentType: Value(contentType),
+      fetchedAt: fetchedAt,
+      failed: Value(failed),
+    ),
+  );
 }

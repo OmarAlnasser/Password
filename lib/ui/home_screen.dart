@@ -1,6 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../data/models/vault_entry.dart';
+import '../services/ocr/ocr_engine.dart';
+import '../services/ocr/ocr_parser.dart';
 import '../services/vault_session.dart';
 import 'app_scope.dart';
 import 'dashboard_screen.dart';
@@ -8,8 +14,10 @@ import 'entry_detail_screen.dart';
 import 'entry_edit_screen.dart';
 import 'generator_screen.dart';
 import 'ocr/ocr_import_screen.dart';
+import 'ocr/quick_save_sheet.dart';
 import 'recovery_reset_screen.dart';
 import 'settings_screen.dart';
+import 'widgets/site_icon.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,10 +30,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final _search = TextEditingController();
   String? _tag;
   bool _favoritesOnly = false;
+  bool _pasting = false;
+
+  static const _pasteKeys = [
+    SingleActivator(LogicalKeyboardKey.keyV, control: true),
+    SingleActivator(LogicalKeyboardKey.keyV, meta: true),
+  ];
 
   @override
   void initState() {
     super.initState();
+    HardwareKeyboard.instance.addHandler(_onKey);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (context.services.session.unlockedViaRecovery) {
         Navigator.of(context).push(
@@ -40,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    HardwareKeyboard.instance.removeHandler(_onKey);
     _search.dispose();
     super.dispose();
   }
@@ -52,6 +68,83 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _open(Widget page) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+
+  /// Ctrl+V / Cmd+V while this screen is on top. In a text field (the search
+  /// bar) the key pastes into the field as usual.
+  ///
+  /// A keyboard handler rather than a [Focus] around the screen: on desktop,
+  /// clicking outside the search field moves focus to the route's scope,
+  /// above any such [Focus], and the shortcut would stop working.
+  bool _onKey(KeyEvent event) {
+    final keyboard = HardwareKeyboard.instance;
+    if (!mounted ||
+        !_pasteKeys.any((k) => k.accepts(event, keyboard)) ||
+        ModalRoute.isCurrentOf(context) == false) {
+      return false;
+    }
+    final focused = FocusManager.instance.primaryFocus?.context;
+    if (focused?.findAncestorStateOfType<EditableTextState>() != null) {
+      return false;
+    }
+    unawaited(_paste());
+    return true;
+  }
+
+  /// Reads what the user copied: a screenshot is OCR'd on the device, text is
+  /// parsed as it is. Offers to save the login found, then to clear the
+  /// clipboard.
+  Future<void> _paste() async {
+    if (_pasting) return;
+    final s = context.services;
+    final l = context.l10n;
+    final messenger = ScaffoldMessenger.of(context);
+    setState(() => _pasting = true);
+    OcrResult? found;
+    var screenshot = false;
+    try {
+      final clip = await s.bridge.readClipboard();
+      final image = clip.imagePath;
+      final text = clip.text;
+      if (image != null) {
+        screenshot = true;
+        try {
+          if (mounted) {
+            final lines = await OcrEngine.forPlatform(s.bridge)
+                .recognize(image);
+            found = OcrCredentialParser().parse(lines);
+          }
+        } finally {
+          // Our plaintext copy of the screenshot: never keep it.
+          _deleteQuietly(image);
+        }
+      } else if (text != null && !s.clipboard.isOwnCopy(text)) {
+        found = OcrCredentialParser().parseText(text);
+      }
+    } on Object {
+      found = null;
+    } finally {
+      if (mounted) setState(() => _pasting = false);
+    }
+    if (!mounted) return;
+    if (found == null || (found.username == null && found.password == null)) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l.pasteNothingFound)));
+      return;
+    }
+    final saved = await QuickSaveSheet.show(context, found);
+    if (saved && mounted) {
+      await offerClearClipboard(context, screenshot: screenshot);
+    }
+  }
+
+  static void _deleteQuietly(String path) {
+    try {
+      File(path).deleteSync();
+    } on Object {
+      // Already gone, or best effort.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +160,11 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: Text(l.appTitle),
             actions: [
+              IconButton(
+                tooltip: l.pasteLogin,
+                icon: const Icon(Icons.content_paste),
+                onPressed: _pasting ? null : _paste,
+              ),
               if (services.sync != null)
                 IconButton(
                   tooltip: l.syncNow,
@@ -145,17 +243,13 @@ class _HomeScreenState extends State<HomeScreen> {
           body: items.isEmpty
               ? Center(child: Text(l.noEntries))
               : ListView.builder(
+                  // Room for the two floating buttons below the last entry.
+                  padding: const EdgeInsets.only(bottom: 136),
                   itemCount: items.length,
                   itemBuilder: (context, i) {
                     final e = items[i];
                     return ListTile(
-                      leading: CircleAvatar(
-                        child: Text(
-                          e.title.isEmpty
-                              ? '?'
-                              : e.title.characters.first.toUpperCase(),
-                        ),
-                      ),
+                      leading: SiteIcon(url: e.url, title: e.title),
                       title: Text(e.title.isEmpty ? e.host : e.title),
                       subtitle: Text(e.username),
                       trailing: Row(
@@ -177,10 +271,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                 ),
-          floatingActionButton: FloatingActionButton.extended(
-            icon: const Icon(Icons.add),
-            label: Text(l.addEntry),
-            onPressed: () => _open(const EntryEditScreen()),
+          floatingActionButton: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              FloatingActionButton.small(
+                heroTag: 'paste',
+                tooltip: l.pasteLogin,
+                onPressed: _pasting ? null : _paste,
+                child: _pasting
+                    ? const SizedBox.square(
+                        dimension: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.content_paste),
+              ),
+              const SizedBox(height: 12),
+              FloatingActionButton.extended(
+                heroTag: 'add',
+                icon: const Icon(Icons.add),
+                label: Text(l.addEntry),
+                onPressed: () => _open(const EntryEditScreen()),
+              ),
+            ],
           ),
         );
       },

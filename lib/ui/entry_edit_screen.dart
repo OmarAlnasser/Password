@@ -95,7 +95,9 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
             favorite: _favorite,
             totpSecret: _totp.text.trim(),
           );
-    await context.services.session.saveEntry(entry);
+    final services = context.services;
+    await services.session.saveEntry(entry);
+    services.prefetchIcons();
     if (!mounted) return;
     final cb = widget.onSaved;
     if (cb != null) await cb(context);
@@ -133,6 +135,8 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
             decoration: deco(l.username),
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
+            // Left to right in Arabic too, so bidi does not reorder them.
+            textDirection: TextDirection.ltr,
           ),
           const SizedBox(height: 12),
           TextField(
@@ -142,6 +146,7 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
             enableSuggestions: false,
             enableIMEPersonalizedLearning: false,
             style: const TextStyle(fontFamily: 'monospace'),
+            textDirection: TextDirection.ltr,
             decoration: deco(l.password).copyWith(
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,

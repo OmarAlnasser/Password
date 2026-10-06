@@ -46,6 +46,7 @@ class _VaultSnapAppState extends State<VaultSnapApp>
     WidgetsBinding.instance.addObserver(this);
     s.session.addListener(_onSessionChanged);
     s.session.onLock.add(s.clipboard.clearNow);
+    if (s.favicons case final icons?) s.session.onLock.add(icons.clear);
     HardwareKeyboard.instance.addHandler(_onKey);
     PlatformBridge.listen(onCapture: (c) => setState(() => _captured = c));
     _initShareIntent();
@@ -69,6 +70,7 @@ class _VaultSnapAppState extends State<VaultSnapApp>
       if (st == VaultState.unlocked) {
         _resetIdle();
         unawaited(s.sync?.onUnlocked());
+        s.prefetchIcons();
         final share = _pendingShare;
         if (share != null) {
           _pendingShare = null;

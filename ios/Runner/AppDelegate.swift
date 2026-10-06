@@ -29,7 +29,32 @@ enum SharedConfig {
     NotificationCenter.default.addObserver(
       self, selector: #selector(captureChanged),
       name: UIScreen.capturedDidChangeNotification, object: nil)
+    AppDelegate.deleteStaleClipFiles()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+  }
+
+  /// Deletes pasted screenshots (tmp/clip-*.png) left behind when the app
+  /// died before Dart could delete them. Recent ones may still be read by an
+  /// OCR pass and are kept.
+  nonisolated private static func deleteStaleClipFiles() {
+    DispatchQueue.global(qos: .utility).async {
+      let fm = FileManager.default
+      let dir = URL(fileURLWithPath: NSTemporaryDirectory())
+      guard
+        let files = try? fm.contentsOfDirectory(
+          at: dir, includingPropertiesForKeys: [.contentModificationDateKey])
+      else { return }
+      let cutoff = Date().addingTimeInterval(-10 * 60)
+      for url in files {
+        guard url.lastPathComponent.hasPrefix("clip-"), url.pathExtension == "png" else {
+          continue
+        }
+        let values = try? url.resourceValues(forKeys: [.contentModificationDateKey])
+        if let modified = values?.contentModificationDate, modified < cutoff {
+          try? fm.removeItem(at: url)
+        }
+      }
+    }
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
@@ -73,6 +98,12 @@ enum SharedConfig {
       }
       lastChangeCount = nil
       result(true)
+    case "readClipboard":
+      readClipboard(result)
+    case "clearClipboard":
+      UIPasteboard.general.items = []
+      lastChangeCount = nil
+      result(true)
     case "setSecureScreen":
       result(nil)
     case "deleteImage":
@@ -88,6 +119,46 @@ enum SharedConfig {
       result(true)
     default:
       result(FlutterMethodNotImplemented)
+    }
+  }
+
+  /// For the "Paste" button: a copied image (screenshot) is written as PNG to
+  /// our tmp dir and returned as "imagePath" (Dart deletes it after OCR),
+  /// otherwise the copied "text". Reading may show the system paste prompt;
+  /// hasImages/hasStrings don't.
+  private func readClipboard(_ result: @escaping FlutterResult) {
+    let pasteboard = UIPasteboard.general
+    if pasteboard.hasImages {
+      guard let image = pasteboard.image else { return result([String: String]()) }
+      // PNG encoding of a full-screen screenshot is slow; keep it off the
+      // main thread, but answer Flutter on it.
+      DispatchQueue.global(qos: .userInitiated).async {
+        let url = URL(fileURLWithPath: NSTemporaryDirectory())
+          .appendingPathComponent("clip-\(UUID().uuidString).png")
+        var reply = [String: String]()
+        if let png = AppDelegate.upright(image).pngData(),
+          (try? png.write(to: url, options: [.atomic, .completeFileProtection])) != nil
+        {
+          reply["imagePath"] = url.path
+        }
+        DispatchQueue.main.async { result(reply) }
+      }
+      return
+    }
+    if pasteboard.hasStrings, let text = pasteboard.string, !text.isEmpty {
+      return result(["text": text])
+    }
+    result([String: String]())
+  }
+
+  /// PNG has no orientation flag: bake it in so OCR sees upright text.
+  /// Called off the main thread; UIGraphicsImageRenderer is thread-safe.
+  nonisolated private static func upright(_ image: UIImage) -> UIImage {
+    if image.imageOrientation == .up { return image }
+    let format = UIGraphicsImageRendererFormat()
+    format.scale = image.scale
+    return UIGraphicsImageRenderer(size: image.size, format: format).image { _ in
+      image.draw(in: CGRect(origin: .zero, size: image.size))
     }
   }
 

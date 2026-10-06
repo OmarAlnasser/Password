@@ -637,16 +637,401 @@ class KvStoreCompanion extends UpdateCompanion<KvStoreData> {
   }
 }
 
+class $FaviconsTable extends Favicons with TableInfo<$FaviconsTable, Favicon> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FaviconsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _hostMeta = const VerificationMeta('host');
+  @override
+  late final GeneratedColumn<String> host = GeneratedColumn<String>(
+    'host',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _bytesMeta = const VerificationMeta('bytes');
+  @override
+  late final GeneratedColumn<Uint8List> bytes = GeneratedColumn<Uint8List>(
+    'bytes',
+    aliasedName,
+    true,
+    type: DriftSqlType.blob,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contentTypeMeta = const VerificationMeta(
+    'contentType',
+  );
+  @override
+  late final GeneratedColumn<String> contentType = GeneratedColumn<String>(
+    'content_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fetchedAtMeta = const VerificationMeta(
+    'fetchedAt',
+  );
+  @override
+  late final GeneratedColumn<int> fetchedAt = GeneratedColumn<int>(
+    'fetched_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _failedMeta = const VerificationMeta('failed');
+  @override
+  late final GeneratedColumn<bool> failed = GeneratedColumn<bool>(
+    'failed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("failed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    host,
+    bytes,
+    contentType,
+    fetchedAt,
+    failed,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'favicons';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Favicon> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('host')) {
+      context.handle(
+        _hostMeta,
+        host.isAcceptableOrUnknown(data['host']!, _hostMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hostMeta);
+    }
+    if (data.containsKey('bytes')) {
+      context.handle(
+        _bytesMeta,
+        bytes.isAcceptableOrUnknown(data['bytes']!, _bytesMeta),
+      );
+    }
+    if (data.containsKey('content_type')) {
+      context.handle(
+        _contentTypeMeta,
+        contentType.isAcceptableOrUnknown(
+          data['content_type']!,
+          _contentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('fetched_at')) {
+      context.handle(
+        _fetchedAtMeta,
+        fetchedAt.isAcceptableOrUnknown(data['fetched_at']!, _fetchedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fetchedAtMeta);
+    }
+    if (data.containsKey('failed')) {
+      context.handle(
+        _failedMeta,
+        failed.isAcceptableOrUnknown(data['failed']!, _failedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {host};
+  @override
+  Favicon map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Favicon(
+      host: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}host'],
+      )!,
+      bytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.blob,
+        data['${effectivePrefix}bytes'],
+      ),
+      contentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_type'],
+      ),
+      fetchedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}fetched_at'],
+      )!,
+      failed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}failed'],
+      )!,
+    );
+  }
+
+  @override
+  $FaviconsTable createAlias(String alias) {
+    return $FaviconsTable(attachedDatabase, alias);
+  }
+}
+
+class Favicon extends DataClass implements Insertable<Favicon> {
+  final String host;
+
+  /// Validated image bytes; null if no usable icon was ever found.
+  final Uint8List? bytes;
+  final String? contentType;
+
+  /// Time of the last fetch attempt (ms since epoch, client clock).
+  final int fetchedAt;
+
+  /// The last attempt failed. [bytes] may still hold an older icon.
+  final bool failed;
+  const Favicon({
+    required this.host,
+    this.bytes,
+    this.contentType,
+    required this.fetchedAt,
+    required this.failed,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['host'] = Variable<String>(host);
+    if (!nullToAbsent || bytes != null) {
+      map['bytes'] = Variable<Uint8List>(bytes);
+    }
+    if (!nullToAbsent || contentType != null) {
+      map['content_type'] = Variable<String>(contentType);
+    }
+    map['fetched_at'] = Variable<int>(fetchedAt);
+    map['failed'] = Variable<bool>(failed);
+    return map;
+  }
+
+  FaviconsCompanion toCompanion(bool nullToAbsent) {
+    return FaviconsCompanion(
+      host: Value(host),
+      bytes: bytes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bytes),
+      contentType: contentType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contentType),
+      fetchedAt: Value(fetchedAt),
+      failed: Value(failed),
+    );
+  }
+
+  factory Favicon.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Favicon(
+      host: serializer.fromJson<String>(json['host']),
+      bytes: serializer.fromJson<Uint8List?>(json['bytes']),
+      contentType: serializer.fromJson<String?>(json['contentType']),
+      fetchedAt: serializer.fromJson<int>(json['fetchedAt']),
+      failed: serializer.fromJson<bool>(json['failed']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'host': serializer.toJson<String>(host),
+      'bytes': serializer.toJson<Uint8List?>(bytes),
+      'contentType': serializer.toJson<String?>(contentType),
+      'fetchedAt': serializer.toJson<int>(fetchedAt),
+      'failed': serializer.toJson<bool>(failed),
+    };
+  }
+
+  Favicon copyWith({
+    String? host,
+    Value<Uint8List?> bytes = const Value.absent(),
+    Value<String?> contentType = const Value.absent(),
+    int? fetchedAt,
+    bool? failed,
+  }) => Favicon(
+    host: host ?? this.host,
+    bytes: bytes.present ? bytes.value : this.bytes,
+    contentType: contentType.present ? contentType.value : this.contentType,
+    fetchedAt: fetchedAt ?? this.fetchedAt,
+    failed: failed ?? this.failed,
+  );
+  Favicon copyWithCompanion(FaviconsCompanion data) {
+    return Favicon(
+      host: data.host.present ? data.host.value : this.host,
+      bytes: data.bytes.present ? data.bytes.value : this.bytes,
+      contentType: data.contentType.present
+          ? data.contentType.value
+          : this.contentType,
+      fetchedAt: data.fetchedAt.present ? data.fetchedAt.value : this.fetchedAt,
+      failed: data.failed.present ? data.failed.value : this.failed,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Favicon(')
+          ..write('host: $host, ')
+          ..write('bytes: $bytes, ')
+          ..write('contentType: $contentType, ')
+          ..write('fetchedAt: $fetchedAt, ')
+          ..write('failed: $failed')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    host,
+    $driftBlobEquality.hash(bytes),
+    contentType,
+    fetchedAt,
+    failed,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Favicon &&
+          other.host == this.host &&
+          $driftBlobEquality.equals(other.bytes, this.bytes) &&
+          other.contentType == this.contentType &&
+          other.fetchedAt == this.fetchedAt &&
+          other.failed == this.failed);
+}
+
+class FaviconsCompanion extends UpdateCompanion<Favicon> {
+  final Value<String> host;
+  final Value<Uint8List?> bytes;
+  final Value<String?> contentType;
+  final Value<int> fetchedAt;
+  final Value<bool> failed;
+  final Value<int> rowid;
+  const FaviconsCompanion({
+    this.host = const Value.absent(),
+    this.bytes = const Value.absent(),
+    this.contentType = const Value.absent(),
+    this.fetchedAt = const Value.absent(),
+    this.failed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FaviconsCompanion.insert({
+    required String host,
+    this.bytes = const Value.absent(),
+    this.contentType = const Value.absent(),
+    required int fetchedAt,
+    this.failed = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : host = Value(host),
+       fetchedAt = Value(fetchedAt);
+  static Insertable<Favicon> custom({
+    Expression<String>? host,
+    Expression<Uint8List>? bytes,
+    Expression<String>? contentType,
+    Expression<int>? fetchedAt,
+    Expression<bool>? failed,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (host != null) 'host': host,
+      if (bytes != null) 'bytes': bytes,
+      if (contentType != null) 'content_type': contentType,
+      if (fetchedAt != null) 'fetched_at': fetchedAt,
+      if (failed != null) 'failed': failed,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FaviconsCompanion copyWith({
+    Value<String>? host,
+    Value<Uint8List?>? bytes,
+    Value<String?>? contentType,
+    Value<int>? fetchedAt,
+    Value<bool>? failed,
+    Value<int>? rowid,
+  }) {
+    return FaviconsCompanion(
+      host: host ?? this.host,
+      bytes: bytes ?? this.bytes,
+      contentType: contentType ?? this.contentType,
+      fetchedAt: fetchedAt ?? this.fetchedAt,
+      failed: failed ?? this.failed,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (host.present) {
+      map['host'] = Variable<String>(host.value);
+    }
+    if (bytes.present) {
+      map['bytes'] = Variable<Uint8List>(bytes.value);
+    }
+    if (contentType.present) {
+      map['content_type'] = Variable<String>(contentType.value);
+    }
+    if (fetchedAt.present) {
+      map['fetched_at'] = Variable<int>(fetchedAt.value);
+    }
+    if (failed.present) {
+      map['failed'] = Variable<bool>(failed.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FaviconsCompanion(')
+          ..write('host: $host, ')
+          ..write('bytes: $bytes, ')
+          ..write('contentType: $contentType, ')
+          ..write('fetchedAt: $fetchedAt, ')
+          ..write('failed: $failed, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$VaultDatabase extends GeneratedDatabase {
   _$VaultDatabase(QueryExecutor e) : super(e);
   $VaultDatabaseManager get managers => $VaultDatabaseManager(this);
   late final $VaultItemsTable vaultItems = $VaultItemsTable(this);
   late final $KvStoreTable kvStore = $KvStoreTable(this);
+  late final $FaviconsTable favicons = $FaviconsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [vaultItems, kvStore];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    vaultItems,
+    kvStore,
+    favicons,
+  ];
 }
 
 typedef $$VaultItemsTableCreateCompanionBuilder = VaultItemsCompanion Function({
@@ -1014,6 +1399,209 @@ typedef $$KvStoreTableProcessedTableManager =
       KvStoreData,
       PrefetchHooks Function()
     >;
+typedef $$FaviconsTableCreateCompanionBuilder = FaviconsCompanion Function({
+  required String host,
+  Value<Uint8List?> bytes,
+  Value<String?> contentType,
+  required int fetchedAt,
+  Value<bool> failed,
+  Value<int> rowid,
+});
+typedef $$FaviconsTableUpdateCompanionBuilder = FaviconsCompanion Function({
+  Value<String> host,
+  Value<Uint8List?> bytes,
+  Value<String?> contentType,
+  Value<int> fetchedAt,
+  Value<bool> failed,
+  Value<int> rowid,
+});
+
+class $$FaviconsTableFilterComposer
+    extends Composer<_$VaultDatabase, $FaviconsTable> {
+  $$FaviconsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get host => $composableBuilder(
+    column: $table.host,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<Uint8List> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fetchedAt => $composableBuilder(
+    column: $table.fetchedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get failed => $composableBuilder(
+    column: $table.failed,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FaviconsTableOrderingComposer
+    extends Composer<_$VaultDatabase, $FaviconsTable> {
+  $$FaviconsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get host => $composableBuilder(
+    column: $table.host,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<Uint8List> get bytes => $composableBuilder(
+    column: $table.bytes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fetchedAt => $composableBuilder(
+    column: $table.fetchedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get failed => $composableBuilder(
+    column: $table.failed,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FaviconsTableAnnotationComposer
+    extends Composer<_$VaultDatabase, $FaviconsTable> {
+  $$FaviconsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get host =>
+      $composableBuilder(column: $table.host, builder: (column) => column);
+
+  GeneratedColumn<Uint8List> get bytes =>
+      $composableBuilder(column: $table.bytes, builder: (column) => column);
+
+  GeneratedColumn<String> get contentType => $composableBuilder(
+    column: $table.contentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get fetchedAt =>
+      $composableBuilder(column: $table.fetchedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get failed =>
+      $composableBuilder(column: $table.failed, builder: (column) => column);
+}
+
+class $$FaviconsTableTableManager
+    extends
+        RootTableManager<
+          _$VaultDatabase,
+          $FaviconsTable,
+          Favicon,
+          $$FaviconsTableFilterComposer,
+          $$FaviconsTableOrderingComposer,
+          $$FaviconsTableAnnotationComposer,
+          $$FaviconsTableCreateCompanionBuilder,
+          $$FaviconsTableUpdateCompanionBuilder,
+          (Favicon, BaseReferences<_$VaultDatabase, $FaviconsTable, Favicon>),
+          Favicon,
+          PrefetchHooks Function()
+        > {
+  $$FaviconsTableTableManager(_$VaultDatabase db, $FaviconsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FaviconsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FaviconsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FaviconsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> host = const Value.absent(),
+                Value<Uint8List?> bytes = const Value.absent(),
+                Value<String?> contentType = const Value.absent(),
+                Value<int> fetchedAt = const Value.absent(),
+                Value<bool> failed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FaviconsCompanion(
+                host: host,
+                bytes: bytes,
+                contentType: contentType,
+                fetchedAt: fetchedAt,
+                failed: failed,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String host,
+                Value<Uint8List?> bytes = const Value.absent(),
+                Value<String?> contentType = const Value.absent(),
+                required int fetchedAt,
+                Value<bool> failed = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FaviconsCompanion.insert(
+                host: host,
+                bytes: bytes,
+                contentType: contentType,
+                fetchedAt: fetchedAt,
+                failed: failed,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FaviconsTable, Favicon>(table),
+                  BaseReferences<_$VaultDatabase, $FaviconsTable, Favicon>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FaviconsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$VaultDatabase,
+      $FaviconsTable,
+      Favicon,
+      $$FaviconsTableFilterComposer,
+      $$FaviconsTableOrderingComposer,
+      $$FaviconsTableAnnotationComposer,
+      $$FaviconsTableCreateCompanionBuilder,
+      $$FaviconsTableUpdateCompanionBuilder,
+      (Favicon, BaseReferences<_$VaultDatabase, $FaviconsTable, Favicon>),
+      Favicon,
+      PrefetchHooks Function()
+    >;
 
 class $VaultDatabaseManager {
   final _$VaultDatabase _db;
@@ -1022,4 +1610,6 @@ class $VaultDatabaseManager {
       $$VaultItemsTableTableManager(_db, _db.vaultItems);
   $$KvStoreTableTableManager get kvStore =>
       $$KvStoreTableTableManager(_db, _db.kvStore);
+  $$FaviconsTableTableManager get favicons =>
+      $$FaviconsTableTableManager(_db, _db.favicons);
 }

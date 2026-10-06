@@ -41,6 +41,11 @@ class VaultSession extends ChangeNotifier {
   /// Called just before keys are wiped (clipboard clear, UI reset, ...).
   final List<FutureOr<void> Function()> onLock = [];
 
+  /// Called after [wipeLocalVault] has deleted the vault. Anything tied to
+  /// the old vault (the sync account, ...) lets go of it here, so a vault
+  /// created afterwards starts clean.
+  final List<FutureOr<void> Function()> onWipe = [];
+
   VaultState _state = VaultState.loading;
   VaultKeyHeader? _header;
   Keyring? _keyring;
@@ -357,7 +362,8 @@ class VaultSession extends ChangeNotifier {
     );
   }
 
-  /// Destroys the local vault (keys, database, header). Irreversible.
+  /// Destroys the local vault (keys, database, header). Irreversible. Also
+  /// resets the unlock throttle and runs [onWipe].
   Future<void> wipeLocalVault() async {
     await lock();
     for (final f in [_dbFile, _headerFile]) {
@@ -365,6 +371,11 @@ class VaultSession extends ChangeNotifier {
     }
     await biometrics?.disable();
     _header = null;
+    // Failed guesses at the old password must not slow down the new vault.
+    await throttle.recordSuccess();
+    for (final cb in onWipe) {
+      await cb();
+    }
     _state = VaultState.noVault;
     notifyListeners();
   }

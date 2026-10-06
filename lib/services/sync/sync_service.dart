@@ -43,6 +43,7 @@ class SyncService extends ChangeNotifier {
   SyncService(this.session, this.remote) {
     session.onLocalChange.add(_scheduleSync);
     session.onLock.add(_onLock);
+    session.onWipe.add(_onWipe);
   }
 
   final VaultSession session;
@@ -97,6 +98,22 @@ class SyncService extends ChangeNotifier {
     _status = remote.isSignedIn ? SyncStatus.idle : _status;
   }
 
+  /// The local vault was erased. The server session outlives [lock] (it is
+  /// only in memory), so sign out: a vault created next must not sync into
+  /// the old account or store its refresh token.
+  Future<void> _onWipe() async {
+    _debounce?.cancel();
+    try {
+      await remote.signOut();
+    } on Object catch (e) {
+      // The local session is gone even when revoking it on the server fails.
+      debugPrint('Sync sign-out failed: ${e.runtimeType}');
+    }
+    lastSync = null;
+    rejectedItems = 0;
+    _set(SyncStatus.disabled);
+  }
+
   /// Stops reacting to local changes and cancels a pending debounced sync. A
   /// pass already in flight finishes on its own; await [idle] to wait for it.
   @override
@@ -106,6 +123,7 @@ class SyncService extends ChangeNotifier {
     _debounce = null;
     session.onLocalChange.remove(_scheduleSync);
     session.onLock.remove(_onLock);
+    session.onWipe.remove(_onWipe);
     super.dispose();
   }
 
@@ -234,9 +252,10 @@ class SyncService extends ChangeNotifier {
   /// covers every local change saved and every remote change made before the
   /// call. A pass already in flight may have pulled, or read the dirty rows,
   /// before the caller's change; then one follow-up pass is queued behind it,
-  /// shared by every caller that arrives in the meantime.
+  /// shared by every caller that arrives in the meantime. Does nothing while
+  /// sync is off for this vault ([enabled] is false).
   Future<void> syncNow() {
-    if (_disposed || !session.isUnlocked || !remote.isSignedIn) {
+    if (_disposed || !enabled || !session.isUnlocked || !remote.isSignedIn) {
       return Future.value();
     }
     final running = _running;

@@ -16,6 +16,9 @@ class AppSettings extends ChangeNotifier {
   int clipboardClearSeconds = 30;
   bool biometricsEnabled = false;
   bool hibpEnabled = true;
+
+  /// Download each login's website icon directly from that site.
+  bool fetchIcons = true;
   String? syncEmail;
 
   Future<void> load() async {
@@ -31,6 +34,7 @@ class AppSettings extends ChangeNotifier {
       clipboardClearSeconds = (j['clip'] as int?) ?? clipboardClearSeconds;
       biometricsEnabled = (j['bio'] as bool?) ?? false;
       hibpEnabled = (j['hibp'] as bool?) ?? true;
+      fetchIcons = (j['icons'] as bool?) ?? true;
       syncEmail = j['syncEmail'] as String?;
     } on Object {
       // Defaults.
@@ -53,6 +57,7 @@ class AppSettings extends ChangeNotifier {
         'clip': clipboardClearSeconds,
         'bio': biometricsEnabled,
         'hibp': hibpEnabled,
+        'icons': fetchIcons,
         'syncEmail': syncEmail,
       }),
       flush: true,
