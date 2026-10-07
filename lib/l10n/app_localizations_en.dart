@@ -708,4 +708,267 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get eraseVault => 'Erase vault';
+
+  @override
+  String get updateAvailable => 'Update available';
+
+  @override
+  String updateVersionNumber(Object version) {
+    return 'Version $version';
+  }
+
+  @override
+  String updateVersionAvailable(Object version) {
+    return 'Version $version is available';
+  }
+
+  @override
+  String updateYourVersion(Object version) {
+    return 'You have $version';
+  }
+
+  @override
+  String updateDownloadSize(Object size) {
+    return 'Download size: $size';
+  }
+
+  @override
+  String updateSizeMb(Object size) {
+    return '$size MB';
+  }
+
+  @override
+  String updateSizeKb(Object size) {
+    return '$size KB';
+  }
+
+  @override
+  String updateReleased(Object date) {
+    return 'Released $date';
+  }
+
+  @override
+  String get updateWhatsNew => 'What’s new';
+
+  @override
+  String get updateNoNotes => 'No release notes were provided.';
+
+  @override
+  String get updateNow => 'Update now';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String get updateSkipVersion => 'Skip this version';
+
+  @override
+  String get updateSkipNote =>
+      'You won’t be reminded about this version. A newer one will still be offered.';
+
+  @override
+  String get updateHideBanner => 'Hide for now';
+
+  @override
+  String get updateTapForDetails => 'Tap for details';
+
+  @override
+  String get updateDownloading => 'Downloading update';
+
+  @override
+  String updateBannerDownloading(Object percent) {
+    return 'Downloading update… $percent%';
+  }
+
+  @override
+  String updateDownloadProgress(Object percent, Object size) {
+    return '$percent% of $size';
+  }
+
+  @override
+  String get updateDownloadBackground =>
+      'You can keep using the app. The download continues in the background.';
+
+  @override
+  String get updateCancelDownload => 'Cancel download';
+
+  @override
+  String get updateVerifying => 'Checking the download';
+
+  @override
+  String get updateVerifyingNote =>
+      'Comparing the file with the signed release information…';
+
+  @override
+  String get updateReadyTitle => 'Ready to install';
+
+  @override
+  String get updateReadyNote =>
+      'The download is complete and verified. Nothing is installed until you tap the button.';
+
+  @override
+  String get updateReadyAndroid =>
+      'Android will open its installer. Tap Install there to finish.';
+
+  @override
+  String get updateReadyWindows =>
+      'The app will lock your vault, close, install the update and open again.';
+
+  @override
+  String get updateInstall => 'Install';
+
+  @override
+  String get updateInstallWindows => 'Close and install';
+
+  @override
+  String get updateInstalling => 'Handing over to the installer…';
+
+  @override
+  String get updateInstallingWindows => 'Closing to install…';
+
+  @override
+  String get updateInstallerOpen =>
+      'The system installer is open. Tap Install there to finish.';
+
+  @override
+  String get updateInstallerReopen => 'Open the installer again';
+
+  @override
+  String get updatePermissionTitle => 'Allow installs from this app';
+
+  @override
+  String get updatePermissionBody =>
+      'Android needs your permission before this app can install updates. In the settings page that just opened, turn on “Allow from this source”, go back, then tap Install again.';
+
+  @override
+  String get updateInstallFailedAndroid =>
+      'Android didn’t accept this update. The installed app may have been signed differently (for example a test build). In that case install the new version by hand from the release page. Uninstalling removes the vault stored on this device, so export or sync it first.';
+
+  @override
+  String get updateInstallFailedWindows =>
+      'The update couldn’t be installed automatically. The app’s folder may be protected (for example inside Program Files) or in use. Nothing was changed. Download the new version from the release page and replace the app by hand.';
+
+  @override
+  String get updateInstallUnsupported =>
+      'Installing updates isn’t available here. Download the new version from the release page.';
+
+  @override
+  String get updateOpenReleasePage => 'Open release page';
+
+  @override
+  String get updateCopyLink => 'Copy link';
+
+  @override
+  String get updateLinkCopied => 'Link copied';
+
+  @override
+  String get updateRetry => 'Try again';
+
+  @override
+  String get updateErrorTitle => 'Couldn’t update';
+
+  @override
+  String get updateRejectedTitle => 'Update rejected for your safety';
+
+  @override
+  String get updateErrorOffline =>
+      'Couldn’t reach GitHub. Check your internet connection and try again.';
+
+  @override
+  String get updateErrorServer =>
+      'The update server didn’t answer properly. Try again later.';
+
+  @override
+  String get updateErrorDamaged =>
+      'The downloaded file was incomplete or didn’t match the signed release information, so it was deleted. Try downloading it again.';
+
+  @override
+  String get updateErrorBlocked =>
+      'The download was blocked because it didn’t come from the official release address.';
+
+  @override
+  String get updateErrorSignature =>
+      'This update’s signature could not be verified, so it was not used. Nothing was installed. If this keeps happening, get the app again from the official release page.';
+
+  @override
+  String get updateErrorRollback =>
+      'An older release than one already seen was offered, so it was ignored. Nothing was installed.';
+
+  @override
+  String get updateErrorSchema =>
+      'This update can’t be read by this version of the app. Download the new version from the release page.';
+
+  @override
+  String get updateErrorNoPackage =>
+      'The latest release has no package for this device yet. Try again later.';
+
+  @override
+  String get updateErrorStorage =>
+      'The update couldn’t be saved on this device. Free some space and try again.';
+
+  @override
+  String get updateErrorInternal =>
+      'Something went wrong with the update. Try again later.';
+
+  @override
+  String get updateAutoCheck => 'Check for updates automatically';
+
+  @override
+  String get updateAutoCheckNote =>
+      'Looks for a new version on GitHub at most once a day. Nothing from your vault is sent, but GitHub sees your IP address.';
+
+  @override
+  String get updateCheckNow => 'Check now';
+
+  @override
+  String get updateChecking => 'Checking for updates…';
+
+  @override
+  String get updateVersionTitle => 'Version';
+
+  @override
+  String updateVersionBuild(Object version, Object build) {
+    return '$version (build $build)';
+  }
+
+  @override
+  String get updateDevBuild => 'Development build';
+
+  @override
+  String updateLastChecked(Object when) {
+    return 'Last checked: $when';
+  }
+
+  @override
+  String get updateNeverChecked => 'Not checked yet';
+
+  @override
+  String get updateUpToDate => 'You have the latest version.';
+
+  @override
+  String get updateViewUpdate => 'View update';
+
+  @override
+  String get updateBannerFailed => 'The update didn’t finish';
+
+  @override
+  String get updateNoticeTitle => 'The last update didn’t finish';
+
+  @override
+  String get updateNoticeRolledBack =>
+      'The update could not be completed. The previous version is still installed and working.';
+
+  @override
+  String get updateNoticeDamaged =>
+      'The update failed and the app may be damaged. Download the latest release from the release page and replace the app’s folder.';
+
+  @override
+  String get updateNoticeAborted =>
+      'The update did not start, so nothing was changed.';
+
+  @override
+  String get updateSettingsGroup => 'Updates';
+
+  @override
+  String get updateDevOff => 'Updates are off in development builds.';
 }

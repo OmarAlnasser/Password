@@ -19,6 +19,7 @@ import 'ui/quick_search_screen.dart';
 import 'ui/setup_screen.dart';
 import 'ui/theme/app_theme.dart';
 import 'ui/unlock_screen.dart';
+import 'ui/update/update_gate.dart';
 import 'ui/widgets/app_shell.dart';
 
 class VaultSnapApp extends StatefulWidget {
@@ -227,7 +228,13 @@ class _VaultSnapAppState extends State<VaultSnapApp>
             builder: (context, child) => AppShell(
               child: Stack(
                 children: [
-                  ?child,
+                  if (child != null)
+                    UpdateGate(
+                      controller: s.updates,
+                      navigatorKey: _navigator,
+                      triggers: s.session,
+                      child: child,
+                    ),
                   if (_obscured || _captured)
                     const Positioned.fill(
                       child: ColoredBox(

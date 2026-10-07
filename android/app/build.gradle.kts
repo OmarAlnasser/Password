@@ -4,6 +4,23 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Release signing comes from the environment, never from a file in the repo:
+// the release workflow decodes the keystore secret to a temporary file and
+// sets ANDROID_KEYSTORE_PATH (an absolute path; a relative one starts in
+// android/app) with ANDROID_KEYSTORE_PASSWORD, and optionally
+// ANDROID_KEY_ALIAS (default "release"). The keystore is PKCS12, so the key
+// password equals the store password. Without ANDROID_KEYSTORE_PATH (normal
+// dev and CI builds) the release type is signed with the debug key as before.
+// Android only installs an update that is signed with the same key as the
+// installed app, so this key must stay the same for the life of the app.
+// Error messages below name variables only; secret values are never printed.
+val releaseKeystorePath: String? =
+    System.getenv("ANDROID_KEYSTORE_PATH")?.takeIf { it.isNotBlank() }
+val releaseKeystorePassword: String? =
+    System.getenv("ANDROID_KEYSTORE_PASSWORD")?.takeIf { it.isNotEmpty() }
+val releaseKeyAlias: String =
+    System.getenv("ANDROID_KEY_ALIAS")?.takeIf { it.isNotBlank() } ?: "release"
+
 android {
     namespace = "app.vaultsnap.vaultsnap"
     // receive_sharing_intent requires compiling against API 37.
@@ -31,11 +48,39 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        // A keystore was asked for: a missing file or password must fail the
+        // build. Silently falling back to the debug key would produce an APK
+        // that installed copies of the app refuse as an update.
+        releaseKeystorePath?.let { keystorePath ->
+            val keystorePassword = releaseKeystorePassword
+                ?: throw GradleException(
+                    "ANDROID_KEYSTORE_PATH is set but ANDROID_KEYSTORE_PASSWORD is empty"
+                )
+            val keystoreFile = file(keystorePath)
+            if (!keystoreFile.isFile) {
+                throw GradleException("ANDROID_KEYSTORE_PATH does not point to a file")
+            }
+            create("release") {
+                storeFile = keystoreFile
+                storePassword = keystorePassword
+                keyAlias = releaseKeyAlias
+                // PKCS12 keystores use one password for the store and the key.
+                keyPassword = keystorePassword
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            // Stable release key when the environment provides one; otherwise the
+            // debug key, so `flutter run --release` and the dev CI build keep working.
+            signingConfig =
+                if (releaseKeystorePath != null) {
+                    signingConfigs.getByName("release")
+                } else {
+                    signingConfigs.getByName("debug")
+                }
         }
     }
 }

@@ -11,6 +11,7 @@ import '../services/sync/sync_service.dart';
 import 'app_scope.dart';
 import 'import/import_review_screen.dart';
 import 'sign_in_screen.dart';
+import 'update/update.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -126,6 +127,12 @@ class SettingsScreen extends StatelessWidget {
               ),
               const Divider(),
               _SyncTile(),
+              const Divider(),
+              // Switch, version, last check and "Check now"; one line in a
+              // development build, nothing where there are no updates.
+              const UpdateSettingsTile(),
+              // The tile above already shows the version when it is there.
+              if (s.updates?.enabled != true) const AboutVersionTile(),
               const Divider(),
               ListTile(
                 leading: const Icon(Icons.upload_file),
