@@ -26,6 +26,7 @@ import 'services/settings.dart';
 import 'services/sync/supabase_remote_store.dart';
 import 'services/sync/sync_service.dart';
 import 'services/unlock_throttle.dart';
+import 'services/update/update_providers.dart';
 import 'services/vault_session.dart';
 import 'ui/app_scope.dart';
 
@@ -75,9 +76,8 @@ Future<AppServices> bootstrap({bool forAutofill = false}) async {
 
   final sodium = await loadSodium();
   final crypto = VaultCrypto(sodium);
-  final dir = Directory(
-    p.join((await getApplicationSupportDirectory()).path, 'vault'),
-  );
+  final supportDir = await getApplicationSupportDirectory();
+  final dir = Directory(p.join(supportDir.path, 'vault'));
   await dir.create(recursive: true);
 
   final settings = AppSettings(File(p.join(dir.path, 'settings.json')));
@@ -92,6 +92,19 @@ Future<AppServices> bootstrap({bool forAutofill = false}) async {
     directory: dir,
     throttle: UnlockThrottle(File(p.join(dir.path, 'throttle.json'))),
     biometrics: biometrics,
+  );
+
+  // Self-update (Android and Windows release builds). Null in development
+  // builds, on other platforms and in the autofill entry point. The installer
+  // calls `prepareExit` right before the process exits or the system
+  // installer opens, so the keys are wiped first. Nothing here starts a
+  // check: `UpdateGate` (lib/ui/update) does that, throttled, after start-up.
+  final updates = createUpdateController(
+    sodium: sodium,
+    supportDir: supportDir,
+    settings: settings,
+    prepareExit: session.lock,
+    forAutofill: forAutofill,
   );
 
   SyncService? sync;
@@ -137,5 +150,6 @@ Future<AppServices> bootstrap({bool forAutofill = false}) async {
             () => session.db,
             enabled: () => settings.fetchIcons,
           ),
+    updates: updates,
   );
 }
