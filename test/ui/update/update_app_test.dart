@@ -65,7 +65,10 @@ void main() {
     await tester.pumpWidget(
       VaultSnapApp(services: withUpdates(rig.controller)),
     );
-    await tester.pumpAndSettle();
+    // Not pumpAndSettle: the unlock screen's entrance animation runs past the
+    // gate's 3 s start delay, which would fire the first check in the settle.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     // Start-up is not delayed by an update check.
     expect(find.byType(UnlockScreen), findsOneWidget);
     expect(find.byType(UpdateBanner), findsNothing);
