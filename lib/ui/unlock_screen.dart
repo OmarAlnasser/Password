@@ -6,6 +6,9 @@ import '../core/crypto/crypto.dart';
 import '../services/ios_autofill_snapshot.dart';
 import '../services/unlock_throttle.dart';
 import 'app_scope.dart';
+import 'sign_in_screen.dart';
+import 'theme/tokens.dart';
+import 'widgets/primary_button.dart';
 
 enum _Forgot { recoveryKey, reset }
 
@@ -69,8 +72,9 @@ class _UnlockScreenState extends State<UnlockScreen> {
         await session.unlockWithPassword(_pw.text);
       }
       _pw.clear();
-    } on UnlockThrottledException catch (e) {
-      setState(() => _error = l.tryAgainIn(e.remaining.inSeconds + 1));
+    } on UnlockThrottledException {
+      // The countdown pill under the field shows the wait, second by second.
+      setState(() => _error = null);
     } on InvalidRecoveryKeyException {
       setState(() => _error = l.invalidRecoveryKey);
     } on WrongCredentialsException {
@@ -101,44 +105,9 @@ class _UnlockScreenState extends State<UnlockScreen> {
   /// Nobody can recover the master password. The way back is the recovery
   /// key; without it the only option is to start over.
   Future<void> _forgotPassword() async {
-    final l = context.l10n;
     final choice = await showDialog<_Forgot>(
       context: context,
-      builder: (c) {
-        final error = Theme.of(c).colorScheme.error;
-        return AlertDialog(
-          icon: const Icon(Icons.lock_reset),
-          title: Text(l.forgotPasswordTitle),
-          scrollable: true,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l.forgotPasswordBody),
-              const SizedBox(height: 16),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.key),
-                title: Text(l.useRecoveryKey),
-                subtitle: Text(l.useRecoveryKeyExplain),
-                onTap: () => Navigator.pop(c, _Forgot.recoveryKey),
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(Icons.delete_forever, color: error),
-                title: Text(l.resetVault, style: TextStyle(color: error)),
-                subtitle: Text(l.resetVaultExplain),
-                onTap: () => Navigator.pop(c, _Forgot.reset),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(c),
-              child: Text(l.cancel),
-            ),
-          ],
-        );
-      },
+      builder: (_) => const _ForgotDialog(),
     );
     if (!mounted) return;
     switch (choice) {
@@ -190,73 +159,274 @@ class _UnlockScreenState extends State<UnlockScreen> {
     final l = context.l10n;
     final remaining = context.services.session.throttle.remaining;
     final throttled = remaining > Duration.zero;
-    return Scaffold(
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: ListView(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(24),
-            children: [
-              const Icon(Icons.lock, size: 72),
-              const SizedBox(height: 12),
-              Text(
-                l.appTitle,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _pw,
-                autofocus: true,
-                obscureText: !_recoveryMode,
-                autocorrect: false,
-                enableSuggestions: false,
-                enableIMEPersonalizedLearning: false,
-                textCapitalization: _recoveryMode
-                    ? TextCapitalization.characters
-                    : TextCapitalization.none,
-                decoration: InputDecoration(
-                  labelText: _recoveryMode ? l.recoveryKey : l.masterPassword,
-                  errorText:
-                      _error ??
-                      (throttled
-                          ? l.tryAgainIn(remaining.inSeconds + 1)
-                          : null),
-                ),
-                onSubmitted: (_) => throttled || _busy ? null : _unlock(),
-              ),
+    return AuthPage(
+      maxWidth: 420,
+      spacing: 32,
+      contentHeight: 470,
+      topShare: 0.55,
+      children: [
+        const AuthHero(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AuthField(
+              controller: _pw,
+              autofocus: true,
+              kind: _recoveryMode
+                  ? AuthFieldKind.recoveryKey
+                  : AuthFieldKind.password,
+              label: _recoveryMode ? l.recoveryKey : l.masterPassword,
+              invalid: _error != null,
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => throttled || _busy ? null : _unlock(),
+            ),
+            AuthNoticeSlot(_error),
+            if (throttled) ...[
               const SizedBox(height: 16),
-              FilledButton(
-                onPressed: _busy || throttled ? null : _unlock,
-                child: _busy
-                    ? const SizedBox.square(
-                        dimension: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(l.unlock),
+              Center(
+                child: _CountdownPill(l.tryAgainIn(remaining.inSeconds + 1)),
               ),
-              if (_bioAvailable && !_recoveryMode) ...[
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.fingerprint),
-                  label: Text(l.unlockWithBiometrics),
-                  onPressed: _busy ? null : _unlockBiometric,
-                ),
-              ],
-              const SizedBox(height: 8),
-              TextButton(
-                onPressed: () => _setRecoveryMode(!_recoveryMode),
-                child: Text(
-                  _recoveryMode ? l.masterPassword : l.useRecoveryKey,
-                ),
-              ),
-              if (!_recoveryMode)
-                TextButton(
-                  onPressed: _busy ? null : _forgotPassword,
-                  child: Text(l.forgotPassword),
-                ),
             ],
+            const SizedBox(height: 20),
+            PrimaryButton(
+              expanded: true,
+              onPressed: _busy || throttled ? null : _unlock,
+              child: _busy ? AuthSpinner(label: l.unlock) : Text(l.unlock),
+            ),
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (_bioAvailable && !_recoveryMode) ...[
+              OutlinedButton.icon(
+                icon: const Icon(Icons.fingerprint_rounded),
+                label: Text(l.unlockWithBiometrics),
+                onPressed: _busy ? null : _unlockBiometric,
+              ),
+              const SizedBox(height: 8),
+            ],
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 4,
+              children: [
+                TextButton(
+                  onPressed: () => _setRecoveryMode(!_recoveryMode),
+                  child: Text(
+                    _recoveryMode ? l.masterPassword : l.useRecoveryKey,
+                  ),
+                ),
+                if (!_recoveryMode)
+                  TextButton(
+                    onPressed: _busy ? null : _forgotPassword,
+                    child: Text(l.forgotPassword),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// "Too many attempts. Try again in 12s" as an amber pill; the screen
+/// rebuilds every second, so the number counts down.
+class _CountdownPill extends StatelessWidget {
+  const _CountdownPill(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Container(
+      constraints: const BoxConstraints(minHeight: 36),
+      padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 16, 6),
+      decoration: ShapeDecoration(
+        color: t.warnContainer,
+        // A capsule on one line, a rounded panel when a big text size or a
+        // long translation wraps it.
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: BorderSide(color: t.warn.withValues(alpha: 0.45)),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ExcludeSemantics(
+            child: Icon(Icons.timer_outlined, size: 18, color: t.warn),
+          ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Text(
+              text,
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: t.warn,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Forgot your master password?": nobody can recover it, so the choice is
+/// the recovery key or starting over (shown as a red, separate option).
+class _ForgotDialog extends StatelessWidget {
+  const _ForgotDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final t = context.tokens;
+    return AlertDialog(
+      clipBehavior: Clip.antiAlias,
+      constraints: const BoxConstraints(maxWidth: 440),
+      title: _DialogTitle(
+        icon: Icons.lock_reset_rounded,
+        text: l.forgotPasswordTitle,
+      ),
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(l.forgotPasswordBody),
+          const SizedBox(height: 16),
+          _ChoiceTile(
+            icon: Icons.key_rounded,
+            title: l.useRecoveryKey,
+            subtitle: l.useRecoveryKeyExplain,
+            onTap: () => Navigator.pop(context, _Forgot.recoveryKey),
+          ),
+          const SizedBox(height: 10),
+          _ChoiceTile(
+            icon: Icons.delete_forever_rounded,
+            title: l.resetVault,
+            subtitle: l.resetVaultExplain,
+            danger: true,
+            onTap: () => Navigator.pop(context, _Forgot.reset),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(foregroundColor: t.soft),
+          onPressed: () => Navigator.pop(context),
+          child: Text(l.cancel),
+        ),
+      ],
+    );
+  }
+}
+
+/// A dialog's title: the hero icon tile (red for [danger]) beside the words,
+/// so the dialog stays short enough for a small window.
+class _DialogTitle extends StatelessWidget {
+  const _DialogTitle({
+    required this.icon,
+    required this.text,
+    this.danger = false,
+  });
+
+  final IconData icon;
+  final String text;
+  final bool danger;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        AuthIconTile(icon, size: 44, danger: danger),
+        const SizedBox(width: 14),
+        Expanded(child: Text(text)),
+      ],
+    );
+  }
+}
+
+/// One option of the forgot-password dialog: an icon tile, a title and a
+/// sentence, in a bordered row at least 64 dp tall. [danger] gives it the red
+/// treatment of an irreversible action.
+class _ChoiceTile extends StatelessWidget {
+  const _ChoiceTile({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    this.danger = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+  final bool danger;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
+    final tint = danger ? t.error : t.accent2;
+    final radius = BorderRadius.circular(AppRadius.card);
+    return Semantics(
+      button: true,
+      child: Material(
+        color: danger ? t.errorContainer.withValues(alpha: 0.55) : t.surface2,
+        shape: RoundedRectangleBorder(
+          borderRadius: radius,
+          side: BorderSide(
+            color: danger ? t.error.withValues(alpha: 0.45) : t.line2,
+          ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 64),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 8, 10),
+              child: Row(
+                children: [
+                  ExcludeSemantics(
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: tint.withValues(alpha: 0.14),
+                        borderRadius: AppRadius.controlAll,
+                      ),
+                      child: Icon(icon, size: 22, color: tint),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: tt.titleSmall!.copyWith(
+                            color: danger ? t.error : t.ink,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(subtitle, style: tt.bodySmall),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  ExcludeSemantics(
+                    child: Icon(Icons.chevron_right_rounded, color: t.muted),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -286,25 +456,30 @@ class _ResetVaultDialogState extends State<_ResetVaultDialog> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
     final confirmed = {
       l.resetConfirmWord.toUpperCase(),
       'DELETE',
     }.contains(_word.text.trim().toUpperCase());
     return AlertDialog(
-      icon: Icon(Icons.warning_amber, color: scheme.error),
-      title: Text(l.resetVaultTitle),
+      clipBehavior: Clip.antiAlias,
+      constraints: const BoxConstraints(maxWidth: 440),
+      title: _DialogTitle(
+        icon: Icons.warning_amber_rounded,
+        text: l.resetVaultTitle,
+        danger: true,
+      ),
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l.resetVaultBody),
-          const SizedBox(height: 16),
+          AuthNotice(l.resetVaultBody, tone: AuthTone.error, showIcon: false),
+          const SizedBox(height: 20),
           TextField(
             controller: _word,
             autocorrect: false,
             enableSuggestions: false,
+            // No icon in front: the label is long and must not be cut off.
             decoration: InputDecoration(
               labelText: l.resetTypeToConfirm(l.resetConfirmWord),
             ),
@@ -312,16 +487,14 @@ class _ResetVaultDialogState extends State<_ResetVaultDialog> {
           ),
         ],
       ),
+      actionsOverflowButtonSpacing: 8,
       actions: [
-        TextButton(
+        OutlinedButton(
           onPressed: () => Navigator.pop(context, false),
           child: Text(l.cancel),
         ),
-        FilledButton(
-          style: FilledButton.styleFrom(
-            backgroundColor: scheme.error,
-            foregroundColor: scheme.onError,
-          ),
+        PrimaryButton(
+          destructive: true,
           onPressed: confirmed ? () => Navigator.pop(context, true) : null,
           child: Text(l.eraseVault),
         ),
