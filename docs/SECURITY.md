@@ -177,6 +177,85 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
     so a vault created afterwards cannot sync into the old account, and the
     old account's data on the server is untouched: signing in again with
     the old master password restores it.
+20. **The app updates itself from GitHub Releases.** On Android and Windows
+    (no store) the app downloads and installs new versions by itself. That is
+    new network access, new code that replaces the app, and a CI pipeline that
+    holds signing keys, so the rules are written down here. A development build
+    (compiled without `APP_VERSION`) has no updater at all.
+    * *Trust chain.* An Ed25519 public key is compiled into the app
+      (`lib/services/update/update_public_key.dart`; a test checks that it
+      equals `release/update_public_key.txt`). The release workflow signs the
+      exact bytes of `update.json` with the matching private seed (GitHub secret
+      `UPDATE_SIGNING_KEY`) and publishes `update.json.sig` next to it. The app
+      fetches both from the latest release of the public repository, verifies
+      the signature BEFORE it parses a single field (until then the manifest is
+      just bytes), and only then trusts the version, build number, package URL,
+      size and SHA-256 inside. The package is checked against that size and
+      SHA-256 while it downloads (the size cap is enforced on the stream, not
+      only from headers), when it is finished, and once more on a fresh private
+      copy that is the file the installer actually reads.
+    * *Network.* GitHub only: HTTPS, the exact hosts `github.com`,
+      `objects.githubusercontent.com` and `release-assets.githubusercontent.com`
+      (no wildcard), checked on the first request and on every redirect hop
+      (redirects are followed by hand, at most 5, never to http, with no
+      credentials and no port other than 443). The package URL must be the
+      tag-pinned download URL of this repository and its file name must match
+      the manifest. Limits: manifest 64 KB, signature 1 KB, package 400 MB, and
+      timeouts. Requests carry a generic User-Agent and no cookies, Referer or
+      authorisation. *What GitHub sees:* the user's IP address and when the app
+      is running, about once a day (never anything from the vault). The switch
+      "Check for updates automatically" in Settings turns the daily check off;
+      "Check now" is manual.
+    * *Replay and rollback.* A manifest must carry a newer build number than the
+      installed one, and the app remembers the highest build number it has ever
+      seen in its settings (`highestSeenBuild`). A validly signed but older
+      manifest, for example an old release re-published by someone with write
+      access to the repository, is refused (`rollback`). The consequence: if a
+      release is pulled after it was seen, the next release must carry an even
+      higher version number than the one that was pulled.
+    * *No key rotation.* The app pins one manifest key. If the private seed
+      leaks, the attacker can sign updates until users install a build that pins
+      a new key by hand; if it is lost, no update can be signed and the same
+      by-hand install is needed (`docs/RELEASING.md` has the steps). Android
+      additionally keeps the same-signing-key rule below.
+    * *Android install.* The package is copied into the app's private cache
+      folder and handed to the system installer through a one-file FileProvider
+      grant. The user must allow "Install unknown apps" for this app and tap
+      Install. Before the vault is locked and again right before the installer
+      starts, the native side checks that the file is an APK of this package,
+      has a higher version code, and is signed with the key (or the rotation
+      lineage) of the installed app. Android enforces the same-key rule itself
+      anyway, so a package signed with another key cannot replace the app. A
+      copy installed from a debug-signed or differently signed build therefore
+      has to be updated by hand once.
+    * *Windows install.* The zip is unpacked by a hardened extractor (no
+      absolute or `..` paths, no links, no reserved names, size and count
+      limits) into a private staging folder, then a PowerShell script is started
+      from `System32` by full path (never from the app folder or `PATH`) which
+      waits for the app to exit, swaps the folder with a backup and rolls back
+      if anything fails. The files are not code-signed, so Windows may show
+      SmartScreen on the first download; the signature check above is what
+      protects the update path. The private folders rely on the per-user ACL of
+      `%APPDATA%`: another program running as the same user could replace the
+      staged files, as it could replace the app itself; the SHA-256 of the
+      staged copy is checked right before the hand-over, which shrinks that
+      window to the hand-over itself. The install needs a user-writable install
+      folder (a per-user install); otherwise the app explains it and links to
+      the release page.
+    * *The vault is locked first.* The vault is locked and its keys are wiped
+      before the process exits for the swap or the system installer opens. If
+      the lock fails, nothing is installed.
+    * *Nothing sensitive in messages.* Errors shown to the user come from a
+      fixed list of sentences; URLs, paths and server text are never shown or
+      logged. Temporary files are deleted after use and swept at the next start.
+    * *CI trust boundary.* Anyone who can push a tag, edit workflows or read
+      Actions secrets in the repository can publish an update to every user, so
+      write access to the repository is as powerful as the signing key. The
+      release workflow runs only for a version tag or a manual start (dry runs
+      use a throwaway key and publish nothing), gives each job the least
+      permissions it needs, and passes secrets only to the steps that sign.
+      Keep the repository's collaborator list short, protect the tags and the
+      default branch, and enable two-factor authentication on the account.
 
 ## Test vectors
 

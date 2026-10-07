@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "version": "0.2.0",
+  "build": 2000,
+  "publishedAt": "2026-10-07T12:00:00Z",
+  "notes": {
+    "en": "Fixes and improvements.",
+    "ar": "إصلاحات وتحسينات."
+  },
+  "assets": {
+    "android": {
+      "name": "app-release.apk",
+      "url": "https://github.com/OmarAlnasser/Password/releases/download/v0.2.0/app-release.apk",
+      "size": 3000,
+      "sha256": "d8d4b13be791e09550c7d05557b6c8a98ee553c8dc41555219982339eb421665"
+    },
+    "windows": {
+      "name": "app-windows.zip",
+      "url": "https://github.com/OmarAlnasser/Password/releases/download/v0.2.0/app-windows.zip",
+      "size": 5000,
+      "sha256": "da945cdaf606daed9409954e0921f3c7e946fcb2c018bd58ef6b7099cc124134"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# The swap script must keep LF line endings on every checkout: the Dart copy
+# and the unit test compare it byte for byte, and PowerShell 5.1 is fine with LF.
+apply_update.ps1 text eol=lf
+*.py text eol=lf

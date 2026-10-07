@@ -1,0 +1,659 @@
+name: Release
+
+# Pushing a tag vX.Y.Z builds, signs and publishes a release that installed
+# apps pick up by themselves. Owner instructions: docs/RELEASING.md.
+#
+#   check     validates the tag, derives version and build, runs analyze + tests
+#   android   builds the APK, signed with the stable release keystore, and
+#             fails unless it carries the pinned release certificate
+#   windows   builds the Windows app and zips it (files at the zip root)
+#   sign      hashes the packages, writes update.json and signs it
+#             (Ed25519, key from the UPDATE_SIGNING_KEY secret); read-only token
+#   publish   the only job with write access: re-checks the files, then makes a
+#             draft release, uploads the four files and publishes it; holds no
+#             signing key
+#   verify    downloads everything again from the public URLs, like an
+#             installed app, and checks it end to end; read-only, re-runnable
+#
+# workflow_dispatch with dry_run=true (the default) builds and signs everything
+# with a throwaway manifest key and publishes nothing.
+#
+# Third-party actions are referenced by major version tag (as build.yml does),
+# not by commit SHA. To pin them, replace each `uses:` ref with the full commit
+# SHA of the tag and keep the tag as a comment; Dependabot can then keep the
+# SHAs current.
+#
+# Rules this file follows: no ${{ ... }} of event data or inputs inside a
+# `run:` script (they go through `env:` and are validated first); secrets only in
+# the `env:` of the one step that needs them; nothing secret is ever echoed.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag, for example v0.2.0 (a real release needs this tag to exist and to be the selected ref)"
+        required: true
+        type: string
+      dry_run:
+        description: "Dry run: build and sign with a throwaway manifest key, publish nothing"
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}-${{ inputs.tag }}
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: "3.47.6"
+
+jobs:
+  check:
+    name: Check tag and run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      tag: ${{ steps.derive.outputs.tag }}
+      version: ${{ steps.derive.outputs.version }}
+      build: ${{ steps.derive.outputs.build }}
+      dry_run: ${{ steps.derive.outputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Derive version and build from the tag
+        id: derive
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          # Never print a raw input: it could carry workflow commands.
+          fail() { echo "::error::$1"; exit 1; }
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            tag="$INPUT_TAG"
+            dry_run="$INPUT_DRY_RUN"
+          elif [ "$EVENT_NAME" = "push" ]; then
+            [ "$REF_TYPE" = "tag" ] || fail "Releases start from a tag push only."
+            tag="$REF_NAME"
+            dry_run="false"
+          else
+            fail "Unsupported event."
+          fi
+          case "$dry_run" in
+            true|false) ;;
+            *) fail "dry_run must be true or false." ;;
+          esac
+
+          # Strict: v<major>.<minor>.<patch>, no leading zeros, nothing else.
+          # Same limits as the app (AppVersion): major <= 2000, minor and patch <= 999.
+          re='^v(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})$'
+          case "$tag" in
+            *$'\n'*|*$'\r'*) fail "The tag must be vX.Y.Z (for example v0.2.0)." ;;
+          esac
+          if ! [[ "$tag" =~ $re ]]; then
+            fail "The tag must be vX.Y.Z (for example v0.2.0)."
+          fi
+          major="${BASH_REMATCH[1]}"
+          minor="${BASH_REMATCH[2]}"
+          patch="${BASH_REMATCH[3]}"
+          if [ "$major" -gt 2000 ] || { [ "$major" -eq 0 ] && [ "$minor" -eq 0 ] && [ "$patch" -eq 0 ]; }; then
+            fail "Version out of range (major <= 2000, not 0.0.0)."
+          fi
+          build=$(( major * 1000000 + minor * 1000 + patch ))
+
+          if [ "$dry_run" = "false" ]; then
+            # A real release is built from the tag itself, never from a branch.
+            { [ "$REF_TYPE" = "tag" ] && [ "$REF_NAME" = "$tag" ]; } ||
+              fail "A real release must run from the tag itself: choose the tag as the ref ('Use workflow from') and make it equal to the tag input."
+          fi
+
+          {
+            echo "tag=$tag"
+            echo "version=${tag#v}"
+            echo "build=$build"
+            echo "dry_run=$dry_run"
+          } >> "$GITHUB_OUTPUT"
+          echo "Tag $tag: version ${tag#v}, build $build, dry run: $dry_run"
+
+      # Fail in the first minute, not after the builds: a wrong or missing
+      # UPDATE_SIGNING_KEY secret would otherwise only show up in the sign job.
+      # Only the public key is printed. The secret is in the env of this one
+      # step and the step runs nothing but our own script.
+      - name: Check that the signing key matches the pinned public key
+        if: steps.derive.outputs.dry_run == 'false'
+        env:
+          UPDATE_SIGNING_KEY: ${{ secrets.UPDATE_SIGNING_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "$UPDATE_SIGNING_KEY" ]; then
+            echo "::error::The UPDATE_SIGNING_KEY secret is not set (see docs/RELEASING.md)."
+            exit 1
+          fi
+          python3 tool/make_update_manifest.py --check-key \
+            --expect-public-key release/update_public_key.txt
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Check that the app polls this repository and pins this key
+        run: |
+          set -euo pipefail
+          app_repo="$(sed -n "s/.*static const String defaultRepo = '\([^']*\)'.*/\1/p" lib/services/update/update_config.dart | head -n 1)"
+          # GitHub treats owner and repository names case-insensitively.
+          if [ -z "$app_repo" ] || [ "${app_repo,,}" != "${GITHUB_REPOSITORY,,}" ]; then
+            echo "::error::The app polls a different repository than this one (lib/services/update/update_config.dart defaultRepo). Installed apps would never see this release."
+            exit 1
+          fi
+          pinned="$(tr -d '[:space:]' < release/update_public_key.txt)"
+          if ! grep -Fq "'$pinned'" lib/services/update/update_public_key.dart; then
+            echo "::error::lib/services/update/update_public_key.dart does not hold the key in release/update_public_key.txt."
+            exit 1
+          fi
+
+      - run: flutter analyze
+      - run: flutter test --exclude-tags finding
+
+      # The signer is pure Python (no pip in the job that holds the key). Here,
+      # where no secret exists, `cryptography` (OpenSSL) is installed into a
+      # throwaway venv as an independent check of that implementation, and
+      # PyYAML for the static checks of this very file.
+      - name: Release tooling tests
+        env:
+          REQUIRE_OPTIONAL_TESTS: "1"
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/tooling-venv"
+          "$RUNNER_TEMP/tooling-venv/bin/python" -m pip install --disable-pip-version-check --quiet cryptography pyyaml
+          "$RUNNER_TEMP/tooling-venv/bin/python" tool/test_update_tools.py
+
+  android:
+    name: Build Android APK
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Decode the release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::The ANDROID_KEYSTORE_BASE64 secret is not set (see docs/RELEASING.md)."
+            exit 1
+          fi
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          chmod 600 "$RUNNER_TEMP/release.jks"
+          if [ ! -s "$RUNNER_TEMP/release.jks" ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 decoded to an empty file."
+            exit 1
+          fi
+
+      - name: Build the signed APK
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: release
+          APP_VERSION: ${{ needs.check.outputs.version }}
+          APP_BUILD: ${{ needs.check.outputs.build }}
+        run: |
+          set -euo pipefail
+          if [ -z "$ANDROID_KEYSTORE_PASSWORD" ]; then
+            echo "::error::The ANDROID_KEYSTORE_PASSWORD secret is not set (see docs/RELEASING.md)."
+            exit 1
+          fi
+          flutter build apk --release \
+            --build-name "$APP_VERSION" \
+            --build-number "$APP_BUILD" \
+            --dart-define=APP_VERSION="$APP_VERSION" \
+            --dart-define=APP_BUILD="$APP_BUILD"
+          mkdir -p dist
+          cp build/app/outputs/flutter-apk/app-release.apk dist/android.apk
+
+      - name: Check that the APK carries the release certificate and version
+        env:
+          APP_BUILD: ${{ needs.check.outputs.build }}
+        run: |
+          set -euo pipefail
+          sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
+          if [ -z "$sdk" ]; then
+            echo "::error::ANDROID_HOME is not set."
+            exit 1
+          fi
+          apksigner="$(printf '%s\n' "$sdk"/build-tools/*/apksigner | sort -V | tail -n 1)"
+          if [ ! -x "$apksigner" ]; then
+            echo "::error::apksigner was not found in the Android build-tools."
+            exit 1
+          fi
+          aapt2="$(printf '%s\n' "$sdk"/build-tools/*/aapt2 | sort -V | tail -n 1)"
+          if [ ! -x "$aapt2" ]; then
+            echo "::error::aapt2 was not found in the Android build-tools."
+            exit 1
+          fi
+
+          # Android refuses to install an update whose versionCode is not higher
+          # than the installed one, so it must be exactly the build number the
+          # app compares by (APP_BUILD). Line: package: name='...' versionCode='2000' ...
+          badging="$("$aapt2" dump badging dist/android.apk)"
+          package_line="$(grep -m 1 '^package: ' <<< "$badging" || true)"
+          case "$package_line" in
+            *" versionCode='${APP_BUILD}' "*) echo "APK versionCode is ${APP_BUILD}" ;;
+            *)
+              echo "::error::The APK versionCode is not the build number ${APP_BUILD}. Does android/app/build.gradle.kts still use flutter.versionCode?"
+              exit 1
+              ;;
+          esac
+
+          report="$RUNNER_TEMP/apksigner.txt"
+          "$apksigner" verify --verbose --print-certs dist/android.apk > "$report"
+          signers="$(grep -c '^Signer #[0-9]* certificate SHA-256 digest: ' "$report" || true)"
+          if [ "$signers" != "1" ]; then
+            echo "::error::The APK must have exactly one signer (found $signers)."
+            exit 1
+          fi
+          actual="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' "$report" | tr -d ' :\r' | tr 'A-F' 'a-f')"
+          expected="$(tr -d ' :\r\n' < release/android_cert_sha256.txt | tr 'A-F' 'a-f')"
+          if [ "${#expected}" -ne 64 ]; then
+            echo "::error::release/android_cert_sha256.txt is not a SHA-256 fingerprint."
+            exit 1
+          fi
+          if [ "$actual" != "$expected" ]; then
+            echo "::error::The APK is NOT signed with the release certificate. Wrong ANDROID_KEYSTORE_BASE64 secret? APK: $actual, expected: $expected"
+            exit 1
+          fi
+          echo "APK is signed with the release certificate $actual"
+
+      - name: Delete the keystore
+        if: always()
+        run: |
+          shred -u "$RUNNER_TEMP/release.jks" 2>/dev/null || rm -f "$RUNNER_TEMP/release.jks"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: dist/android.apk
+          if-no-files-found: error
+          retention-days: 3
+
+  windows:
+    name: Build Windows app
+    needs: check
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+
+      - name: Build the Windows app
+        shell: bash
+        env:
+          APP_VERSION: ${{ needs.check.outputs.version }}
+          APP_BUILD: ${{ needs.check.outputs.build }}
+        run: |
+          set -euo pipefail
+          # The exe's version resource has 16-bit fields, so its fourth number
+          # is the build modulo 65536. The real build number is the APP_BUILD define.
+          file_build=$(( APP_BUILD % 65536 ))
+          flutter build windows --release \
+            --build-name "$APP_VERSION" \
+            --build-number "$file_build" \
+            --dart-define=APP_VERSION="$APP_VERSION" \
+            --dart-define=APP_BUILD="$APP_BUILD"
+
+      - name: Zip the app (files at the zip root)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $release = Join-Path $env:GITHUB_WORKSPACE 'build/windows/x64/runner/Release'
+          if (-not (Test-Path -LiteralPath (Join-Path $release 'flutter_windows.dll'))) {
+            throw 'The Windows build output is missing.'
+          }
+          New-Item -ItemType Directory -Force -Path 'dist' | Out-Null
+          $zip = Join-Path $env:GITHUB_WORKSPACE 'dist/windows-x64.zip'
+          if (Test-Path -LiteralPath $zip) { Remove-Item -LiteralPath $zip -Force }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          # includeBaseDirectory = $false puts the exe and dlls at the zip root.
+          [System.IO.Compression.ZipFile]::CreateFromDirectory(
+            $release, $zip,
+            [System.IO.Compression.CompressionLevel]::Optimal, $false)
+
+          $archive = [System.IO.Compression.ZipFile]::OpenRead($zip)
+          try { $names = @($archive.Entries | ForEach-Object { $_.FullName }) }
+          finally { $archive.Dispose() }
+          if (@($names | Where-Object { $_.Contains('\') -or $_.StartsWith('/') }).Count -gt 0) {
+            throw 'The zip has entry names that are not plain relative paths.'
+          }
+          if ($names -notcontains 'flutter_windows.dll') {
+            throw 'flutter_windows.dll is not at the zip root.'
+          }
+          if (@($names | Where-Object { $_ -notlike '*/*' -and $_ -like '*.exe' }).Count -lt 1) {
+            throw 'No .exe at the zip root.'
+          }
+          Write-Host "windows-x64.zip: $($names.Count) entries, app files at the zip root"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: dist/windows-x64.zip
+          if-no-files-found: error
+          retention-days: 3
+
+  sign:
+    name: Sign update manifest
+    needs: [check, android, windows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-release
+          path: artifacts/android
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: artifacts/windows
+
+      - name: Write the release notes
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+          VERSION: ${{ needs.check.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          prev="$(git describe --tags --abbrev=0 --match 'v[0-9]*.[0-9]*.[0-9]*' --exclude "$TAG" HEAD 2>/dev/null || true)"
+          if [ -n "$prev" ]; then range="${prev}..HEAD"; else range="HEAD"; fi
+          changes="$(git log --no-merges --max-count=100 --pretty='format:- %s' "$range")"
+          if [ -z "$changes" ]; then changes="- No notable changes."; fi
+          {
+            if [ -f "release/notes/${VERSION}.md" ]; then
+              cat "release/notes/${VERSION}.md"
+              printf '\n'
+            fi
+            if [ -n "$prev" ]; then
+              printf 'Changes since %s:\n\n' "$prev"
+            else
+              printf 'Changes:\n\n'
+            fi
+            printf '%s\n' "$changes"
+          } > out/release-notes.md
+
+      - name: Build and sign update.json
+        env:
+          # The real key reaches this step only for a real release; a dry run
+          # gets an empty value and signs with a throwaway key.
+          UPDATE_SIGNING_KEY: ${{ needs.check.outputs.dry_run == 'false' && secrets.UPDATE_SIGNING_KEY || '' }}
+          DRY_RUN: ${{ needs.check.outputs.dry_run }}
+          TAG: ${{ needs.check.outputs.tag }}
+          VERSION: ${{ needs.check.outputs.version }}
+          BUILD: ${{ needs.check.outputs.build }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          args=(
+            --version "$VERSION"
+            --build "$BUILD"
+            --tag "$TAG"
+            --repo "$REPO"
+            --apk artifacts/android/android.apk
+            --windows-zip artifacts/windows/windows-x64.zip
+            --notes-file out/release-notes.md
+            --out-dir out
+            --published-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          )
+          if [ -f "release/notes/${VERSION}.ar.md" ]; then
+            args+=(--notes-ar-file "release/notes/${VERSION}.ar.md")
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+            unset UPDATE_SIGNING_KEY
+            args+=(--ephemeral-key --public-key-out out/dry-run-public-key.txt)
+          else
+            if [ -z "${UPDATE_SIGNING_KEY:-}" ]; then
+              echo "::error::The UPDATE_SIGNING_KEY secret is not set (see docs/RELEASING.md)."
+              exit 1
+            fi
+            args+=(--expect-public-key release/update_public_key.txt)
+          fi
+          python3 tool/make_update_manifest.py "${args[@]}"
+
+      - name: Verify the signed manifest against the packages
+        env:
+          DRY_RUN: ${{ needs.check.outputs.dry_run }}
+          TAG: ${{ needs.check.outputs.tag }}
+          VERSION: ${{ needs.check.outputs.version }}
+          BUILD: ${{ needs.check.outputs.build }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ "$DRY_RUN" = "true" ]; then
+            key_file="out/dry-run-public-key.txt"
+          else
+            key_file="release/update_public_key.txt"
+          fi
+          python3 tool/verify_update_manifest.py \
+            --manifest out/update.json \
+            --signature out/update.json.sig \
+            --public-key "$key_file" \
+            --apk artifacts/android/android.apk \
+            --windows-zip artifacts/windows/windows-x64.zip \
+            --version "$VERSION" --build "$BUILD" --tag "$TAG" --repo "$REPO" \
+            --release-layout
+
+      - name: Dry run note
+        if: needs.check.outputs.dry_run == 'true'
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+        run: |
+          set -euo pipefail
+          {
+            echo "### Dry run of ${TAG}"
+            echo ""
+            echo "Everything was built and checked; nothing was published."
+            echo "update.json is signed with a throwaway key that no installed app trusts."
+            echo "The artifacts of this run are kept for 3 days."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: update-manifest
+          path: out/
+          if-no-files-found: error
+          retention-days: 3
+
+  publish:
+    name: Publish GitHub Release
+    needs: [check, android, windows, sign]
+    if: needs.check.outputs.dry_run == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-release
+          path: artifacts/android
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: artifacts/windows
+      - uses: actions/download-artifact@v4
+        with:
+          name: update-manifest
+          path: artifacts/manifest
+
+      - name: Verify again with the pinned key before publishing
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+          VERSION: ${{ needs.check.outputs.version }}
+          BUILD: ${{ needs.check.outputs.build }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 tool/verify_update_manifest.py \
+            --manifest artifacts/manifest/update.json \
+            --signature artifacts/manifest/update.json.sig \
+            --public-key release/update_public_key.txt \
+            --apk artifacts/android/android.apk \
+            --windows-zip artifacts/windows/windows-x64.zip \
+            --version "$VERSION" --build "$BUILD" --tag "$TAG" --repo "$REPO" \
+            --release-layout
+
+      - name: Create the draft release and upload the files
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.check.outputs.tag }}
+          BUILD: ${{ needs.check.outputs.build }}
+        run: |
+          set -euo pipefail
+          # If listing fails, this step fails too (set -e) instead of guessing.
+          listing="$(gh release list --limit 1000 --json tagName,isDraft,isPrerelease \
+            --jq '.[] | [.tagName, (.isDraft | tostring), (.isPrerelease | tostring)] | @tsv')"
+
+          re='^v(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})$'
+          highest=0
+          drafts=0
+          while IFS=$'\t' read -r name is_draft is_pre; do
+            if [ "$name" = "$TAG" ]; then
+              if [ "$is_draft" = "true" ]; then
+                drafts=$(( drafts + 1 ))
+              else
+                # A published release is never modified.
+                echo "::error::A release for this tag is already published. Releases are never changed: cut a new version."
+                exit 1
+              fi
+            elif [ "$is_draft" = "false" ] && [ "$is_pre" = "false" ] && [[ "$name" =~ $re ]]; then
+              other=$(( BASH_REMATCH[1] * 1000000 + BASH_REMATCH[2] * 1000 + BASH_REMATCH[3] ))
+              if [ "$other" -gt "$highest" ]; then highest="$other"; fi
+            fi
+          done <<< "$listing"
+
+          # Installed apps ignore a manifest that is not newer than what they
+          # remember, and "latest" would point at it: refuse to go backwards.
+          if [ "$BUILD" -le "$highest" ]; then
+            echo "::error::Build $BUILD is not higher than the newest published release (build $highest). Releases only go forward: cut a higher version (see docs/RELEASING.md, rollback)."
+            exit 1
+          fi
+
+          # A draft with this tag can only be left over from a run of this
+          # workflow that failed half way; it was never visible to anyone.
+          while [ "$drafts" -gt 0 ]; do
+            gh release delete "$TAG" --yes
+            drafts=$(( drafts - 1 ))
+          done
+
+          gh release create "$TAG" \
+            --draft \
+            --verify-tag \
+            --title "$TAG" \
+            --notes-file artifacts/manifest/release-notes.md \
+            artifacts/android/android.apk \
+            artifacts/windows/windows-x64.zip \
+            artifacts/manifest/update.json \
+            artifacts/manifest/update.json.sig
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ needs.check.outputs.tag }}
+        run: |
+          set -euo pipefail
+          # All files are attached before the release becomes visible, so an
+          # installed app never sees update.json without its packages.
+          gh release edit "$TAG" --draft=false --latest
+
+  verify:
+    name: Verify the published release
+    needs: [check, publish]
+    if: needs.check.outputs.dry_run == 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # A job of its own, with a read-only token, so that it can be re-run alone
+    # ("Re-run failed jobs") if GitHub's CDN is slow, without touching the
+    # release. Holds no secret.
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify the published release end to end
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+          VERSION: ${{ needs.check.outputs.version }}
+          BUILD: ${{ needs.check.outputs.build }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # No credentials: this is what an installed app sees. It downloads
+          # update.json, its signature and both packages from the public URLs,
+          # follows the redirects, verifies the signature with the pinned key
+          # and compares sizes and SHA-256, and checks that "latest" serves it.
+          python3 tool/verify_update_manifest.py \
+            --remote --repo "$REPO" --tag "$TAG" \
+            --public-key release/update_public_key.txt \
+            --version "$VERSION" --build "$BUILD" --release-layout \
+            --download-assets --check-latest \
+            --retries 30 --retry-delay 10
+
+      - name: Summary
+        env:
+          TAG: ${{ needs.check.outputs.tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          {
+            echo "### Released ${TAG}"
+            echo ""
+            echo "https://github.com/${REPO}/releases/tag/${TAG}"
+          } >> "$GITHUB_STEP_SUMMARY"

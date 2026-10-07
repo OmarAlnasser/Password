@@ -40,6 +40,7 @@ class MainActivity : FlutterFragmentActivity() {
             setRecentsScreenshotEnabled(false)
         }
         PlatformChannel.deleteStaleImageCopies(cacheDir)
+        ApkInstaller.deleteStaleUpdates(cacheDir)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -159,6 +160,41 @@ object PlatformChannel {
                             else activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                         }
                         result.success(null)
+                    }
+                    // In-app update (lib/services/update/android_installer.dart).
+                    // Only the main activity may install: the autofill
+                    // activity registers this channel without a host.
+                    "canInstallPackages" ->
+                        result.success(host != null && ApkInstaller.canInstall(activity))
+                    "openInstallSettings" ->
+                        result.success(host != null && ApkInstaller.openInstallSettings(activity))
+                    // The GitHub release page, for installing by hand.
+                    "openReleasePage" ->
+                        result.success(
+                            host != null && ApkInstaller.openReleasePage(activity, call.argument<String>("url")),
+                        )
+                    "prepareUpdatesDir" -> {
+                        if (host == null) {
+                            result.error("unsupported", "not available here", null)
+                        } else {
+                            try {
+                                result.success(ApkInstaller.prepareUpdatesDir(activity).path)
+                            } catch (e: IOException) {
+                                result.error("updates_dir_unavailable", "cannot prepare the updates folder", null)
+                            }
+                        }
+                    }
+                    "installApk" -> {
+                        if (host == null) {
+                            result.error("unsupported", "not available here", null)
+                        } else {
+                            ApkInstaller.installApk(
+                                activity,
+                                call.argument<String>("path"),
+                                call.argument<Boolean>("verifyOnly") ?: false,
+                                result,
+                            )
+                        }
                     }
                     "pickImage" -> host?.pickImage(result) ?: result.success(null)
                     "deleteImage" -> {
