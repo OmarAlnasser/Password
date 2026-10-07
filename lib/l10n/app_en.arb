@@ -312,5 +312,134 @@
       "word": {}
     }
   },
-  "eraseVault": "Erase vault"
+  "eraseVault": "Erase vault",
+  "updateAvailable": "Update available",
+  "updateVersionNumber": "Version {version}",
+  "@updateVersionNumber": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "updateVersionAvailable": "Version {version} is available",
+  "@updateVersionAvailable": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "updateYourVersion": "You have {version}",
+  "@updateYourVersion": {
+    "placeholders": {
+      "version": {}
+    }
+  },
+  "updateDownloadSize": "Download size: {size}",
+  "@updateDownloadSize": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "updateSizeMb": "{size} MB",
+  "@updateSizeMb": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "updateSizeKb": "{size} KB",
+  "@updateSizeKb": {
+    "placeholders": {
+      "size": {}
+    }
+  },
+  "updateReleased": "Released {date}",
+  "@updateReleased": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "updateWhatsNew": "What’s new",
+  "updateNoNotes": "No release notes were provided.",
+  "updateNow": "Update now",
+  "updateLater": "Later",
+  "updateSkipVersion": "Skip this version",
+  "updateSkipNote": "You won’t be reminded about this version. A newer one will still be offered.",
+  "updateHideBanner": "Hide for now",
+  "updateTapForDetails": "Tap for details",
+  "updateDownloading": "Downloading update",
+  "updateBannerDownloading": "Downloading update… {percent}%",
+  "@updateBannerDownloading": {
+    "placeholders": {
+      "percent": {}
+    }
+  },
+  "updateDownloadProgress": "{percent}% of {size}",
+  "@updateDownloadProgress": {
+    "placeholders": {
+      "percent": {},
+      "size": {}
+    }
+  },
+  "updateDownloadBackground": "You can keep using the app. The download continues in the background.",
+  "updateCancelDownload": "Cancel download",
+  "updateVerifying": "Checking the download",
+  "updateVerifyingNote": "Comparing the file with the signed release information…",
+  "updateReadyTitle": "Ready to install",
+  "updateReadyNote": "The download is complete and verified. Nothing is installed until you tap the button.",
+  "updateReadyAndroid": "Android will open its installer. Tap Install there to finish.",
+  "updateReadyWindows": "The app will lock your vault, close, install the update and open again.",
+  "updateInstall": "Install",
+  "updateInstallWindows": "Close and install",
+  "updateInstalling": "Handing over to the installer…",
+  "updateInstallingWindows": "Closing to install…",
+  "updateInstallerOpen": "The system installer is open. Tap Install there to finish.",
+  "updateInstallerReopen": "Open the installer again",
+  "updatePermissionTitle": "Allow installs from this app",
+  "updatePermissionBody": "Android needs your permission before this app can install updates. In the settings page that just opened, turn on “Allow from this source”, go back, then tap Install again.",
+  "updateInstallFailedAndroid": "Android didn’t accept this update. The installed app may have been signed differently (for example a test build). In that case install the new version by hand from the release page. Uninstalling removes the vault stored on this device, so export or sync it first.",
+  "updateInstallFailedWindows": "The update couldn’t be installed automatically. The app’s folder may be protected (for example inside Program Files) or in use. Nothing was changed. Download the new version from the release page and replace the app by hand.",
+  "updateInstallUnsupported": "Installing updates isn’t available here. Download the new version from the release page.",
+  "updateOpenReleasePage": "Open release page",
+  "updateCopyLink": "Copy link",
+  "updateLinkCopied": "Link copied",
+  "updateRetry": "Try again",
+  "updateErrorTitle": "Couldn’t update",
+  "updateRejectedTitle": "Update rejected for your safety",
+  "updateErrorOffline": "Couldn’t reach GitHub. Check your internet connection and try again.",
+  "updateErrorServer": "The update server didn’t answer properly. Try again later.",
+  "updateErrorDamaged": "The downloaded file was incomplete or didn’t match the signed release information, so it was deleted. Try downloading it again.",
+  "updateErrorBlocked": "The download was blocked because it didn’t come from the official release address.",
+  "updateErrorSignature": "This update’s signature could not be verified, so it was not used. Nothing was installed. If this keeps happening, get the app again from the official release page.",
+  "updateErrorRollback": "An older release than one already seen was offered, so it was ignored. Nothing was installed.",
+  "updateErrorSchema": "This update can’t be read by this version of the app. Download the new version from the release page.",
+  "updateErrorNoPackage": "The latest release has no package for this device yet. Try again later.",
+  "updateErrorStorage": "The update couldn’t be saved on this device. Free some space and try again.",
+  "updateErrorInternal": "Something went wrong with the update. Try again later.",
+  "updateAutoCheck": "Check for updates automatically",
+  "updateAutoCheckNote": "Looks for a new version on GitHub at most once a day. Nothing from your vault is sent, but GitHub sees your IP address.",
+  "updateCheckNow": "Check now",
+  "updateChecking": "Checking for updates…",
+  "updateVersionTitle": "Version",
+  "updateVersionBuild": "{version} (build {build})",
+  "@updateVersionBuild": {
+    "placeholders": {
+      "version": {},
+      "build": {}
+    }
+  },
+  "updateDevBuild": "Development build",
+  "updateLastChecked": "Last checked: {when}",
+  "@updateLastChecked": {
+    "placeholders": {
+      "when": {}
+    }
+  },
+  "updateNeverChecked": "Not checked yet",
+  "updateUpToDate": "You have the latest version.",
+  "updateViewUpdate": "View update",
+  "updateBannerFailed": "The update didn’t finish",
+  "updateNoticeTitle": "The last update didn’t finish",
+  "updateNoticeRolledBack": "The update could not be completed. The previous version is still installed and working.",
+  "updateNoticeDamaged": "The update failed and the app may be damaged. Download the latest release from the release page and replace the app’s folder.",
+  "updateNoticeAborted": "The update did not start, so nothing was changed.",
+  "updateSettingsGroup": "Updates",
+  "updateDevOff": "Updates are off in development builds."
 }

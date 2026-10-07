@@ -1,0 +1,12 @@
+# Signed update files must keep their exact bytes on every checkout. The
+# Ed25519 signature of update.json covers the bytes, so one converted line
+# ending (core.autocrlf=true on Windows) makes the signature invalid and the
+# fixture tests fail on that machine. CI builds and signs its own copies; this
+# only protects the committed test fixtures and any copy committed later.
+test/services/update/fixtures/** -text
+update.json -text
+update.json.sig -text
+
+# Packages are never text.
+*.apk binary
+*.zip binary

@@ -4,6 +4,10 @@ import '../services/password_generator.dart';
 import '../services/sync/sync_service.dart';
 import 'app_scope.dart';
 import 'setup_screen.dart';
+import 'sign_in_screen.dart';
+import 'theme/tokens.dart';
+import 'widgets/primary_button.dart';
+import 'widgets/section_header.dart';
 import 'widgets/strength_bar.dart';
 
 /// Forced after a recovery-key unlock: choose a new master password; the
@@ -66,44 +70,59 @@ class _RecoveryResetScreenState extends State<RecoveryResetScreen> {
     final l = context.l10n;
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(l.newPassword),
-          automaticallyImplyLeading: false,
-        ),
-        body: ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            TextField(
-              controller: _pw,
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: InputDecoration(labelText: l.newPassword),
-              onChanged: (v) => setState(
-                () => _strength = context.services.strength.evaluate(v),
+      child: AuthPage(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const AuthIconTile(Icons.lock_reset_rounded),
+              const SizedBox(height: 20),
+              SectionHeader(
+                title: l.newPassword,
+                size: SectionHeaderSize.screen,
               ),
-            ),
-            const SizedBox(height: 8),
-            StrengthBar(result: _strength),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _confirm,
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              decoration: InputDecoration(
-                labelText: l.confirmPassword,
-                errorText: _error,
+            ],
+          ),
+          AuthNotice(l.masterPasswordHint),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AuthField(
+                controller: _pw,
+                label: l.newPassword,
+                textInputAction: TextInputAction.next,
+                onChanged: (v) => setState(
+                  () => _strength = context.services.strength.evaluate(v),
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            FilledButton(
-              onPressed: _busy ? null : _submit,
-              child: Text(l.save),
-            ),
-          ],
-        ),
+              // Nothing to rate until something is typed.
+              AnimatedSize(
+                duration: context.motion(AppMotion.fast),
+                curve: AppMotion.ease,
+                alignment: Alignment.topCenter,
+                child: _pw.text.isEmpty
+                    ? const SizedBox(width: double.infinity)
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: StrengthBar(result: _strength),
+                      ),
+              ),
+              const SizedBox(height: 16),
+              AuthField(
+                controller: _confirm,
+                label: l.confirmPassword,
+                invalid: _error != null,
+                onSubmitted: (_) => _busy ? null : _submit(),
+              ),
+              AuthNoticeSlot(_error),
+            ],
+          ),
+          PrimaryButton(
+            expanded: true,
+            onPressed: _busy ? null : _submit,
+            child: _busy ? AuthSpinner(label: l.save) : Text(l.save),
+          ),
+        ],
       ),
     );
   }

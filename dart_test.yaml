@@ -2,3 +2,8 @@ tags:
   finding:
     # Audit tests that demonstrate an open finding (see docs/SECURITY_AUDIT.md for IDs).
     # They are expected to fail until the finding is fixed.
+  screenshots:
+    # Render-and-look tests (test/tool/screenshot_harness.dart). They write PNGs
+    # for human review and assert nothing, so they are skipped by default.
+    # Run them with:  flutter test --run-skipped -t screenshots <test file>
+    skip: "visual review only; run with --run-skipped -t screenshots"
