@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand background (the portfolio bg token). Used for the launch window, the
+         Android 12+ system splash and behind the Flutter view, so a cold
+         start never flashes white. Keep in sync with tool/gen_icons.py. -->
+    <color name="brand_background">#FF07060F</color>
+</resources>
