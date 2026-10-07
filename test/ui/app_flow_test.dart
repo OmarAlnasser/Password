@@ -39,6 +39,9 @@ void main() {
     const strong = 'violet-harbor-quantum-71-lantern';
     await tester.enterText(fields.at(0), strong);
     await tester.enterText(fields.at(1), strong);
+    // The error above pushed the button below the 600 px test window; the
+    // form scrolls, so scroll to it as a user would.
+    await tester.ensureVisible(find.text('Create'));
     // Argon2id and the database run on real isolates.
     await tester.runAsync(() => tester.tap(find.text('Create')));
     await pumpUntilFound(tester, find.text('Your recovery key'));
