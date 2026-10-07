@@ -3,6 +3,12 @@
     <!-- Only network use: Supabase (encrypted blobs) and HIBP range API. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <!--
+      In-app update: lets the user allow this app to hand a downloaded update
+      to the system installer (Settings > Install unknown apps). Android still
+      installs it only if it is signed with the same key as the installed app.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <!--
       allowBackup=false + data extraction rules that exclude everything:
@@ -64,6 +70,21 @@
                 android:name="android.autofill"
                 android:resource="@xml/autofill_service"/>
         </service>
+
+        <!--
+          Gives the system installer read access to one verified update APK in
+          <cache>/updates/ (res/xml/update_paths.xml). Not exported: access is
+          only through a per-URI grant that the app adds to the install intent.
+        -->
+        <provider
+            android:name=".UpdateFileProvider"
+            android:authorities="${applicationId}.updates"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/update_paths"/>
+        </provider>
 
         <meta-data
             android:name="flutterEmbedding"

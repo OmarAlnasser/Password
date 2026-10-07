@@ -1333,6 +1333,438 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Erase vault'**
   String get eraseVault;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updateAvailable;
+
+  /// No description provided for @updateVersionNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String updateVersionNumber(Object version);
+
+  /// No description provided for @updateVersionAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} is available'**
+  String updateVersionAvailable(Object version);
+
+  /// No description provided for @updateYourVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {version}'**
+  String updateYourVersion(Object version);
+
+  /// No description provided for @updateDownloadSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Download size: {size}'**
+  String updateDownloadSize(Object size);
+
+  /// No description provided for @updateSizeMb.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} MB'**
+  String updateSizeMb(Object size);
+
+  /// No description provided for @updateSizeKb.
+  ///
+  /// In en, this message translates to:
+  /// **'{size} KB'**
+  String updateSizeKb(Object size);
+
+  /// No description provided for @updateReleased.
+  ///
+  /// In en, this message translates to:
+  /// **'Released {date}'**
+  String updateReleased(Object date);
+
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What’s new'**
+  String get updateWhatsNew;
+
+  /// No description provided for @updateNoNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'No release notes were provided.'**
+  String get updateNoNotes;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get updateNow;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updateLater;
+
+  /// No description provided for @updateSkipVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this version'**
+  String get updateSkipVersion;
+
+  /// No description provided for @updateSkipNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You won’t be reminded about this version. A newer one will still be offered.'**
+  String get updateSkipNote;
+
+  /// No description provided for @updateHideBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide for now'**
+  String get updateHideBanner;
+
+  /// No description provided for @updateTapForDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap for details'**
+  String get updateTapForDetails;
+
+  /// No description provided for @updateDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading update'**
+  String get updateDownloading;
+
+  /// No description provided for @updateBannerDownloading.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloading update… {percent}%'**
+  String updateBannerDownloading(Object percent);
+
+  /// No description provided for @updateDownloadProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of {size}'**
+  String updateDownloadProgress(Object percent, Object size);
+
+  /// No description provided for @updateDownloadBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'You can keep using the app. The download continues in the background.'**
+  String get updateDownloadBackground;
+
+  /// No description provided for @updateCancelDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel download'**
+  String get updateCancelDownload;
+
+  /// No description provided for @updateVerifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking the download'**
+  String get updateVerifying;
+
+  /// No description provided for @updateVerifyingNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Comparing the file with the signed release information…'**
+  String get updateVerifyingNote;
+
+  /// No description provided for @updateReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to install'**
+  String get updateReadyTitle;
+
+  /// No description provided for @updateReadyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The download is complete and verified. Nothing is installed until you tap the button.'**
+  String get updateReadyNote;
+
+  /// No description provided for @updateReadyAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Android will open its installer. Tap Install there to finish.'**
+  String get updateReadyAndroid;
+
+  /// No description provided for @updateReadyWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'The app will lock your vault, close, install the update and open again.'**
+  String get updateReadyWindows;
+
+  /// No description provided for @updateInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get updateInstall;
+
+  /// No description provided for @updateInstallWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Close and install'**
+  String get updateInstallWindows;
+
+  /// No description provided for @updateInstalling.
+  ///
+  /// In en, this message translates to:
+  /// **'Handing over to the installer…'**
+  String get updateInstalling;
+
+  /// No description provided for @updateInstallingWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing to install…'**
+  String get updateInstallingWindows;
+
+  /// No description provided for @updateInstallerOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'The system installer is open. Tap Install there to finish.'**
+  String get updateInstallerOpen;
+
+  /// No description provided for @updateInstallerReopen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the installer again'**
+  String get updateInstallerReopen;
+
+  /// No description provided for @updatePermissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow installs from this app'**
+  String get updatePermissionTitle;
+
+  /// No description provided for @updatePermissionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Android needs your permission before this app can install updates. In the settings page that just opened, turn on “Allow from this source”, go back, then tap Install again.'**
+  String get updatePermissionBody;
+
+  /// No description provided for @updateInstallFailedAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'Android didn’t accept this update. The installed app may have been signed differently (for example a test build). In that case install the new version by hand from the release page. Uninstalling removes the vault stored on this device, so export or sync it first.'**
+  String get updateInstallFailedAndroid;
+
+  /// No description provided for @updateInstallFailedWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'The update couldn’t be installed automatically. The app’s folder may be protected (for example inside Program Files) or in use. Nothing was changed. Download the new version from the release page and replace the app by hand.'**
+  String get updateInstallFailedWindows;
+
+  /// No description provided for @updateInstallUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Installing updates isn’t available here. Download the new version from the release page.'**
+  String get updateInstallUnsupported;
+
+  /// No description provided for @updateOpenReleasePage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open release page'**
+  String get updateOpenReleasePage;
+
+  /// No description provided for @updateCopyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get updateCopyLink;
+
+  /// No description provided for @updateLinkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied'**
+  String get updateLinkCopied;
+
+  /// No description provided for @updateRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get updateRetry;
+
+  /// No description provided for @updateErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t update'**
+  String get updateErrorTitle;
+
+  /// No description provided for @updateRejectedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update rejected for your safety'**
+  String get updateRejectedTitle;
+
+  /// No description provided for @updateErrorOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t reach GitHub. Check your internet connection and try again.'**
+  String get updateErrorOffline;
+
+  /// No description provided for @updateErrorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The update server didn’t answer properly. Try again later.'**
+  String get updateErrorServer;
+
+  /// No description provided for @updateErrorDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'The downloaded file was incomplete or didn’t match the signed release information, so it was deleted. Try downloading it again.'**
+  String get updateErrorDamaged;
+
+  /// No description provided for @updateErrorBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'The download was blocked because it didn’t come from the official release address.'**
+  String get updateErrorBlocked;
+
+  /// No description provided for @updateErrorSignature.
+  ///
+  /// In en, this message translates to:
+  /// **'This update’s signature could not be verified, so it was not used. Nothing was installed. If this keeps happening, get the app again from the official release page.'**
+  String get updateErrorSignature;
+
+  /// No description provided for @updateErrorRollback.
+  ///
+  /// In en, this message translates to:
+  /// **'An older release than one already seen was offered, so it was ignored. Nothing was installed.'**
+  String get updateErrorRollback;
+
+  /// No description provided for @updateErrorSchema.
+  ///
+  /// In en, this message translates to:
+  /// **'This update can’t be read by this version of the app. Download the new version from the release page.'**
+  String get updateErrorSchema;
+
+  /// No description provided for @updateErrorNoPackage.
+  ///
+  /// In en, this message translates to:
+  /// **'The latest release has no package for this device yet. Try again later.'**
+  String get updateErrorNoPackage;
+
+  /// No description provided for @updateErrorStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'The update couldn’t be saved on this device. Free some space and try again.'**
+  String get updateErrorStorage;
+
+  /// No description provided for @updateErrorInternal.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong with the update. Try again later.'**
+  String get updateErrorInternal;
+
+  /// No description provided for @updateAutoCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check for updates automatically'**
+  String get updateAutoCheck;
+
+  /// No description provided for @updateAutoCheckNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks for a new version on GitHub at most once a day. Nothing from your vault is sent, but GitHub sees your IP address.'**
+  String get updateAutoCheckNote;
+
+  /// No description provided for @updateCheckNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Check now'**
+  String get updateCheckNow;
+
+  /// No description provided for @updateChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for updates…'**
+  String get updateChecking;
+
+  /// No description provided for @updateVersionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get updateVersionTitle;
+
+  /// No description provided for @updateVersionBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'{version} (build {build})'**
+  String updateVersionBuild(Object version, Object build);
+
+  /// No description provided for @updateDevBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Development build'**
+  String get updateDevBuild;
+
+  /// No description provided for @updateLastChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Last checked: {when}'**
+  String updateLastChecked(Object when);
+
+  /// No description provided for @updateNeverChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Not checked yet'**
+  String get updateNeverChecked;
+
+  /// No description provided for @updateUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You have the latest version.'**
+  String get updateUpToDate;
+
+  /// No description provided for @updateViewUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'View update'**
+  String get updateViewUpdate;
+
+  /// No description provided for @updateBannerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The update didn’t finish'**
+  String get updateBannerFailed;
+
+  /// No description provided for @updateNoticeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The last update didn’t finish'**
+  String get updateNoticeTitle;
+
+  /// No description provided for @updateNoticeRolledBack.
+  ///
+  /// In en, this message translates to:
+  /// **'The update could not be completed. The previous version is still installed and working.'**
+  String get updateNoticeRolledBack;
+
+  /// No description provided for @updateNoticeDamaged.
+  ///
+  /// In en, this message translates to:
+  /// **'The update failed and the app may be damaged. Download the latest release from the release page and replace the app’s folder.'**
+  String get updateNoticeDamaged;
+
+  /// No description provided for @updateNoticeAborted.
+  ///
+  /// In en, this message translates to:
+  /// **'The update did not start, so nothing was changed.'**
+  String get updateNoticeAborted;
+
+  /// No description provided for @updateSettingsGroup.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates'**
+  String get updateSettingsGroup;
+
+  /// No description provided for @updateDevOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates are off in development builds.'**
+  String get updateDevOff;
 }
 
 class _AppLocalizationsDelegate

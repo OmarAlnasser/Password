@@ -49,3 +49,8 @@ app.*.map.json
 
 # Private release keys (never commit)
 /.secrets/
+
+# Signing material must never be committed
+*.jks
+*.keystore
+key.properties

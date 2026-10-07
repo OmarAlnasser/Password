@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The only thing UpdateFileProvider can hand out: the verified update APK that
+  the app copied into <cache>/updates/ for the system package installer.
+  Nothing else in the app's storage is reachable through this provider.
+-->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="updates" path="updates/"/>
+</paths>

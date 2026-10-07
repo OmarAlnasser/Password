@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "version": "0.2.0",
+  "build": 2000,
+  "publishedAt": "2026-10-07T12:00:00Z",
+  "notes": {
+    "en": "Fixes and improvements.\n\n- Faster start-up\n- Smaller download",
+    "ar": "إصلاحات وتحسينات.\n\n- بدء تشغيل أسرع\n- حجم تنزيل أصغر"
+  },
+  "assets": {
+    "android": {
+      "name": "android.apk",
+      "url": "https://github.com/OmarAlnasser/Password/releases/download/v0.2.0/android.apk",
+      "size": 1205,
+      "sha256": "3c40faaa050f4592b3a5a98575418fd5600b7e91a983b78090198be7180373c6"
+    },
+    "windows": {
+      "name": "windows-x64.zip",
+      "url": "https://github.com/OmarAlnasser/Password/releases/download/v0.2.0/windows-x64.zip",
+      "size": 2128,
+      "sha256": "cfd5b3b166faa8daea062970c4a62e1344578a71b1f4634636e41b38dd956ab9"
+    }
+  }
+}

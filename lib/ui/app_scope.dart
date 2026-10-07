@@ -12,6 +12,7 @@ import '../services/password_generator.dart';
 import '../services/platform_bridge.dart';
 import '../services/settings.dart';
 import '../services/sync/sync_service.dart';
+import '../services/update/update_controller.dart';
 import '../services/vault_session.dart';
 
 /// Everything the UI needs, created once in `main`.
@@ -28,6 +29,7 @@ class AppServices {
     this.biometrics,
     this.sync,
     this.favicons,
+    this.updates,
   });
 
   final VaultSession session;
@@ -43,6 +45,11 @@ class AppServices {
 
   /// Website icons for the entry list; null where none are shown (autofill).
   final FaviconService? favicons;
+
+  /// Checks for, downloads and installs new versions (Android and Windows
+  /// release builds). Null in development builds, on other platforms and in
+  /// the autofill entry point: then the UI shows nothing about updates.
+  final UpdateController? updates;
 
   /// Loads the website icon of every entry in the background. Called after
   /// unlock, save and import; hosts that are already known are skipped. With

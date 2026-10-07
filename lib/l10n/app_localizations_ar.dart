@@ -713,4 +713,266 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get eraseVault => 'مسح الخزنة';
+
+  @override
+  String get updateAvailable => 'يتوفر تحديث';
+
+  @override
+  String updateVersionNumber(Object version) {
+    return 'الإصدار $version';
+  }
+
+  @override
+  String updateVersionAvailable(Object version) {
+    return 'يتوفر الإصدار $version';
+  }
+
+  @override
+  String updateYourVersion(Object version) {
+    return 'إصدارك الحالي $version';
+  }
+
+  @override
+  String updateDownloadSize(Object size) {
+    return 'حجم التنزيل: $size';
+  }
+
+  @override
+  String updateSizeMb(Object size) {
+    return '$size ميغابايت';
+  }
+
+  @override
+  String updateSizeKb(Object size) {
+    return '$size كيلوبايت';
+  }
+
+  @override
+  String updateReleased(Object date) {
+    return 'تاريخ الإصدار: $date';
+  }
+
+  @override
+  String get updateWhatsNew => 'الجديد في هذا الإصدار';
+
+  @override
+  String get updateNoNotes => 'لا توجد ملاحظات لهذا الإصدار.';
+
+  @override
+  String get updateNow => 'حدّث الآن';
+
+  @override
+  String get updateLater => 'لاحقًا';
+
+  @override
+  String get updateSkipVersion => 'تخطَّ هذا الإصدار';
+
+  @override
+  String get updateSkipNote =>
+      'لن نذكّرك بهذا الإصدار، وسيظل أي إصدار أحدث يُعرض عليك.';
+
+  @override
+  String get updateHideBanner => 'إخفاء الآن';
+
+  @override
+  String get updateTapForDetails => 'اضغط لعرض التفاصيل';
+
+  @override
+  String get updateDownloading => 'جارٍ تنزيل التحديث';
+
+  @override
+  String updateBannerDownloading(Object percent) {
+    return 'جارٍ تنزيل التحديث… $percent%';
+  }
+
+  @override
+  String updateDownloadProgress(Object percent, Object size) {
+    return '$percent% من $size';
+  }
+
+  @override
+  String get updateDownloadBackground =>
+      'يمكنك متابعة استخدام التطبيق، فالتنزيل يستمر في الخلفية.';
+
+  @override
+  String get updateCancelDownload => 'إلغاء التنزيل';
+
+  @override
+  String get updateVerifying => 'جارٍ التحقق من الملف المنزَّل';
+
+  @override
+  String get updateVerifyingNote =>
+      'تتم مطابقة الملف مع معلومات الإصدار الموقَّعة…';
+
+  @override
+  String get updateReadyTitle => 'جاهز للتثبيت';
+
+  @override
+  String get updateReadyNote =>
+      'اكتمل التنزيل وتم التحقق منه. لن يُثبَّت شيء حتى تضغط على الزر.';
+
+  @override
+  String get updateReadyAndroid =>
+      'سيفتح أندرويد شاشة التثبيت الخاصة به. اضغط «تثبيت» هناك لإتمام التحديث.';
+
+  @override
+  String get updateReadyWindows =>
+      'سيقفل التطبيق خزنتك، ثم يُغلق ويثبّت التحديث ويفتح من جديد.';
+
+  @override
+  String get updateInstall => 'تثبيت';
+
+  @override
+  String get updateInstallWindows => 'أغلق وثبّت';
+
+  @override
+  String get updateInstalling => 'جارٍ تسليم التحديث إلى المثبّت…';
+
+  @override
+  String get updateInstallingWindows => 'جارٍ الإغلاق للتثبيت…';
+
+  @override
+  String get updateInstallerOpen =>
+      'مثبّت النظام مفتوح. اضغط «تثبيت» هناك لإتمام التحديث.';
+
+  @override
+  String get updateInstallerReopen => 'فتح المثبّت مرة أخرى';
+
+  @override
+  String get updatePermissionTitle => 'اسمح بالتثبيت من هذا التطبيق';
+
+  @override
+  String get updatePermissionBody =>
+      'يحتاج أندرويد إلى إذنك قبل أن يتمكن هذا التطبيق من تثبيت التحديثات. في صفحة الإعدادات التي فُتحت للتو، فعّل «السماح من هذا المصدر»، ثم ارجع واضغط «تثبيت» مرة أخرى.';
+
+  @override
+  String get updateInstallFailedAndroid =>
+      'لم يقبل أندرويد هذا التحديث. ربما كان التطبيق المثبّت موقَّعًا بتوقيع مختلف، مثل نسخة تجريبية. في هذه الحالة ثبّت الإصدار الجديد يدويًا من صفحة الإصدارات. إلغاء تثبيت التطبيق يحذف الخزنة المحفوظة على هذا الجهاز، لذا صدّرها أو زامنها أولًا.';
+
+  @override
+  String get updateInstallFailedWindows =>
+      'تعذّر تثبيت التحديث تلقائيًا. ربما كان مجلد التطبيق محميًا، مثل Program Files، أو قيد الاستخدام. لم يتغيّر شيء. نزّل الإصدار الجديد من صفحة الإصدارات واستبدل به التطبيق يدويًا.';
+
+  @override
+  String get updateInstallUnsupported =>
+      'تثبيت التحديثات غير متاح هنا. نزّل الإصدار الجديد من صفحة الإصدارات.';
+
+  @override
+  String get updateOpenReleasePage => 'فتح صفحة الإصدارات';
+
+  @override
+  String get updateCopyLink => 'نسخ الرابط';
+
+  @override
+  String get updateLinkCopied => 'تم نسخ الرابط';
+
+  @override
+  String get updateRetry => 'أعد المحاولة';
+
+  @override
+  String get updateErrorTitle => 'تعذّر التحديث';
+
+  @override
+  String get updateRejectedTitle => 'رُفض التحديث حفاظًا على سلامتك';
+
+  @override
+  String get updateErrorOffline =>
+      'تعذّر الوصول إلى GitHub. تحقق من اتصالك بالإنترنت ثم أعد المحاولة.';
+
+  @override
+  String get updateErrorServer =>
+      'لم يستجب خادم التحديثات كما ينبغي. حاول مرة أخرى لاحقًا.';
+
+  @override
+  String get updateErrorDamaged =>
+      'الملف المنزَّل ناقص أو لا يطابق معلومات الإصدار الموقَّعة، لذا حُذف. حاول تنزيله من جديد.';
+
+  @override
+  String get updateErrorBlocked =>
+      'حُظر التنزيل لأنه لم يأتِ من عنوان الإصدارات الرسمي.';
+
+  @override
+  String get updateErrorSignature =>
+      'تعذّر التحقق من توقيع هذا التحديث، لذا لم يُستخدم ولم يُثبَّت شيء. إذا تكرر هذا، فنزّل التطبيق من جديد من صفحة الإصدارات الرسمية.';
+
+  @override
+  String get updateErrorRollback =>
+      'عُرض إصدار أقدم من إصدار سبق أن ظهر لك، فتم تجاهله ولم يُثبَّت شيء.';
+
+  @override
+  String get updateErrorSchema =>
+      'لا يستطيع هذا الإصدار من التطبيق قراءة هذا التحديث. نزّل الإصدار الجديد من صفحة الإصدارات.';
+
+  @override
+  String get updateErrorNoPackage =>
+      'لا تتوفر في أحدث إصدار حزمة مناسبة لهذا الجهاز بعد. حاول مرة أخرى لاحقًا.';
+
+  @override
+  String get updateErrorStorage =>
+      'تعذّر حفظ التحديث على هذا الجهاز. أخلِ بعض المساحة ثم أعد المحاولة.';
+
+  @override
+  String get updateErrorInternal =>
+      'حدث خطأ ما في التحديث. حاول مرة أخرى لاحقًا.';
+
+  @override
+  String get updateAutoCheck => 'التحقق من التحديثات تلقائيًا';
+
+  @override
+  String get updateAutoCheckNote =>
+      'يبحث عن إصدار جديد على GitHub مرة واحدة يوميًا على الأكثر. لا يُرسل أي شيء من خزنتك، لكن GitHub يرى عنوان IP الخاص بك.';
+
+  @override
+  String get updateCheckNow => 'تحقق الآن';
+
+  @override
+  String get updateChecking => 'جارٍ التحقق من التحديثات…';
+
+  @override
+  String get updateVersionTitle => 'الإصدار';
+
+  @override
+  String updateVersionBuild(Object version, Object build) {
+    return '$version (رقم البناء $build)';
+  }
+
+  @override
+  String get updateDevBuild => 'نسخة تطوير';
+
+  @override
+  String updateLastChecked(Object when) {
+    return 'آخر تحقق: $when';
+  }
+
+  @override
+  String get updateNeverChecked => 'لم يتم التحقق بعد';
+
+  @override
+  String get updateUpToDate => 'أنت تستخدم أحدث إصدار.';
+
+  @override
+  String get updateViewUpdate => 'عرض التحديث';
+
+  @override
+  String get updateBannerFailed => 'لم يكتمل التحديث';
+
+  @override
+  String get updateNoticeTitle => 'لم يكتمل آخر تحديث';
+
+  @override
+  String get updateNoticeRolledBack =>
+      'تعذّر إكمال التحديث. ما زال الإصدار السابق مثبّتًا ويعمل.';
+
+  @override
+  String get updateNoticeDamaged =>
+      'فشل التحديث وقد يكون التطبيق تالفًا. نزّل أحدث إصدار من صفحة الإصدارات واستبدل به مجلد التطبيق.';
+
+  @override
+  String get updateNoticeAborted => 'لم يبدأ التحديث، لذا لم يتغيّر شيء.';
+
+  @override
+  String get updateSettingsGroup => 'التحديثات';
+
+  @override
+  String get updateDevOff => 'التحديثات متوقفة في نسخ التطوير.';
 }
