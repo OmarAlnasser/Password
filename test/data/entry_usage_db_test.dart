@@ -258,7 +258,7 @@ void main() {
         }
         old.execute('PRAGMA user_version = $version');
       } finally {
-        old.dispose();
+        old.close();
       }
     }
 

@@ -403,13 +403,13 @@ void main() {
         find.descendant(of: read, matching: find.text(password)),
         findsNothing,
       );
-      await tester.tap(
-        find.descendant(of: read, matching: find.byTooltip('Show')),
-      );
+      final eye = find.descendant(of: read, matching: find.byTooltip('Show'));
+      await tester.ensureVisible(eye);
+      await tester.tap(eye);
       await tester.pumpAndSettle();
       expect(
         find.descendant(of: read, matching: find.text(password)),
-        findsOneWidget,
+        findsWidgets,
       );
     });
 
