@@ -709,6 +709,9 @@ class _HomeScreenState extends State<HomeScreen> {
         if (wide) {
           final listW = (width * 0.32).clamp(360.0, 420.0);
           body = Row(
+            // Stretch: the detail pane is as tall as the window, so its
+            // content starts at the top whatever the entry's length.
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
                 width: listW,

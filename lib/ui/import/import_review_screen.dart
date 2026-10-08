@@ -6,7 +6,14 @@ import '../../data/models/vault_entry.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/import/import_review.dart';
 import '../app_scope.dart';
+import '../theme/theme.dart';
+import '../widgets/glass_bar.dart';
+import '../widgets/max_width_body.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/reveal.dart';
 import '../widgets/site_icon.dart';
+import '../widgets/surface_card.dart';
+import '../widgets/secret_text.dart';
 
 /// Shows what a CSV import (Chrome, Bitwarden) would do before anything is
 /// saved: logins grouped by site, what happens to each one and what looks
@@ -113,6 +120,7 @@ class _ImportReviewScreenState extends State<ImportReviewScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
+    final t = context.tokens;
     final items = _items!;
     final included = items.where((i) => i.include).length;
     // Flat list for the builder: the summary, then each group header
@@ -124,32 +132,67 @@ class _ImportReviewScreenState extends State<ImportReviewScreen> {
         ...group,
       ],
     ];
+    final topInset = MediaQuery.paddingOf(context).top + kToolbarHeight + 8;
     return Scaffold(
-      appBar: AppBar(title: Text(l.reviewImport)),
+      extendBodyBehindAppBar: true,
+      appBar: GlassBar(title: Text(l.reviewImport)),
       body: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: MaxWidthBody.insets(
+          context,
+          maxWidth: AppLayout.form,
+          base: EdgeInsets.only(top: topInset, bottom: 16),
+        ),
         itemCount: rows.length,
         itemBuilder: (context, i) => switch (rows[i]) {
-          final ReviewItem item => _ItemTile(
-            item: item,
-            onInclude: _busy ? null : (v) => _setInclude(item, v),
-            onTap: _busy ? null : () => _edit(item),
+          final ReviewItem item => Reveal(
+            enabled: i < 8,
+            index: i,
+            child: _ItemTile(
+              item: item,
+              onInclude: _busy ? null : (v) => _setInclude(item, v),
+              onTap: _busy ? null : () => _edit(item),
+            ),
           ),
           final String site => _GroupHeader(group: _groups[site]!),
-          _ => _Summary(items: items, skipped: widget.skipped),
+          _ => Reveal(
+            child: _Summary(items: items, skipped: widget.skipped),
+          ),
         },
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: FilledButton(
-            onPressed: _busy || included == 0 ? null : _import,
-            child: _busy
-                ? const SizedBox.square(
-                    dimension: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(l.importN(included)),
+      // The one action of the screen, always in reach.
+      bottomNavigationBar: DecoratedBox(
+        decoration: BoxDecoration(
+          color: t.bg2,
+          border: Border(top: BorderSide(color: t.line)),
+        ),
+        child: SafeArea(
+          // heightFactor 1: the bar is as high as its button, not the page.
+          child: Align(
+            heightFactor: 1,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: AppLayout.form + 2 * AppSpace.gutterOf(context),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpace.gutterOf(context),
+                  vertical: 12,
+                ),
+                child: PrimaryButton(
+                  expanded: true,
+                  onPressed: _busy || included == 0 ? null : _import,
+                  child: _busy
+                      ? SizedBox.square(
+                          dimension: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: t.onStrong,
+                          ),
+                        )
+                      : Text(l.importN(included)),
+                ),
+              ),
+            ),
           ),
         ),
       ),
@@ -178,41 +221,74 @@ String _issueLabel(AppLocalizations l, ReviewIssue i) => switch (i) {
   ReviewIssue.existsWithDifferentPassword => l.issueExistsWithDifferentPassword,
 };
 
-/// Background and text colour of an action's chip.
-(Color, Color) _actionColors(ColorScheme c, ReviewAction a) => switch (a) {
-  ReviewAction.newEntry => (c.primaryContainer, c.onPrimaryContainer),
-  ReviewAction.updateExisting => (c.tertiaryContainer, c.onTertiaryContainer),
-  ReviewAction.mergedDuplicate => (
-    c.secondaryContainer,
-    c.onSecondaryContainer,
+/// How a chip looks: fill, outline, and text/icon colour.
+class _Tone {
+  const _Tone(this.fill, this.border, this.fg);
+
+  final Color fill;
+  final Color border;
+  final Color fg;
+}
+
+/// The portfolio's chip style per action: a violet pill for new logins, amber
+/// for an update, the read-only tag look for merged duplicates, a quiet one
+/// for what is already saved and red for what needs attention. Each also has
+/// its own icon, so colour is never the only signal.
+(_Tone, IconData) _actionStyle(AppTokens t, ReviewAction a) => switch (a) {
+  ReviewAction.newEntry => (
+    _Tone(t.selected, t.selectedBorder, t.accent2),
+    Icons.add_circle_outline_rounded,
   ),
-  ReviewAction.skipIdentical => (c.surfaceContainerHighest, c.onSurfaceVariant),
-  ReviewAction.needsAttention => (c.errorContainer, c.onErrorContainer),
+  ReviewAction.updateExisting => (
+    _Tone(t.warnContainer, t.warn.withValues(alpha: 0.45), t.warn),
+    Icons.update_rounded,
+  ),
+  ReviewAction.mergedDuplicate => (
+    _Tone(t.tagFill, t.tagBorder, t.tagText),
+    Icons.call_merge_rounded,
+  ),
+  ReviewAction.skipIdentical => (
+    _Tone(t.surface2, t.line2, t.muted),
+    Icons.check_circle_outline_rounded,
+  ),
+  ReviewAction.needsAttention => (
+    _Tone(t.errorContainer, t.error.withValues(alpha: 0.5), t.onErrorContainer),
+    Icons.warning_amber_rounded,
+  ),
 };
 
-/// A small label chip (status or issue).
+/// A small label pill (status or issue).
 class _Pill extends StatelessWidget {
-  const _Pill(this.label, {required this.colors, this.outlined = false});
+  const _Pill(this.label, {required this.tone, required this.icon});
 
   final String label;
-  final (Color, Color) colors;
-  final bool outlined;
+  final _Tone tone;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    final (bg, fg) = colors;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: outlined ? null : bg,
-        border: outlined ? Border.all(color: fg) : null,
-        borderRadius: BorderRadius.circular(8),
+    final tt = Theme.of(context).textTheme;
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 11, 4),
+      decoration: ShapeDecoration(
+        color: tone.fill,
+        shape: StadiumBorder(side: BorderSide(color: tone.border)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-        child: Text(
-          label,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(color: fg),
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ExcludeSemantics(child: Icon(icon, size: 15, color: tone.fg)),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              label,
+              style: tt.labelMedium!.copyWith(
+                color: tone.fg,
+                fontSize: context.isArabic ? 13 : 12.5,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -227,40 +303,59 @@ class _Summary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final theme = Theme.of(context);
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
     final counts = ImportReview.counts(items);
-    return Card(
-      margin: const EdgeInsets.all(12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l.importFound(items.length),
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
+    return SurfaceCard(
+      featured: true,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(
+            header: true,
+            child: Text(l.importFound(items.length), style: tt.titleLarge),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final a in ReviewAction.values)
+                if (counts[a]! > 0)
+                  _Pill(
+                    '${_actionLabel(l, a)}: ${counts[a]}',
+                    tone: _actionStyle(t, a).$1,
+                    icon: _actionStyle(t, a).$2,
+                  ),
+            ],
+          ),
+          if (skipped > 0) ...[
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (final a in ReviewAction.values)
-                  if (counts[a]! > 0)
-                    _Pill(
-                      '${_actionLabel(l, a)}: ${counts[a]}',
-                      colors: _actionColors(theme.colorScheme, a),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Icon(
+                    Icons.info_outline_rounded,
+                    size: 16,
+                    color: t.muted,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l.importSkippedRows(skipped),
+                    style: tt.bodyMedium!.copyWith(color: t.soft),
+                  ),
+                ),
               ],
             ),
-            if (skipped > 0) ...[
-              const SizedBox(height: 8),
-              Text(l.importSkippedRows(skipped)),
-            ],
-            const SizedBox(height: 8),
-            Text(l.importReviewHint, style: theme.textTheme.bodySmall),
           ],
-        ),
+          const SizedBox(height: 12),
+          Text(l.importReviewHint, style: tt.bodySmall),
+        ],
       ),
     );
   }
@@ -273,20 +368,44 @@ class _GroupHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
     final first = group.first;
     final name = first.siteName.isEmpty
         ? context.l10n.noWebsite
         : first.siteName;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(4, 24, 4, 10),
       child: Row(
         children: [
-          SiteIcon(url: first.entry.url, title: name, size: 28),
+          SiteIcon(url: first.entry.url, title: name, size: 32),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(name, style: Theme.of(context).textTheme.titleSmall),
+            child: Semantics(
+              header: true,
+              child: Text(
+                name,
+                style: tt.titleSmall!.copyWith(color: t.ink, fontSize: 15),
+              ),
+            ),
           ),
-          Text('${group.length}'),
+          Container(
+            constraints: const BoxConstraints(minWidth: 26),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            alignment: Alignment.center,
+            decoration: ShapeDecoration(
+              color: t.surface,
+              shape: StadiumBorder(side: BorderSide(color: t.line2)),
+            ),
+            child: Text(
+              '${group.length}',
+              style: AppText.numeral.copyWith(
+                fontSize: 13,
+                color: t.soft,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -303,50 +422,77 @@ class _ItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final scheme = Theme.of(context).colorScheme;
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
     final e = item.entry;
     final existing = item.existing;
-    return ListTile(
-      leading: Checkbox(
-        value: item.include,
-        onChanged: onInclude == null ? null : (v) => onInclude!(v ?? false),
-      ),
-      title: Text(e.username.isEmpty ? l.noUsername : e.username),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (e.url.isNotEmpty)
-            Directionality(
-              textDirection: TextDirection.ltr,
-              child: Text(e.url, maxLines: 1, overflow: TextOverflow.ellipsis),
-            )
-          else if (e.title.isNotEmpty)
-            Text(e.title),
-          if (item.action == ReviewAction.updateExisting && existing != null)
-            Text(l.reviewUpdates(existing.title)),
-          const SizedBox(height: 4),
-          Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              _Pill(
-                _actionLabel(l, item.action),
-                colors: _actionColors(scheme, item.action),
-              ),
-              for (final issue in item.issues)
-                _Pill(
-                  _issueLabel(l, issue),
-                  outlined: true,
-                  colors: issue.isBlocking
-                      ? (scheme.errorContainer, scheme.error)
-                      : (scheme.surfaceContainerHigh, scheme.onSurfaceVariant),
+    final (tone, icon) = _actionStyle(t, item.action);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      // A ticked login is a selected row: tinted fill, lighter border.
+      child: SurfaceCard(
+        selected: item.include,
+        padding: EdgeInsets.zero,
+        child: Material(
+          type: MaterialType.transparency,
+          child: ListTile(
+            contentPadding: const EdgeInsetsDirectional.fromSTEB(6, 6, 12, 8),
+            leading: Checkbox(
+              value: item.include,
+              onChanged: onInclude == null
+                  ? null
+                  : (v) => onInclude!(v ?? false),
+            ),
+            title: e.username.isEmpty
+                ? Text(
+                    l.noUsername,
+                    style: tt.bodyMedium!.copyWith(color: t.muted),
+                  )
+                : LtrText(
+                    e.username,
+                    style: TextStyle(color: t.ink, fontSize: 14),
+                  ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (e.url.isNotEmpty)
+                  LtrText(e.url)
+                else if (e.title.isNotEmpty)
+                  Text(e.title),
+                if (item.action == ReviewAction.updateExisting &&
+                    existing != null) ...[
+                  const SizedBox(height: 2),
+                  Text(l.reviewUpdates(existing.title)),
+                ],
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _Pill(_actionLabel(l, item.action), tone: tone, icon: icon),
+                    for (final issue in item.issues)
+                      _Pill(
+                        _issueLabel(l, issue),
+                        icon: issue.isBlocking
+                            ? Icons.error_outline_rounded
+                            : Icons.info_outline_rounded,
+                        tone: _Tone(
+                          Colors.transparent,
+                          issue.isBlocking
+                              ? t.error.withValues(alpha: 0.6)
+                              : t.line2,
+                          issue.isBlocking ? t.error : t.muted,
+                        ),
+                      ),
+                  ],
                 ),
-            ],
+              ],
+            ),
+            trailing: Icon(Icons.edit_outlined, size: 20, color: t.muted),
+            onTap: onTap,
           ),
-        ],
+        ),
       ),
-      trailing: const Icon(Icons.edit_outlined),
-      onTap: onTap,
     );
   }
 }
@@ -413,14 +559,41 @@ class _EditLoginDialogState extends State<_EditLoginDialog> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    const gap = SizedBox(height: 12);
+    final t = context.tokens;
+    const gap = SizedBox(height: 14);
+    // Latin-only fields: left to right in Arabic too, at the start edge.
+    final latinAlign = Directionality.of(context) == TextDirection.rtl
+        ? TextAlign.right
+        : TextAlign.left;
+    final mono = AppText.secret.copyWith(
+      fontSize: 15,
+      letterSpacing: 0.3,
+      color: t.ink,
+    );
     return AlertDialog(
-      title: Text(l.editLogin),
+      title: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: t.tint,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: t.line2),
+            ),
+            child: Icon(Icons.edit_outlined, size: 20, color: t.accent2),
+          ),
+          const SizedBox(width: 14),
+          Expanded(child: Text(l.editLogin)),
+        ],
+      ),
       scrollable: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // The dialog's own padding clips a floating label at the top.
+          const SizedBox(height: 6),
           TextField(
             controller: _title,
             decoration: InputDecoration(labelText: l.title),
@@ -434,6 +607,8 @@ class _EditLoginDialogState extends State<_EditLoginDialog> {
             // Read left to right in Arabic too: bidi would move a trailing
             // "!" to the front.
             textDirection: TextDirection.ltr,
+            textAlign: latinAlign,
+            style: mono,
             decoration: InputDecoration(labelText: l.username),
           ),
           gap,
@@ -442,14 +617,15 @@ class _EditLoginDialogState extends State<_EditLoginDialog> {
             autocorrect: false,
             enableSuggestions: false,
             enableIMEPersonalizedLearning: false,
-            style: const TextStyle(fontFamily: 'monospace'),
+            style: mono,
             textDirection: TextDirection.ltr,
+            textAlign: latinAlign,
             decoration: InputDecoration(labelText: l.password),
           ),
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: TextButton.icon(
-              icon: const Icon(Icons.swap_vert),
+              icon: const Icon(Icons.swap_vert_rounded),
               label: Text(l.swapUserPassword),
               onPressed: _swap,
             ),
@@ -458,6 +634,9 @@ class _EditLoginDialogState extends State<_EditLoginDialog> {
             controller: _url,
             autocorrect: false,
             keyboardType: TextInputType.url,
+            textDirection: TextDirection.ltr,
+            textAlign: latinAlign,
+            style: mono,
             decoration: InputDecoration(labelText: l.url),
           ),
           gap,
@@ -475,7 +654,8 @@ class _EditLoginDialogState extends State<_EditLoginDialog> {
           onPressed: () => Navigator.pop(context),
           child: Text(l.cancel),
         ),
-        FilledButton(
+        PrimaryButton(
+          glow: false,
           onPressed: () => Navigator.pop(context, _result()),
           child: Text(l.save),
         ),

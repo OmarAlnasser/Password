@@ -202,9 +202,9 @@ class EntryDetailView extends StatefulWidget {
 
   final String entryId;
 
-  /// In a pane next to the list: content starts at the pane's start edge
-  /// (not centred) and the header carries the favourite, edit and delete
-  /// buttons, because there is no app bar of its own.
+  /// In a pane next to the list: content is centred in the pane, top
+  /// aligned, and the header carries the favourite, edit and delete buttons,
+  /// because there is no app bar of its own.
   final bool embedded;
 
   /// Space above the first card, for a glass app bar that the content
@@ -358,26 +358,16 @@ class _EntryDetailViewState extends State<EntryDetailView> {
           builder: (context, c) {
             final gutter = AppSpace.gutter(c.maxWidth);
             final bottom = MediaQuery.paddingOf(context).bottom + 32;
-            final EdgeInsetsGeometry padding;
-            if (widget.embedded) {
-              // Started at the pane's start edge, at most 640 wide.
-              final start = gutter + 4;
-              final end = math.max(start, c.maxWidth - start - AppLayout.form);
-              padding = EdgeInsetsDirectional.fromSTEB(
-                start,
-                widget.topInset,
-                end,
-                bottom,
-              );
-            } else {
-              final side = math.max(gutter, (c.maxWidth - AppLayout.form) / 2);
-              padding = EdgeInsets.fromLTRB(
-                side,
-                widget.topInset,
-                side,
-                bottom,
-              );
-            }
+            // At most 640 wide and centred in the screen or in the pane, so
+            // a wide pane has no dead strip on one side.
+            final minSide = widget.embedded ? gutter + 4 : gutter;
+            final side = math.max(minSide, (c.maxWidth - AppLayout.form) / 2);
+            final padding = EdgeInsets.fromLTRB(
+              side,
+              widget.topInset,
+              side,
+              bottom,
+            );
             // Not a lazy list: a card that scrolled away and came back must
             // not play its entrance again (the password card may be open).
             return SingleChildScrollView(
