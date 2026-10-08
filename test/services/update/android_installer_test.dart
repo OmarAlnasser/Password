@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:vaultsnap/services/update/android_installer.dart';
-import 'package:vaultsnap/services/update/update_installer.dart';
+import 'package:hisn/services/update/android_installer.dart';
+import 'package:hisn/services/update/update_installer.dart';
 
 /// The native side is mocked, so these tests check what the Dart side asks
 /// for, in which order, and how it maps every answer. The APK bytes are

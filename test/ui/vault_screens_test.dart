@@ -4,17 +4,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/app.dart';
-import 'package:vaultsnap/brand.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/entry_detail_screen.dart';
-import 'package:vaultsnap/ui/entry_edit_screen.dart';
-import 'package:vaultsnap/ui/quick_search_screen.dart';
-import 'package:vaultsnap/ui/widgets/secret_text.dart';
-import 'package:vaultsnap/ui/widgets/surface_card.dart';
-import 'package:vaultsnap/ui/widgets/totp_view.dart';
+import 'package:hisn/app.dart';
+import 'package:hisn/brand.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/entry_detail_screen.dart';
+import 'package:hisn/ui/entry_edit_screen.dart';
+import 'package:hisn/ui/quick_search_screen.dart';
+import 'package:hisn/ui/widgets/secret_text.dart';
+import 'package:hisn/ui/widgets/surface_card.dart';
+import 'package:hisn/ui/widgets/totp_view.dart';
 
 import 'helpers.dart';
 
@@ -83,7 +83,7 @@ void main() {
       if (all.isNotEmpty) await services.session.saveEntries(all);
     });
     if (app) {
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
     }
   }

@@ -78,7 +78,7 @@ class ImportExport {
     try {
       j = (jsonDecode(file) as Map).cast<String, Object?>();
       if (j['format'] != 'vaultsnap-export' || j['v'] != 1) {
-        throw const ImportException('Not a VaultSnap export');
+        throw const ImportException('Not a Hisn export');
       }
       kdf = KdfParams.fromJson((j['kdf']! as Map).cast());
       salt = base64.decode(j['salt']! as String);

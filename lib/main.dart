@@ -44,7 +44,7 @@ Future<void> main() async {
   unawaited(ImageWorkspace.sweepStale(olderThan: const Duration(minutes: 10)));
   IosAutofillSnapshot(services.session);
   unawaited(services.session.init());
-  runApp(VaultSnapApp(services: services));
+  runApp(HisnApp(services: services));
 }
 
 /// Entry point used by Android's AutofillAuthActivity.

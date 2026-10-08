@@ -9,22 +9,22 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/password_generator.dart';
-import 'package:vaultsnap/ui/theme/tokens.dart';
-import 'package:vaultsnap/ui/theme/typography.dart';
-import 'package:vaultsnap/ui/widgets/brand_mark.dart';
-import 'package:vaultsnap/ui/widgets/empty_state.dart';
-import 'package:vaultsnap/ui/widgets/glass_bar.dart';
-import 'package:vaultsnap/ui/widgets/max_width_body.dart';
-import 'package:vaultsnap/ui/widgets/pill_chip.dart';
-import 'package:vaultsnap/ui/widgets/primary_button.dart';
-import 'package:vaultsnap/ui/widgets/pulse_dot.dart';
-import 'package:vaultsnap/ui/widgets/secret_text.dart';
-import 'package:vaultsnap/ui/widgets/section_header.dart';
-import 'package:vaultsnap/ui/widgets/site_avatar.dart';
-import 'package:vaultsnap/ui/widgets/stat_tile.dart';
-import 'package:vaultsnap/ui/widgets/strength_bar.dart';
-import 'package:vaultsnap/ui/widgets/surface_card.dart';
+import 'package:hisn/services/password_generator.dart';
+import 'package:hisn/ui/theme/tokens.dart';
+import 'package:hisn/ui/theme/typography.dart';
+import 'package:hisn/ui/widgets/brand_mark.dart';
+import 'package:hisn/ui/widgets/empty_state.dart';
+import 'package:hisn/ui/widgets/glass_bar.dart';
+import 'package:hisn/ui/widgets/max_width_body.dart';
+import 'package:hisn/ui/widgets/pill_chip.dart';
+import 'package:hisn/ui/widgets/primary_button.dart';
+import 'package:hisn/ui/widgets/pulse_dot.dart';
+import 'package:hisn/ui/widgets/secret_text.dart';
+import 'package:hisn/ui/widgets/section_header.dart';
+import 'package:hisn/ui/widgets/site_avatar.dart';
+import 'package:hisn/ui/widgets/stat_tile.dart';
+import 'package:hisn/ui/widgets/strength_bar.dart';
+import 'package:hisn/ui/widgets/surface_card.dart';
 
 import 'screenshot_harness.dart';
 

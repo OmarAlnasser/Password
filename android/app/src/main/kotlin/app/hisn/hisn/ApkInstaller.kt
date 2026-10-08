@@ -1,4 +1,4 @@
-package app.vaultsnap.vaultsnap
+package app.hisn.hisn
 
 import android.app.Activity
 import android.content.ActivityNotFoundException

@@ -40,7 +40,7 @@ jobs:
         run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
-          name: VaultSnap-android-apk
+          name: Hisn-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
   windows:
@@ -57,7 +57,7 @@ jobs:
         run: flutter build windows --release
       - uses: actions/upload-artifact@v4
         with:
-          name: VaultSnap-windows
+          name: Hisn-windows
           path: build/windows/x64/runner/Release/
 
   ios:
@@ -79,9 +79,9 @@ jobs:
       - name: Build iOS app (unsigned compile check)
         run: flutter build ios --release --no-codesign
       - name: Zip Runner.app
-        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app VaultSnap-ios-unsigned.zip
+        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app Hisn-ios-unsigned.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: VaultSnap-ios-unsigned
-          path: VaultSnap-ios-unsigned.zip
+          name: Hisn-ios-unsigned
+          path: Hisn-ios-unsigned.zip
           if-no-files-found: error

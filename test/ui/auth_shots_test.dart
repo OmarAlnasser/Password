@@ -14,13 +14,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/services/biometric_unlock.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/recovery_reset_screen.dart';
-import 'package:vaultsnap/ui/setup_screen.dart';
-import 'package:vaultsnap/ui/sign_in_screen.dart';
-import 'package:vaultsnap/ui/unlock_screen.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/services/biometric_unlock.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/recovery_reset_screen.dart';
+import 'package:hisn/ui/setup_screen.dart';
+import 'package:hisn/ui/sign_in_screen.dart';
+import 'package:hisn/ui/unlock_screen.dart';
 
 import '../tool/screenshot_harness.dart';
 import 'helpers.dart';

@@ -4,11 +4,11 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:vaultsnap/services/settings.dart';
-import 'package:vaultsnap/services/update/app_version.dart';
-import 'package:vaultsnap/services/update/update_controller.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
-import 'package:vaultsnap/services/update/update_installer.dart';
+import 'package:hisn/services/settings.dart';
+import 'package:hisn/services/update/app_version.dart';
+import 'package:hisn/services/update/update_controller.dart';
+import 'package:hisn/services/update/update_failure.dart';
+import 'package:hisn/services/update/update_installer.dart';
 
 import 'update_test_kit.dart';
 

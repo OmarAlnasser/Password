@@ -8,15 +8,15 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:path/path.dart' as p;
 import 'package:sodium/sodium_sumo.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/services/settings.dart';
-import 'package:vaultsnap/services/update/app_version.dart';
-import 'package:vaultsnap/services/update/secure_downloader.dart';
-import 'package:vaultsnap/services/update/update_config.dart';
-import 'package:vaultsnap/services/update/update_manifest.dart';
-import 'package:vaultsnap/services/update/update_service.dart';
-import 'package:vaultsnap/services/update/update_verifier.dart';
-import 'package:vaultsnap/services/update/update_workspace.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/services/settings.dart';
+import 'package:hisn/services/update/app_version.dart';
+import 'package:hisn/services/update/secure_downloader.dart';
+import 'package:hisn/services/update/update_config.dart';
+import 'package:hisn/services/update/update_manifest.dart';
+import 'package:hisn/services/update/update_service.dart';
+import 'package:hisn/services/update/update_verifier.dart';
+import 'package:hisn/services/update/update_workspace.dart';
 
 const String repo = UpdateConfig.defaultRepo;
 

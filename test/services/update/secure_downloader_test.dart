@@ -5,10 +5,10 @@ import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
-import 'package:vaultsnap/services/update/cancel_token.dart';
-import 'package:vaultsnap/services/update/secure_downloader.dart';
-import 'package:vaultsnap/services/update/update_config.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
+import 'package:hisn/services/update/cancel_token.dart';
+import 'package:hisn/services/update/secure_downloader.dart';
+import 'package:hisn/services/update/update_config.dart';
+import 'package:hisn/services/update/update_failure.dart';
 
 import 'update_test_kit.dart';
 

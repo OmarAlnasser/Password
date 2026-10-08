@@ -8,12 +8,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/sync/supabase_remote_store.dart';
-import 'package:vaultsnap/services/sync/sync_service.dart';
-import 'package:vaultsnap/services/unlock_throttle.dart';
-import 'package:vaultsnap/services/vault_session.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/sync/supabase_remote_store.dart';
+import 'package:hisn/services/sync/sync_service.dart';
+import 'package:hisn/services/unlock_throttle.dart';
+import 'package:hisn/services/vault_session.dart';
 
 const master = 'violet-harbor-quantum-71-lantern';
 

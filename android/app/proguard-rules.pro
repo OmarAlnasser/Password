@@ -6,7 +6,7 @@
 # Korean recognizers as compileOnly but still references their option builders
 # in TextRecognizer.initialize, and ships no consumer rules. R8 (AGP 8+) treats
 # those missing classes as errors and fails :app:minifyReleaseWithR8.
-# VaultSnap only uses TextRecognitionScript.latin (lib/services/ocr/ocr_engine.dart),
+# Hisn only uses TextRecognitionScript.latin (lib/services/ocr/ocr_engine.dart),
 # so those code paths never run and the classes can stay absent.
 -dontwarn com.google.mlkit.vision.text.chinese.**
 -dontwarn com.google.mlkit.vision.text.devanagari.**

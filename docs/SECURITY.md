@@ -1,4 +1,4 @@
-# VaultSnap security design
+# Hisn security design
 
 Status: Phase 1 (crypto layer) is implemented in `lib/core/crypto/`.
 Later phases must keep to the rules in this document.
@@ -142,13 +142,13 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
     * *The pasted screenshot.* The native side copies it to the app's cache:
       Android `cacheDir/clip-*.img` (and `ocr-*.img` for the OCR import), iOS
       `tmp/clip-*.png` with complete file protection, Windows
-      `%TEMP%\vaultsnap-clip-*`. On Windows an image file copied in
+      `%TEMP%\hisn-clip-*`. On Windows an image file copied in
       Explorer is copied the same way (local drives only, at most 16 MB, the
       original is only read, and the copy is made after the clipboard is
       closed again so a slow drive cannot hold it up).
     * *The scanner's copies.* A small or dark screenshot is read again
       enlarged, inverted or with more contrast, and a very large one in tiles.
-      Those copies are PNG files in `<temp>/vaultsnap-ocr/s-*/` (Android app
+      Those copies are PNG files in `<temp>/hisn-ocr/s-*/` (Android app
       cache, iOS `tmp`, Windows `%TEMP%`), without file protection on iOS.
       Each is deleted when its pass ends and the folder when the scan ends. A
       file an engine still holds (Windows) is deleted when it lets go.
@@ -262,7 +262,7 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
 `test/core/crypto/` checks:
 * libsodium's published vectors for XChaCha20-Poly1305 and `crypto_kdf`.
 * Argon2id outputs from the PHC reference implementation (argon2-cffi) at
-  VaultSnap's parameters.
+  Hisn's parameters.
 * RFC 4648 Base32, RFC 4226 HOTP and RFC 6238 TOTP for SHA-1, SHA-256 and SHA-512.
 * A **golden vault** (header, wrapped keys and an encrypted entry) produced
   by `tool/gen_crypto_vectors.py`. That script is an independent

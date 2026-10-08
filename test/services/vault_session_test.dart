@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/unlock_throttle.dart';
-import 'package:vaultsnap/services/vault_session.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/unlock_throttle.dart';
+import 'package:hisn/services/vault_session.dart';
 
 void main() {
   late VaultCrypto crypto;

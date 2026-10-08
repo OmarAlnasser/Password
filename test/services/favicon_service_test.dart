@@ -8,10 +8,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:sodium/sodium_sumo.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/data/db/database.dart';
-import 'package:vaultsnap/services/favicon_service.dart';
-import 'package:vaultsnap/services/settings.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/data/db/database.dart';
+import 'package:hisn/services/favicon_service.dart';
+import 'package:hisn/services/settings.dart';
 
 typedef Route = FutureOr<http.StreamedResponse> Function(http.BaseRequest req);
 

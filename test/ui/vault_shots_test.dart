@@ -16,13 +16,13 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/entry_detail_screen.dart';
-import 'package:vaultsnap/ui/entry_edit_screen.dart';
-import 'package:vaultsnap/ui/home_screen.dart';
-import 'package:vaultsnap/ui/quick_search_screen.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/entry_detail_screen.dart';
+import 'package:hisn/ui/entry_edit_screen.dart';
+import 'package:hisn/ui/home_screen.dart';
+import 'package:hisn/ui/quick_search_screen.dart';
 
 import '../tool/screenshot_harness.dart';
 import 'helpers.dart';

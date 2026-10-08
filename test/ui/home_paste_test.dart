@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/app.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/widgets/secret_text.dart';
+import 'package:hisn/app.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/widgets/secret_text.dart';
 
 import 'helpers.dart';
 
@@ -59,7 +59,7 @@ void main() {
       await services.session.createVault(testMasterPassword);
       if (entries.isNotEmpty) await services.session.saveEntries(entries);
     });
-    await tester.pumpWidget(VaultSnapApp(services: services));
+    await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
   }
 
@@ -385,7 +385,7 @@ void main() {
       expect(ocrSeen.first, shot.path);
       expect(ocrSeen.length, greaterThan(1));
       for (final p in ocrSeen.skip(1)) {
-        expect(p, contains('vaultsnap-ocr'));
+        expect(p, contains('hisn-ocr'));
       }
       expectNoCopiesLeft(shot);
 
@@ -771,7 +771,7 @@ void main() {
         for (final e in session.entries) e.url,
       ]);
     });
-    await tester.pumpWidget(VaultSnapApp(services: services));
+    await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
 
     Finder inTile(String title, Finder f) =>

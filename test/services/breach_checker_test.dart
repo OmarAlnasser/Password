@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/breach_checker.dart';
-import 'package:vaultsnap/services/password_generator.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/breach_checker.dart';
+import 'package:hisn/services/password_generator.dart';
 
 void main() {
   test('sends only the 5-char SHA-1 prefix with padding header', () async {

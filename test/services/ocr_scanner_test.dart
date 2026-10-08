@@ -5,11 +5,11 @@ import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/ocr/image_preprocessor.dart';
-import 'package:vaultsnap/services/ocr/ocr_engine.dart';
-import 'package:vaultsnap/services/ocr/ocr_parser.dart';
-import 'package:vaultsnap/services/ocr/ocr_scanner.dart';
-import 'package:vaultsnap/services/platform_bridge.dart';
+import 'package:hisn/services/ocr/image_preprocessor.dart';
+import 'package:hisn/services/ocr/ocr_engine.dart';
+import 'package:hisn/services/ocr/ocr_parser.dart';
+import 'package:hisn/services/ocr/ocr_scanner.dart';
+import 'package:hisn/services/platform_bridge.dart';
 
 // Synthetic data only.
 const email = 'abcde07@hotmail.com';

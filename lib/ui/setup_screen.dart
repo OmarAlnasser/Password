@@ -54,7 +54,7 @@ class _SetupScreenState extends State<SetupScreen> {
       _pw.clear();
       _confirm.clear();
       // createVault has just unlocked the session, so the next frame replaces
-      // this screen with HomeScreen (VaultSnapApp._home) and unmounts it.
+      // this screen with HomeScreen (HisnApp._home) and unmounts it.
       // Push the recovery key route now, before any further await, or it is
       // never shown. It blocks navigation until the user has confirmed it.
       final shown = navigator.push(

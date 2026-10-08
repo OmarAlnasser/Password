@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sodium/sodium_sumo.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/import_export.dart';
-import 'package:vaultsnap/services/password_generator.dart';
-import 'package:vaultsnap/services/unlock_throttle.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/import_export.dart';
+import 'package:hisn/services/password_generator.dart';
+import 'package:hisn/services/unlock_throttle.dart';
 
 void main() {
   late SodiumSumo sodium;

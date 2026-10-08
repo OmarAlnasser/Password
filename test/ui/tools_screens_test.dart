@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:vaultsnap/brand.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/services/breach_checker.dart';
-import 'package:vaultsnap/services/settings.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/dashboard_screen.dart';
-import 'package:vaultsnap/ui/generator_screen.dart';
-import 'package:vaultsnap/ui/settings_screen.dart';
-import 'package:vaultsnap/ui/widgets/stat_tile.dart';
+import 'package:hisn/brand.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/services/breach_checker.dart';
+import 'package:hisn/services/settings.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/dashboard_screen.dart';
+import 'package:hisn/ui/generator_screen.dart';
+import 'package:hisn/ui/settings_screen.dart';
+import 'package:hisn/ui/widgets/stat_tile.dart';
 
 import 'helpers.dart';
 

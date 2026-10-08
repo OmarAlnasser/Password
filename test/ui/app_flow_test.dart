@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/app.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
+import 'package:hisn/app.dart';
+import 'package:hisn/ui/app_scope.dart';
 
 import 'helpers.dart';
 
@@ -25,7 +25,7 @@ void main() {
     tester,
   ) async {
     await tester.runAsync(() => services.session.init());
-    await tester.pumpWidget(VaultSnapApp(services: services));
+    await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
     expect(find.text('Create your vault'), findsOneWidget);
 
@@ -56,7 +56,7 @@ void main() {
       await services.session.init();
       await services.settings.update((s) => s.locale = const Locale('ar'));
     });
-    await tester.pumpWidget(VaultSnapApp(services: services));
+    await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
     expect(find.text('أنشئ خزنتك'), findsOneWidget);
     final dir = Directionality.of(tester.element(find.byType(TextField).first));
@@ -71,7 +71,7 @@ void main() {
       await services.session.createVault('violet-harbor-quantum-71-lantern');
       await services.session.lock();
     });
-    await tester.pumpWidget(VaultSnapApp(services: services));
+    await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
     expect(find.text('Unlock'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'nope');

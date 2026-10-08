@@ -9,7 +9,7 @@ to <dest>/winrt/... with lowercase file names and include paths, so that it
 works on a case-sensitive file system.
 
 Usage: python3 tool/native_tests/fetch_winrt_headers.py DEST_DIR
-Then:  VAULTSNAP_WINRT_HEADERS=DEST_DIR python3 tool/native_tests/run_tests.py
+Then:  HISN_WINRT_HEADERS=DEST_DIR python3 tool/native_tests/run_tests.py
 """
 import io
 import json

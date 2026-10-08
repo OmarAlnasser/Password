@@ -8,14 +8,14 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/import_export.dart';
-import 'package:vaultsnap/services/password_generator.dart';
-import 'package:vaultsnap/services/sync/remote_store.dart';
-import 'package:vaultsnap/services/sync/sync_service.dart';
-import 'package:vaultsnap/services/unlock_throttle.dart';
-import 'package:vaultsnap/services/vault_session.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/import_export.dart';
+import 'package:hisn/services/password_generator.dart';
+import 'package:hisn/services/sync/remote_store.dart';
+import 'package:hisn/services/sync/sync_service.dart';
+import 'package:hisn/services/unlock_throttle.dart';
+import 'package:hisn/services/vault_session.dart';
 
 import '../sync/fake_remote.dart';
 

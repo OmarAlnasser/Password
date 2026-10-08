@@ -77,7 +77,7 @@ final class CredentialProviderViewController: ASCredentialProviderViewController
   /// Reads the key (biometric prompt) and decrypts the snapshot.
   private func load() -> Bool {
     let ctx = LAContext()
-    ctx.localizedReason = "Unlock VaultSnap"
+    ctx.localizedReason = "Unlock Hisn"
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrAccount as String: "autofill-snapshot-key",
@@ -89,7 +89,7 @@ final class CredentialProviderViewController: ASCredentialProviderViewController
     guard SecItemCopyMatching(query as CFDictionary, &out) == errSecSuccess,
       var key = out as? Data, key.count == 32,
       let container = FileManager.default.containerURL(
-        forSecurityApplicationGroupIdentifier: "group.app.vaultsnap.vaultsnap"),
+        forSecurityApplicationGroupIdentifier: "group.app.hisn.hisn"),
       let blob = try? Data(contentsOf: container.appendingPathComponent("autofill.snapshot")),
       blob.count > 41, blob[0] == 1
     else { return false }

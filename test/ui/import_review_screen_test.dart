@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/services/import_export.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/import/import_review_screen.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/services/import_export.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/import/import_review_screen.dart';
 
 import 'helpers.dart';
 

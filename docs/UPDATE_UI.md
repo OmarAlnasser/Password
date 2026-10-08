@@ -101,7 +101,7 @@ network or disk):
   steps, progress, Skip / Later, errors, Windows notice, Arabic, reduced
   motion, 200 % text.
 * `update_settings_tile_test.dart`: the settings block and the About row.
-* `update_app_test.dart`: the same inside the real `VaultSnapApp` (navigator
+* `update_app_test.dart`: the same inside the real `HisnApp` (navigator
   key, lock before install, privacy cover on top).
 * `update_format_test.dart`, `update_providers_test.dart`: formatting, failure
   texts, which builds get an updater, which URLs may be opened.

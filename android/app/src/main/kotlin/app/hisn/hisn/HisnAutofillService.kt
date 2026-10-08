@@ -1,4 +1,4 @@
-package app.vaultsnap.vaultsnap
+package app.hisn.hisn
 
 import android.app.PendingIntent
 import android.app.assist.AssistStructure
@@ -20,7 +20,7 @@ import android.widget.RemoteViews
  * Android Autofill Service.
  *
  * The service itself never holds keys or plaintext. For every fill request
- * it returns one locked "Unlock VaultSnap" dataset whose authentication
+ * it returns one locked "Unlock Hisn" dataset whose authentication
  * intent opens [AutofillAuthActivity]; that activity unlocks the vault
  * (biometrics / master password), lets the user pick a matching entry and
  * returns the filled dataset to the system.
@@ -30,7 +30,7 @@ import android.widget.RemoteViews
  * the requesting package is a known browser. For other apps we match on the
  * package name only (entries with URL `androidapp://<package>`).
  */
-class VaultSnapAutofillService : AutofillService() {
+class HisnAutofillService : AutofillService() {
 
     data class Fields(
         val username: AutofillId?,
@@ -74,7 +74,7 @@ class VaultSnapAutofillService : AutofillService() {
         ).intentSender
 
         val presentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-        presentation.setTextViewText(android.R.id.text1, "Unlock VaultSnap")
+        presentation.setTextViewText(android.R.id.text1, "Unlock Hisn")
 
         // Dataset-level auth: AutofillAuthActivity returns a Dataset in
         // EXTRA_AUTHENTICATION_RESULT, which the platform accepts only for an

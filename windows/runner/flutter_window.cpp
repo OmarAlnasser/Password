@@ -26,7 +26,7 @@ bool FlutterWindow::OnCreate() {
     return false;
   }
   RegisterPlugins(flutter_controller_->engine());
-  RegisterVaultSnapChannel(flutter_controller_->engine(), GetHandle());
+  RegisterHisnChannel(flutter_controller_->engine(), GetHandle());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
 
   flutter_controller_->engine()->SetNextFrameCallback([&]() {
@@ -64,7 +64,7 @@ FlutterWindow::MessageHandler(HWND hwnd, UINT const message,
   }
 
   switch (message) {
-    case kVaultSnapRunOnPlatformThread:
+    case kHisnRunOnPlatformThread:
       RunPlatformThreadTask(lparam);
       return 0;
     case WM_FONTCHANGE:

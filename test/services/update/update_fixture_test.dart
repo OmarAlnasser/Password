@@ -3,13 +3,13 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/update/app_version.dart';
-import 'package:vaultsnap/services/update/update_config.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
-import 'package:vaultsnap/services/update/update_manifest.dart';
-import 'package:vaultsnap/services/update/update_public_key.dart';
-import 'package:vaultsnap/services/update/update_service.dart';
-import 'package:vaultsnap/services/update/update_verifier.dart';
+import 'package:hisn/services/update/app_version.dart';
+import 'package:hisn/services/update/update_config.dart';
+import 'package:hisn/services/update/update_failure.dart';
+import 'package:hisn/services/update/update_manifest.dart';
+import 'package:hisn/services/update/update_public_key.dart';
+import 'package:hisn/services/update/update_service.dart';
+import 'package:hisn/services/update/update_verifier.dart';
 
 import 'update_test_kit.dart';
 

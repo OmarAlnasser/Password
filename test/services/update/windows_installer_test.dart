@@ -5,8 +5,8 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:vaultsnap/services/update/update_installer.dart';
-import 'package:vaultsnap/services/update/windows_installer.dart';
+import 'package:hisn/services/update/update_installer.dart';
+import 'package:hisn/services/update/windows_installer.dart';
 
 // ---------------------------------------------------------------------------
 // A tiny zip writer, independent of the code under test, that can also write

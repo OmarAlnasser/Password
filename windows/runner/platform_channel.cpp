@@ -973,7 +973,7 @@ class LockedGlobal {
 };
 
 // Pasted images are written to %TEMP% as "<prefix><guid><extension>".
-constexpr wchar_t kClipFilePrefix[] = L"vaultsnap-clip-";
+constexpr wchar_t kClipFilePrefix[] = L"hisn-clip-";
 
 // The user's %TEMP% with a trailing backslash, or "" if unavailable.
 std::wstring TempDir() {
@@ -1685,7 +1685,7 @@ void RunPlatformThreadTask(LPARAM lparam) {
   (*task)();
 }
 
-void RegisterVaultSnapChannel(flutter::FlutterEngine* engine, HWND window) {
+void RegisterHisnChannel(flutter::FlutterEngine* engine, HWND window) {
   // Exclude the window from screenshots, screen recording and screen
   // sharing (Windows 10 2004+). Shows as black in captures.
   SetWindowDisplayAffinity(window, WDA_EXCLUDEFROMCAPTURE);
@@ -1767,7 +1767,7 @@ void RegisterVaultSnapChannel(flutter::FlutterEngine* engine, HWND window) {
                     shared->Error(outcome->code, outcome->message);
                   }
                 });
-            if (!PostMessage(window, kVaultSnapRunOnPlatformThread, 0,
+            if (!PostMessage(window, kHisnRunOnPlatformThread, 0,
                              reinterpret_cast<LPARAM>(task))) {
               delete task;
             }

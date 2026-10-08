@@ -3,17 +3,17 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/app.dart';
-import 'package:vaultsnap/brand.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/recovery_reset_screen.dart';
-import 'package:vaultsnap/ui/setup_screen.dart';
-import 'package:vaultsnap/ui/sign_in_screen.dart';
-import 'package:vaultsnap/ui/theme/app_theme.dart';
-import 'package:vaultsnap/ui/unlock_screen.dart';
-import 'package:vaultsnap/ui/widgets/app_shell.dart';
-import 'package:vaultsnap/ui/widgets/strength_bar.dart';
+import 'package:hisn/app.dart';
+import 'package:hisn/brand.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/recovery_reset_screen.dart';
+import 'package:hisn/ui/setup_screen.dart';
+import 'package:hisn/ui/sign_in_screen.dart';
+import 'package:hisn/ui/theme/app_theme.dart';
+import 'package:hisn/ui/unlock_screen.dart';
+import 'package:hisn/ui/widgets/app_shell.dart';
+import 'package:hisn/ui/widgets/strength_bar.dart';
 
 import 'helpers.dart';
 
@@ -78,7 +78,7 @@ void main() {
   group('lock screen', () {
     testWidgets('shows the app name from brand.dart', (tester) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(find.text(appName), findsOneWidget);
       expect(find.text(appTagline), findsOneWidget);
@@ -88,7 +88,7 @@ void main() {
       tester,
     ) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(field(tester).obscureText, isTrue);
       expect(find.byTooltip('Hide'), findsNothing);
@@ -114,7 +114,7 @@ void main() {
 
     testWidgets('typing keeps a revealed password revealed', (tester) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Show'));
       await tester.pump();
@@ -129,7 +129,7 @@ void main() {
       tester,
     ) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(field(tester).textDirection, TextDirection.ltr);
       expect(field(tester).textAlign, TextAlign.left);
@@ -140,7 +140,7 @@ void main() {
     ) async {
       await setLocale(tester, const Locale('ar'));
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(field(tester).textDirection, TextDirection.ltr);
       expect(field(tester).textAlign, TextAlign.right);
@@ -150,7 +150,7 @@ void main() {
       tester,
     ) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), 'nope');
       await tester.runAsync(() => tester.tap(find.text('Unlock')));
@@ -171,7 +171,7 @@ void main() {
           await services.session.throttle.recordFailure();
         }
       });
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(find.textContaining('Too many attempts'), findsOneWidget);
       final unlock = find.widgetWithText(FilledButton, 'Unlock');
@@ -187,7 +187,7 @@ void main() {
       tester,
     ) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Use recovery key'));
       await tester.pumpAndSettle();
@@ -202,7 +202,7 @@ void main() {
       tester,
     ) async {
       await lockedVault(tester);
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Forgot password?'));
       await tester.pumpAndSettle();
@@ -248,7 +248,7 @@ void main() {
       tester,
     ) async {
       await tester.runAsync(() => services.session.init());
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(find.byType(StrengthBar), findsNothing);
       await tester.enterText(find.byType(TextField).first, 'weak');
@@ -261,7 +261,7 @@ void main() {
 
     testWidgets('each field has its own eye', (tester) async {
       await tester.runAsync(() => services.session.init());
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       expect(find.byTooltip('Show'), findsNWidgets(2));
       await tester.tap(find.byTooltip('Show').first);
@@ -274,7 +274,7 @@ void main() {
       tester,
     ) async {
       await tester.runAsync(() => services.session.init());
-      await tester.pumpWidget(VaultSnapApp(services: services));
+      await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField).at(0), 'one');
       await tester.enterText(find.byType(TextField).at(1), 'two');

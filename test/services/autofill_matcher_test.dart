@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/autofill_matcher.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/autofill_matcher.dart';
 
 void main() {
   final entries = [

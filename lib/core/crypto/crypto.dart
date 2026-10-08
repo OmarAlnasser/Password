@@ -1,4 +1,4 @@
-/// VaultSnap crypto layer. Import this file rather than individual parts.
+/// Hisn crypto layer. Import this file rather than individual parts.
 library;
 
 import 'package:sodium/sodium_sumo.dart';

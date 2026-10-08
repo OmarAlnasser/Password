@@ -77,9 +77,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/ui/theme/app_theme.dart';
-import 'package:vaultsnap/ui/widgets/app_shell.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/ui/theme/app_theme.dart';
+import 'package:hisn/ui/widgets/app_shell.dart';
 
 /// A logical window size (device pixel ratio 1).
 class ShotSize {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/ocr/ocr_parser.dart';
+import 'package:hisn/services/ocr/ocr_parser.dart';
 
 void main() {
   final p = OcrCredentialParser();

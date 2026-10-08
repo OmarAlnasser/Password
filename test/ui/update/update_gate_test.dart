@@ -3,14 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/settings.dart';
-import 'package:vaultsnap/services/update/update_controller.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
-import 'package:vaultsnap/services/update/update_installer.dart';
-import 'package:vaultsnap/services/update/update_manifest.dart';
-import 'package:vaultsnap/services/update/update_providers.dart';
-import 'package:vaultsnap/services/update/update_service.dart';
-import 'package:vaultsnap/services/update/windows_installer.dart';
+import 'package:hisn/services/settings.dart';
+import 'package:hisn/services/update/update_controller.dart';
+import 'package:hisn/services/update/update_failure.dart';
+import 'package:hisn/services/update/update_installer.dart';
+import 'package:hisn/services/update/update_manifest.dart';
+import 'package:hisn/services/update/update_providers.dart';
+import 'package:hisn/services/update/update_service.dart';
+import 'package:hisn/services/update/windows_installer.dart';
 
 import '../../tool/screenshot_harness.dart' show loadBundledFonts;
 import 'update_ui_kit.dart';
