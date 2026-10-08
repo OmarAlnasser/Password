@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import '../app_scope.dart';
 import '../theme/tokens.dart';
 
+// Not to be confused with `Reveal` (reveal.dart), the fade-up on first
+// appearance: here "reveal" means showing a masked secret.
+
 /// How long a revealed secret stays revealed without interaction. The master
 /// password field (`AuthField`) uses the same 15 s.
 const secretRemaskAfter = Duration(seconds: 15);
