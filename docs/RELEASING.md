@@ -203,13 +203,22 @@ early. The dry run holds no manifest signing key.
 
 ### 4. The real release
 
+**Without a git clone (one click):** GitHub → **Actions → Create release tag →
+Run workflow**, "Use workflow from" the default branch, `version`: `0.2.0` (no
+`v`). It tags the head of the default branch `v0.2.0` and starts the Release
+workflow from that tag. It refuses a commit whose "Build & test" run has not
+passed, an existing tag, and any branch but the default one. Wait for the green
+check on the branch before you run it.
+
+**With git:**
+
 ```sh
 git checkout <release-branch> && git pull   # the branch you ship from
 git tag v0.2.0
 git push origin v0.2.0
 ```
 
-Tag the commit you want to ship. The run takes about 20 to 30 minutes. Watch
+Either way, you tag the commit you want to ship. The run takes about 20 to 30 minutes. Watch
 it under **Actions → Release**. When it is green, the **Releases** page shows
 `v0.2.0` with the four files, and installed apps find it on their next check.
 
