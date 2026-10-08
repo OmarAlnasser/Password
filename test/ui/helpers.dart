@@ -6,17 +6,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/services/breach_checker.dart';
-import 'package:vaultsnap/services/clipboard_service.dart';
-import 'package:vaultsnap/services/favicon_service.dart';
-import 'package:vaultsnap/services/import_export.dart';
-import 'package:vaultsnap/services/password_generator.dart';
-import 'package:vaultsnap/services/platform_bridge.dart';
-import 'package:vaultsnap/services/settings.dart';
-import 'package:vaultsnap/services/unlock_throttle.dart';
-import 'package:vaultsnap/services/vault_session.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/services/breach_checker.dart';
+import 'package:hisn/services/clipboard_service.dart';
+import 'package:hisn/services/favicon_service.dart';
+import 'package:hisn/services/import_export.dart';
+import 'package:hisn/services/password_generator.dart';
+import 'package:hisn/services/platform_bridge.dart';
+import 'package:hisn/services/settings.dart';
+import 'package:hisn/services/unlock_throttle.dart';
+import 'package:hisn/services/vault_session.dart';
+import 'package:hisn/ui/app_scope.dart';
 
 /// Passes the setup screen's strength check. Synthetic.
 const testMasterPassword = 'violet-harbor-quantum-71-lantern';

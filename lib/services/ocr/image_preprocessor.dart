@@ -298,7 +298,7 @@ class ImageWorkspace {
   ImageWorkspace._(this.dir);
 
   /// The directory all scans' workspaces live in, below the temp root.
-  static const String rootName = 'vaultsnap-ocr';
+  static const String rootName = 'hisn-ocr';
 
   /// A workspace this old was left by a crash.
   static const Duration staleAfter = Duration(minutes: 15);

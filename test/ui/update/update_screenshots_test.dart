@@ -7,10 +7,10 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
-import 'package:vaultsnap/services/update/update_installer.dart';
-import 'package:vaultsnap/services/update/update_service.dart';
-import 'package:vaultsnap/ui/update/update_settings_tile.dart';
+import 'package:hisn/services/update/update_failure.dart';
+import 'package:hisn/services/update/update_installer.dart';
+import 'package:hisn/services/update/update_service.dart';
+import 'package:hisn/ui/update/update_settings_tile.dart';
 
 import '../../tool/screenshot_harness.dart'
     show loadBundledFonts, shotsDir, ShotSize;

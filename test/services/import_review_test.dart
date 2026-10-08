@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/data/models/vault_entry.dart';
-import 'package:vaultsnap/services/autofill_matcher.dart';
-import 'package:vaultsnap/services/import/import_review.dart';
-import 'package:vaultsnap/services/import_export.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/data/models/vault_entry.dart';
+import 'package:hisn/services/autofill_matcher.dart';
+import 'package:hisn/services/import/import_review.dart';
+import 'package:hisn/services/import_export.dart';
 
 // All credentials below are synthetic.
 const email = 'abcde07@hotmail.com';

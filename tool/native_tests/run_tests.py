@@ -35,7 +35,7 @@ from PIL import Image
 HERE = os.path.dirname(os.path.abspath(__file__))
 SOURCE = os.path.join(HERE, '..', '..', 'windows', 'runner',
                       'platform_channel.cpp')
-BUILD = tempfile.mkdtemp(prefix='vaultsnap-native-tests-')
+BUILD = tempfile.mkdtemp(prefix='hisn-native-tests-')
 HARNESS = os.path.join(BUILD, 'harness')
 
 
@@ -1014,7 +1014,7 @@ def flutter_include_dir():
 
 class MingwSyntax(unittest.TestCase):
     """-fsyntax-only with mingw-w64 against the real windows.h and the
-    Flutter wrapper headers. If VAULTSNAP_WINRT_HEADERS points at the output
+    Flutter wrapper headers. If HISN_WINRT_HEADERS points at the output
     of fetch_winrt_headers.py the OCR section is compiled against the real
     C++/WinRT API too (this caught a wrong enum name); otherwise that section
     is replaced by a stub and only reviewed by hand."""
@@ -1026,7 +1026,7 @@ class MingwSyntax(unittest.TestCase):
     def test_runner_code_compiles(self):
         with open(SOURCE, encoding='utf-8') as f:
             src = f.read()
-        winrt = os.environ.get('VAULTSNAP_WINRT_HEADERS')
+        winrt = os.environ.get('HISN_WINRT_HEADERS')
         extra = []
         if winrt and os.path.isdir(os.path.join(winrt, 'winrt')):
             # the headers are lowercase, the code includes <winrt/Windows.X.h>

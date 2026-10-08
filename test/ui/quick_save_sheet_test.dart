@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/l10n/app_localizations.dart';
-import 'package:vaultsnap/services/ocr/ocr_parser.dart';
-import 'package:vaultsnap/services/ocr/ocr_scanner.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/ocr/ocr_widgets.dart';
-import 'package:vaultsnap/ui/ocr/quick_save_sheet.dart';
-import 'package:vaultsnap/ui/widgets/secret_text.dart';
+import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/services/ocr/ocr_parser.dart';
+import 'package:hisn/services/ocr/ocr_scanner.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/ocr/ocr_widgets.dart';
+import 'package:hisn/ui/ocr/quick_save_sheet.dart';
+import 'package:hisn/ui/widgets/secret_text.dart';
 
 import 'helpers.dart';
 

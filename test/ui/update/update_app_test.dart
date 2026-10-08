@@ -2,17 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/app.dart';
-import 'package:vaultsnap/services/update/update_controller.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/home_screen.dart';
-import 'package:vaultsnap/ui/unlock_screen.dart';
-import 'package:vaultsnap/ui/update/update_banner.dart';
+import 'package:hisn/app.dart';
+import 'package:hisn/services/update/update_controller.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/home_screen.dart';
+import 'package:hisn/ui/unlock_screen.dart';
+import 'package:hisn/ui/update/update_banner.dart';
 
 import '../helpers.dart';
 import 'update_ui_kit.dart';
 
-/// The updater inside the real app (`VaultSnapApp`): the gate in `app.dart`,
+/// The updater inside the real app (`HisnApp`): the gate in `app.dart`,
 /// the navigator key, the lock before the install.
 void main() {
   late Directory dir;
@@ -62,9 +62,7 @@ void main() {
     rig.service.offerUpdate();
     await createVault(tester, locked: true);
 
-    await tester.pumpWidget(
-      VaultSnapApp(services: withUpdates(rig.controller)),
-    );
+    await tester.pumpWidget(HisnApp(services: withUpdates(rig.controller)));
     // Not pumpAndSettle: the unlock screen's entrance animation runs past the
     // gate's 3 s start delay, which would fire the first check in the settle.
     await tester.pump();
@@ -97,9 +95,7 @@ void main() {
     await createVault(tester, locked: false);
     expect(base.session.isUnlocked, isTrue);
 
-    await tester.pumpWidget(
-      VaultSnapApp(services: withUpdates(rig.controller)),
-    );
+    await tester.pumpWidget(HisnApp(services: withUpdates(rig.controller)));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
@@ -135,7 +131,7 @@ void main() {
   testWidgets('no updater: no banner, nothing asked', (tester) async {
     mockChannel(tester, platformChannel, (_) async => null);
     await createVault(tester, locked: true);
-    await tester.pumpWidget(VaultSnapApp(services: withUpdates(null)));
+    await tester.pumpWidget(HisnApp(services: withUpdates(null)));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 10));
     expect(find.byType(UpdateBanner), findsNothing);
@@ -150,9 +146,7 @@ void main() {
     addTearDown(dev.dispose);
     dev.service.offerUpdate();
     await createVault(tester, locked: true);
-    await tester.pumpWidget(
-      VaultSnapApp(services: withUpdates(dev.controller)),
-    );
+    await tester.pumpWidget(HisnApp(services: withUpdates(dev.controller)));
     await tester.pumpAndSettle();
     await tester.pump(const Duration(seconds: 10));
     expect(find.byType(UpdateBanner), findsNothing);
@@ -165,9 +159,7 @@ void main() {
     addTearDown(rig.dispose);
     rig.service.offerUpdate();
     await createVault(tester, locked: true);
-    await tester.pumpWidget(
-      VaultSnapApp(services: withUpdates(rig.controller)),
-    );
+    await tester.pumpWidget(HisnApp(services: withUpdates(rig.controller)));
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
     expect(find.byType(UpdateBanner), findsOneWidget);

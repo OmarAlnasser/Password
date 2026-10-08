@@ -1,4 +1,4 @@
-# VaultSnap security audit
+# Hisn security audit
 
 Date: 2026-10-05 · Scope: everything on branch `claude/phase-1-crypto`
 (Dart app, Android/iOS/Windows native code, Supabase SQL + edge function).
@@ -202,7 +202,7 @@ the server never received the master password, any key, or any plaintext.
   `getApplicationCacheDirectory`-style LocalAppData on Windows.
 
 ### M-10 Android autofill trusts browser package names
-- **File:** `android/.../VaultSnapAutofillService.kt` (`TRUSTED_BROWSERS`)
+- **File:** `android/.../HisnAutofillService.kt` (`TRUSTED_BROWSERS`)
 - **Scenario:** `webDomain` is trusted if the requesting package name is on the
   list. If Brave isn't installed, a sideloaded app named `com.brave.browser`
   can claim `webDomain = bank.com` and be offered the bank entry.

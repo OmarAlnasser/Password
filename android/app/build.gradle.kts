@@ -22,7 +22,7 @@ val releaseKeyAlias: String =
     System.getenv("ANDROID_KEY_ALIAS")?.takeIf { it.isNotBlank() } ?: "release"
 
 android {
-    namespace = "app.vaultsnap.vaultsnap"
+    namespace = "app.hisn.hisn"
     // receive_sharing_intent requires compiling against API 37.
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "app.vaultsnap.vaultsnap"
+        applicationId = "app.hisn.hisn"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // AutofillService and its Dataset APIs require Android 8.0 (API 26).

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/services/update/app_version.dart';
-import 'package:vaultsnap/services/update/update_manifest.dart';
-import 'package:vaultsnap/services/update/update_providers.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/services/update/app_version.dart';
+import 'package:hisn/services/update/update_manifest.dart';
+import 'package:hisn/services/update/update_providers.dart';
 
 import 'update_ui_kit.dart';
 

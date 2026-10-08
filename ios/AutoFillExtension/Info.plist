@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>VSKeychainGroup</key>
-	<string>$(AppIdentifierPrefix)app.vaultsnap.shared</string>
+	<string>$(AppIdentifierPrefix)app.hisn.shared</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sodium/sodium_sumo.dart';
-import 'package:vaultsnap/core/crypto/crypto.dart';
+import 'package:hisn/core/crypto/crypto.dart';
 
 import 'golden_vectors.dart';
 

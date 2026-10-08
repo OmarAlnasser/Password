@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/l10n/app_localizations_ar.dart';
-import 'package:vaultsnap/l10n/app_localizations_en.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
-import 'package:vaultsnap/ui/update/update_format.dart';
-import 'package:vaultsnap/ui/update/update_messages.dart';
+import 'package:hisn/l10n/app_localizations_ar.dart';
+import 'package:hisn/l10n/app_localizations_en.dart';
+import 'package:hisn/services/update/update_failure.dart';
+import 'package:hisn/ui/update/update_format.dart';
+import 'package:hisn/ui/update/update_messages.dart';
 
 /// What the update UI writes: sizes, dates, percentages, and the plain-language
 /// text for every kind of failure, in both languages.

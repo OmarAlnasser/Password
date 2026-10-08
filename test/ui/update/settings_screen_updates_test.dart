@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/services/update/update_controller.dart';
-import 'package:vaultsnap/services/update/update_failure.dart';
-import 'package:vaultsnap/services/update/update_service.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
-import 'package:vaultsnap/ui/settings_screen.dart';
+import 'package:hisn/services/update/update_controller.dart';
+import 'package:hisn/services/update/update_failure.dart';
+import 'package:hisn/services/update/update_service.dart';
+import 'package:hisn/ui/app_scope.dart';
+import 'package:hisn/ui/settings_screen.dart';
 
 import '../helpers.dart';
 import 'update_ui_kit.dart';

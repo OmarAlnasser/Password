@@ -1,4 +1,4 @@
-package app.vaultsnap.vaultsnap
+package app.hisn.hisn
 
 import androidx.core.content.FileProvider
 

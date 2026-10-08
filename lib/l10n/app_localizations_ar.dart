@@ -10,7 +10,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'VaultSnap';
+  String get appTitle => 'حصن';
 
   @override
   String get createVault => 'أنشئ خزنتك';
@@ -683,7 +683,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forgotPasswordBody =>
-      'لا يمكن لأحد استعادتها، ولا حتى مطوّر VaultSnap. فهي لا تُحفظ ولا تُرسل إلى أي مكان، وخزنتك مشفرة بها.';
+      'لا يمكن لأحد استعادتها، ولا حتى مطوّر حصن. فهي لا تُحفظ ولا تُرسل إلى أي مكان، وخزنتك مشفرة بها.';
 
   @override
   String get useRecoveryKeyExplain =>

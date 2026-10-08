@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:vaultsnap/core/crypto/crypto.dart';
-import 'package:vaultsnap/services/sync/remote_store.dart';
+import 'package:hisn/core/crypto/crypto.dart';
+import 'package:hisn/services/sync/remote_store.dart';
 
 /// In-memory server with the same semantics as push_item() in the SQL
 /// migration. Shared by several "devices"; `tamper` lets tests act as a

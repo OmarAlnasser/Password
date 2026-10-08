@@ -7,9 +7,9 @@ import UIKit
 /// Shared between the app and the AutoFill extension (App Group + Keychain
 /// access group must match the entitlements of both targets).
 enum SharedConfig {
-  static let appGroup = "group.app.vaultsnap.vaultsnap"
-  /// "<TeamID>.app.vaultsnap.shared"; Info.plist key VSKeychainGroup is set
-  /// to "$(AppIdentifierPrefix)app.vaultsnap.shared" so Xcode expands it.
+  static let appGroup = "group.app.hisn.hisn"
+  /// "<TeamID>.app.hisn.shared"; Info.plist key VSKeychainGroup is set
+  /// to "$(AppIdentifierPrefix)app.hisn.shared" so Xcode expands it.
   static var keychainGroup: String {
     Bundle.main.object(forInfoDictionaryKey: "VSKeychainGroup") as? String ?? ""
   }

@@ -22,17 +22,16 @@ import 'ui/unlock_screen.dart';
 import 'ui/update/update_gate.dart';
 import 'ui/widgets/app_shell.dart';
 
-class VaultSnapApp extends StatefulWidget {
-  const VaultSnapApp({super.key, required this.services});
+class HisnApp extends StatefulWidget {
+  const HisnApp({super.key, required this.services});
 
   final AppServices services;
 
   @override
-  State<VaultSnapApp> createState() => _VaultSnapAppState();
+  State<HisnApp> createState() => _HisnAppState();
 }
 
-class _VaultSnapAppState extends State<VaultSnapApp>
-    with WidgetsBindingObserver {
+class _HisnAppState extends State<HisnApp> with WidgetsBindingObserver {
   final _navigator = GlobalKey<NavigatorState>();
   Timer? _idle;
   bool _obscured = false;

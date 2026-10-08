@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "app.vaultsnap" "\0"
-            VALUE "FileDescription", "vaultsnap" "\0"
+            VALUE "CompanyName", "app.hisn" "\0"
+            VALUE "FileDescription", "Hisn" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "vaultsnap" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 app.vaultsnap. All rights reserved." "\0"
-            VALUE "OriginalFilename", "vaultsnap.exe" "\0"
-            VALUE "ProductName", "vaultsnap" "\0"
+            VALUE "InternalName", "hisn" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 app.hisn. All rights reserved." "\0"
+            VALUE "OriginalFilename", "hisn.exe" "\0"
+            VALUE "ProductName", "Hisn" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

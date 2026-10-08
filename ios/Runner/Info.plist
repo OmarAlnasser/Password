@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>VSKeychainGroup</key>
-	<string>$(AppIdentifierPrefix)app.vaultsnap.shared</string>
+	<string>$(AppIdentifierPrefix)app.hisn.shared</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Take a photo of a login screen to import it. The photo stays on this device.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Vaultsnap</string>
+	<string>Hisn</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -23,7 +23,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>vaultsnap</string>
+	<string>Hisn</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

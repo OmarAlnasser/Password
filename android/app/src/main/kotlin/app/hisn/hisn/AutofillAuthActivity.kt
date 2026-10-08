@@ -1,4 +1,4 @@
-package app.vaultsnap.vaultsnap
+package app.hisn.hisn
 
 import android.app.Activity
 import android.content.Intent
@@ -62,7 +62,7 @@ class AutofillAuthActivity : FlutterFragmentActivity() {
         val userId = parcelable<AutofillId>(EXTRA_USERNAME_ID)
         val passId = parcelable<AutofillId>(EXTRA_PASSWORD_ID)
         val presentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-        presentation.setTextViewText(android.R.id.text1, username ?: "VaultSnap")
+        presentation.setTextViewText(android.R.id.text1, username ?: "Hisn")
         val builder = Dataset.Builder(presentation)
         if (userId != null && username != null) builder.setValue(userId, AutofillValue.forText(username))
         if (passId != null && password != null) builder.setValue(passId, AutofillValue.forText(password))
@@ -77,9 +77,9 @@ class AutofillAuthActivity : FlutterFragmentActivity() {
         else intent.getParcelableExtra(key)
 
     companion object {
-        const val EXTRA_PACKAGE = "vaultsnap.package"
-        const val EXTRA_DOMAIN = "vaultsnap.domain"
-        const val EXTRA_USERNAME_ID = "vaultsnap.usernameId"
-        const val EXTRA_PASSWORD_ID = "vaultsnap.passwordId"
+        const val EXTRA_PACKAGE = "hisn.package"
+        const val EXTRA_DOMAIN = "hisn.domain"
+        const val EXTRA_USERNAME_ID = "hisn.usernameId"
+        const val EXTRA_PASSWORD_ID = "hisn.passwordId"
     }
 }

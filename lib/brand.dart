@@ -9,11 +9,11 @@ library;
 import 'dart:ui' show Locale;
 
 /// Display name in Latin script.
-const String appName = 'VaultSnap';
+const String appName = 'Hisn';
 
 /// Display name used in the Arabic UI. Until the owner picks an Arabic name it
 /// is the Latin one (brand names are normally kept in Latin script).
-const String appNameAr = 'VaultSnap';
+const String appNameAr = 'حصن';
 
 /// One-line promise shown under the name on the lock screen and in "About".
 /// Texts that belong to a language live in `lib/l10n/*.arb`; these two are the

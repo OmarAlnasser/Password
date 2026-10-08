@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:vaultsnap/app.dart';
-import 'package:vaultsnap/services/vault_session.dart';
-import 'package:vaultsnap/ui/app_scope.dart';
+import 'package:hisn/app.dart';
+import 'package:hisn/services/vault_session.dart';
+import 'package:hisn/ui/app_scope.dart';
 
 import 'helpers.dart';
 
@@ -29,7 +29,7 @@ void main() {
       await services.session.createVault(testMasterPassword);
       await services.session.lock();
     });
-    await tester.pumpWidget(VaultSnapApp(services: services));
+    await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
   }
 
@@ -42,10 +42,7 @@ void main() {
     await lockedVault(tester);
     await tester.tap(find.text('Forgot password?'));
     await tester.pumpAndSettle();
-    expect(
-      find.textContaining('not even the VaultSnap developer'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('not even the Hisn developer'), findsOneWidget);
     await tester.tap(
       find.descendant(
         of: find.byType(AlertDialog),
