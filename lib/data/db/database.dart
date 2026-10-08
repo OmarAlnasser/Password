@@ -56,8 +56,8 @@ class Favicons extends Table {
   Set<Column<Object>> get primaryKey => {host};
 }
 
-/// When each entry was last used (copied, opened for autofill, ...), for the
-/// "most recently used first" order.
+/// When each entry was last used (a secret copied, the password shown, the
+/// login filled by autofill), for the "most recently used first" order.
 ///
 /// Local only, on purpose: it is not part of the encrypted entry blob and is
 /// never synced. Using a password must not rewrite the entry, wake the sync
@@ -135,6 +135,26 @@ class VaultDatabase extends _$VaultDatabase {
 
   Future<List<VaultItem>> dirtyItems() =>
       (select(vaultItems)..where((t) => t.dirty.equals(true))).get();
+
+  /// Records that the server accepted [pushed] as [revision]. The row is
+  /// marked clean only if it still holds what was pushed (same payload, same
+  /// deleted flag): an edit or a delete saved while the push was on the
+  /// network stays dirty, now based on [revision], so the next push sends it
+  /// instead of it being overwritten by the older copy that was pushed.
+  Future<void> markPushed(VaultItem pushed, {required int revision}) =>
+      customUpdate(
+        'UPDATE vault_items SET revision = ?1, dirty = CASE '
+        'WHEN payload IS ?2 AND deleted = ?3 THEN 0 ELSE 1 END '
+        'WHERE id = ?4',
+        variables: [
+          Variable.withInt(revision),
+          Variable<Uint8List>(pushed.payload),
+          Variable.withBool(pushed.deleted),
+          Variable.withString(pushed.id),
+        ],
+        updates: {vaultItems},
+        updateKind: UpdateKind.update,
+      );
 
   Future<String?> getKv(String key) async => (await (select(
     kvStore,

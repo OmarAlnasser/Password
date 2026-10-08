@@ -1825,6 +1825,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password hidden'**
   String get passwordHidden;
+
+  /// No description provided for @sortBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get sortBy;
+
+  /// No description provided for @sortedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Sorted by {mode}'**
+  String sortedBy(String mode);
+
+  /// No description provided for @sortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently used'**
+  String get sortRecent;
+
+  /// No description provided for @sortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A–Z)'**
+  String get sortTitle;
+
+  /// No description provided for @sortAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Recently added'**
+  String get sortAdded;
+
+  /// No description provided for @selectEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Select'**
+  String get selectEntries;
+
+  /// No description provided for @selectedCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{None selected} other{{n} selected}}'**
+  String selectedCount(int n);
+
+  /// No description provided for @selectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select all'**
+  String get selectAll;
+
+  /// No description provided for @clearSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get clearSelection;
+
+  /// No description provided for @exitSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Done selecting'**
+  String get exitSelection;
+
+  /// No description provided for @deleteSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete selected'**
+  String get deleteSelected;
+
+  /// No description provided for @deleteEntriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Delete 1 entry?} other{Delete {n} entries?}}'**
+  String deleteEntriesTitle(int n);
+
+  /// No description provided for @deleteCannotUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'This cannot be undone.'**
+  String get deleteCannotUndo;
+
+  /// No description provided for @entriesDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =0{Nothing was deleted} =1{1 entry deleted} other{{n} entries deleted}}'**
+  String entriesDeleted(int n);
+
+  /// No description provided for @deleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete. Nothing was changed.'**
+  String get deleteFailed;
+
+  /// No description provided for @deleteHiddenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 of them is hidden by the search or filter.} other{{n} of them are hidden by the search or filter.}}'**
+  String deleteHiddenCount(int n);
+
+  /// No description provided for @deleteSyncWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Your other devices will ask before deleting this many.'**
+  String get deleteSyncWarning;
+
+  /// No description provided for @syncDeletionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{Another device deleted 1 entry} other{Another device deleted {n} entries}}'**
+  String syncDeletionTitle(int n);
+
+  /// No description provided for @syncDeletionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This device has not deleted them yet. If you keep them, they come back on your other devices too.'**
+  String get syncDeletionBody;
+
+  /// No description provided for @syncDeletionApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete here too'**
+  String get syncDeletionApply;
+
+  /// No description provided for @syncDeletionKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep them'**
+  String get syncDeletionKeep;
+
+  /// No description provided for @syncDeletionConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'They were deleted on another device. This cannot be undone.'**
+  String get syncDeletionConfirmBody;
+
+  /// No description provided for @textHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Text hidden'**
+  String get textHidden;
+
+  /// No description provided for @ocrCheckPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Press the eye next to the password to check what was read.'**
+  String get ocrCheckPassword;
 }
 
 class _AppLocalizationsDelegate

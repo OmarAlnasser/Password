@@ -18,10 +18,10 @@ import 'ocr_widgets.dart';
 ///
 /// Quick asks only for a name and shows the detected username and password
 /// for checking; the password is masked until its eye is pressed, with the
-/// other readings and the text that was read. Advanced adds where the login is from, why it exists and
-/// tags. Switching keeps what was typed; everything filled in is saved,
-/// except a detected link the user never saw: it would also make the app
-/// fetch that site's icon.
+/// other readings and the text that was read. Advanced adds where the login
+/// is from, why it exists and tags. Switching keeps what was typed;
+/// everything filled in is saved, except a detected link the user never saw:
+/// it would also make the app fetch that site's icon.
 ///
 /// Never a dead end: when only part of the login was found, the sheet still
 /// opens with what there is, the other readings of each value to pick from,

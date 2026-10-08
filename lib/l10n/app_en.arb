@@ -493,5 +493,71 @@
   },
   "crackCenturies": "centuries",
   "noResults": "No results",
-  "passwordHidden": "Password hidden"
+  "passwordHidden": "Password hidden",
+  "sortBy": "Sort by",
+  "sortedBy": "Sorted by {mode}",
+  "@sortedBy": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "sortRecent": "Recently used",
+  "sortTitle": "Name (A–Z)",
+  "sortAdded": "Recently added",
+  "selectEntries": "Select",
+  "selectedCount": "{n, plural, =0{None selected} other{{n} selected}}",
+  "@selectedCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "selectAll": "Select all",
+  "clearSelection": "Clear selection",
+  "exitSelection": "Done selecting",
+  "deleteSelected": "Delete selected",
+  "deleteEntriesTitle": "{n, plural, =1{Delete 1 entry?} other{Delete {n} entries?}}",
+  "@deleteEntriesTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteCannotUndo": "This cannot be undone.",
+  "entriesDeleted": "{n, plural, =0{Nothing was deleted} =1{1 entry deleted} other{{n} entries deleted}}",
+  "@entriesDeleted": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFailed": "Couldn't delete. Nothing was changed.",
+  "deleteHiddenCount": "{n, plural, =1{1 of them is hidden by the search or filter.} other{{n} of them are hidden by the search or filter.}}",
+  "@deleteHiddenCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteSyncWarning": "Your other devices will ask before deleting this many.",
+  "syncDeletionTitle": "{n, plural, =1{Another device deleted 1 entry} other{Another device deleted {n} entries}}",
+  "@syncDeletionTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "syncDeletionBody": "This device has not deleted them yet. If you keep them, they come back on your other devices too.",
+  "syncDeletionApply": "Delete here too",
+  "syncDeletionKeep": "Keep them",
+  "syncDeletionConfirmBody": "They were deleted on another device. This cannot be undone.",
+  "textHidden": "Text hidden",
+  "ocrCheckPassword": "Press the eye next to the password to check what was read."
 }

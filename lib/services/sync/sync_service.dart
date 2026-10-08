@@ -13,11 +13,28 @@ import 'remote_store.dart';
 
 enum SyncStatus { disabled, idle, syncing, error, needsSignIn }
 
-/// The server tried to delete most of the vault in one pull. Nothing was
-/// applied; the user must confirm (or it is an attack / bug).
+/// The server tried to delete most of the vault in one pull (another device
+/// deleted many entries at once, or it is an attack / bug). Nothing from that
+/// pull was applied; this device's own changes were still pushed.
+/// [SyncService.pendingMassDeletion] holds [count] until the user chooses
+/// [SyncService.applyMassDeletion] or [SyncService.keepMassDeletion].
 class MassDeletionException implements Exception {
   const MassDeletionException(this.count);
+
+  /// How many live entries of this device the pull would have deleted.
   final int count;
+}
+
+/// What a pass does with a pull that would delete most of the vault.
+enum _MassDeletion {
+  /// Apply nothing from it and ask the user (the default).
+  refuse,
+
+  /// The user confirmed: delete those entries here too.
+  apply,
+
+  /// The user wants them: push them back, so every device has them again.
+  keep,
 }
 
 class SyncException implements Exception {
@@ -61,6 +78,8 @@ class SyncService extends ChangeNotifier {
   SyncStatus _status = SyncStatus.disabled;
   DateTime? lastSync;
   int rejectedItems = 0;
+  int? _pendingMassDeletion;
+  _MassDeletion _nextMassDeletion = _MassDeletion.refuse;
   Timer? _debounce;
   Future<void>? _running;
   Future<void>? _followUp;
@@ -68,6 +87,33 @@ class SyncService extends ChangeNotifier {
 
   SyncStatus get status => _status;
   bool get enabled => _status != SyncStatus.disabled;
+
+  /// How many entries another device deleted in a pull this device refused
+  /// (see [MassDeletionException]), or null when nothing waits for the user.
+  /// Meanwhile this device still pushes its own changes but takes nothing
+  /// newer from the server; [status] is [SyncStatus.error].
+  int? get pendingMassDeletion => _pendingMassDeletion;
+
+  /// The user confirmed the refused deletion: syncs again and deletes those
+  /// entries on this device too.
+  Future<void> applyMassDeletion() => _syncResolving(_MassDeletion.apply);
+
+  /// The user wants to keep the entries another device deleted: syncs again
+  /// without deleting them here and pushes them back, so they return on
+  /// every device.
+  Future<void> keepMassDeletion() => _syncResolving(_MassDeletion.keep);
+
+  /// [syncNow], with the next pass to start taking [choice] for a pull that
+  /// would delete most of the vault.
+  Future<void> _syncResolving(_MassDeletion choice) {
+    _nextMassDeletion = choice;
+    return syncNow();
+  }
+
+  void _forgetMassDeletion() {
+    _pendingMassDeletion = null;
+    _nextMassDeletion = _MassDeletion.refuse;
+  }
 
   void _set(SyncStatus s) {
     _status = s;
@@ -95,6 +141,8 @@ class SyncService extends ChangeNotifier {
 
   Future<void> _onLock() async {
     _debounce?.cancel();
+    // Asked again at the next unlock if the server still has it.
+    _forgetMassDeletion();
     _status = remote.isSignedIn ? SyncStatus.idle : _status;
   }
 
@@ -111,6 +159,7 @@ class SyncService extends ChangeNotifier {
     }
     lastSync = null;
     rejectedItems = 0;
+    _forgetMassDeletion();
     _set(SyncStatus.disabled);
   }
 
@@ -245,6 +294,7 @@ class SyncService extends ChangeNotifier {
     if (session.isUnlocked) {
       await session.db.setKv(_kvRefresh, '');
     }
+    _forgetMassDeletion();
     _set(SyncStatus.disabled);
   }
 
@@ -271,13 +321,27 @@ class SyncService extends ChangeNotifier {
         });
   }
 
+  /// One pass: pull, push, reload. A pull refused as a mass deletion still
+  /// pushes this device's own changes (so they are not stuck behind another
+  /// device's cleanup), records [pendingMassDeletion] and then throws the
+  /// [MassDeletionException] to the caller.
   Future<void> _sync() async {
+    final massDeletion = _nextMassDeletion;
+    _nextMassDeletion = _MassDeletion.refuse;
     _set(SyncStatus.syncing);
     try {
-      await _pull();
+      MassDeletionException? refused;
+      try {
+        await _pull(massDeletion);
+        _pendingMassDeletion = null;
+      } on MassDeletionException catch (e) {
+        refused = e;
+        _pendingMassDeletion = e.count;
+      }
       await _push();
       await session.reloadFromDatabase();
       await _saveRefresh();
+      if (refused != null) throw refused;
       lastSync = DateTime.now();
       _set(SyncStatus.idle);
     } on MassDeletionException {
@@ -292,15 +356,23 @@ class SyncService extends ChangeNotifier {
 
   // ---------------------------------------------------------------------------
 
-  Future<void> _pull() async {
+  Future<void> _pull(_MassDeletion massDeletion) async {
     final db = session.db;
     var cursor = int.tryParse(await db.getKv(_kvCursor) ?? '') ?? 0;
     while (true) {
       final batch = await remote.pullSince(cursor);
       if (batch.isEmpty) break;
-      await _guardMassDeletion(batch);
+      final doomed = _massDeletion(batch);
+      if (doomed.isNotEmpty && massDeletion == _MassDeletion.refuse) {
+        // The cursor stays before this batch: it is offered again.
+        throw MassDeletionException(doomed.length);
+      }
       for (final item in batch) {
-        await applyRemote(item);
+        if (massDeletion == _MassDeletion.keep && doomed.contains(item.id)) {
+          await _keepLocal(item);
+        } else {
+          await applyRemote(item);
+        }
         if (item.seq > cursor) cursor = item.seq;
       }
       await db.setKv(_kvCursor, '$cursor');
@@ -308,18 +380,54 @@ class SyncService extends ChangeNotifier {
     }
   }
 
-  Future<void> _guardMassDeletion(List<RemoteItem> batch) async {
+  /// The live entries [batch] deletes, when that is a mass deletion: at
+  /// least [massDeleteMin] of them and more than [massDeleteRatio] of the
+  /// vault. Empty otherwise.
+  Set<String> _massDeletion(List<RemoteItem> batch) {
     final live = {for (final e in session.entries) e.id};
-    final deletions = batch.where((i) => i.deleted && live.contains(i.id));
-    final n = deletions.length;
-    if (n >= massDeleteMin && n > live.length * massDeleteRatio) {
-      throw MassDeletionException(n);
-    }
+    final doomed = {
+      for (final i in batch)
+        if (i.deleted && live.contains(i.id)) i.id,
+    };
+    final n = doomed.length;
+    return n >= massDeleteMin && n > live.length * massDeleteRatio
+        ? doomed
+        : const {};
+  }
+
+  /// "Keep them": the server's tombstone [r] is not applied. The local entry
+  /// is rebased on the tombstone's revision and marked dirty, so the push
+  /// that follows restores it on the server, and from there on every device.
+  /// Anything that is not a plain deletion of a live local entry follows the
+  /// usual rules.
+  Future<void> _keepLocal(RemoteItem r) {
+    final db = session.db;
+    return db.transaction(() async {
+      final local = await db.item(r.id);
+      if (local == null ||
+          local.deleted ||
+          r.payload != null ||
+          r.revision <= local.revision) {
+        return _applyRemote(r);
+      }
+      await db.upsert(
+        local.copyWith(revision: r.revision, dirty: true).toCompanion(true),
+      );
+    });
   }
 
   /// Applies one remote row to the local DB. Public for tests.
+  ///
+  /// One transaction: the local row it decides on cannot change before it
+  /// writes (a save or delete made meanwhile waits, then lands on top as a
+  /// dirty row), so a remote row never overwrites a newer local edit.
   @visibleForTesting
-  Future<void> applyRemote(RemoteItem remoteItem) async {
+  Future<void> applyRemote(RemoteItem remoteItem) {
+    final db = session.db;
+    return db.transaction(() => _applyRemote(remoteItem));
+  }
+
+  Future<void> _applyRemote(RemoteItem remoteItem) async {
     final db = session.db;
     final local = await db.item(remoteItem.id);
 
@@ -422,7 +530,11 @@ class SyncService extends ChangeNotifier {
     for (var attempt = 0; attempt < 3; attempt++) {
       final dirty = await db.dirtyItems();
       if (dirty.isEmpty) return;
-      for (final row in dirty) {
+      for (final listed in dirty) {
+        // Read again: an earlier push of this loop took time, and the row
+        // may have been edited, deleted or cleaned since it was listed.
+        final row = await db.item(listed.id);
+        if (row == null || !row.dirty) continue;
         final res = await remote.push(
           id: row.id,
           payload: row.deleted ? null : row.payload,
@@ -432,11 +544,9 @@ class SyncService extends ChangeNotifier {
         if (res.conflict) {
           await applyRemote(res.current);
         } else {
-          await db.upsert(
-            row
-                .copyWith(revision: res.current.revision, dirty: false)
-                .toCompanion(true),
-          );
+          // Clean only if nothing was saved while the push was out; a newer
+          // edit or delete stays dirty and goes in the next round.
+          await db.markPushed(row, revision: res.current.revision);
         }
       }
     }

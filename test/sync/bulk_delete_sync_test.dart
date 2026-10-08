@@ -138,8 +138,95 @@ void main() {
       await expectLater(syncB.syncNow(), throwsA(isA<MassDeletionException>()));
       expect(b.entries, hasLength(10));
       expect(syncB.status, SyncStatus.error);
+      expect(syncB.pendingMassDeletion, 7);
     },
   );
+
+  group('a refused mass deletion', () {
+    /// Device A deletes 6 of 10 (enough to trip B's guard), B refuses it.
+    Future<(VaultSession, SyncService, VaultSession, SyncService)> refused(
+      FakeServer server,
+    ) async {
+      final (a, syncA, b, syncB) = await twoDevices(server, 10);
+      await a.deleteEntries([for (var i = 0; i < 6; i++) 'e$i']);
+      await syncA.syncNow();
+      await expectLater(syncB.syncNow(), throwsA(isA<MassDeletionException>()));
+      expect(syncB.pendingMassDeletion, 6);
+      expect(b.entries, hasLength(10));
+      return (a, syncA, b, syncB);
+    }
+
+    test('does not stop the device from pushing its own changes', () async {
+      final server = FakeServer();
+      final (_, _, b, syncB) = await refused(server);
+
+      await b.saveEntry(
+        VaultEntry(id: 'new-on-b', title: 'Made on B', password: 'hunter-x'),
+      );
+      await b.saveEntry(b.byId('e8')!.edit(title: 'Renamed on B'));
+      await expectLater(syncB.syncNow(), throwsA(isA<MassDeletionException>()));
+
+      expect(server.items['new-on-b']!.deleted, isFalse);
+      expect(await b.db.dirtyItems(), isEmpty);
+      // Still asking, still nothing deleted.
+      expect(syncB.pendingMassDeletion, 6);
+      expect(b.entries, hasLength(11));
+    });
+
+    test('"delete here too" applies it and sync is back to normal', () async {
+      final server = FakeServer();
+      final (a, _, b, syncB) = await refused(server);
+      await b.saveEntry(
+        VaultEntry(id: 'new-on-b', title: 'Made on B', password: 'hunter-x'),
+      );
+
+      await syncB.applyMassDeletion();
+      expect(syncB.pendingMassDeletion, isNull);
+      expect(syncB.status, SyncStatus.idle);
+      expect(ids(b), ['e6', 'e7', 'e8', 'e9', 'new-on-b']);
+      expect(server.items['new-on-b']!.deleted, isFalse);
+
+      // The next pass is an ordinary one.
+      await syncB.syncNow();
+      expect(syncB.status, SyncStatus.idle);
+      expect(a.entries, hasLength(4));
+    });
+
+    test(
+      '"keep them" restores them on the server and the other device',
+      () async {
+        final server = FakeServer();
+        final (a, syncA, b, syncB) = await refused(server);
+
+        await syncB.keepMassDeletion();
+        expect(syncB.pendingMassDeletion, isNull);
+        expect(syncB.status, SyncStatus.idle);
+        expect(b.entries, hasLength(10));
+        for (var i = 0; i < 6; i++) {
+          expect(server.items['e$i']!.deleted, isFalse, reason: 'e$i');
+        }
+        expect(await b.db.dirtyItems(), isEmpty);
+
+        await syncA.syncNow();
+        expect(ids(a), ids(b));
+        expect(a.byId('e0')!.password, 'hunter-test-0');
+        // Nothing left to ask about on either side.
+        await syncB.syncNow();
+        expect(syncB.status, SyncStatus.idle);
+      },
+    );
+
+    test('is asked again after a lock, not forgotten', () async {
+      final server = FakeServer();
+      final (_, _, b, syncB) = await refused(server);
+      await b.lock();
+      expect(syncB.pendingMassDeletion, isNull);
+      await b.unlockWithPassword(pw);
+      await expectLater(syncB.syncNow(), throwsA(isA<MassDeletionException>()));
+      expect(syncB.pendingMassDeletion, 6);
+      expect(b.entries, hasLength(10));
+    });
+  });
 
   test('a delete pending while offline is pushed later, once', () async {
     final server = FakeServer();

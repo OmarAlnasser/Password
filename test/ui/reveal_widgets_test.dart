@@ -328,5 +328,18 @@ void main() {
         }
       },
     );
+
+    testWithSemantics('says the label it is given instead, still no value', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        app(
+          const SecretText(secret, obscure: true, hiddenLabel: 'Text hidden'),
+        ),
+      );
+      expect(find.bySemanticsLabel('Text hidden'), findsOneWidget);
+      expect(find.bySemanticsLabel('Password hidden'), findsNothing);
+      expectSecretHidden(tester, secret);
+    });
   });
 }

@@ -295,6 +295,41 @@ void main() {
       },
     );
 
+    test('a database another connection is writing to still unlocks; the '
+        'leftover row is skipped now and removed later', () async {
+      await seed();
+      await s.markUsed('a');
+      await s.db.customStatement(
+        'INSERT INTO entry_usages (entry_id, last_used_at) VALUES (?, ?)',
+        ['orphan', 1],
+      );
+      final keyHex = s.keyring.databaseKey.runUnlockedSync(
+        (r) => r.map((b) => b.toRadixString(16).padLeft(2, '0')).join(),
+      );
+      await s.lock();
+
+      // Another engine on the same file (the autofill service, or the main
+      // app syncing) is in the middle of a write: the prune cannot run.
+      final other = raw.sqlite3.open('${dir.path}/vault.db');
+      try {
+        other.execute('''PRAGMA key = "x'$keyHex'"''');
+        other.execute('BEGIN IMMEDIATE');
+        other.execute("UPDATE kv_store SET value = value WHERE key = 'none'");
+
+        await s.unlockWithPassword(_pw);
+        expect(s.entries.map((e) => e.id).toSet(), {'a', 'b', 'c'});
+        expect(s.lastUsedMap.keys, ['a']);
+        expect(recentOrder().first, 'a');
+      } finally {
+        other.execute('COMMIT');
+        other.close();
+      }
+
+      await s.lock();
+      await s.unlockWithPassword(_pw);
+      expect((await s.db.allLastUsed()).keys, ['a']);
+    });
+
     test('erasing the vault leaves nothing for the next vault', () async {
       await seed();
       await s.markUsed('a');

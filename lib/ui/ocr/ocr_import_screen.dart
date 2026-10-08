@@ -485,8 +485,11 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
               ),
               const SizedBox(height: 4),
               Text(l.ocrTapChip, style: tt.bodySmall),
-              const SizedBox(height: 2),
-              Text(l.ocrAmbiguous, style: tt.bodySmall),
+              // Only while the text is shown: masked, nothing is highlighted.
+              if (reveal.shown) ...[
+                const SizedBox(height: 2),
+                Text(l.ocrAmbiguous, style: tt.bodySmall),
+              ],
               const SizedBox(height: 10),
               OcrChips(
                 chips: r.chips,

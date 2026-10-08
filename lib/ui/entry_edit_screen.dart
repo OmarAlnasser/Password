@@ -205,11 +205,16 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(l.ocrReview, style: tt.titleSmall),
-                    const SizedBox(height: 2),
-                    Text(
-                      l.ocrAmbiguous,
-                      style: tt.bodySmall!.copyWith(color: t.soft),
-                    ),
+                    // The password is masked, so there is nothing marked to
+                    // look at yet: point to the eye. The look-alike hint
+                    // comes with the shown password, under the field.
+                    if (widget.prefill!.password.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        l.ocrCheckPassword,
+                        style: tt.bodySmall!.copyWith(color: t.soft),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -260,6 +265,26 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
               if (reveal.shown && _pw.text.isNotEmpty) ...[
                 const SizedBox(height: 10),
                 SecretBox(child: SecretText(_pw.text)),
+                if (widget.prefill != null) ...[
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Icon(
+                          Icons.visibility_outlined,
+                          size: 16,
+                          color: t.muted,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(l.ocrAmbiguous, style: tt.bodySmall),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ],
           ),

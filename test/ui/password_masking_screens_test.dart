@@ -423,6 +423,15 @@ void main() {
         find.descendant(of: read, matching: find.byType(SecretText)),
         findsOneWidget,
       );
+      // The lines are not all a password: a screen reader hears "Text
+      // hidden" for them.
+      expect(
+        find.descendant(
+          of: read,
+          matching: find.bySemanticsLabel('Text hidden'),
+        ),
+        findsOneWidget,
+      );
       expectEyeIs48(tester, read);
 
       await tapEye(tester, read);
@@ -602,6 +611,25 @@ void main() {
         find.descendant(of: chip, matching: secretText(password, masked: true)),
         findsOneWidget,
       );
+      // Masked chips are "Text hidden" to a screen reader: the address is
+      // not announced as a password. Nothing is marked while masked, so the
+      // look-alike hint waits for the eye.
+      expect(
+        find.descendant(
+          of: chip,
+          matching: find.bySemanticsLabel('Text hidden'),
+        ),
+        findsNWidgets(2),
+      );
+      expect(
+        find.descendant(
+          of: chip,
+          matching: find.bySemanticsLabel('Password hidden'),
+        ),
+        findsNothing,
+      );
+      const hint = 'Highlighted characters are easy to misread (0/O, l/I/1)';
+      expect(find.text(hint), findsNothing);
       final title = find.ancestor(
         of: find.text('Detected text'),
         matching: find.byType(Row),
@@ -614,6 +642,7 @@ void main() {
         ),
         findsOneWidget,
       );
+      expect(find.text(hint), findsOneWidget);
       await tester.pump(const Duration(seconds: 16));
       await tester.pumpAndSettle();
       expect(
@@ -653,6 +682,15 @@ void main() {
       expect(tester.widget<TextField>(field).controller!.text, password);
       expect(tester.widget<TextField>(field).obscureText, isTrue);
       expectSecretHidden(tester, password);
+      // The review card points to the eye; the look-alike hint comes with
+      // the shown password, when there is something marked to look at.
+      const check =
+          'Press the eye next to the password to check what was read.';
+      const hint = 'Highlighted characters are easy to misread (0/O, l/I/1)';
+      expect(find.text(check), findsOneWidget);
+      expect(find.text(hint), findsNothing);
+      await tapEye(tester, field);
+      expect(find.text(hint), findsOneWidget);
     });
 
     testWithSemantics('Arabic: masked, with the Arabic words for the eye', (
@@ -661,7 +699,10 @@ void main() {
       await open(tester, [email, password], locale: const Locale('ar'));
       expectSecretHidden(tester, password);
       expect(find.byTooltip('إظهار'), findsWidgets);
-      expect(find.bySemanticsLabel('كلمة المرور مخفية'), findsWidgets);
+      // The password row says the password is hidden; the pieces of text
+      // (an address, a site name, ...) are only "text hidden".
+      expect(find.bySemanticsLabel(RegExp('كلمة المرور مخفية')), findsWidgets);
+      expect(find.bySemanticsLabel('نص مخفي'), findsWidgets);
       expect(tester.takeException(), isNull);
     });
   });

@@ -48,11 +48,16 @@ class _AutofillAppState extends State<AutofillApp> {
   void _refresh() => setState(() {});
 
   Future<void> _fill(VaultEntry e) async {
+    final session = widget.services.session;
     await _channel.invokeMethod<void>('fill', {
       'username': e.username,
       'password': e.password,
     });
-    await widget.services.session.lock();
+    // A fill is a use of the entry ("Recently used"). Awaited, so the time
+    // is written before the lock closes the database (a failed write is
+    // only logged there).
+    await session.markUsed(e.id);
+    await session.lock();
   }
 
   @override

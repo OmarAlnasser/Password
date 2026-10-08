@@ -216,7 +216,8 @@ class OcrIconTile extends StatelessWidget {
 ///
 /// Any of the text may be a password, so it is masked unless [obscure] is
 /// turned off (the host puts a [RevealButton] next to the chips). A masked
-/// chip still opens its menu; a screen reader hears "Password hidden".
+/// chip still opens its menu; a screen reader hears "Text hidden" (most
+/// chips are not the password, so it does not say "Password hidden").
 class OcrChips extends StatefulWidget {
   const OcrChips({
     super.key,
@@ -364,6 +365,7 @@ class _UseAsChip extends StatelessWidget {
                       child: SecretText(
                         value,
                         obscure: obscure,
+                        hiddenLabel: l.textHidden,
                         style: tt.bodyMedium!.copyWith(fontSize: 13.5),
                       ),
                     ),
@@ -615,10 +617,11 @@ class OcrWhatWasRead extends StatelessWidget {
                         )
                       // One masked line for the whole pass (a fixed 8 to 16
                       // bullets, whatever was read), so a screen reader
-                      // hears "Password hidden" once, not once per line.
+                      // hears "Text hidden" once, not once per line.
                       : SecretText(
                           pass.lines.join('\n'),
                           obscure: true,
+                          hiddenLabel: l.textHidden,
                           style: mono,
                         ),
                 ),

@@ -141,6 +141,7 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
                               await copySecretWithToast(
                                 context,
                                 shift ? e.username : e.password,
+                                usedEntryId: e.id,
                               );
                               await _close();
                             },
@@ -165,6 +166,7 @@ class _QuickSearchScreenState extends State<QuickSearchScreen> {
                                         await copySecretWithToast(
                                           context,
                                           items[i].password,
+                                          usedEntryId: items[i].id,
                                         );
                                         await _close();
                                       },

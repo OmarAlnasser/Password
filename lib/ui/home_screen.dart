@@ -7,8 +7,10 @@ import 'package:flutter/services.dart';
 
 import '../brand.dart';
 import '../data/models/vault_entry.dart';
+import '../services/entry_sort.dart';
 import '../services/ocr/ocr_parser.dart';
 import '../services/ocr/ocr_scanner.dart';
+import '../services/sync/sync_service.dart';
 import '../services/vault_session.dart';
 import 'app_scope.dart';
 import 'dashboard_screen.dart';
@@ -23,7 +25,10 @@ import 'settings_screen.dart';
 import 'theme/tokens.dart';
 import 'theme/typography.dart';
 import 'widgets/brand_mark.dart';
+import 'widgets/confirm_delete_dialog.dart';
 import 'widgets/empty_state.dart';
+import 'widgets/entry_sort_button.dart';
+import 'widgets/entry_use_scope.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/max_width_body.dart';
 import 'widgets/pill_chip.dart';
@@ -32,6 +37,7 @@ import 'widgets/reveal.dart';
 import 'widgets/secret_text.dart';
 import 'widgets/site_icon.dart';
 import 'widgets/surface_card.dart';
+import 'widgets/sync_deletion_prompt.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -56,12 +62,47 @@ class _HomeScreenState extends State<HomeScreen> {
   /// The entry shown in the right pane of the two-pane layout.
   String? _selectedId;
 
+  /// Selection mode: rows carry check boxes, a tap ticks a row instead of
+  /// opening it, and the header is the selection bar (count, select all,
+  /// delete). Entered by a long press, "Select" in the menu, a click on a
+  /// row's check box (mouse hover) or Ctrl+click; left by the close button,
+  /// Escape or Back.
+  bool _selecting = false;
+
+  /// The ids ticked in selection mode. It may still hold entries that are
+  /// filtered out (they stay ticked) or that are gone (they are ignored):
+  /// [_pickedLive] is what counts and what gets deleted.
+  final Set<String> _picked = {};
+
+  /// A mass delete is being written.
+  bool _deleting = false;
+
   /// True until the first frame is done: only the rows that are there when
   /// the screen first appears play their entrance, not rows that scroll in.
   bool _intro = true;
 
   /// The scan of a pasted screenshot in progress, if any.
   ScanCancelToken? _scanning;
+
+  /// The last-used times the list is ordered by: a copy of
+  /// `VaultSession.lastUsedMap` taken when the list is shown for a new reason
+  /// (first shown, back from another screen, the app resumed, the sort, the
+  /// search or the pills changed, entries added or removed), not the live
+  /// map. Copying a password marks its entry used at once; moving that row
+  /// to the top right away would put another entry under the finger or
+  /// pointer, and a second tap on the same spot would copy the wrong
+  /// password. The use is recorded at once; the list shows it next time.
+  Map<String, DateTime> _usedOrder = const {};
+
+  /// What [_usedOrder] was taken for (sort, search, pills); null asks for a
+  /// new copy at the next build.
+  Object? _usedOrderKey;
+
+  /// The entries there were when [_usedOrder] was taken.
+  Set<String> _usedOrderIds = const {};
+
+  /// Coming back to the app is showing the list again (see [_usedOrder]).
+  late final AppLifecycleListener _lifecycle;
 
   static const _pasteKeys = [
     SingleActivator(LogicalKeyboardKey.keyV, control: true),
@@ -84,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     HardwareKeyboard.instance.addHandler(_onKey);
+    _lifecycle = AppLifecycleListener(onResume: _refreshOrder);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       setState(() => _intro = false);
@@ -103,20 +145,67 @@ class _HomeScreenState extends State<HomeScreen> {
     // Locking or leaving the screen: stop reading the screenshot.
     _scanning?.cancel();
     HardwareKeyboard.instance.removeHandler(_onKey);
+    _lifecycle.dispose();
     _search.dispose();
     _searchFocus.dispose();
     _scroll.dispose();
     super.dispose();
   }
 
-  List<VaultEntry> _filtered(VaultSession session) => session.entries
-      .where((e) => !_favoritesOnly || e.favorite)
-      .where((e) => _tag == null || e.tags.contains(_tag))
-      .where((e) => e.matches(_search.text.trim()))
-      .toList();
+  /// The entries that pass the pills and the search, in the chosen order
+  /// (favourites stay pinned on top in every order).
+  List<VaultEntry> _filtered(AppServices s) {
+    final session = s.session;
+    final query = _search.text.trim();
+    return sortEntries(
+      session.entries
+          .where((e) => !_favoritesOnly || e.favorite)
+          .where((e) => _tag == null || e.tags.contains(_tag))
+          .where((e) => e.matches(query))
+          .toList(),
+      s.settings.entrySort,
+      _lastUsedForOrder(s),
+      favoritesFirst: true,
+    );
+  }
 
-  void _open(Widget page) =>
-      Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page));
+  /// The last-used times to order the list by now: [_usedOrder], taken
+  /// again when the sort, the search, the pills or the set of entries
+  /// changed since, or after [_refreshOrder].
+  Map<String, DateTime> _lastUsedForOrder(AppServices s) {
+    final session = s.session;
+    final key = (
+      s.settings.entrySort,
+      _search.text.trim(),
+      _tag,
+      _favoritesOnly,
+    );
+    final entries = session.entries;
+    final sameEntries =
+        entries.length == _usedOrderIds.length &&
+        entries.every((e) => _usedOrderIds.contains(e.id));
+    if (key != _usedOrderKey || !sameEntries) {
+      _usedOrderKey = key;
+      _usedOrderIds = {for (final e in entries) e.id};
+      _usedOrder = Map.of(session.lastUsedMap);
+    }
+    return _usedOrder;
+  }
+
+  /// The list is shown again (back from another screen, the app resumed):
+  /// the next build orders it by the newest last-used times.
+  void _refreshOrder() {
+    if (mounted) setState(() => _usedOrderKey = null);
+  }
+
+  /// Opens [page] on top of the list; coming back refreshes the order.
+  void _open(Widget page) {
+    unawaited(
+      Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (_) => page))
+          .then((_) => _refreshOrder()),
+    );
+  }
 
   void _add() => _open(const EntryEditScreen());
 
@@ -135,9 +224,113 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// A tap (or Enter) on a row. In selection mode it ticks the row; a
+  /// Ctrl+click (Cmd+click) starts selection mode with the row ticked;
+  /// otherwise it opens the entry. Never opens the pane while selecting.
+  void _onRowTap(VaultEntry e, {required bool wide}) {
+    if (_selecting) return _toggle(e.id);
+    final keys = HardwareKeyboard.instance;
+    if (keys.isControlPressed || keys.isMetaPressed) {
+      return _startSelection(e.id);
+    }
+    _openEntry(e, wide: wide);
+  }
+
+  /// [_picked] without the entries that are gone (deleted here, by sync or
+  /// on another device).
+  Set<String> _pickedLive(VaultSession session) {
+    if (_picked.isEmpty) return const {};
+    final live = {for (final e in session.entries) e.id};
+    return {
+      for (final id in _picked)
+        if (live.contains(id)) id,
+    };
+  }
+
+  void _startSelection([String? id]) => setState(() {
+    _selecting = true;
+    if (id != null) _picked.add(id);
+  });
+
+  void _exitSelection() => setState(() {
+    _selecting = false;
+    _picked.clear();
+  });
+
+  void _toggle(String id) => setState(() {
+    if (!_picked.remove(id)) _picked.add(id);
+  });
+
+  /// "Select all" ticks every row that is listed now (the search and the
+  /// pills apply). When those are all ticked already it is "Clear
+  /// selection" and unticks everything, rows the search or the pills hide
+  /// included, so no tick is left behind that the user cannot see.
+  void _toggleAll(List<VaultEntry> listed) => setState(() {
+    final ids = [for (final e in listed) e.id];
+    if (ids.every(_picked.contains)) {
+      _picked.clear();
+    } else {
+      _picked.addAll(ids);
+    }
+  });
+
+  /// Asks, then deletes exactly [ids] in one go and says how many went.
+  ///
+  /// The dialog says how many of them the search or the pills hide (they are
+  /// deleted too), and when sync is on and this many would make the other
+  /// devices ask before applying it (`SyncService.massDeleteMin` and
+  /// `massDeleteRatio`), it says that as well.
+  Future<void> _deletePicked(Set<String> ids, List<VaultEntry> listed) async {
+    if (ids.isEmpty || _deleting) return;
+    final l = context.l10n;
+    final services = context.services;
+    final session = services.session;
+    final messenger = ScaffoldMessenger.of(context);
+    final shown = {for (final e in listed) e.id};
+    final hidden = ids.where((id) => !shown.contains(id)).length;
+    final sync = services.sync;
+    final othersWillAsk =
+        sync != null &&
+        sync.enabled &&
+        ids.length >= SyncService.massDeleteMin &&
+        ids.length > session.entries.length * SyncService.massDeleteRatio;
+    final ok = await confirmDeleteEntries(
+      context,
+      count: ids.length,
+      notes: [
+        if (hidden > 0) l.deleteHiddenCount(hidden),
+        if (othersWillAsk) l.deleteSyncWarning,
+      ],
+    );
+    if (!ok || !mounted) return;
+    setState(() => _deleting = true);
+    try {
+      final n = await session.deleteEntries(ids);
+      if (mounted) {
+        setState(() {
+          _selecting = false;
+          _picked.clear();
+          if (ids.contains(_selectedId)) _selectedId = null;
+        });
+      }
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l.entriesDeleted(n))));
+    } on Object catch (e) {
+      // deleteEntries is all or nothing: nothing changed. Only the type is
+      // logged, never an entry.
+      debugPrint('HomeScreen: delete failed (${e.runtimeType})');
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l.deleteFailed)));
+    } finally {
+      if (mounted) setState(() => _deleting = false);
+    }
+  }
+
   /// Arrow keys in the search field of the two-pane layout: move the open row.
   void _moveSelection(int delta) {
-    final items = _filtered(context.services.session);
+    final items = _filtered(context.services);
     if (items.isEmpty) return;
     final at = items.indexWhere((e) => e.id == _selectedId);
     final next = at < 0
@@ -173,14 +366,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     final key = event.logicalKey;
     if (key == LogicalKeyboardKey.escape) {
-      if (_search.text.isNotEmpty) {
+      // Selection mode goes first; the search (and what it ticked) stays.
+      if (_selecting) {
+        _exitSelection();
+      } else if (_search.text.isNotEmpty) {
         setState(_search.clear);
       } else {
         _searchFocus.unfocus();
       }
       return KeyEventResult.handled;
     }
+    // Not while selecting: no row is open then, and selecting never opens
+    // or changes the pane. The arrows move the caret in the field instead.
     if (wide &&
+        !_selecting &&
         (key == LogicalKeyboardKey.arrowDown ||
             key == LogicalKeyboardKey.arrowUp)) {
       _moveSelection(key == LogicalKeyboardKey.arrowDown ? 1 : -1);
@@ -199,6 +398,21 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _onKey(KeyEvent event) {
     final keyboard = HardwareKeyboard.instance;
     if (!mounted) return false;
+    // Escape leaves selection mode wherever the focus is on this screen. In
+    // the search field the field's own handler does it (see _onSearchKey);
+    // over a menu or a dialog the route is not current and Escape closes
+    // that instead.
+    if (_selecting &&
+        event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape &&
+        ModalRoute.isCurrentOf(context) == true) {
+      final focused = FocusManager.instance.primaryFocus?.context;
+      if (focused?.findAncestorStateOfType<EditableTextState>() != null) {
+        return false;
+      }
+      _exitSelection();
+      return true;
+    }
     final isPaste = _pasteKeys.any((k) => k.accepts(event, keyboard));
     final isFind = _findKeys.any((k) => k.accepts(event, keyboard));
     final isNew = _newKeys.any((k) => k.accepts(event, keyboard));
@@ -377,7 +591,7 @@ class _HomeScreenState extends State<HomeScreen> {
         IconButton(
           tooltip: l.syncNow,
           icon: const Icon(Icons.sync_rounded),
-          onPressed: () => services.sync!.syncNow(),
+          onPressed: () => syncNowFromButton(services.sync!),
         ),
       IconButton(
         tooltip: l.lock,
@@ -388,12 +602,15 @@ class _HomeScreenState extends State<HomeScreen> {
         popUpAnimationStyle: context.motionStyle,
         icon: const Icon(Icons.more_vert_rounded),
         onSelected: (v) => switch (v) {
+          'select' => _startSelection(),
           'gen' => _open(const GeneratorScreen()),
           'ocr' => _open(const OcrImportScreen()),
           'dash' => _open(const DashboardScreen()),
           _ => _open(const SettingsScreen()),
         },
         itemBuilder: (_) => [
+          if (session.entries.isNotEmpty)
+            _menuItem('select', Icons.checklist_rounded, l.selectEntries, t),
           _menuItem('gen', Icons.password_rounded, l.generator, t),
           _menuItem(
             'ocr',
@@ -406,6 +623,58 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       const SizedBox(width: 4),
+    ];
+  }
+
+  /// The selection bar's buttons: "Select all" (or "Clear selection" when
+  /// every listed row is ticked) and "Delete". A wide window with normal text
+  /// shows them with labels; otherwise they are icon buttons with tooltips.
+  List<Widget> _selectionActions(
+    BuildContext context,
+    List<VaultEntry> listed,
+    Set<String> picked, {
+    required bool labelled,
+  }) {
+    final l = context.l10n;
+    final t = context.tokens;
+    final allTicked =
+        listed.isNotEmpty && listed.every((e) => picked.contains(e.id));
+    final toggleLabel = allTicked ? l.clearSelection : l.selectAll;
+    final toggleIcon = Icon(
+      allTicked ? Icons.deselect_rounded : Icons.select_all_rounded,
+    );
+    final VoidCallback? toggle = listed.isEmpty
+        ? null
+        : () => _toggleAll(listed);
+    final VoidCallback? delete = picked.isEmpty || _deleting
+        ? null
+        : () => _deletePicked(picked, listed);
+    return [
+      if (labelled) ...[
+        TextButton.icon(
+          icon: toggleIcon,
+          label: Text(toggleLabel),
+          onPressed: toggle,
+        ),
+        const SizedBox(width: 8),
+        PrimaryButton(
+          destructive: true,
+          glow: false,
+          icon: const Icon(Icons.delete_outline_rounded),
+          onPressed: delete,
+          child: Text(l.delete),
+        ),
+        const SizedBox(width: 16),
+      ] else ...[
+        IconButton(tooltip: toggleLabel, icon: toggleIcon, onPressed: toggle),
+        IconButton(
+          tooltip: l.deleteSelected,
+          style: IconButton.styleFrom(foregroundColor: t.error),
+          icon: const Icon(Icons.delete_outline_rounded),
+          onPressed: delete,
+        ),
+        const SizedBox(width: 4),
+      ],
     ];
   }
 
@@ -647,8 +916,12 @@ class _HomeScreenState extends State<HomeScreen> {
     List<VaultEntry> items, {
     required EdgeInsets padding,
     required bool wide,
+    required Set<String> picked,
   }) {
     final l = context.l10n;
+    final settings = context.services.settings;
+    final sync = context.services.sync;
+    final deletedElsewhere = sync?.pendingMassDeletion;
     final label = _tag ?? (_favoritesOnly ? l.favorites : l.allItems);
     return ListView.builder(
       controller: _scroll,
@@ -662,22 +935,39 @@ class _HomeScreenState extends State<HomeScreen> {
               // UPDATE-BANNER-SLOT: the auto-update team puts its "update
               // ready" banner here (a SurfaceCard(featured: true) with a
               // gap of 12 below it). The list scrolls it away with the rest.
-              _Heading(label: label, count: items.length),
+              //
+              // Another device deleted most of the vault and sync here is
+              // waiting for the user to apply or keep it.
+              if (sync != null && deletedElsewhere != null) ...[
+                SyncDeletionPrompt(sync: sync, count: deletedElsewhere),
+                const SizedBox(height: 12),
+              ],
+              _Heading(
+                label: label,
+                count: items.length,
+                sort: settings.entrySort,
+                onSort: (v) => settings.entrySort = v,
+              ),
             ],
           );
         }
         final e = items[i - 1];
-        final selected = wide && e.id == _selectedId;
+        final open = wide && !_selecting && e.id == _selectedId;
         return Padding(
-          key: selected ? _selectedRowKey : ValueKey(e.id),
+          key: open ? _selectedRowKey : ValueKey(e.id),
           padding: const EdgeInsets.only(bottom: AppSpace.tileGap),
           child: Reveal(
             index: i - 1,
             enabled: _intro && i <= 8,
             child: _EntryRow(
               entry: e,
-              selected: selected,
-              onTap: () => _openEntry(e, wide: wide),
+              selected: open,
+              selecting: _selecting,
+              picked: picked.contains(e.id),
+              onTap: () => _onRowTap(e, wide: wide),
+              onLongPress: () =>
+                  _selecting ? _toggle(e.id) : _startSelection(e.id),
+              onPick: () => _startSelection(e.id),
             ),
           ),
         );
@@ -688,7 +978,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
-    final session = context.services.session;
+    final services = context.services;
+    final session = services.session;
     final media = MediaQuery.of(context);
     final width = media.size.width;
     final wide = width >= AppLayout.expanded;
@@ -703,9 +994,17 @@ class _HomeScreenState extends State<HomeScreen> {
     final topInset = media.padding.top + toolbarH + bottomH;
 
     return ListenableBuilder(
-      listenable: session,
+      // The sort order is a setting; the entries and their last-used times
+      // come from the session (see _usedOrder for when the order follows
+      // them); sync can be waiting for the user (SyncDeletionPrompt).
+      listenable: Listenable.merge([
+        session,
+        services.settings,
+        if (services.sync != null) services.sync,
+      ]),
       builder: (context, _) {
-        final items = _filtered(session);
+        final items = _filtered(services);
+        final picked = _pickedLive(session);
         final tags = session.allTags.toList()..sort();
         final vaultEmpty = session.entries.isEmpty;
         final selected = _selectedId == null
@@ -748,6 +1047,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               items,
                               wide: true,
+                              picked: picked,
                               padding: EdgeInsets.fromLTRB(
                                 gutter,
                                 8,
@@ -789,6 +1089,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context,
             items,
             wide: false,
+            picked: picked,
             padding: EdgeInsets.fromLTRB(
               side,
               topInset + 8,
@@ -800,12 +1101,29 @@ class _HomeScreenState extends State<HomeScreen> {
         }
 
         final keyboardOpen = media.viewInsets.bottom > 0;
-        return Scaffold(
+        final scaffold = Scaffold(
           extendBodyBehindAppBar: true,
           appBar: GlassBar(
             toolbarHeight: toolbarH,
-            title: const BrandLockup(),
-            actions: _actions(context, roomy: roomy),
+            alwaysGlass: _selecting,
+            leading: _selecting
+                ? IconButton(
+                    tooltip: context.l10n.exitSelection,
+                    icon: const Icon(Icons.close_rounded),
+                    onPressed: _exitSelection,
+                  )
+                : null,
+            title: _selecting
+                ? _SelectionCount(count: picked.length)
+                : const BrandLockup(),
+            actions: _selecting
+                ? _selectionActions(
+                    context,
+                    items,
+                    picked,
+                    labelled: wide && scaler.scale(10) <= 13,
+                  )
+                : _actions(context, roomy: roomy),
             bottom: wide
                 ? null
                 : _HeaderBottom(
@@ -828,9 +1146,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
           ),
           body: body,
-          floatingActionButton: roomy || vaultEmpty || keyboardOpen
+          floatingActionButton:
+              roomy || vaultEmpty || keyboardOpen || _selecting
               ? null
               : _fabs(context),
+        );
+        // Back (the system button or gesture) leaves selection mode first.
+        return PopScope(
+          canPop: !_selecting,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && _selecting) _exitSelection();
+          },
+          child: scaffold,
         );
       },
     );
@@ -853,40 +1180,84 @@ class _HeaderBottom extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) => SizedBox(height: height, child: child);
 }
 
-/// "All items" (or the active filter) and how many entries match.
+/// "All items" (or the active filter), how many entries match and the sort
+/// control. The sort pill sits at the end of the line, or under the label
+/// when large text or a long tag name leaves no room for it.
 class _Heading extends StatelessWidget {
-  const _Heading({required this.label, required this.count});
+  const _Heading({
+    required this.label,
+    required this.count,
+    required this.sort,
+    required this.onSort,
+  });
 
   final String label;
   final int count;
+  final EntrySort sort;
+  final ValueChanged<EntrySort> onSort;
 
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
     final tt = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(4, 4, 4, 10),
-      child: Row(
+      padding: const EdgeInsetsDirectional.fromSTEB(4, 0, 0, 4),
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 12,
         children: [
-          Expanded(
-            child: Semantics(
-              header: true,
-              child: EntryTitle(
-                label,
-                style: tt.titleSmall!.copyWith(color: t.muted),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Semantics(
+                  header: true,
+                  child: EntryTitle(
+                    label,
+                    style: tt.titleSmall!.copyWith(color: t.muted),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 10),
+              Text(
+                '$count',
+                style: AppText.numeral.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: t.accent2,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Text(
-            '$count',
-            style: AppText.numeral.copyWith(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: t.accent2,
-            ),
-          ),
+          EntrySortButton(value: sort, onChanged: onSort),
         ],
+      ),
+    );
+  }
+}
+
+/// The title of the selection bar: how many entries are ticked. A live
+/// region, so a screen reader says the new count after every tick.
+class _SelectionCount extends StatelessWidget {
+  const _SelectionCount({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    // Shrinks rather than cuts: with very large text on a small phone
+    // "عنصران محددان" would otherwise lose the half that says what it is.
+    return Semantics(
+      liveRegion: true,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: AlignmentDirectional.centerStart,
+        child: Text(
+          context.l10n.selectedCount(count),
+          maxLines: 1,
+          style: const TextStyle(fontFeatures: [FontFeature.tabularFigures()]),
+        ),
       ),
     );
   }
@@ -898,39 +1269,105 @@ class _Heading extends StatelessWidget {
 /// The whole card opens the entry. The text is a [ListTile] for its layout
 /// (it grows with the text size and mirrors in Arabic); the card, not the
 /// tile, takes the tap, so the card can light up under a mouse.
-class _EntryRow extends StatelessWidget {
+///
+/// In selection mode a check box leads the row, a tap ticks it, the copy
+/// button is gone and a screen reader hears one node: "name, username",
+/// selected or not. Under a mouse pointer (outside selection mode) the site
+/// icon turns into a check box that starts selection mode with this row.
+class _EntryRow extends StatefulWidget {
   const _EntryRow({
     required this.entry,
     required this.selected,
     required this.onTap,
+    required this.onLongPress,
+    required this.onPick,
+    this.selecting = false,
+    this.picked = false,
   });
 
   final VaultEntry entry;
+
+  /// The open row of the two-pane layout.
   final bool selected;
   final VoidCallback onTap;
+  final VoidCallback onLongPress;
+
+  /// The check box shown under a mouse pointer was clicked.
+  final VoidCallback onPick;
+
+  /// Selection mode, and whether this row is ticked.
+  final bool selecting;
+  final bool picked;
+
+  @override
+  State<_EntryRow> createState() => _EntryRowState();
+}
+
+class _EntryRowState extends State<_EntryRow> {
+  bool _hover = false;
+
+  void _setHover(bool v) {
+    if (_hover != v) setState(() => _hover = v);
+  }
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     final t = context.tokens;
-    final e = entry;
+    final e = widget.entry;
+    final selecting = widget.selecting;
     final name = e.title.isEmpty ? e.host : e.title;
-    return SurfaceCard(
-      selected: selected,
+    final shown = name.isEmpty ? '—' : name;
+    final lit = selecting ? widget.picked : widget.selected;
+
+    // The row itself is the control for the keyboard and a screen reader,
+    // so the box is for the pointer only: no focus stop, no second node.
+    Widget box(bool value, VoidCallback onChanged) => ExcludeSemantics(
+      child: ExcludeFocus(
+        child: Checkbox(value: value, onChanged: (_) => onChanged()),
+      ),
+    );
+
+    final icon = SiteIcon(url: e.url, title: name, selected: lit);
+    final leading = selecting
+        ? icon
+        : AnimatedSwitcher(
+            duration: context.motion(AppMotion.fast),
+            child: _hover
+                ? SizedBox.square(
+                    key: const ValueKey('box'),
+                    dimension: 44,
+                    child: Center(child: box(false, widget.onPick)),
+                  )
+                : KeyedSubtree(key: const ValueKey('icon'), child: icon),
+          );
+
+    Widget card = SurfaceCard(
+      selected: lit,
       hoverLift: 0,
       padding: EdgeInsets.zero,
-      onTap: onTap,
+      onTap: widget.onTap,
+      onLongPress: widget.onLongPress,
       child: Row(
         children: [
+          // Where the hover box was, so the box stays under the pointer.
+          if (selecting)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: 14),
+              child: SizedBox(
+                width: 44,
+                child: Center(child: box(widget.picked, widget.onTap)),
+              ),
+            ),
           Expanded(
             child: ListTile(
-              contentPadding: const EdgeInsetsDirectional.only(
-                start: 14,
+              contentPadding: EdgeInsetsDirectional.only(
+                start: selecting ? 10 : 14,
                 end: 4,
               ),
               horizontalTitleGap: 14,
-              leading: SiteIcon(url: e.url, title: name, selected: selected),
-              title: EntryTitle(name.isEmpty ? '—' : name),
+              leading: leading,
+              title: EntryTitle(shown),
               subtitle: e.username.isEmpty ? null : LtrText(e.username),
             ),
           ),
@@ -944,16 +1381,44 @@ class _EntryRow extends StatelessWidget {
                 semanticLabel: l.favorite,
               ),
             ),
-          IconButton(
-            tooltip: l.copy,
-            icon: const Icon(Icons.copy_rounded, size: 20),
-            onPressed: e.password.isEmpty
-                ? null
-                : () => copySecretWithToast(context, e.password),
-          ),
+          if (selecting)
+            const SizedBox(width: 10)
+          else
+            IconButton(
+              tooltip: l.copy,
+              icon: const Icon(Icons.copy_rounded, size: 20),
+              onPressed: e.password.isEmpty
+                  ? null
+                  : () => copySecretWithToast(
+                      context,
+                      e.password,
+                      usedEntryId: e.id,
+                    ),
+            ),
           const SizedBox(width: 4),
         ],
       ),
+    );
+    if (selecting) {
+      card = Semantics(
+        container: true,
+        label: [
+          shown,
+          if (e.username.isNotEmpty) e.username,
+          if (e.favorite) l.favorite,
+        ].join(', '),
+        selected: widget.picked,
+        checked: widget.picked,
+        onTap: widget.onTap,
+        onLongPress: widget.onLongPress,
+        excludeSemantics: true,
+        child: card,
+      );
+    }
+    return MouseRegion(
+      onEnter: (_) => _setHover(true),
+      onExit: (_) => _setHover(false),
+      child: card,
     );
   }
 }
@@ -996,11 +1461,23 @@ class _NothingSelected extends StatelessWidget {
   }
 }
 
-Future<void> copySecretWithToast(BuildContext context, String value) async {
+/// Copies [value] (a password, a username, a one-time code) to the clipboard
+/// and says so, without the value and with when the clipboard clears.
+///
+/// When the value belongs to an entry, the entry counts as just used for the
+/// "Recently used" order (`VaultSession.markUsed`): pass its id as
+/// [usedEntryId], or call this from inside an [EntryUseScope].
+Future<void> copySecretWithToast(
+  BuildContext context,
+  String value, {
+  String? usedEntryId,
+}) async {
   final s = context.services;
   final l = context.l10n;
   final messenger = ScaffoldMessenger.of(context);
+  final used = usedEntryId ?? EntryUseScope.maybeOf(context);
   await s.clipboard.copySecret(value);
+  if (used != null) unawaited(s.session.markUsed(used));
   messenger
     ..hideCurrentSnackBar()
     ..showSnackBar(

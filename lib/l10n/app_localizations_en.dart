@@ -1049,4 +1049,123 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordHidden => 'Password hidden';
+
+  @override
+  String get sortBy => 'Sort by';
+
+  @override
+  String sortedBy(String mode) {
+    return 'Sorted by $mode';
+  }
+
+  @override
+  String get sortRecent => 'Recently used';
+
+  @override
+  String get sortTitle => 'Name (A–Z)';
+
+  @override
+  String get sortAdded => 'Recently added';
+
+  @override
+  String get selectEntries => 'Select';
+
+  @override
+  String selectedCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n selected',
+      zero: 'None selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get selectAll => 'Select all';
+
+  @override
+  String get clearSelection => 'Clear selection';
+
+  @override
+  String get exitSelection => 'Done selecting';
+
+  @override
+  String get deleteSelected => 'Delete selected';
+
+  @override
+  String deleteEntriesTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Delete $n entries?',
+      one: 'Delete 1 entry?',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteCannotUndo => 'This cannot be undone.';
+
+  @override
+  String entriesDeleted(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n entries deleted',
+      one: '1 entry deleted',
+      zero: 'Nothing was deleted',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteFailed => 'Couldn\'t delete. Nothing was changed.';
+
+  @override
+  String deleteHiddenCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n of them are hidden by the search or filter.',
+      one: '1 of them is hidden by the search or filter.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteSyncWarning =>
+      'Your other devices will ask before deleting this many.';
+
+  @override
+  String syncDeletionTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'Another device deleted $n entries',
+      one: 'Another device deleted 1 entry',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncDeletionBody =>
+      'This device has not deleted them yet. If you keep them, they come back on your other devices too.';
+
+  @override
+  String get syncDeletionApply => 'Delete here too';
+
+  @override
+  String get syncDeletionKeep => 'Keep them';
+
+  @override
+  String get syncDeletionConfirmBody =>
+      'They were deleted on another device. This cannot be undone.';
+
+  @override
+  String get textHidden => 'Text hidden';
+
+  @override
+  String get ocrCheckPassword =>
+      'Press the eye next to the password to check what was read.';
 }
