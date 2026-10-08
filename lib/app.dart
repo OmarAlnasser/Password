@@ -196,62 +196,66 @@ class _HisnAppState extends State<HisnApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final locale = s.settings.locale;
     return AppScope(
       services: s,
       child: ListenableBuilder(
         listenable: s.settings,
-        builder: (context, _) => Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) => _resetIdle(),
-          onPointerMove: (_) => _resetIdle(),
-          child: MaterialApp(
-            navigatorKey: _navigator,
-            debugShowCheckedModeBanner: false,
-            onGenerateTitle: (c) => AppLocalizations.of(c).appTitle,
-            // The type scale follows the language (Outfit / IBM Plex Sans
-            // Arabic). AppShell below re-resolves it for the language that is
-            // really in use, which also covers "follow the system language".
-            theme: AppTheme.light(locale),
-            darkTheme: AppTheme.dark(locale),
-            themeMode: s.settings.themeMode,
-            locale: locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            home: _home(),
-            builder: (context, child) => AppShell(
-              child: Stack(
-                children: [
-                  if (child != null)
-                    UpdateGate(
-                      controller: s.updates,
-                      navigatorKey: _navigator,
-                      triggers: s.session,
-                      child: child,
-                    ),
-                  if (_obscured || _captured)
-                    const Positioned.fill(
-                      child: ColoredBox(
-                        color: Colors.black,
-                        child: Center(
-                          child: Icon(
-                            Icons.lock,
-                            color: Colors.white,
-                            size: 64,
+        builder: (context, _) {
+          // Read here, not above: this builder is what runs when the settings
+          // change, so a new language applies on the next frame.
+          final locale = s.settings.locale;
+          return Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) => _resetIdle(),
+            onPointerMove: (_) => _resetIdle(),
+            child: MaterialApp(
+              navigatorKey: _navigator,
+              debugShowCheckedModeBanner: false,
+              onGenerateTitle: (c) => AppLocalizations.of(c).appTitle,
+              // The type scale follows the language (Outfit / IBM Plex Sans
+              // Arabic). AppShell below re-resolves it for the language that is
+              // really in use, which also covers "follow the system language".
+              theme: AppTheme.light(locale),
+              darkTheme: AppTheme.dark(locale),
+              themeMode: s.settings.themeMode,
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              home: _home(),
+              builder: (context, child) => AppShell(
+                child: Stack(
+                  children: [
+                    if (child != null)
+                      UpdateGate(
+                        controller: s.updates,
+                        navigatorKey: _navigator,
+                        triggers: s.session,
+                        child: child,
+                      ),
+                    if (_obscured || _captured)
+                      const Positioned.fill(
+                        child: ColoredBox(
+                          color: Colors.black,
+                          child: Center(
+                            child: Icon(
+                              Icons.lock,
+                              color: Colors.white,
+                              size: 64,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
