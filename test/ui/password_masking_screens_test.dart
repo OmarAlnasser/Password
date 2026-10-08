@@ -365,19 +365,26 @@ void main() {
       expect(chips, findsOneWidget);
       expect(eye(chips), findsOneWidget);
       expectEyeIs48(tester, chips);
-      expect(secretText(password, masked: true), findsWidgets);
-      expect(secretText(email, masked: true), findsOneWidget);
-      expect(secretText(password, masked: false), findsNothing);
+      Finder inPanel(String text, {required bool masked}) => find.descendant(
+        of: chips,
+        matching: secretText(text, masked: masked),
+      );
+      expect(inPanel(password, masked: true), findsOneWidget);
+      expect(inPanel(email, masked: true), findsOneWidget);
+      expect(inPanel(password, masked: false), findsNothing);
 
       await tapEye(tester, chips);
-      expect(secretText(password, masked: false), findsOneWidget);
-      expect(secretText(email, masked: false), findsOneWidget);
-      expect(secretText(password, masked: true), findsNothing);
+      expect(inPanel(password, masked: false), findsOneWidget);
+      expect(inPanel(email, masked: false), findsOneWidget);
+      expect(inPanel(password, masked: true), findsNothing);
+      // The password field and its readings are separate: still masked.
+      expect(tester.widget<TextField>(passwordField).obscureText, isTrue);
+      expect(secretText(second, masked: true), findsOneWidget);
 
       await tester.pump(const Duration(seconds: 16));
       await tester.pumpAndSettle();
-      expect(secretText(password, masked: false), findsNothing);
-      expect(secretText(email, masked: true), findsOneWidget);
+      expect(inPanel(password, masked: false), findsNothing);
+      expect(inPanel(email, masked: true), findsOneWidget);
     });
 
     testWithSemantics('folding the detected text away masks it again', (
@@ -476,10 +483,7 @@ void main() {
       expect(find.bySemanticsLabel('كلمة المرور مخفية'), findsWidgets);
       expect(tester.takeException(), isNull);
 
-      await tester.tap(
-        find.descendant(of: field, matching: find.byTooltip('إظهار')),
-      );
-      await tester.pumpAndSettle();
+      await tapEye(tester, field);
       expectSecretShown(tester, password);
       expect(tester.takeException(), isNull);
     });

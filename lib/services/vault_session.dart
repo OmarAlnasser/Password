@@ -399,7 +399,11 @@ class VaultSession extends ChangeNotifier {
                   o.updatedAt.millisecondsSinceEpoch) <
               beforeOrder,
     );
-    if (alreadyFirst && before != null && nowMs - before < _debounceMs) return;
+    if (alreadyFirst &&
+        before != null &&
+        nowMs - before < markUsedDebounce.inMilliseconds) {
+      return;
+    }
 
     _lastUsed[entryId] = _utc(nowMs);
     if (!alreadyFirst) notifyListeners();
@@ -411,8 +415,6 @@ class VaultSession extends ChangeNotifier {
       debugPrint('VaultSession: could not record usage (${e.runtimeType})');
     }
   }
-
-  static int get _debounceMs => markUsedDebounce.inMilliseconds;
 
   static DateTime _utc(int ms) =>
       DateTime.fromMillisecondsSinceEpoch(ms, isUtc: true);
