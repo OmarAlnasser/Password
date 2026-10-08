@@ -10,6 +10,7 @@ import 'entry_detail_screen.dart';
 import 'home_screen.dart';
 import 'theme/tokens.dart';
 import 'widgets/brand_mark.dart';
+import 'widgets/focus_ring.dart';
 import 'widgets/secret_text.dart';
 import 'widgets/site_icon.dart';
 
@@ -287,33 +288,36 @@ class _ResultRow extends StatelessWidget {
           ),
           child: Material(
             type: MaterialType.transparency,
-            child: InkWell(
-              borderRadius: AppRadius.controlAll,
-              onTap: onTap,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(10, 8, 12, 8),
-                child: Row(
-                  children: [
-                    SiteIcon(
-                      url: e.url,
-                      title: name,
-                      size: 38,
-                      selected: selected,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          EntryTitle(name, style: tt.titleMedium),
-                          if (e.username.isNotEmpty) LtrText(e.username),
-                        ],
+            child: FocusRing(
+              radius: AppRadius.control,
+              child: InkWell(
+                borderRadius: AppRadius.controlAll,
+                onTap: onTap,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(10, 8, 12, 8),
+                  child: Row(
+                    children: [
+                      SiteIcon(
+                        url: e.url,
+                        title: name,
+                        size: 38,
+                        selected: selected,
                       ),
-                    ),
-                    if (selected)
-                      const _KeyCap.icon(Icons.keyboard_return_rounded),
-                  ],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            EntryTitle(name, style: tt.titleMedium),
+                            if (e.username.isNotEmpty) LtrText(e.username),
+                          ],
+                        ),
+                      ),
+                      if (selected)
+                        const _KeyCap.icon(Icons.keyboard_return_rounded),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -347,7 +351,7 @@ class _NoMatches extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            l.noEntries,
+            vaultEmpty ? l.noEntries : l.noResults,
             textAlign: TextAlign.center,
             style: tt.bodyMedium!.copyWith(color: t.muted),
           ),

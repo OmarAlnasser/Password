@@ -12,7 +12,9 @@ import 'tokens.dart';
 /// would show through each other. One builder serves every platform.
 ///
 /// With "reduce motion" on (`MediaQuery.disableAnimations`) the page simply
-/// appears.
+/// appears: the page underneath is hidden on the first frame of a push and
+/// the page on top on the first frame of a pop, instead of the two sharing
+/// the screen for the 300 ms the route still runs.
 class AppPageTransitionsBuilder extends PageTransitionsBuilder {
   const AppPageTransitionsBuilder();
 
@@ -42,7 +44,21 @@ class AppPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    if (MediaQuery.disableAnimationsOf(context)) return child;
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return AnimatedBuilder(
+        animation: Listenable.merge([animation, secondaryAnimation]),
+        child: child,
+        builder: (context, child) {
+          // Another page is being pushed over this one, or is already there.
+          final covered =
+              secondaryAnimation.status == AnimationStatus.forward ||
+              secondaryAnimation.status == AnimationStatus.completed;
+          // This page is being popped.
+          final leaving = animation.status == AnimationStatus.reverse;
+          return Opacity(opacity: covered || leaving ? 0 : 1, child: child);
+        },
+      );
+    }
     return FadeTransition(
       opacity: _fadeIn.animate(animation),
       child: SlideTransition(

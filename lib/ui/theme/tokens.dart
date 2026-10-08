@@ -153,6 +153,13 @@ extension AppThemeContext on BuildContext {
   /// [AppMotion.of] for this context: zero when animations are disabled.
   Duration motion(Duration d) => AppMotion.of(this, d);
 
+  /// For the `animationStyle` of `showDialog`, the `sheetAnimationStyle` of
+  /// `showModalBottomSheet`, the `popUpAnimationStyle` of a popup menu and the
+  /// `expansionAnimationStyle` of an `ExpansionTile`: no animation when the
+  /// system asked to reduce motion, otherwise null (the widget's default).
+  AnimationStyle? get motionStyle =>
+      MediaQuery.disableAnimationsOf(this) ? AnimationStyle.noAnimation : null;
+
   /// True when the active language is Arabic (real RTL, Arabic type scale).
   bool get isArabic => Localizations.maybeLocaleOf(this)?.languageCode == 'ar';
 }

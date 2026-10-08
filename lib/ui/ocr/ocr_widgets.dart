@@ -4,6 +4,7 @@ import '../../l10n/app_localizations.dart';
 import '../../services/ocr/ocr_scanner.dart';
 import '../app_scope.dart';
 import '../theme/theme.dart';
+import '../widgets/focus_ring.dart';
 import '../widgets/secret_text.dart';
 
 /// Where a piece of recognised text can be put.
@@ -120,42 +121,45 @@ class _PillSegmentView<T> extends StatelessWidget {
       child: Semantics(
         selected: selected,
         inMutuallyExclusiveGroup: true,
-        child: AnimatedContainer(
-          duration: context.motion(AppMotion.fast),
-          curve: AppMotion.standard,
-          decoration: ShapeDecoration(
-            color: selected ? t.strong : Colors.transparent,
-            shape: StadiumBorder(
-              side: BorderSide(
-                color: selected ? t.pillSelectedBorder : Colors.transparent,
+        child: FocusRing(
+          radius: 999,
+          child: AnimatedContainer(
+            duration: context.motion(AppMotion.fast),
+            curve: AppMotion.standard,
+            decoration: ShapeDecoration(
+              color: selected ? t.strong : Colors.transparent,
+              shape: StadiumBorder(
+                side: BorderSide(
+                  color: selected ? t.pillSelectedBorder : Colors.transparent,
+                ),
               ),
             ),
-          ),
-          child: Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              onTap: onTap,
-              customBorder: const StadiumBorder(),
-              child: Container(
-                constraints: const BoxConstraints(minHeight: 48),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (segment.icon != null) ...[
-                      Icon(segment.icon, size: 18, color: fg),
-                      const SizedBox(width: 8),
-                    ],
-                    Flexible(
-                      child: Text(
-                        segment.label,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.labelMedium!
-                            .copyWith(color: fg),
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: onTap,
+                customBorder: const StadiumBorder(),
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 48),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (segment.icon != null) ...[
+                        Icon(segment.icon, size: 18, color: fg),
+                        const SizedBox(width: 8),
+                      ],
+                      Flexible(
+                        child: Text(
+                          segment.label,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.labelMedium!
+                              .copyWith(color: fg),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -284,69 +288,73 @@ class _UseAsChip extends StatelessWidget {
     final l = context.l10n;
     final t = context.tokens;
     final tt = Theme.of(context).textTheme;
-    return PopupMenuButton<Object>(
-      tooltip: l.ocrUseAs,
-      onSelected: (pick) {
-        if (pick is OcrField) {
-          onUse(value, pick);
-        } else {
-          onCopy?.call(value);
-        }
-      },
-      itemBuilder: (_) => [
-        PopupMenuItem<Object>(
-          enabled: false,
-          height: 32,
-          child: Text(l.ocrUseAs, style: tt.bodySmall),
-        ),
-        for (final f in OcrField.values)
+    return FocusRing(
+      radius: 24,
+      child: PopupMenuButton<Object>(
+        popUpAnimationStyle: context.motionStyle,
+        tooltip: l.ocrUseAs,
+        onSelected: (pick) {
+          if (pick is OcrField) {
+            onUse(value, pick);
+          } else {
+            onCopy?.call(value);
+          }
+        },
+        itemBuilder: (_) => [
           PopupMenuItem<Object>(
-            key: ValueKey('ocr.useAs.${f.name}'),
-            value: f,
-            child: Row(
-              children: [
-                Icon(_fieldIcon(f), size: 20, color: t.accent2),
-                const SizedBox(width: 12),
-                Text(ocrFieldLabel(l, f)),
-              ],
-            ),
+            enabled: false,
+            height: 32,
+            child: Text(l.ocrUseAs, style: tt.bodySmall),
           ),
-        if (onCopy != null) ...[
-          const PopupMenuDivider(),
-          PopupMenuItem<Object>(
-            key: const ValueKey('ocr.copy'),
-            value: const _Copy(),
-            child: Row(
-              children: [
-                Icon(Icons.copy_rounded, size: 20, color: t.soft),
-                const SizedBox(width: 12),
-                Text(l.copy),
-              ],
+          for (final f in OcrField.values)
+            PopupMenuItem<Object>(
+              key: ValueKey('ocr.useAs.${f.name}'),
+              value: f,
+              child: Row(
+                children: [
+                  Icon(_fieldIcon(f), size: 20, color: t.accent2),
+                  const SizedBox(width: 12),
+                  Text(ocrFieldLabel(l, f)),
+                ],
+              ),
             ),
-          ),
+          if (onCopy != null) ...[
+            const PopupMenuDivider(),
+            PopupMenuItem<Object>(
+              key: const ValueKey('ocr.copy'),
+              value: const _Copy(),
+              child: Row(
+                children: [
+                  Icon(Icons.copy_rounded, size: 20, color: t.soft),
+                  const SizedBox(width: 12),
+                  Text(l.copy),
+                ],
+              ),
+            ),
+          ],
         ],
-      ],
-      // The tap area is the whole 48 px band, not only the pill.
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 48),
-        child: Center(
-          widthFactor: 1,
-          child: Chip(
-            label: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Taps go to the chip, not to the selectable text inside it.
-                Flexible(
-                  child: IgnorePointer(
-                    child: SecretText(
-                      value,
-                      style: tt.bodyMedium!.copyWith(fontSize: 13.5),
+        // The tap area is the whole 48 px band, not only the pill.
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 48),
+          child: Center(
+            widthFactor: 1,
+            child: Chip(
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Taps go to the chip, not to the selectable text inside it.
+                  Flexible(
+                    child: IgnorePointer(
+                      child: SecretText(
+                        value,
+                        style: tt.bodyMedium!.copyWith(fontSize: 13.5),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 2),
-                Icon(Icons.expand_more_rounded, size: 18, color: t.muted),
-              ],
+                  const SizedBox(width: 2),
+                  Icon(Icons.expand_more_rounded, size: 18, color: t.muted),
+                ],
+              ),
             ),
           ),
         ),
@@ -459,6 +467,7 @@ class OcrFold extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     return _FoldPanel(
       child: ExpansionTile(
+        expansionAnimationStyle: context.motionStyle,
         key: expandKey,
         initiallyExpanded: initiallyExpanded,
         tilePadding: const EdgeInsetsDirectional.only(start: 14, end: 10),
@@ -669,6 +678,7 @@ Future<OcrFailureAction?> showOcrFailureDialog(
   final l = context.l10n;
   return showDialog<OcrFailureAction>(
     context: context,
+    animationStyle: context.motionStyle,
     builder: (c) => AlertDialog(
       title: Row(
         children: [
@@ -696,16 +706,27 @@ Future<OcrFailureAction?> showOcrFailureDialog(
           ),
         ),
       ),
+      // Stacked at full width, the main choice first: three side-by-side
+      // buttons of different widths looked unfinished and wrapped at large
+      // text sizes.
       actions: [
-        TextButton(onPressed: () => Navigator.pop(c), child: Text(l.close)),
-        TextButton(
-          onPressed: () => Navigator.pop(c, OcrFailureAction.byHand),
-          child: Text(l.ocrFillByHand),
-        ),
-        FilledButton(
-          autofocus: true,
-          onPressed: () => Navigator.pop(c, OcrFailureAction.again),
-          child: Text(l.ocrPasteAgain),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FilledButton(
+              autofocus: true,
+              onPressed: () => Navigator.pop(c, OcrFailureAction.again),
+              child: Text(l.ocrPasteAgain),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton(
+              onPressed: () => Navigator.pop(c, OcrFailureAction.byHand),
+              child: Text(l.ocrFillByHand),
+            ),
+            const SizedBox(height: 4),
+            TextButton(onPressed: () => Navigator.pop(c), child: Text(l.close)),
+          ],
         ),
       ],
     ),

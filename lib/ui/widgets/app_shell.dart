@@ -30,6 +30,7 @@ class AppShell extends StatelessWidget {
         base.brightness,
         locale,
         transparentScaffold: true,
+        highContrast: MediaQuery.highContrastOf(context),
       ),
       child: AppBackground(child: child),
     );

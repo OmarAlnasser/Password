@@ -385,6 +385,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: session.lock,
       ),
       PopupMenuButton<String>(
+        popUpAnimationStyle: context.motionStyle,
         icon: const Icon(Icons.more_vert_rounded),
         onSelected: (v) => switch (v) {
           'gen' => _open(const GeneratorScreen()),
@@ -438,40 +439,48 @@ class _HomeScreenState extends State<HomeScreen> {
       canRequestFocus: false,
       skipTraversal: true,
       onKeyEvent: (_, event) => _onSearchKey(event, wide: wide),
-      child: SearchBar(
-        controller: _search,
-        focusNode: _searchFocus,
-        hintText: l.search,
-        leading: Icon(Icons.search_rounded, color: t.muted),
-        trailing: [
-          if (_search.text.isNotEmpty)
-            IconButton(
-              tooltip: l.clear,
-              icon: const Icon(Icons.close_rounded, size: 20),
-              onPressed: () => setState(_search.clear),
-            ),
-        ],
-        onChanged: (_) => setState(() {}),
-        textInputAction: TextInputAction.search,
-        elevation: const WidgetStatePropertyAll(0),
-        backgroundColor: WidgetStatePropertyAll(t.surface2),
-        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        shape: const WidgetStatePropertyAll(StadiumBorder()),
-        side: WidgetStateProperty.resolveWith(
-          (s) => s.contains(WidgetState.focused)
-              ? BorderSide(color: t.focusRing, width: 2)
-              : BorderSide(color: t.outline),
+      // SearchBar's InkWell makes the whole pill tappable; without a label it
+      // is an unnamed tap target for a screen reader.
+      child: Semantics(
+        container: true,
+        label: l.search,
+        child: SearchBar(
+          controller: _search,
+          focusNode: _searchFocus,
+          hintText: l.search,
+          leading: Icon(Icons.search_rounded, color: t.muted),
+          trailing: [
+            if (_search.text.isNotEmpty)
+              IconButton(
+                tooltip: l.clear,
+                icon: const Icon(Icons.close_rounded, size: 20),
+                onPressed: () => setState(_search.clear),
+              ),
+          ],
+          onChanged: (_) => setState(() {}),
+          textInputAction: TextInputAction.search,
+          elevation: const WidgetStatePropertyAll(0),
+          backgroundColor: WidgetStatePropertyAll(t.surface2),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+          overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+          shape: const WidgetStatePropertyAll(StadiumBorder()),
+          side: WidgetStateProperty.resolveWith(
+            (s) => s.contains(WidgetState.focused)
+                ? BorderSide(color: t.focusRing, width: 2)
+                : BorderSide(color: t.outline),
+          ),
+          padding: const WidgetStatePropertyAll(
+            EdgeInsetsDirectional.only(start: 16, end: 8),
+          ),
+          textStyle: WidgetStatePropertyAll(
+            tt.bodyLarge!.copyWith(color: t.ink),
+          ),
+          hintStyle: WidgetStatePropertyAll(
+            tt.bodyLarge!.copyWith(color: t.muted),
+          ),
+          constraints: BoxConstraints(minHeight: height),
         ),
-        padding: const WidgetStatePropertyAll(
-          EdgeInsetsDirectional.only(start: 16, end: 8),
-        ),
-        textStyle: WidgetStatePropertyAll(tt.bodyLarge!.copyWith(color: t.ink)),
-        hintStyle: WidgetStatePropertyAll(
-          tt.bodyLarge!.copyWith(color: t.muted),
-        ),
-        constraints: BoxConstraints(minHeight: height),
       ),
     );
   }
@@ -486,14 +495,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final l = context.l10n;
     final everything = !_favoritesOnly && _tag == null;
     Widget gap() => const SizedBox(width: 8);
+    // Keyboard focus brings the pill to the middle of the row. The default
+    // traversal scroll left it flush with (or, in Arabic, outside) the edge
+    // of the pane.
+    Widget pill(Widget chip) => _RevealOnFocus(child: Center(child: chip));
     return SizedBox(
       height: height,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: side),
         children: [
-          Center(
-            child: PillChip(
+          pill(
+            PillChip(
               label: l.allItems,
               selected: everything,
               onSelected: (_) => setState(() {
@@ -503,8 +516,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           gap(),
-          Center(
-            child: PillChip(
+          pill(
+            PillChip(
               label: l.favorites,
               icon: Icons.star_rounded,
               selected: _favoritesOnly,
@@ -513,8 +526,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           for (final tag in tags) ...[
             gap(),
-            Center(
-              child: PillChip(
+            pill(
+              PillChip(
                 label: tag,
                 selected: _tag == tag,
                 onSelected: (v) => setState(() => _tag = v ? tag : null),
@@ -532,7 +545,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (!vaultEmpty) {
       return EmptyState(
         icon: Icons.search_off_rounded,
-        title: l.noEntries,
+        title: l.noResults,
         action: OutlinedButton(onPressed: _clearFilters, child: Text(l.clear)),
       );
     }
@@ -993,4 +1006,38 @@ Future<void> copySecretWithToast(BuildContext context, String value) async {
     ..showSnackBar(
       SnackBar(content: Text(l.copied(s.settings.clipboardClearSeconds))),
     );
+}
+
+/// Scrolls its row so the child is in the middle whenever it (or something in
+/// it) gets keyboard focus. It is not a focus stop of its own.
+class _RevealOnFocus extends StatelessWidget {
+  const _RevealOnFocus({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      canRequestFocus: false,
+      skipTraversal: true,
+      onFocusChange: (focused) {
+        // Keyboard navigation only: a tap or click leaves the row alone.
+        if (!focused ||
+            FocusManager.instance.highlightMode !=
+                FocusHighlightMode.traditional) {
+          return;
+        }
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          Scrollable.ensureVisible(
+            context,
+            alignment: 0.5,
+            duration: context.motion(AppMotion.fast),
+            curve: AppMotion.ease,
+          );
+        });
+      },
+      child: child,
+    );
+  }
 }

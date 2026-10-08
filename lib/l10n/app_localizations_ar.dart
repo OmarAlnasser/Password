@@ -115,7 +115,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favorite => 'مفضل';
 
   @override
-  String get totpSecret => 'مفتاح TOTP أو رابط otpauth://';
+  String get totpSecret => 'مفتاح TOTP أو رابط otpauth://‎';
 
   @override
   String get invalidTotp => 'مفتاح TOTP غير صالح';
@@ -172,13 +172,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get uppercase => 'أحرف كبيرة (A-Z)';
 
   @override
-  String get digits => 'أرقام (0-9)';
+  String get digits => 'أرقام ‎(0-9)‎';
 
   @override
   String get symbols => 'رموز';
 
   @override
-  String get excludeAmbiguous => 'تجنب المتشابهات (0/O, l/I/1)';
+  String get excludeAmbiguous => 'تجنب المتشابهات ‎(0/O, l/I/1)‎';
 
   @override
   String get passphrase => 'عبارة مرور';
@@ -311,7 +311,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ocrReview => 'راجع القيم المكتشفة قبل الحفظ';
 
   @override
-  String get ocrAmbiguous => 'الأحرف المميزة سهلة الالتباس (0/O, l/I/1)';
+  String get ocrAmbiguous => 'الأحرف المميزة سهلة الالتباس ‎(0/O, l/I/1)‎';
 
   @override
   String get ocrChipsTitle => 'النص المكتشف';
@@ -975,4 +975,100 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get updateDevOff => 'التحديثات متوقفة في نسخ التطوير.';
+
+  @override
+  String get crackLessThanSecond => 'أقل من ثانية';
+
+  @override
+  String crackSeconds(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n ثانية',
+      many: '$n ثانية',
+      few: '$n ثوانٍ',
+      two: 'ثانيتان',
+      one: 'ثانية واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crackMinutes(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n دقيقة',
+      many: '$n دقيقة',
+      few: '$n دقائق',
+      two: 'دقيقتان',
+      one: 'دقيقة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crackHours(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n ساعة',
+      many: '$n ساعة',
+      few: '$n ساعات',
+      two: 'ساعتان',
+      one: 'ساعة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crackDays(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n يوم',
+      many: '$n يومًا',
+      few: '$n أيام',
+      two: 'يومان',
+      one: 'يوم واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crackMonths(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n شهر',
+      many: '$n شهرًا',
+      few: '$n أشهر',
+      two: 'شهران',
+      one: 'شهر واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String crackYears(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n سنة',
+      many: '$n سنة',
+      few: '$n سنوات',
+      two: 'سنتان',
+      one: 'سنة واحدة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get crackCenturies => 'قرون';
+
+  @override
+  String get noResults => 'لا توجد نتائج';
+
+  @override
+  String get passwordHidden => 'كلمة المرور مخفية';
 }

@@ -102,6 +102,7 @@ Future<bool> _confirmDelete(BuildContext context, VaultEntry e) async {
   final l = context.l10n;
   final ok = await showDialog<bool>(
     context: context,
+    animationStyle: context.motionStyle,
     builder: (c) => AlertDialog(
       title: Text(l.deleteConfirm(_isolate(c, e.title))),
       actions: [
@@ -338,6 +339,7 @@ class _EntryDetailViewState extends State<EntryDetailView> {
             SurfaceCard(
               padding: EdgeInsets.zero,
               child: ExpansionTile(
+                expansionAnimationStyle: context.motionStyle,
                 leading: Icon(Icons.history_rounded, color: t.accent2),
                 title: Text('${l.passwordHistory} (${e.history.length})'),
                 onExpansionChanged: (v) => setState(() => _showHistory = v),

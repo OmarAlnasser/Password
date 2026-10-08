@@ -81,6 +81,9 @@ flutter:
   generate: true
   assets:
     - assets/eff_large_wordlist.txt
+    # The single-colour shield-and-keyhole mark that BrandMark tints (without
+    # this entry BrandMark silently falls back to a plain lock icon).
+    - assets/brand/mark_mono.png
     # SIL OFL 1.1 texts for the bundled fonts. They ship inside the app because
     # the licence requires it, and so an "open-source licences" screen can
     # register them with LicenseRegistry. See docs/DESIGN.md (Fonts).

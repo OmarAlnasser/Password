@@ -8,6 +8,7 @@ import '../services/unlock_throttle.dart';
 import 'app_scope.dart';
 import 'sign_in_screen.dart';
 import 'theme/tokens.dart';
+import 'widgets/focus_ring.dart';
 import 'widgets/primary_button.dart';
 
 enum _Forgot { recoveryKey, reset }
@@ -26,6 +27,11 @@ class _UnlockScreenState extends State<UnlockScreen> {
   bool _bioAvailable = false;
   String? _error;
   Timer? _ticker;
+
+  /// The countdown pill has been on screen for at least one build. A screen
+  /// reader hears the wait once, when it first appears; the number changing
+  /// every second is not announced again.
+  bool _throttleShown = false;
 
   @override
   void initState() {
@@ -107,6 +113,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
   Future<void> _forgotPassword() async {
     final choice = await showDialog<_Forgot>(
       context: context,
+      animationStyle: context.motionStyle,
       builder: (_) => const _ForgotDialog(),
     );
     if (!mounted) return;
@@ -124,6 +131,7 @@ class _UnlockScreenState extends State<UnlockScreen> {
     final s = context.services;
     final confirmed = await showDialog<bool>(
       context: context,
+      animationStyle: context.motionStyle,
       builder: (_) => const _ResetVaultDialog(),
     );
     if (confirmed != true || !mounted) return;
@@ -159,6 +167,8 @@ class _UnlockScreenState extends State<UnlockScreen> {
     final l = context.l10n;
     final remaining = context.services.session.throttle.remaining;
     final throttled = remaining > Duration.zero;
+    final announceThrottle = throttled && !_throttleShown;
+    _throttleShown = throttled;
     return AuthPage(
       maxWidth: 420,
       spacing: 32,
@@ -184,7 +194,10 @@ class _UnlockScreenState extends State<UnlockScreen> {
             if (throttled) ...[
               const SizedBox(height: 16),
               Center(
-                child: _CountdownPill(l.tryAgainIn(remaining.inSeconds + 1)),
+                child: _CountdownPill(
+                  l.tryAgainIn(remaining.inSeconds + 1),
+                  announce: announceThrottle,
+                ),
               ),
             ],
             const SizedBox(height: 20),
@@ -233,14 +246,18 @@ class _UnlockScreenState extends State<UnlockScreen> {
 /// "Too many attempts. Try again in 12s" as an amber pill; the screen
 /// rebuilds every second, so the number counts down.
 class _CountdownPill extends StatelessWidget {
-  const _CountdownPill(this.text);
+  const _CountdownPill(this.text, {this.announce = false});
 
   final String text;
+
+  /// Mark the pill as a live region for this build only, so a screen reader
+  /// says "Too many attempts. Try again in 30s" once when it appears.
+  final bool announce;
 
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
-    return Container(
+    final pill = Container(
       constraints: const BoxConstraints(minHeight: 36),
       padding: const EdgeInsetsDirectional.fromSTEB(12, 6, 16, 6),
       decoration: ShapeDecoration(
@@ -270,6 +287,14 @@ class _CountdownPill extends StatelessWidget {
           ),
         ],
       ),
+    );
+    // Its own node, so the live-region flag is not merged into a bigger one.
+    return Semantics(
+      container: true,
+      liveRegion: announce,
+      label: text,
+      excludeSemantics: true,
+      child: pill,
     );
   }
 }
@@ -384,47 +409,50 @@ class _ChoiceTile extends StatelessWidget {
           ),
         ),
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 64),
-            child: Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 8, 10),
-              child: Row(
-                children: [
-                  ExcludeSemantics(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: tint.withValues(alpha: 0.14),
-                        borderRadius: AppRadius.controlAll,
-                      ),
-                      child: Icon(icon, size: 22, color: tint),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: tt.titleSmall!.copyWith(
-                            color: danger ? t.error : t.ink,
-                          ),
+        child: FocusRing(
+          radius: AppRadius.card,
+          child: InkWell(
+            onTap: onTap,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 64),
+              child: Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(12, 10, 8, 10),
+                child: Row(
+                  children: [
+                    ExcludeSemantics(
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: tint.withValues(alpha: 0.14),
+                          borderRadius: AppRadius.controlAll,
                         ),
-                        const SizedBox(height: 2),
-                        Text(subtitle, style: tt.bodySmall),
-                      ],
+                        child: Icon(icon, size: 22, color: tint),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  ExcludeSemantics(
-                    child: Icon(Icons.chevron_right_rounded, color: t.muted),
-                  ),
-                ],
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: tt.titleSmall!.copyWith(
+                              color: danger ? t.error : t.ink,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(subtitle, style: tt.bodySmall),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    ExcludeSemantics(
+                      child: Icon(Icons.chevron_right_rounded, color: t.muted),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -37,6 +37,7 @@ Future<void> showUpdateSheet(
   if (MediaQuery.sizeOf(context).width >= AppLayout.compact) {
     return showDialog<void>(
       context: context,
+      animationStyle: context.motionStyle,
       builder: (_) => Dialog(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: AppLayout.dialogRich),
@@ -47,6 +48,7 @@ Future<void> showUpdateSheet(
   }
   return showModalBottomSheet<void>(
     context: context,
+    sheetAnimationStyle: context.motionStyle,
     isScrollControlled: true,
     useSafeArea: true,
     showDragHandle: true,

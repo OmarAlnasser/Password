@@ -17,7 +17,9 @@ import 'sign_in_screen.dart';
 import 'theme/theme.dart';
 import 'update/update.dart';
 import 'widgets/brand_mark.dart';
+import 'widgets/focus_ring.dart';
 import 'widgets/glass_bar.dart';
+import 'widgets/icon_tile.dart';
 import 'widgets/max_width_body.dart';
 import 'widgets/pill_chip.dart';
 import 'widgets/primary_button.dart';
@@ -100,12 +102,14 @@ class SettingsScreen extends StatelessWidget {
               ],
               onChanged: (v) => st.update((x) => x.autoLockSeconds = v),
             ),
-            SwitchListTile(
-              contentPadding: _rowPadding,
-              secondary: const _IconTile(icon: Icons.phonelink_lock_outlined),
-              title: Text(l.lockOnBackground),
-              value: st.lockOnBackground,
-              onChanged: (v) => st.update((x) => x.lockOnBackground = v),
+            FocusRing(
+              child: SwitchListTile(
+                contentPadding: _rowPadding,
+                secondary: const _IconTile(icon: Icons.phonelink_lock_outlined),
+                title: Text(l.lockOnBackground),
+                value: st.lockOnBackground,
+                onChanged: (v) => st.update((x) => x.lockOnBackground = v),
+              ),
             ),
             _PillRow<int>(
               icon: Icons.content_paste_off_outlined,
@@ -124,18 +128,20 @@ class SettingsScreen extends StatelessWidget {
               ],
               onChanged: (v) => st.update((x) => x.clipboardClearSeconds = v),
             ),
-            SwitchListTile(
-              contentPadding: _rowPadding,
-              secondary: const _IconTile(icon: Icons.language_rounded),
-              title: Text(l.fetchIcons),
-              subtitle: Text(l.fetchIconsNote),
-              value: st.fetchIcons,
-              onChanged: (v) async {
-                await st.update((x) => x.fetchIcons = v);
-                // Forget the icons in memory; fetch again if turned on.
-                s.favicons?.clear();
-                s.prefetchIcons();
-              },
+            FocusRing(
+              child: SwitchListTile(
+                contentPadding: _rowPadding,
+                secondary: const _IconTile(icon: Icons.language_rounded),
+                title: Text(l.fetchIcons),
+                subtitle: Text(l.fetchIconsNote),
+                value: st.fetchIcons,
+                onChanged: (v) async {
+                  await st.update((x) => x.fetchIcons = v);
+                  // Forget the icons in memory; fetch again if turned on.
+                  s.favicons?.clear();
+                  s.prefetchIcons();
+                },
+              ),
             ),
             if (s.biometrics != null) _BiometricTile(settings: st),
             _Row(
@@ -194,9 +200,19 @@ class SettingsScreen extends StatelessWidget {
           content = Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: _column([appearance, security])),
+              // Each column is its own focus group, so Tab finishes one
+              // column before it moves to the other.
+              Expanded(
+                child: FocusTraversalGroup(
+                  child: _column([appearance, security]),
+                ),
+              ),
               const SizedBox(width: 24),
-              Expanded(child: _column([sync, data, about], from: 2)),
+              Expanded(
+                child: FocusTraversalGroup(
+                  child: _column([sync, data, about], from: 2),
+                ),
+              ),
             ],
           );
         } else {
@@ -237,6 +253,7 @@ class SettingsScreen extends StatelessWidget {
     final c = TextEditingController();
     return showDialog<String>(
       context: context,
+      animationStyle: context.motionStyle,
       builder: (ctx) => AlertDialog(
         title: Text(label),
         content: TextField(
@@ -382,12 +399,17 @@ Future<void> _clearPickerCopies() async {
 /// cloud folder or an e-mail), so it reminds them.
 Future<void> _remindDeleteCsv(BuildContext context) => showDialog<void>(
   context: context,
+  animationStyle: context.motionStyle,
   builder: (c) => AlertDialog(
-    icon: _IconTile(
-      icon: Icons.delete_sweep_outlined,
-      size: 56,
-      color: c.tokens.warn,
-      fill: c.tokens.warnContainer,
+    // Centre: the dialog's icon slot is tight, which would stretch a tile
+    // with a fixed size into a flat bar.
+    icon: Center(
+      child: _IconTile(
+        icon: Icons.delete_sweep_outlined,
+        size: 56,
+        color: c.tokens.warn,
+        fill: c.tokens.warnContainer,
+      ),
     ),
     title: Text(c.l10n.deleteCsvTitle, textAlign: TextAlign.center),
     content: Text(c.l10n.deleteCsvBody, textAlign: TextAlign.center),
@@ -406,7 +428,7 @@ Future<void> _remindDeleteCsv(BuildContext context) => showDialog<void>(
 /// e-mail address in an Arabic line): isolate marks U+2066 and U+2069.
 String _ltr(String text) => '\u2066$text\u2069';
 
-const _rowPadding = EdgeInsetsDirectional.fromSTEB(16, 4, 12, 4);
+const _rowPadding = IconTile.rowPadding;
 
 class _BiometricTile extends StatefulWidget {
   const _BiometricTile({required this.settings});
@@ -430,23 +452,28 @@ class _BiometricTileState extends State<_BiometricTile> {
   @override
   Widget build(BuildContext context) {
     final s = context.services;
-    return SwitchListTile(
-      contentPadding: _rowPadding,
-      secondary: const _IconTile(icon: Icons.fingerprint_rounded),
-      title: Text(context.l10n.biometrics),
-      value: widget.settings.biometricsEnabled,
-      onChanged: _available != true
-          ? null
-          : (v) async {
-              final bio = s.biometrics!;
-              if (v) {
-                await bio.enable(s.session.crypto, s.session.keyring.vaultKey);
-                if (!await bio.isEnabled) return;
-              } else {
-                await bio.disable();
-              }
-              await widget.settings.update((x) => x.biometricsEnabled = v);
-            },
+    return FocusRing(
+      child: SwitchListTile(
+        contentPadding: _rowPadding,
+        secondary: const _IconTile(icon: Icons.fingerprint_rounded),
+        title: Text(context.l10n.biometrics),
+        value: widget.settings.biometricsEnabled,
+        onChanged: _available != true
+            ? null
+            : (v) async {
+                final bio = s.biometrics!;
+                if (v) {
+                  await bio.enable(
+                    s.session.crypto,
+                    s.session.keyring.vaultKey,
+                  );
+                  if (!await bio.isEnabled) return;
+                } else {
+                  await bio.disable();
+                }
+                await widget.settings.update((x) => x.biometricsEnabled = v);
+              },
+      ),
     );
   }
 }
@@ -596,32 +623,7 @@ class _Chevron extends StatelessWidget {
 }
 
 /// The 36 px rounded tile with an outline icon at the start of a row.
-class _IconTile extends StatelessWidget {
-  const _IconTile({required this.icon, this.size = 36, this.color, this.fill});
-
-  final IconData icon;
-  final double size;
-  final Color? color;
-  final Color? fill;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.tokens;
-    return ExcludeSemantics(
-      child: Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: fill ?? t.surface2,
-          borderRadius: BorderRadius.circular(size * 0.3),
-          border: Border.all(color: t.line2),
-        ),
-        child: Icon(icon, size: size * 0.55, color: color ?? t.accent2),
-      ),
-    );
-  }
-}
+typedef _IconTile = IconTile;
 
 /// A plain row: icon tile, title, optional subtitle and trailing widget.
 class _Row extends StatelessWidget {
@@ -641,13 +643,15 @@ class _Row extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: _rowPadding,
-      leading: _IconTile(icon: icon),
-      title: Text(title),
-      subtitle: subtitle == null ? null : Text(subtitle!),
-      trailing: trailing,
-      onTap: onTap,
+    return FocusRing(
+      child: ListTile(
+        contentPadding: _rowPadding,
+        leading: _IconTile(icon: icon),
+        title: Text(title),
+        subtitle: subtitle == null ? null : Text(subtitle!),
+        trailing: trailing,
+        onTap: onTap,
+      ),
     );
   }
 }
@@ -821,11 +825,15 @@ class _PillMenu<T> extends StatelessWidget {
             child: Text(o.label),
           ),
       ],
+      // One node that names the setting and its value, says whether the menu
+      // is open, and keeps the InkWell's own focus and tap semantics (an
+      // excludeSemantics here made it unreachable for a keyboard screen
+      // reader). The pill's text and arrow are excluded: the label has them.
       builder: (context, controller, _) => Semantics(
+        container: true,
         button: true,
         label: '$title: ${current.label}',
-        excludeSemantics: true,
-        onTap: () => controller.isOpen ? controller.close() : controller.open(),
+        expanded: controller.isOpen,
         child: Material(
           color: t.surface2,
           shape: StadiumBorder(
@@ -836,20 +844,22 @@ class _PillMenu<T> extends StatelessWidget {
             customBorder: const StadiumBorder(),
             onTap: () =>
                 controller.isOpen ? controller.close() : controller.open(),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 48, minWidth: 64),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 10, 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      current.label,
-                      style: tt.labelLarge!.copyWith(color: t.ink),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(Icons.expand_more_rounded, size: 20, color: t.soft),
-                  ],
+            child: ExcludeSemantics(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 48, minWidth: 64),
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 10, 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        current.label,
+                        style: tt.labelLarge!.copyWith(color: t.ink),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(Icons.expand_more_rounded, size: 20, color: t.soft),
+                    ],
+                  ),
                 ),
               ),
             ),

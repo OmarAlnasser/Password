@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../theme/tokens.dart';
+import '../widgets/focus_ring.dart';
 import '../widgets/pulse_dot.dart';
 import 'update_progress_bar.dart';
 
@@ -108,22 +109,25 @@ class UpdateBanner extends StatelessWidget {
                           child: MergeSemantics(
                             child: Semantics(
                               button: true,
-                              child: InkWell(
-                                onTap: onOpen,
-                                child: ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    minHeight: 48,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const SizedBox(width: 6),
-                                      PulseDot(
-                                        color: failed ? t.error : null,
-                                        active: !failed,
-                                      ),
-                                      const SizedBox(width: 2),
-                                      Expanded(child: text),
-                                    ],
+                              child: FocusRing(
+                                radius: AppRadius.control,
+                                child: InkWell(
+                                  onTap: onOpen,
+                                  child: ConstrainedBox(
+                                    constraints: const BoxConstraints(
+                                      minHeight: 48,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 6),
+                                        PulseDot(
+                                          color: failed ? t.error : null,
+                                          active: !failed,
+                                        ),
+                                        const SizedBox(width: 2),
+                                        Expanded(child: text),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

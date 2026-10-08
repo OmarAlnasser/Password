@@ -194,12 +194,17 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
     final messenger = ScaffoldMessenger.of(ctx);
     final yes = await showDialog<bool>(
       context: ctx,
+      animationStyle: ctx.motionStyle,
       builder: (c) => AlertDialog(
-        icon: OcrIconTile(
-          icon: Icons.delete_outline_rounded,
-          size: 56,
-          color: c.tokens.error,
-          fill: c.tokens.errorContainer,
+        // Centre: the dialog's icon slot is tight, which would stretch a
+        // tile with a fixed size into a flat bar.
+        icon: Center(
+          child: OcrIconTile(
+            icon: Icons.delete_outline_rounded,
+            size: 56,
+            color: c.tokens.error,
+            fill: c.tokens.errorContainer,
+          ),
         ),
         title: Text(l.deleteSourceImage, textAlign: TextAlign.center),
         content: Text(l.deleteSourceImageBody, textAlign: TextAlign.center),

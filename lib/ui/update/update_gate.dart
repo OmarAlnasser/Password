@@ -243,6 +243,7 @@ class _UpdateGateState extends State<UpdateGate> with WidgetsBindingObserver {
     if (context == null) return;
     await showDialog<void>(
       context: context,
+      animationStyle: context.motionStyle,
       builder: (dialogContext) {
         final l = AppLocalizations.of(dialogContext);
         final text = switch (_notice) {
