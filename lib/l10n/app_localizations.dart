@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Hisn'**
+  /// **'Khazna'**
   String get appTitle;
 
   /// No description provided for @createVault.
@@ -1283,7 +1283,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordBody.
   ///
   /// In en, this message translates to:
-  /// **'Nobody can recover it, not even the Hisn developer. It is never stored or sent anywhere, and your vault is encrypted with it.'**
+  /// **'Nobody can recover it, not even the Khazna developer. It is never stored or sent anywhere, and your vault is encrypted with it.'**
   String get forgotPasswordBody;
 
   /// No description provided for @useRecoveryKeyExplain.

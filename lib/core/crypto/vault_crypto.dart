@@ -12,7 +12,7 @@ import 'secure_bytes.dart';
 /// so a blob wrapped for one purpose can never be accepted as another.
 enum WrapPurpose { masterPassword, recoveryKey, biometric, export }
 
-/// Low-level Hisn primitives on top of libsodium.
+/// Low-level Khazna primitives on top of libsodium.
 ///
 /// Every operation is a direct libsodium call:
 /// * Argon2id (`crypto_pwhash`) to stretch the master password.

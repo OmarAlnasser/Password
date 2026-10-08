@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Hisn",
+  "appTitle": "Khazna",
   "createVault": "Create your vault",
   "masterPassword": "Master password",
   "confirmPassword": "Confirm master password",
@@ -299,7 +299,7 @@
   "deleteCsvBody": "It holds all your passwords in plain text. Delete it from Downloads, empty the trash or recycle bin, and remove any copy in cloud storage or email.",
   "forgotPassword": "Forgot password?",
   "forgotPasswordTitle": "Forgot your master password?",
-  "forgotPasswordBody": "Nobody can recover it, not even the Hisn developer. It is never stored or sent anywhere, and your vault is encrypted with it.",
+  "forgotPasswordBody": "Nobody can recover it, not even the Khazna developer. It is never stored or sent anywhere, and your vault is encrypted with it.",
   "useRecoveryKeyExplain": "Unlock with the recovery key you saved when you created the vault, then choose a new password.",
   "resetVault": "Reset vault — erase everything",
   "resetVaultExplain": "Start over with an empty vault. Everything stored in this vault is lost.",

@@ -319,7 +319,7 @@ class SettingsScreen extends StatelessWidget {
     final data = await s.importExport.exportEncrypted(s.session.entries, pw);
     final bytes = Uint8List.fromList(utf8.encode(data));
     final path = await FilePicker.saveFile(
-      fileName: 'hisn-backup.vsnap',
+      fileName: 'khazna-backup.vsnap',
       bytes: bytes,
     );
     if (path != null && (Platform.isWindows || Platform.isLinux)) {

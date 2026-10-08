@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Hisn';
+  String get appTitle => 'Khazna';
 
   @override
   String get createVault => 'Create your vault';
@@ -678,7 +678,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forgotPasswordBody =>
-      'Nobody can recover it, not even the Hisn developer. It is never stored or sent anywhere, and your vault is encrypted with it.';
+      'Nobody can recover it, not even the Khazna developer. It is never stored or sent anywhere, and your vault is encrypted with it.';
 
   @override
   String get useRecoveryKeyExplain =>

@@ -1,4 +1,4 @@
-# Hisn
+# Khazna
 
 Zero-knowledge, offline-first password manager (Flutter: Android, iOS, Windows;
 Supabase used only for auth + encrypted blobs).
