@@ -1629,7 +1629,7 @@ class WorkflowTextTests(unittest.TestCase):
         text = workflow_text()
         self.assertIn('release/android_cert_sha256.txt', text)
         self.assertIn('apksigner', text)
-        self.assertIn('exactly one signer', text)
+        self.assertIn('exactly one certificate', text)
         self.assertIn('NOT signed with the release certificate', text)
         self.assertIn('if: always()', text)
         self.assertIn('release.jks', text)

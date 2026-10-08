@@ -275,13 +275,19 @@ jobs:
           esac
 
           report="$RUNNER_TEMP/apksigner.txt"
-          "$apksigner" verify --verbose --print-certs dist/android.apk > "$report"
-          signers="$(grep -c '^Signer #[0-9]* certificate SHA-256 digest: ' "$report" || true)"
+          "$apksigner" verify --verbose --print-certs dist/android.apk > "$report" 2>&1
+          # The wording of the "Signer ..." lines differs between build-tools
+          # versions ("Signer #1 ..." or "Signer (minSdkVersion=..., ...) ..."),
+          # so match any certificate digest line and count distinct certificates.
+          digests="$(sed -n 's/^.*certificate SHA-256 digest: *//p' "$report" | tr -d ' :\r' | tr 'A-F' 'a-f' | sort -u)"
+          signers="$(printf '%s' "$digests" | grep -c . || true)"
           if [ "$signers" != "1" ]; then
-            echo "::error::The APK must have exactly one signer (found $signers)."
+            echo "::error::The APK must be signed by exactly one certificate (found $signers)."
+            echo "apksigner said (certificate information only, nothing secret):"
+            tr -cd '[:print:]\n\t' < "$report" | head -n 60
             exit 1
           fi
-          actual="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' "$report" | tr -d ' :\r' | tr 'A-F' 'a-f')"
+          actual="$digests"
           expected="$(tr -d ' :\r\n' < release/android_cert_sha256.txt | tr 'A-F' 'a-f')"
           if [ "${#expected}" -ne 64 ]; then
             echo "::error::release/android_cert_sha256.txt is not a SHA-256 fingerprint."
