@@ -77,7 +77,7 @@ final class CredentialProviderViewController: ASCredentialProviderViewController
   /// Reads the key (biometric prompt) and decrypts the snapshot.
   private func load() -> Bool {
     let ctx = LAContext()
-    ctx.localizedReason = "Unlock Hisn"
+    ctx.localizedReason = "Unlock Khazna"
     let query: [String: Any] = [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrAccount as String: "autofill-snapshot-key",

@@ -692,6 +692,9 @@ class _FakeSync extends ChangeNotifier implements SyncService {
   DateTime? get lastSync => DateTime(2026, 3, 12, 9, 41);
 
   @override
+  int? get pendingMassDeletion => null;
+
+  @override
   Future<void> syncNow() async {}
 
   @override

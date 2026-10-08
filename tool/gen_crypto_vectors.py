@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Independent re-implementation of the Hisn crypto format.
+"""Independent re-implementation of the Khazna crypto format.
 
 Generates the golden vectors in test/core/crypto/vectors.dart. It shares no
 code with libsodium:

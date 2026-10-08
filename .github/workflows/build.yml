@@ -40,7 +40,7 @@ jobs:
         run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
-          name: Hisn-android-apk
+          name: Khazna-android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
   windows:
@@ -57,7 +57,7 @@ jobs:
         run: flutter build windows --release
       - uses: actions/upload-artifact@v4
         with:
-          name: Hisn-windows
+          name: Khazna-windows
           path: build/windows/x64/runner/Release/
 
   ios:
@@ -79,9 +79,9 @@ jobs:
       - name: Build iOS app (unsigned compile check)
         run: flutter build ios --release --no-codesign
       - name: Zip Runner.app
-        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app Hisn-ios-unsigned.zip
+        run: ditto -c -k --sequesterRsrc --keepParent build/ios/iphoneos/Runner.app Khazna-ios-unsigned.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: Hisn-ios-unsigned
-          path: Hisn-ios-unsigned.zip
+          name: Khazna-ios-unsigned
+          path: Khazna-ios-unsigned.zip
           if-no-files-found: error

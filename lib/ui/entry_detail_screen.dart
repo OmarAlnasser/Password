@@ -10,6 +10,7 @@ import 'entry_edit_screen.dart';
 import 'home_screen.dart';
 import 'theme/tokens.dart';
 import 'theme/typography.dart';
+import 'widgets/entry_use_scope.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/primary_button.dart';
 import 'widgets/reveal.dart';
@@ -264,7 +265,8 @@ class _EntryDetailViewState extends State<EntryDetailView> {
               trailing: IconButton(
                 icon: const Icon(Icons.copy_rounded, size: 20),
                 tooltip: l.copy,
-                onPressed: () => copySecretWithToast(context, e.username),
+                onPressed: () =>
+                    copySecretWithToast(context, e.username, usedEntryId: e.id),
               ),
               child: LtrText(
                 e.username,
@@ -283,7 +285,12 @@ class _EntryDetailViewState extends State<EntryDetailView> {
               password: e.password,
               reveal: _reveal,
               strength: _strengthFor(e),
-              onToggle: () => setState(() => _reveal = !_reveal),
+              onToggle: () {
+                setState(() => _reveal = !_reveal);
+                // Showing the password is a use of the entry ("Recently
+                // used"); hiding it again is not.
+                if (_reveal) session.markUsed(e.id);
+              },
             ),
           if (totp != null) TotpView(totp: totp),
         ];
@@ -356,7 +363,7 @@ class _EntryDetailViewState extends State<EntryDetailView> {
             ),
         ];
 
-        return LayoutBuilder(
+        final view = LayoutBuilder(
           builder: (context, c) {
             final gutter = AppSpace.gutter(c.maxWidth);
             final bottom = MediaQuery.paddingOf(context).bottom + 32;
@@ -386,6 +393,9 @@ class _EntryDetailViewState extends State<EntryDetailView> {
             );
           },
         );
+        // Every copy button in it (username, password, one-time code, an old
+        // password) marks the entry as used through this scope.
+        return EntryUseScope(entryId: e.id, child: view);
       },
     );
   }

@@ -63,6 +63,32 @@ void main() {
     expect(dir, TextDirection.rtl);
   });
 
+  testWidgets('changing the language applies on the next frame', (
+    tester,
+  ) async {
+    await tester.runAsync(() => services.session.init());
+    await tester.pumpWidget(HisnApp(services: services));
+    await tester.pumpAndSettle();
+    expect(find.text('Create your vault'), findsOneWidget);
+
+    // Only the settings change: nothing else rebuilds the app.
+    await tester.runAsync(
+      () => services.settings.update((s) => s.locale = const Locale('ar')),
+    );
+    await tester.pump();
+    expect(find.text('أنشئ خزنتك'), findsOneWidget);
+    expect(
+      Directionality.of(tester.element(find.byType(TextField).first)),
+      TextDirection.rtl,
+    );
+
+    await tester.runAsync(
+      () => services.settings.update((s) => s.locale = const Locale('en')),
+    );
+    await tester.pump();
+    expect(find.text('Create your vault'), findsOneWidget);
+  });
+
   testWidgets('locked vault shows unlock screen; wrong password errors', (
     tester,
   ) async {

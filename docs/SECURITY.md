@@ -1,4 +1,4 @@
-# Hisn security design
+# Khazna security design
 
 Status: Phase 1 (crypto layer) is implemented in `lib/core/crypto/`.
 Later phases must keep to the rules in this document.
@@ -262,7 +262,7 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
 `test/core/crypto/` checks:
 * libsodium's published vectors for XChaCha20-Poly1305 and `crypto_kdf`.
 * Argon2id outputs from the PHC reference implementation (argon2-cffi) at
-  Hisn's parameters.
+  Khazna's parameters.
 * RFC 4648 Base32, RFC 4226 HOTP and RFC 6238 TOTP for SHA-1, SHA-256 and SHA-512.
 * A **golden vault** (header, wrapped keys and an encrypted entry) produced
   by `tool/gen_crypto_vectors.py`. That script is an independent

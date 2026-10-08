@@ -63,7 +63,7 @@ class BiometricUnlock {
   }
 
   Future<void> enable(VaultCrypto crypto, SecureKey vaultKey) async {
-    if (!await _windowsGate('Enable Windows Hello unlock for Hisn')) {
+    if (!await _windowsGate('Enable Windows Hello unlock for Khazna')) {
       return;
     }
     final kek = crypto.randomKey();
@@ -84,7 +84,7 @@ class BiometricUnlock {
   /// Returns the vault key, or null if the user cancelled.
   Future<SecureKey?> unwrapVaultKey(VaultCrypto crypto) async {
     if (!await _wrappedFile.exists()) return null;
-    if (!await _windowsGate('Unlock Hisn')) return null;
+    if (!await _windowsGate('Unlock Khazna')) return null;
     final String? kekB64;
     try {
       kekB64 = await (await _storage()).read();

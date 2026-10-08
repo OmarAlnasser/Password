@@ -10,7 +10,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'حصن';
+  String get appTitle => 'خزنة';
 
   @override
   String get createVault => 'أنشئ خزنتك';
@@ -683,7 +683,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forgotPasswordBody =>
-      'لا يمكن لأحد استعادتها، ولا حتى مطوّر حصن. فهي لا تُحفظ ولا تُرسل إلى أي مكان، وخزنتك مشفرة بها.';
+      'لا يمكن لأحد استعادتها، ولا حتى مطوّر خزنة. فهي لا تُحفظ ولا تُرسل إلى أي مكان، وخزنتك مشفرة بها.';
 
   @override
   String get useRecoveryKeyExplain =>
@@ -1071,4 +1071,139 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordHidden => 'كلمة المرور مخفية';
+
+  @override
+  String get sortBy => 'ترتيب حسب';
+
+  @override
+  String sortedBy(String mode) {
+    return 'مرتبة حسب: $mode';
+  }
+
+  @override
+  String get sortRecent => 'المستخدمة مؤخرًا';
+
+  @override
+  String get sortTitle => 'الاسم (أ–ي)';
+
+  @override
+  String get sortAdded => 'المضافة مؤخرًا';
+
+  @override
+  String get selectEntries => 'تحديد';
+
+  @override
+  String selectedCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n عنصر محدد',
+      many: '$n عنصرًا محددًا',
+      few: '$n عناصر محددة',
+      two: 'عنصران محددان',
+      one: 'عنصر واحد محدد',
+      zero: 'لا عناصر محددة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get selectAll => 'تحديد الكل';
+
+  @override
+  String get clearSelection => 'إلغاء التحديد';
+
+  @override
+  String get exitSelection => 'إنهاء التحديد';
+
+  @override
+  String get deleteSelected => 'حذف المحدد';
+
+  @override
+  String deleteEntriesTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'حذف $n عنصر؟',
+      many: 'حذف $n عنصرًا؟',
+      few: 'حذف $n عناصر؟',
+      two: 'حذف عنصرين؟',
+      one: 'حذف عنصر واحد؟',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteCannotUndo => 'لا يمكن التراجع عن هذا.';
+
+  @override
+  String entriesDeleted(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'تم حذف $n عنصر',
+      many: 'تم حذف $n عنصرًا',
+      few: 'تم حذف $n عناصر',
+      two: 'تم حذف عنصرين',
+      one: 'تم حذف عنصر واحد',
+      zero: 'لم يُحذف شيء',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteFailed => 'تعذّر الحذف، ولم يتغيّر شيء.';
+
+  @override
+  String deleteHiddenCount(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n منها لا تظهر بسبب البحث أو التصفية.',
+      many: '$n منها لا تظهر بسبب البحث أو التصفية.',
+      few: '$n منها لا تظهر بسبب البحث أو التصفية.',
+      two: 'عنصران منها لا يظهران بسبب البحث أو التصفية.',
+      one: 'عنصر واحد منها لا يظهر بسبب البحث أو التصفية.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get deleteSyncWarning =>
+      'ستطلب أجهزتك الأخرى تأكيدًا قبل حذف هذا العدد.';
+
+  @override
+  String syncDeletionTitle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: 'حذف جهاز آخر $n عنصر',
+      many: 'حذف جهاز آخر $n عنصرًا',
+      few: 'حذف جهاز آخر $n عناصر',
+      two: 'حذف جهاز آخر عنصرين',
+      one: 'حذف جهاز آخر عنصرًا واحدًا',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get syncDeletionBody =>
+      'لم تُحذف من هذا الجهاز بعد. إن أبقيتها فستعود إلى أجهزتك الأخرى أيضًا.';
+
+  @override
+  String get syncDeletionApply => 'احذفها هنا أيضًا';
+
+  @override
+  String get syncDeletionKeep => 'أبقِها';
+
+  @override
+  String get syncDeletionConfirmBody =>
+      'حُذفت على جهاز آخر. لا يمكن التراجع عن هذا.';
+
+  @override
+  String get textHidden => 'نص مخفي';
+
+  @override
+  String get ocrCheckPassword =>
+      'اضغط زر العين بجانب كلمة المرور لتتحقق مما قُرئ.';
 }

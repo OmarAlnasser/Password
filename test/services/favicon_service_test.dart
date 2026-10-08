@@ -806,7 +806,9 @@ void main() {
       db = VaultDatabase.open(File('${dir.path}/vault.db'), key);
       expect((await db.item('e1'))!.payload, [1, 2, 3]);
       final version = await db.customSelect('PRAGMA user_version').getSingle();
-      expect(version.data.values.single, 2);
+      // Upgraded to the current version (3 added the last-used times).
+      expect(version.data.values.single, db.schemaVersion);
+      expect(await db.allLastUsed(), isEmpty);
       await db.putFavicon(host: 'example.com', bytes: png, fetchedAt: 5);
       expect((await db.favicon('example.com'))!.bytes, png);
     });

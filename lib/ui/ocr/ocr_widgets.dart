@@ -5,6 +5,7 @@ import '../../services/ocr/ocr_scanner.dart';
 import '../app_scope.dart';
 import '../theme/theme.dart';
 import '../widgets/focus_ring.dart';
+import '../widgets/reveal_controller.dart';
 import '../widgets/secret_text.dart';
 
 /// Where a piece of recognised text can be put.
@@ -212,6 +213,11 @@ class OcrIconTile extends StatelessWidget {
 /// The recognised pieces of text, as pills. Tapping one opens a small "Use
 /// as" menu: username, password, link or name, so a login OCR could not sort
 /// out can be put together by hand. [onCopy], when given, adds a copy action.
+///
+/// Any of the text may be a password, so it is masked unless [obscure] is
+/// turned off (the host puts a [RevealButton] next to the chips). A masked
+/// chip still opens its menu; a screen reader hears "Text hidden" (most
+/// chips are not the password, so it does not say "Password hidden").
 class OcrChips extends StatefulWidget {
   const OcrChips({
     super.key,
@@ -219,11 +225,15 @@ class OcrChips extends StatefulWidget {
     required this.onUse,
     this.onCopy,
     this.limit = 30,
+    this.obscure = true,
   });
 
   final List<String> chips;
   final void Function(String value, OcrField field) onUse;
   final void Function(String value)? onCopy;
+
+  /// Show bullets instead of the text.
+  final bool obscure;
 
   /// Chips shown before "Show all": a full screenshot can have hundreds.
   final int limit;
@@ -250,6 +260,7 @@ class _OcrChipsState extends State<OcrChips> {
             for (final chip in shown)
               _UseAsChip(
                 value: chip,
+                obscure: widget.obscure,
                 onUse: widget.onUse,
                 onCopy: widget.onCopy,
               ),
@@ -277,9 +288,15 @@ IconData _fieldIcon(OcrField f) => switch (f) {
 };
 
 class _UseAsChip extends StatelessWidget {
-  const _UseAsChip({required this.value, required this.onUse, this.onCopy});
+  const _UseAsChip({
+    required this.value,
+    required this.obscure,
+    required this.onUse,
+    this.onCopy,
+  });
 
   final String value;
+  final bool obscure;
   final void Function(String value, OcrField field) onUse;
   final void Function(String value)? onCopy;
 
@@ -347,6 +364,8 @@ class _UseAsChip extends StatelessWidget {
                     child: IgnorePointer(
                       child: SecretText(
                         value,
+                        obscure: obscure,
+                        hiddenLabel: l.textHidden,
                         style: tt.bodyMedium!.copyWith(fontSize: 13.5),
                       ),
                     ),
@@ -366,6 +385,10 @@ class _UseAsChip extends StatelessWidget {
 /// Other readings of one field (the candidates the parser kept), as pills to
 /// pick from; the one equal to [current] is selected. Nothing is shown when
 /// there is no alternative.
+///
+/// Set [obscure] for the readings of a password: they show as bullets (a
+/// screen reader hears "Password hidden") until the host reveals them with
+/// the same eye as the password itself.
 class OcrCandidates extends StatelessWidget {
   const OcrCandidates({
     super.key,
@@ -373,12 +396,16 @@ class OcrCandidates extends StatelessWidget {
     required this.current,
     required this.onPick,
     this.max = 5,
+    this.obscure = false,
   });
 
   final List<String> values;
   final String current;
   final ValueChanged<String> onPick;
   final int max;
+
+  /// Show bullets instead of the readings.
+  final bool obscure;
 
   @override
   Widget build(BuildContext context) {
@@ -404,13 +431,19 @@ class OcrCandidates extends StatelessWidget {
                 ChoiceChip(
                   selected: v == current,
                   onSelected: (_) => onPick(v),
-                  label: Text(
-                    v,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textDirection: TextDirection.ltr,
-                    style: AppText.secretSmall.copyWith(fontSize: 13),
-                  ),
+                  label: obscure
+                      ? SecretText(
+                          v,
+                          obscure: true,
+                          style: AppText.secretSmall.copyWith(fontSize: 13),
+                        )
+                      : Text(
+                          v,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textDirection: TextDirection.ltr,
+                          style: AppText.secretSmall.copyWith(fontSize: 13),
+                        ),
                 ),
             ],
           ),
@@ -453,6 +486,7 @@ class OcrFold extends StatelessWidget {
     required this.children,
     this.expandKey,
     this.initiallyExpanded = false,
+    this.onExpansionChanged,
   });
 
   final String title;
@@ -460,6 +494,9 @@ class OcrFold extends StatelessWidget {
   final List<Widget> children;
   final Key? expandKey;
   final bool initiallyExpanded;
+
+  /// Called with true when the panel opens and false when it folds away.
+  final ValueChanged<bool>? onExpansionChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -470,6 +507,7 @@ class OcrFold extends StatelessWidget {
         expansionAnimationStyle: context.motionStyle,
         key: expandKey,
         initiallyExpanded: initiallyExpanded,
+        onExpansionChanged: onExpansionChanged,
         tilePadding: const EdgeInsetsDirectional.only(start: 14, end: 10),
         shape: const Border(),
         collapsedShape: const Border(),
@@ -487,6 +525,12 @@ class OcrFold extends StatelessWidget {
 /// "What was read": the raw lines each pass of the scanner recognised, so a
 /// failure can be diagnosed. The user's own data, held in memory only; it is
 /// never logged or stored.
+///
+/// The lines can hold the password, so they are masked until the eye at the top
+/// of the panel is pressed; they are masked again after 15 s without
+/// interaction, when the panel is folded away and when it leaves the screen.
+/// The titles and failure messages of the passes hold no text from the image
+/// and stay visible.
 class OcrWhatWasRead extends StatelessWidget {
   const OcrWhatWasRead({super.key, required this.passes, this.maxLines = 80});
 
@@ -504,62 +548,86 @@ class OcrWhatWasRead extends StatelessWidget {
     final mono = AppText.secretSmall.copyWith(color: t.soft);
     return Padding(
       padding: const EdgeInsets.only(top: 12),
-      child: OcrFold(
-        expandKey: const ValueKey('ocr.read'),
-        icon: Icons.manage_search_rounded,
-        title: l.ocrWhatWasRead,
-        children: [
-          Text(l.ocrWhatWasReadNote, style: tt.bodySmall),
-          for (final (i, pass) in passes.indexed) ...[
-            const SizedBox(height: 14),
-            Text(l.ocrPassTitle(i + 1, pass.name), style: tt.labelLarge),
-            const SizedBox(height: 6),
-            if (pass.failed)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Icon(
-                      Icons.error_outline_rounded,
-                      size: 16,
-                      color: t.error,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      l.ocrPassFailed(pass.error!.name),
-                      style: mono.copyWith(color: t.error),
-                    ),
-                  ),
-                ],
-              )
-            else if (pass.lines.isEmpty)
-              Text(l.ocrPassNothing, style: tt.bodySmall)
-            else
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: t.surface,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: t.line),
+      child: RevealBuilder(
+        builder: (context, reveal) => OcrFold(
+          expandKey: const ValueKey('ocr.read'),
+          icon: Icons.manage_search_rounded,
+          title: l.ocrWhatWasRead,
+          // Folding the panel away hides the text again.
+          onExpansionChanged: (open) {
+            if (!open) reveal.hide();
+          },
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(l.ocrWhatWasReadNote, style: tt.bodySmall),
                 ),
-                child: Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      for (final line in pass.lines.take(maxLines))
-                        Text(line, style: mono),
-                      if (pass.lines.length > maxLines) Text('…', style: mono),
-                    ],
+                RevealButton(reveal: reveal),
+              ],
+            ),
+            for (final (i, pass) in passes.indexed) ...[
+              const SizedBox(height: 14),
+              Text(l.ocrPassTitle(i + 1, pass.name), style: tt.labelLarge),
+              const SizedBox(height: 6),
+              if (pass.failed)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Icon(
+                        Icons.error_outline_rounded,
+                        size: 16,
+                        color: t.error,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        l.ocrPassFailed(pass.error!.name),
+                        style: mono.copyWith(color: t.error),
+                      ),
+                    ),
+                  ],
+                )
+              else if (pass.lines.isEmpty)
+                Text(l.ocrPassNothing, style: tt.bodySmall)
+              else
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: t.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: t.line),
                   ),
+                  child: reveal.shown
+                      ? Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (final line in pass.lines.take(maxLines))
+                                Text(line, style: mono),
+                              if (pass.lines.length > maxLines)
+                                Text('…', style: mono),
+                            ],
+                          ),
+                        )
+                      // One masked line for the whole pass (a fixed 8 to 16
+                      // bullets, whatever was read), so a screen reader
+                      // hears "Text hidden" once, not once per line.
+                      : SecretText(
+                          pass.lines.join('\n'),
+                          obscure: true,
+                          hiddenLabel: l.textHidden,
+                          style: mono,
+                        ),
                 ),
-              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

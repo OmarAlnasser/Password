@@ -42,7 +42,10 @@ void main() {
     await lockedVault(tester);
     await tester.tap(find.text('Forgot password?'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('not even the Hisn developer'), findsOneWidget);
+    expect(
+      find.textContaining('not even the Khazna developer'),
+      findsOneWidget,
+    );
     await tester.tap(
       find.descendant(
         of: find.byType(AlertDialog),

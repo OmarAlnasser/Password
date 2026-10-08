@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Hisn",
+  "appTitle": "Khazna",
   "createVault": "Create your vault",
   "masterPassword": "Master password",
   "confirmPassword": "Confirm master password",
@@ -299,7 +299,7 @@
   "deleteCsvBody": "It holds all your passwords in plain text. Delete it from Downloads, empty the trash or recycle bin, and remove any copy in cloud storage or email.",
   "forgotPassword": "Forgot password?",
   "forgotPasswordTitle": "Forgot your master password?",
-  "forgotPasswordBody": "Nobody can recover it, not even the Hisn developer. It is never stored or sent anywhere, and your vault is encrypted with it.",
+  "forgotPasswordBody": "Nobody can recover it, not even the Khazna developer. It is never stored or sent anywhere, and your vault is encrypted with it.",
   "useRecoveryKeyExplain": "Unlock with the recovery key you saved when you created the vault, then choose a new password.",
   "resetVault": "Reset vault — erase everything",
   "resetVaultExplain": "Start over with an empty vault. Everything stored in this vault is lost.",
@@ -493,5 +493,71 @@
   },
   "crackCenturies": "centuries",
   "noResults": "No results",
-  "passwordHidden": "Password hidden"
+  "passwordHidden": "Password hidden",
+  "sortBy": "Sort by",
+  "sortedBy": "Sorted by {mode}",
+  "@sortedBy": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "sortRecent": "Recently used",
+  "sortTitle": "Name (A–Z)",
+  "sortAdded": "Recently added",
+  "selectEntries": "Select",
+  "selectedCount": "{n, plural, =0{None selected} other{{n} selected}}",
+  "@selectedCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "selectAll": "Select all",
+  "clearSelection": "Clear selection",
+  "exitSelection": "Done selecting",
+  "deleteSelected": "Delete selected",
+  "deleteEntriesTitle": "{n, plural, =1{Delete 1 entry?} other{Delete {n} entries?}}",
+  "@deleteEntriesTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteCannotUndo": "This cannot be undone.",
+  "entriesDeleted": "{n, plural, =0{Nothing was deleted} =1{1 entry deleted} other{{n} entries deleted}}",
+  "@entriesDeleted": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteFailed": "Couldn't delete. Nothing was changed.",
+  "deleteHiddenCount": "{n, plural, =1{1 of them is hidden by the search or filter.} other{{n} of them are hidden by the search or filter.}}",
+  "@deleteHiddenCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteSyncWarning": "Your other devices will ask before deleting this many.",
+  "syncDeletionTitle": "{n, plural, =1{Another device deleted 1 entry} other{Another device deleted {n} entries}}",
+  "@syncDeletionTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "syncDeletionBody": "This device has not deleted them yet. If you keep them, they come back on your other devices too.",
+  "syncDeletionApply": "Delete here too",
+  "syncDeletionKeep": "Keep them",
+  "syncDeletionConfirmBody": "They were deleted on another device. This cannot be undone.",
+  "textHidden": "Text hidden",
+  "ocrCheckPassword": "Press the eye next to the password to check what was read."
 }

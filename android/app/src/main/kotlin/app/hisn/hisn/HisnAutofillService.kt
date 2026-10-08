@@ -20,7 +20,7 @@ import android.widget.RemoteViews
  * Android Autofill Service.
  *
  * The service itself never holds keys or plaintext. For every fill request
- * it returns one locked "Unlock Hisn" dataset whose authentication
+ * it returns one locked "Unlock Khazna" dataset whose authentication
  * intent opens [AutofillAuthActivity]; that activity unlocks the vault
  * (biometrics / master password), lets the user pick a matching entry and
  * returns the filled dataset to the system.
@@ -74,7 +74,7 @@ class HisnAutofillService : AutofillService() {
         ).intentSender
 
         val presentation = RemoteViews(packageName, android.R.layout.simple_list_item_1)
-        presentation.setTextViewText(android.R.id.text1, "Unlock Hisn")
+        presentation.setTextViewText(android.R.id.text1, "Unlock Khazna")
 
         // Dataset-level auth: AutofillAuthActivity returns a Dataset in
         // EXTRA_AUTHENTICATION_RESULT, which the platform accepts only for an
