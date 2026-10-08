@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/password_generator.dart';
 import 'app_scope.dart';
 import 'home_screen.dart';
+import 'ocr/ocr_widgets.dart' show PillSegment, PillSegments;
 import 'theme/theme.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/max_width_body.dart';
@@ -78,7 +79,10 @@ class _GeneratorScreenState extends State<GeneratorScreen> {
             flex: 6,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [result, if (use != null) ...[const SizedBox(height: 16), use]],
+              children: [
+                result,
+                if (use != null) ...[const SizedBox(height: 16), use],
+              ],
             ),
           ),
           const SizedBox(width: 24),
@@ -166,10 +170,7 @@ class _ResultCard extends StatelessWidget {
         children: [
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: _Tag(
-              icon: Icons.bolt_rounded,
-              label: '≈ $bits bits',
-            ),
+            child: _Tag(icon: Icons.bolt_rounded, label: '≈ $bits bits'),
           ),
           const SizedBox(height: 14),
           // The value is the star of the screen: big, mono, always LTR.
@@ -278,24 +279,21 @@ class _Options extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SegmentedButton<bool>(
-          expandedInsets: EdgeInsets.zero,
-          showSelectedIcon: false,
-          style: _pillToggleStyle(context.tokens),
+        PillSegments<bool>(
+          selected: o.passphrase,
           segments: [
-            ButtonSegment(
+            PillSegment(
               value: false,
-              icon: const Icon(Icons.password_rounded, size: 18),
-              label: Text(l.password),
+              icon: Icons.password_rounded,
+              label: l.password,
             ),
-            ButtonSegment(
+            PillSegment(
               value: true,
-              icon: const Icon(Icons.short_text_rounded, size: 20),
-              label: Text(l.passphrase),
+              icon: Icons.short_text_rounded,
+              label: l.passphrase,
             ),
           ],
-          selected: {o.passphrase},
-          onSelectionChanged: (v) => onChanged(o.copyWith(passphrase: v.single)),
+          onChanged: (v) => onChanged(o.copyWith(passphrase: v)),
         ),
         const SizedBox(height: 16),
         SurfaceCard(
@@ -341,28 +339,6 @@ class _Options extends StatelessWidget {
   }
 }
 
-/// The selected segment is a filled violet pill, like the portfolio's
-/// selected filter chip, so the active mode reads at a glance.
-ButtonStyle _pillToggleStyle(AppTokens t) => ButtonStyle(
-  backgroundColor: WidgetStateProperty.resolveWith(
-    (s) => s.contains(WidgetState.selected) ? t.strong : t.surface,
-  ),
-  foregroundColor: WidgetStateProperty.resolveWith(
-    (s) => s.contains(WidgetState.selected) ? t.onStrong : t.soft,
-  ),
-  iconColor: WidgetStateProperty.resolveWith(
-    (s) => s.contains(WidgetState.selected) ? t.onStrong : t.soft,
-  ),
-  side: WidgetStateProperty.resolveWith((s) {
-    if (s.contains(WidgetState.focused)) {
-      return BorderSide(color: t.focusRing, width: 2);
-    }
-    return BorderSide(
-      color: s.contains(WidgetState.selected) ? t.pillSelectedBorder : t.line2,
-    );
-  }),
-);
-
 /// A length / word-count slider with its value above it and the range under
 /// its ends.
 class _SliderBlock extends StatelessWidget {
@@ -388,10 +364,7 @@ class _SliderBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(
-          header: true,
-          child: Text(label, style: tt.titleMedium),
-        ),
+        Semantics(header: true, child: Text(label, style: tt.titleMedium)),
         Slider(
           min: min.toDouble(),
           max: max.toDouble(),
@@ -405,7 +378,10 @@ class _SliderBlock extends StatelessWidget {
           child: ExcludeSemantics(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [Text('$min', style: ends), Text('$max', style: ends)],
+              children: [
+                Text('$min', style: ends),
+                Text('$max', style: ends),
+              ],
             ),
           ),
         ),

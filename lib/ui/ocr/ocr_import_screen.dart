@@ -13,7 +13,13 @@ import '../../services/vault_session.dart';
 import '../app_scope.dart';
 import '../entry_edit_screen.dart';
 import '../home_screen.dart';
+import '../theme/theme.dart';
+import '../widgets/glass_bar.dart';
+import '../widgets/max_width_body.dart';
+import '../widgets/primary_button.dart';
+import '../widgets/reveal.dart';
 import '../widgets/secret_text.dart';
+import '../widgets/surface_card.dart';
 import 'ocr_widgets.dart';
 
 /// An image to OCR.
@@ -189,14 +195,24 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
     final yes = await showDialog<bool>(
       context: ctx,
       builder: (c) => AlertDialog(
-        title: Text(l.deleteSourceImage),
-        content: Text(l.deleteSourceImageBody),
+        icon: OcrIconTile(
+          icon: Icons.delete_outline_rounded,
+          size: 56,
+          color: c.tokens.error,
+          fill: c.tokens.errorContainer,
+        ),
+        title: Text(l.deleteSourceImage, textAlign: TextAlign.center),
+        content: Text(l.deleteSourceImageBody, textAlign: TextAlign.center),
+        actionsAlignment: MainAxisAlignment.center,
+        actionsOverflowAlignment: OverflowBarAlignment.center,
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c, false),
             child: Text(l.keep),
           ),
-          FilledButton(
+          PrimaryButton(
+            destructive: true,
+            glow: false,
             onPressed: () => Navigator.pop(c, true),
             child: Text(l.delete),
           ),
@@ -227,33 +243,91 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
+    final t = context.tokens;
     final r = _result;
+    final topInset = MediaQuery.paddingOf(context).top + kToolbarHeight + 8;
+    final bigText = MediaQuery.textScalerOf(context).scale(15) > 19;
+    final pick = PrimaryButton(
+      expanded: true,
+      icon: const Icon(Icons.image_outlined),
+      onPressed: _busy ? null : () => _pick(camera: false),
+      child: Text(l.pickImage),
+    );
+    final camera = Platform.isWindows
+        ? null
+        : OutlinedButton.icon(
+            icon: const Icon(Icons.photo_camera_outlined),
+            label: Text(l.takePhoto),
+            onPressed: _busy ? null : () => _pick(camera: true),
+          );
     return Scaffold(
-      appBar: AppBar(title: Text(l.scanScreenshot)),
+      extendBodyBehindAppBar: true,
+      appBar: GlassBar(title: Text(l.scanScreenshot)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Wrap(
-            spacing: 8,
-            children: [
-              FilledButton.icon(
-                icon: const Icon(Icons.image_outlined),
-                label: Text(l.pickImage),
-                onPressed: _busy ? null : () => _pick(camera: false),
-              ),
-              if (!Platform.isWindows)
-                OutlinedButton.icon(
-                  icon: const Icon(Icons.photo_camera_outlined),
-                  label: Text(l.takePhoto),
-                  onPressed: _busy ? null : () => _pick(camera: true),
-                ),
-            ],
+        padding: MaxWidthBody.insets(
+          context,
+          maxWidth: AppLayout.form,
+          base: EdgeInsets.only(
+            top: topInset,
+            bottom: MediaQuery.paddingOf(context).bottom + 32,
           ),
-          if (_busy)
-            const Padding(
-              padding: EdgeInsets.all(24),
-              child: Center(child: CircularProgressIndicator()),
+        ),
+        children: [
+          Reveal(
+            child: SurfaceCard(
+              featured: true,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_image == null && !_busy) ...[
+                    // First visit: what this screen is for, in one line.
+                    Row(
+                      children: [
+                        const OcrIconTile(
+                          icon: Icons.document_scanner_outlined,
+                          size: 48,
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Text(
+                            l.ocrReview,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(color: t.soft),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                  ],
+                  if (camera == null)
+                    pick
+                  else
+                    // Side by side only where each button can keep its label
+                    // on one line.
+                    LayoutBuilder(
+                      builder: (context, c) => c.maxWidth >= 440 && !bigText
+                          ? Row(
+                              children: [
+                                Expanded(child: pick),
+                                const SizedBox(width: 12),
+                                Expanded(child: camera),
+                              ],
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                pick,
+                                const SizedBox(height: 12),
+                                camera,
+                              ],
+                            ),
+                    ),
+                ],
+              ),
             ),
+          ),
+          if (_busy) ...[const SizedBox(height: 16), const _ScanningCard()],
           if (_done && _nothing) ..._failureCard(l),
           if (_done && !_nothing && r != null) ..._found(l, r),
         ],
@@ -262,98 +336,185 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
   }
 
   /// Nothing was read: why, what to try, and a way forward.
-  List<Widget> _failureCard(AppLocalizations l) => [
-    const SizedBox(height: 16),
-    Card(
-      key: const ValueKey('ocr.failure'),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              ocrFailureTitle(l, _failure),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            OcrFailureBody(error: _failure),
-            const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: _createEntry,
-              child: Text(l.ocrFillByHand),
-            ),
-          ],
-        ),
-      ),
-    ),
-    OcrWhatWasRead(passes: _scan?.passes ?? const []),
-  ];
-
-  /// What was found, the other readings, and every piece of text to pick
-  /// from.
-  List<Widget> _found(AppLocalizations l, OcrResult r) {
-    final theme = Theme.of(context);
-    final user = r.username ?? r.email;
+  List<Widget> _failureCard(AppLocalizations l) {
+    final t = context.tokens;
     return [
       const SizedBox(height: 16),
-      Card(
-        child: Column(
-          children: [
-            _field(l.username, user),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: OcrCandidates(
-                  values: r.emailCandidates,
-                  current: user ?? '',
-                  onPick: (v) => setState(
-                    () => _result = r.copyWith(username: v, email: v),
+      Reveal(
+        child: SurfaceCard(
+          key: const ValueKey('ocr.failure'),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  OcrIconTile(
+                    icon: Icons.search_off_rounded,
+                    color: t.warn,
+                    fill: t.warnContainer,
                   ),
-                ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Semantics(
+                      header: true,
+                      child: Text(
+                        ocrFailureTitle(l, _failure),
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            _field(l.password, r.password),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Align(
+              const SizedBox(height: 14),
+              OcrFailureBody(error: _failure),
+              const SizedBox(height: 18),
+              Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: OcrCandidates(
-                  values: r.passwordCandidates,
-                  current: r.password ?? '',
-                  onPick: (v) =>
-                      setState(() => _result = r.copyWith(password: v)),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.edit_outlined),
+                  onPressed: _createEntry,
+                  label: Text(l.ocrFillByHand),
                 ),
               ),
-            ),
-            _field(l.url, r.url),
-            _field(l.name, r.title),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: FilledButton(
-                onPressed: _createEntry,
-                child: Text(l.addEntry),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      const SizedBox(height: 12),
-      Text(l.ocrChipsTitle, style: theme.textTheme.titleSmall),
-      Text(l.ocrTapChip, style: theme.textTheme.bodySmall),
-      Text(l.ocrAmbiguous, style: theme.textTheme.bodySmall),
-      const SizedBox(height: 8),
-      OcrChips(
-        chips: r.chips,
-        onUse: _use,
-        onCopy: (v) => copySecretWithToast(context, v),
       ),
       OcrWhatWasRead(passes: _scan?.passes ?? const []),
     ];
   }
 
-  Widget _field(String label, String? value) => ListTile(
-    title: Text(label),
-    subtitle: value == null ? const Text('—') : SecretText(value),
-  );
+  /// What was found, the other readings, and every piece of text to pick
+  /// from.
+  List<Widget> _found(AppLocalizations l, OcrResult r) {
+    final tt = Theme.of(context).textTheme;
+    final user = r.username ?? r.email;
+    const pad = EdgeInsetsDirectional.fromSTEB(72, 0, 16, 8);
+    return [
+      const SizedBox(height: 16),
+      SurfaceCard(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Material(
+          type: MaterialType.transparency,
+          child: Column(
+            children: [
+              _field(Icons.person_outline_rounded, l.username, user),
+              Padding(
+                padding: pad,
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: OcrCandidates(
+                    values: r.emailCandidates,
+                    current: user ?? '',
+                    onPick: (v) => setState(
+                      () => _result = r.copyWith(username: v, email: v),
+                    ),
+                  ),
+                ),
+              ),
+              _divider(),
+              _field(Icons.key_rounded, l.password, r.password),
+              Padding(
+                padding: pad,
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: OcrCandidates(
+                    values: r.passwordCandidates,
+                    current: r.password ?? '',
+                    onPick: (v) =>
+                        setState(() => _result = r.copyWith(password: v)),
+                  ),
+                ),
+              ),
+              _divider(),
+              _field(Icons.link_rounded, l.url, r.url),
+              _divider(),
+              _field(Icons.label_outline_rounded, l.name, r.title),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: PrimaryButton(
+                  expanded: true,
+                  icon: const Icon(Icons.add_rounded),
+                  onPressed: _createEntry,
+                  child: Text(l.addEntry),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      if (r.chips.isNotEmpty) ...[
+        const SizedBox(height: 24),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(l.ocrChipsTitle, style: tt.titleMedium),
+            ),
+            const SizedBox(height: 4),
+            Text(l.ocrTapChip, style: tt.bodySmall),
+            const SizedBox(height: 2),
+            Text(l.ocrAmbiguous, style: tt.bodySmall),
+            const SizedBox(height: 10),
+            OcrChips(
+              chips: r.chips,
+              onUse: _use,
+              onCopy: (v) => copySecretWithToast(context, v),
+            ),
+          ],
+        ),
+      ],
+      OcrWhatWasRead(passes: _scan?.passes ?? const []),
+    ];
+  }
+
+  Widget _divider() => const Divider(indent: 72, endIndent: 16);
+
+  /// One detected value: a small icon tile, its label and the value in
+  /// monospace (always left-to-right, ambiguous characters highlighted).
+  Widget _field(IconData icon, String label, String? value) {
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
+    return ListTile(
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
+      leading: OcrIconTile(icon: icon),
+      title: Text(label, style: tt.bodySmall),
+      subtitle: value == null
+          ? Text('—', style: tt.bodyLarge!.copyWith(color: t.muted))
+          : SecretText(value, style: tt.bodyLarge!.copyWith(color: t.ink)),
+    );
+  }
+}
+
+/// While the scanner works: a calm spinner on a glowing tile (no text: the
+/// scan has no steps worth naming).
+class _ScanningCard extends StatelessWidget {
+  const _ScanningCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return SurfaceCard(
+      padding: const EdgeInsets.symmetric(vertical: 28),
+      child: Center(
+        child: Container(
+          width: 64,
+          height: 64,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: t.tint,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: t.line2),
+            boxShadow: [BoxShadow(color: t.buttonGlow, blurRadius: 28)],
+          ),
+          child: SizedBox.square(
+            dimension: 28,
+            child: CircularProgressIndicator(strokeWidth: 3, color: t.accent2),
+          ),
+        ),
+      ),
+    );
+  }
 }

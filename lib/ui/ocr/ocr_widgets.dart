@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../services/ocr/ocr_scanner.dart';
 import '../app_scope.dart';
+import '../theme/theme.dart';
 import '../widgets/secret_text.dart';
 
 /// Where a piece of recognised text can be put.
@@ -43,9 +44,170 @@ String ocrFailureTitle(AppLocalizations l, ScanError? error) => switch (error) {
   ScanError.failed => l.ocrFailedTitle,
 };
 
-/// The recognised pieces of text. Tapping one opens a small "Use as" menu:
-/// username, password, link or name, so a login OCR could not sort out can be
-/// put together by hand. [onCopy], when given, adds a copy action.
+/// One choice of a [PillSegments].
+class PillSegment<T> {
+  const PillSegment({required this.value, required this.label, this.icon});
+
+  final T value;
+  final String label;
+  final IconData? icon;
+}
+
+/// A segmented control in the portfolio's pill style: a rounded track with
+/// equal pills inside it, the chosen one filled violet. Used for Quick |
+/// Advanced and Password | Passphrase.
+///
+/// Each pill is at least 48 px high, announces itself to a screen reader as
+/// one choice of an exclusive group ("selected"), takes keyboard focus and
+/// wraps its label instead of overflowing at large text sizes. The fill
+/// moves with 200 ms colour changes; with "reduce motion" on it jumps.
+class PillSegments<T> extends StatelessWidget {
+  const PillSegments({
+    super.key,
+    required this.segments,
+    required this.selected,
+    required this.onChanged,
+  });
+
+  final List<PillSegment<T>> segments;
+  final T selected;
+  final ValueChanged<T> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: ShapeDecoration(
+        color: t.surface,
+        shape: StadiumBorder(side: BorderSide(color: t.line2)),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (final s in segments)
+              Expanded(
+                child: _PillSegmentView(
+                  segment: s,
+                  selected: s.value == selected,
+                  onTap: () => onChanged(s.value),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PillSegmentView<T> extends StatelessWidget {
+  const _PillSegmentView({
+    required this.segment,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final PillSegment<T> segment;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final fg = selected ? t.onStrong : t.soft;
+    return MergeSemantics(
+      child: Semantics(
+        selected: selected,
+        inMutuallyExclusiveGroup: true,
+        child: AnimatedContainer(
+          duration: context.motion(AppMotion.fast),
+          curve: AppMotion.standard,
+          decoration: ShapeDecoration(
+            color: selected ? t.strong : Colors.transparent,
+            shape: StadiumBorder(
+              side: BorderSide(
+                color: selected ? t.pillSelectedBorder : Colors.transparent,
+              ),
+            ),
+          ),
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: onTap,
+              customBorder: const StadiumBorder(),
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 48),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (segment.icon != null) ...[
+                      Icon(segment.icon, size: 18, color: fg),
+                      const SizedBox(width: 8),
+                    ],
+                    Flexible(
+                      child: Text(
+                        segment.label,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.labelMedium!
+                            .copyWith(color: fg),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A small rounded tile with an outline icon: the leading mark of a card, a
+/// hint or a dialog title in the OCR screens.
+class OcrIconTile extends StatelessWidget {
+  const OcrIconTile({
+    super.key,
+    required this.icon,
+    this.size = 40,
+    this.color,
+    this.fill,
+  });
+
+  final IconData icon;
+  final double size;
+
+  /// Defaults to the lavender accent.
+  final Color? color;
+
+  /// Defaults to `tint`.
+  final Color? fill;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return ExcludeSemantics(
+      child: Container(
+        width: size,
+        height: size,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: fill ?? t.tint,
+          borderRadius: BorderRadius.circular(size * 0.3),
+          border: Border.all(color: t.line2),
+        ),
+        child: Icon(icon, size: size * 0.52, color: color ?? t.accent2),
+      ),
+    );
+  }
+}
+
+/// The recognised pieces of text, as pills. Tapping one opens a small "Use
+/// as" menu: username, password, link or name, so a login OCR could not sort
+/// out can be put together by hand. [onCopy], when given, adds a copy action.
 class OcrChips extends StatefulWidget {
   const OcrChips({
     super.key,
@@ -78,8 +240,8 @@ class _OcrChipsState extends State<OcrChips> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: 8,
+          runSpacing: 0,
           children: [
             for (final chip in shown)
               _UseAsChip(
@@ -103,6 +265,13 @@ class _Copy {
   const _Copy();
 }
 
+IconData _fieldIcon(OcrField f) => switch (f) {
+  OcrField.username => Icons.person_outline_rounded,
+  OcrField.password => Icons.key_rounded,
+  OcrField.link => Icons.link_rounded,
+  OcrField.name => Icons.label_outline_rounded,
+};
+
 class _UseAsChip extends StatelessWidget {
   const _UseAsChip({required this.value, required this.onUse, this.onCopy});
 
@@ -113,7 +282,8 @@ class _UseAsChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final theme = Theme.of(context);
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
     return PopupMenuButton<Object>(
       tooltip: l.ocrUseAs,
       onSelected: (pick) {
@@ -127,43 +297,65 @@ class _UseAsChip extends StatelessWidget {
         PopupMenuItem<Object>(
           enabled: false,
           height: 32,
-          child: Text(l.ocrUseAs, style: theme.textTheme.bodySmall),
+          child: Text(l.ocrUseAs, style: tt.bodySmall),
         ),
         for (final f in OcrField.values)
           PopupMenuItem<Object>(
             key: ValueKey('ocr.useAs.${f.name}'),
             value: f,
-            child: Text(ocrFieldLabel(l, f)),
+            child: Row(
+              children: [
+                Icon(_fieldIcon(f), size: 20, color: t.accent2),
+                const SizedBox(width: 12),
+                Text(ocrFieldLabel(l, f)),
+              ],
+            ),
           ),
         if (onCopy != null) ...[
           const PopupMenuDivider(),
           PopupMenuItem<Object>(
             key: const ValueKey('ocr.copy'),
             value: const _Copy(),
-            child: Text(l.copy),
+            child: Row(
+              children: [
+                Icon(Icons.copy_rounded, size: 20, color: t.soft),
+                const SizedBox(width: 12),
+                Text(l.copy),
+              ],
+            ),
           ),
         ],
       ],
-      child: Chip(
-        visualDensity: VisualDensity.compact,
-        label: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Taps go to the chip, not to the selectable text inside it.
-            Flexible(
-              child: IgnorePointer(
-                child: SecretText(value, style: theme.textTheme.bodyMedium),
-              ),
+      // The tap area is the whole 48 px band, not only the pill.
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48),
+        child: Center(
+          widthFactor: 1,
+          child: Chip(
+            label: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Taps go to the chip, not to the selectable text inside it.
+                Flexible(
+                  child: IgnorePointer(
+                    child: SecretText(
+                      value,
+                      style: tt.bodyMedium!.copyWith(fontSize: 13.5),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 2),
+                Icon(Icons.expand_more_rounded, size: 18, color: t.muted),
+              ],
             ),
-            const Icon(Icons.arrow_drop_down, size: 18),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Other readings of one field (the candidates the parser kept), as chips to
+/// Other readings of one field (the candidates the parser kept), as pills to
 /// pick from; the one equal to [current] is selected. Nothing is shown when
 /// there is no alternative.
 class OcrCandidates extends StatelessWidget {
@@ -184,21 +376,24 @@ class OcrCandidates extends StatelessWidget {
   Widget build(BuildContext context) {
     final shown = values.take(max).toList();
     if (shown.length < 2) return const SizedBox.shrink();
-    final theme = Theme.of(context);
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(context.l10n.ocrOtherReadings, style: theme.textTheme.bodySmall),
-          const SizedBox(height: 4),
+          Text(
+            context.l10n.ocrOtherReadings,
+            style: tt.bodySmall!.copyWith(color: t.muted),
+          ),
+          const SizedBox(height: 2),
           Wrap(
-            spacing: 6,
-            runSpacing: 6,
+            spacing: 8,
+            runSpacing: 0,
             children: [
               for (final v in shown)
                 ChoiceChip(
-                  visualDensity: VisualDensity.compact,
                   selected: v == current,
                   onSelected: (_) => onPick(v),
                   label: Text(
@@ -206,15 +401,75 @@ class OcrCandidates extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     textDirection: TextDirection.ltr,
-                    style: const TextStyle(
-                      fontFamily: 'monospace',
-                      fontFamilyFallback: ['Courier New', 'Consolas', 'Menlo'],
-                    ),
+                    style: AppText.secretSmall.copyWith(fontSize: 13),
                   ),
                 ),
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// A rounded panel on `surface2` with a hairline border, for secondary
+/// content that folds away.
+class _FoldPanel extends StatelessWidget {
+  const _FoldPanel({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Material(
+      color: t.surface2,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppRadius.controlAll,
+        side: BorderSide(color: t.line2),
+      ),
+      child: child,
+    );
+  }
+}
+
+/// A folding "panel" with a title and an icon: the text that was detected, and
+/// what was read. [expandKey] goes on the [ExpansionTile], so a test (or a
+/// caller) can find and tap it.
+class OcrFold extends StatelessWidget {
+  const OcrFold({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.children,
+    this.expandKey,
+    this.initiallyExpanded = false,
+  });
+
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
+  final Key? expandKey;
+  final bool initiallyExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
+    return _FoldPanel(
+      child: ExpansionTile(
+        key: expandKey,
+        initiallyExpanded: initiallyExpanded,
+        tilePadding: const EdgeInsetsDirectional.only(start: 14, end: 10),
+        shape: const Border(),
+        collapsedShape: const Border(),
+        childrenPadding: const EdgeInsetsDirectional.fromSTEB(14, 0, 14, 14),
+        expandedAlignment: AlignmentDirectional.centerStart,
+        expandedCrossAxisAlignment: CrossAxisAlignment.start,
+        leading: Icon(icon, size: 22, color: t.accent2),
+        title: Text(title, style: tt.titleSmall),
+        children: children,
       ),
     );
   }
@@ -235,46 +490,68 @@ class OcrWhatWasRead extends StatelessWidget {
   Widget build(BuildContext context) {
     if (passes.isEmpty) return const SizedBox.shrink();
     final l = context.l10n;
-    final theme = Theme.of(context);
-    final mono = theme.textTheme.bodySmall?.copyWith(
-      fontFamily: 'monospace',
-      fontFamilyFallback: const ['Courier New', 'Consolas', 'Menlo'],
-    );
-    return ExpansionTile(
-      key: const ValueKey('ocr.read'),
-      tilePadding: EdgeInsets.zero,
-      shape: const Border(),
-      collapsedShape: const Border(),
-      childrenPadding: const EdgeInsets.only(bottom: 8),
-      expandedAlignment: AlignmentDirectional.centerStart,
-      expandedCrossAxisAlignment: CrossAxisAlignment.start,
-      title: Text(l.ocrWhatWasRead, style: theme.textTheme.titleSmall),
-      children: [
-        Text(l.ocrWhatWasReadNote, style: theme.textTheme.bodySmall),
-        for (final (i, pass) in passes.indexed) ...[
-          const SizedBox(height: 8),
-          Text(
-            l.ocrPassTitle(i + 1, pass.name),
-            style: theme.textTheme.labelLarge,
-          ),
-          if (pass.failed)
-            Text(l.ocrPassFailed(pass.error!.name), style: mono)
-          else if (pass.lines.isEmpty)
-            Text(l.ocrPassNothing, style: theme.textTheme.bodySmall)
-          else
-            Directionality(
-              textDirection: TextDirection.ltr,
-              child: Column(
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
+    final mono = AppText.secretSmall.copyWith(color: t.soft);
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: OcrFold(
+        expandKey: const ValueKey('ocr.read'),
+        icon: Icons.manage_search_rounded,
+        title: l.ocrWhatWasRead,
+        children: [
+          Text(l.ocrWhatWasReadNote, style: tt.bodySmall),
+          for (final (i, pass) in passes.indexed) ...[
+            const SizedBox(height: 14),
+            Text(l.ocrPassTitle(i + 1, pass.name), style: tt.labelLarge),
+            const SizedBox(height: 6),
+            if (pass.failed)
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (final line in pass.lines.take(maxLines))
-                    Text(line, style: mono),
-                  if (pass.lines.length > maxLines) Text('…', style: mono),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.error_outline_rounded,
+                      size: 16,
+                      color: t.error,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      l.ocrPassFailed(pass.error!.name),
+                      style: mono.copyWith(color: t.error),
+                    ),
+                  ),
                 ],
+              )
+            else if (pass.lines.isEmpty)
+              Text(l.ocrPassNothing, style: tt.bodySmall)
+            else
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: t.surface,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: t.line),
+                ),
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (final line in pass.lines.take(maxLines))
+                        Text(line, style: mono),
+                      if (pass.lines.length > maxLines) Text('…', style: mono),
+                    ],
+                  ),
+                ),
               ),
-            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }
@@ -290,43 +567,87 @@ class OcrFailureBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final theme = Theme.of(context);
-    Widget item(String marker, String text) => Padding(
-      padding: const EdgeInsets.only(top: 4),
+    final t = context.tokens;
+    final tt = Theme.of(context).textTheme;
+    // A dot or a numbered disc, drawn as a shape (the fonts have no bullet
+    // glyphs that match), then the sentence.
+    Widget item(String? number, String text) => Padding(
+      padding: const EdgeInsets.only(top: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(width: 20, child: Text(marker)),
-          Expanded(child: Text(text)),
+          ExcludeSemantics(
+            child: Container(
+              width: 22,
+              height: 22,
+              margin: const EdgeInsetsDirectional.only(end: 10, top: 1),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: t.tint,
+                shape: BoxShape.circle,
+                border: Border.all(color: t.line2),
+              ),
+              child: number == null
+                  ? Container(
+                      width: 6,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: t.accent2,
+                        shape: BoxShape.circle,
+                      ),
+                    )
+                  : Text(
+                      number,
+                      textScaler: TextScaler.noScaling,
+                      style: AppText.numeral.copyWith(
+                        fontSize: 12,
+                        color: t.accent2,
+                        height: 1,
+                      ),
+                    ),
+            ),
+          ),
+          Expanded(
+            child: Text(text, style: tt.bodyMedium!.copyWith(color: t.soft)),
+          ),
         ],
       ),
     );
     final children = switch (error) {
       null => [
-        Text(l.ocrTipsTitle, style: theme.textTheme.titleSmall),
-        item('•', l.ocrTipCrop),
-        item('•', l.ocrTipVisible),
-        item('•', l.ocrTipAgain),
+        Text(l.ocrTipsTitle, style: tt.titleSmall),
+        item(null, l.ocrTipCrop),
+        item(null, l.ocrTipVisible),
+        item(null, l.ocrTipAgain),
       ],
       ScanError.noLanguage => [
-        Text(l.ocrNoLanguageBody),
-        const SizedBox(height: 4),
-        item('1.', l.ocrNoLanguageStep1),
-        item('2.', l.ocrNoLanguageStep2),
-        item('3.', l.ocrNoLanguageStep3),
-        item('4.', l.ocrNoLanguageStep4),
+        Text(
+          l.ocrNoLanguageBody,
+          style: tt.bodyMedium!.copyWith(color: t.soft),
+        ),
+        const SizedBox(height: 2),
+        item('1', l.ocrNoLanguageStep1),
+        item('2', l.ocrNoLanguageStep2),
+        item('3', l.ocrNoLanguageStep3),
+        item('4', l.ocrNoLanguageStep4),
       ],
-      ScanError.imageTooLarge => [Text(l.ocrTooLargeBody)],
-      ScanError.unsupportedImage => [Text(l.ocrUnsupportedBody)],
-      ScanError.fileUnreadable => [Text(l.ocrUnreadableBody)],
-      ScanError.timeout => [Text(l.ocrTimeoutBody)],
-      ScanError.failed => [Text(l.ocrFailedBody)],
+      ScanError.imageTooLarge => [_plain(context, l.ocrTooLargeBody)],
+      ScanError.unsupportedImage => [_plain(context, l.ocrUnsupportedBody)],
+      ScanError.fileUnreadable => [_plain(context, l.ocrUnreadableBody)],
+      ScanError.timeout => [_plain(context, l.ocrTimeoutBody)],
+      ScanError.failed => [_plain(context, l.ocrFailedBody)],
     };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
     );
   }
+
+  Widget _plain(BuildContext context, String text) => Text(
+    text,
+    style: Theme.of(context).textTheme.bodyMedium!
+        .copyWith(color: context.tokens.soft),
+  );
 }
 
 /// What the user chose in [showOcrFailureDialog].
@@ -349,7 +670,19 @@ Future<OcrFailureAction?> showOcrFailureDialog(
   return showDialog<OcrFailureAction>(
     context: context,
     builder: (c) => AlertDialog(
-      title: Text(ocrFailureTitle(l, error)),
+      title: Row(
+        children: [
+          OcrIconTile(
+            icon: error == null
+                ? Icons.search_off_rounded
+                : Icons.report_gmailerrorred_rounded,
+            color: c.tokens.warn,
+            fill: c.tokens.warnContainer,
+          ),
+          const SizedBox(width: 14),
+          Expanded(child: Text(ocrFailureTitle(l, error))),
+        ],
+      ),
       content: SizedBox(
         width: 440,
         child: SingleChildScrollView(
@@ -358,10 +691,7 @@ Future<OcrFailureAction?> showOcrFailureDialog(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               OcrFailureBody(error: error),
-              if (passes.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                OcrWhatWasRead(passes: passes),
-              ],
+              if (passes.isNotEmpty) OcrWhatWasRead(passes: passes),
             ],
           ),
         ),
