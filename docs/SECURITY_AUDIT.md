@@ -1,6 +1,6 @@
 # Hisn security audit
 
-Date: 2026-10-05 · Scope: everything on branch `claude/phase-1-crypto`
+Date: 2026-10-05 · Scope: the whole repository at the time of the audit
 (Dart app, Android/iOS/Windows native code, Supabase SQL + edge function).
 Status: **findings only, nothing fixed** (awaiting owner approval).
 

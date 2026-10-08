@@ -72,10 +72,8 @@ show or offer updates. Only release builds do.
      to write there and refuses otherwise.
 3. Merge `release.yml` into the default branch. GitHub only shows the "Run
    workflow" button (for dry runs) for workflows that exist on the default branch.
-   (At the time of writing the repository's default branch is
-   `claude/phase-1-crypto` and there is no `main`. Either use that name wherever
-   this file says "the release branch", or rename the branch in **Settings →
-   Branches** first. Whatever you choose, tag a commit that is on it.)
+   The default branch is `main`; it is "the release branch" in this file. Tag a
+   commit that is on it.
 4. **The repository must stay public.** Installed apps read
    `releases/latest/download/update.json` without logging in, and GitHub answers
    404 for that address when the repository is private. Every check then fails;
