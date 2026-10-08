@@ -1,0 +1,83 @@
+name: Create release tag
+
+# One click to cut a release without a git clone: Actions -> "Create release
+# tag" -> Run workflow -> type the version (for example 0.1.0, no "v").
+#
+# It tags the head of the default branch with vX.Y.Z and starts the Release
+# workflow (release.yml) from that tag. That workflow does the real work:
+# tests, signed Android and Windows builds, the signed update.json, and the
+# publish. See docs/RELEASING.md.
+#
+# Why it starts the Release workflow itself: a tag created with the built-in
+# GITHUB_TOKEN does not trigger the tag-push trigger of release.yml (GitHub
+# does not start workflows from events made by that token), but a
+# workflow_dispatch it starts does.
+#
+# Anyone who can run this workflow can already push a tag, so it adds no
+# access. It refuses to run from any branch but the default one, refuses a
+# commit whose "Build & test" run has not passed, and never moves an existing
+# tag.
+#
+# Rules this file follows: no ${{ ... }} of an input inside a `run:` script
+# (it goes through `env:` and is validated first); nothing secret is echoed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version without the v, for example 0.1.0 (must be higher than the last release)"
+        required: true
+        type: string
+
+permissions:
+  contents: write # create the tag
+  actions: write # start release.yml on it
+
+concurrency:
+  group: tag-release
+  cancel-in-progress: false
+
+jobs:
+  tag:
+    name: Tag and start the release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Create the tag and start the Release workflow
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ inputs.version }}
+          SHA: ${{ github.sha }}
+          REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          # Never print a raw input: it could carry workflow commands.
+          fail() { echo "::error::$1"; exit 1; }
+
+          [ "$REF" = "refs/heads/$DEFAULT_BRANCH" ] ||
+            fail "Run this from the default branch ($DEFAULT_BRANCH): choose it under 'Use workflow from'."
+
+          # Same strict shape and limits as release.yml and the app.
+          re='^(0|[1-9][0-9]{0,3})\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})$'
+          [[ "$VERSION" =~ $re ]] || fail "The version must look like 0.1.0 (digits and dots, no v)."
+          tag="v$VERSION"
+
+          # Only a commit whose Build & test run passed can be released.
+          passed="$(gh run list --workflow build.yml --commit "$SHA" --status success \
+            --json databaseId --jq 'length')"
+          [ "$passed" -ge 1 ] ||
+            fail "Build & test has not passed on this commit yet. Wait for the green check on the branch, then run this again."
+
+          # Never move or reuse a tag.
+          if gh api "repos/$GH_REPO/git/ref/tags/$tag" >/dev/null 2>&1; then
+            fail "The tag $tag already exists. Releases only go forward: pick a higher version."
+          fi
+
+          gh api "repos/$GH_REPO/git/refs" \
+            -f "ref=refs/tags/$tag" -f "sha=$SHA" >/dev/null
+          echo "Created tag $tag at ${SHA:0:7}."
+
+          gh workflow run release.yml --ref "$tag" -f "tag=$tag" -f dry_run=false
+          echo "Started the Release workflow for $tag. Follow it under Actions -> Release."
