@@ -11,7 +11,9 @@ import 'theme/typography.dart';
 import 'widgets/focus_ring.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/max_width_body.dart';
+import 'widgets/password_field.dart';
 import 'widgets/reveal.dart';
+import 'widgets/reveal_controller.dart';
 import 'widgets/secret_text.dart';
 import 'widgets/strength_bar.dart';
 import 'widgets/surface_card.dart';
@@ -41,7 +43,6 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
       _tags,
       _totp;
   late bool _favorite;
-  bool _obscure = true;
   String? _totpError;
 
   @override
@@ -56,8 +57,6 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
     _tags = TextEditingController(text: e?.tags.join(', ') ?? '');
     _totp = TextEditingController(text: e?.totpSecret ?? '');
     _favorite = e?.favorite ?? false;
-    // OCR prefill: show the password so the user can verify each character.
-    _obscure = widget.prefill == null;
   }
 
   @override
@@ -231,51 +230,40 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
           style: mono,
         ),
         gap,
-        TextField(
-          controller: _pw,
-          obscureText: _obscure,
-          autocorrect: false,
-          enableSuggestions: false,
-          enableIMEPersonalizedLearning: false,
-          style: mono.copyWith(fontSize: 16, letterSpacing: 0.8),
-          textDirection: TextDirection.ltr,
-          textAlign: latinAlign,
-          decoration: deco(l.password).copyWith(
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    _obscure
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
+        // Masked, also after an OCR scan: the eye shows it (with the
+        // look-alike characters marked below) for 15 s at a time.
+        RevealBuilder(
+          builder: (context, reveal) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PasswordField(
+                controller: _pw,
+                label: l.password,
+                reveal: reveal,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.casino_outlined),
+                    tooltip: l.generator,
+                    onPressed: () async {
+                      final pw = await Navigator.of(context).push<String>(
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const GeneratorScreen(returnResult: true),
+                        ),
+                      );
+                      if (pw != null) setState(() => _pw.text = pw);
+                    },
                   ),
-                  tooltip: _obscure ? l.show : l.hide,
-                  onPressed: () => setState(() => _obscure = !_obscure),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.casino_outlined),
-                  tooltip: l.generator,
-                  onPressed: () async {
-                    final pw = await Navigator.of(context).push<String>(
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            const GeneratorScreen(returnResult: true),
-                      ),
-                    );
-                    if (pw != null) setState(() => _pw.text = pw);
-                  },
-                ),
-                const SizedBox(width: 4),
+                ],
+                onChanged: (_) => setState(() {}),
+              ),
+              if (reveal.shown && _pw.text.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                SecretBox(child: SecretText(_pw.text)),
               ],
-            ),
+            ],
           ),
-          onChanged: (_) => setState(() {}),
         ),
-        if (!_obscure && _pw.text.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          SecretBox(child: SecretText(_pw.text)),
-        ],
         const SizedBox(height: 12),
         StrengthBar(result: strength),
       ]),

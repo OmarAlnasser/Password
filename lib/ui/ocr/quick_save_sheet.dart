@@ -6,7 +6,9 @@ import '../../services/ocr/ocr_scanner.dart';
 import '../../services/vault_session.dart';
 import '../app_scope.dart';
 import '../theme/theme.dart';
+import '../widgets/password_field.dart';
 import '../widgets/primary_button.dart';
+import '../widgets/reveal_controller.dart';
 import '../widgets/secret_text.dart';
 import 'ocr_widgets.dart';
 
@@ -244,40 +246,49 @@ class _QuickSaveSheetState extends State<QuickSaveSheet> {
         onPick: (v) => setState(() => _user.text = v),
       ),
       gap,
-      // Shown in clear text: OCR output must be checked character by
-      // character before it is saved.
-      TextField(
-        controller: _pw,
-        autocorrect: false,
-        enableSuggestions: false,
-        enableIMEPersonalizedLearning: false,
-        style: mono,
-        textDirection: TextDirection.ltr,
-        textAlign: latinAlign,
-        decoration: InputDecoration(labelText: l.password),
-        onChanged: (_) => setState(() {}),
-      ),
-      OcrCandidates(
-        values: f.passwordCandidates,
-        current: _pw.text,
-        onPick: (v) => setState(() => _pw.text = v),
-      ),
-      if (_pw.text.isNotEmpty) ...[
-        const SizedBox(height: 12),
-        SecretBox(child: SecretText(_pw.text)),
-        const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      // Masked like every stored password. OCR output is checked character by
+      // character with the eye, which also shows the readings below and a
+      // preview with the look-alike characters marked; it hides again after
+      // 15 s.
+      RevealBuilder(
+        builder: (context, reveal) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Icon(Icons.visibility_outlined, size: 16, color: t.muted),
+            PasswordField(
+              controller: _pw,
+              label: l.password,
+              reveal: reveal,
+              onChanged: (_) => setState(() {}),
             ),
-            const SizedBox(width: 8),
-            Expanded(child: Text(l.ocrAmbiguous, style: tt.bodySmall)),
+            OcrCandidates(
+              values: f.passwordCandidates,
+              current: _pw.text,
+              obscure: !reveal.shown,
+              onPick: (v) => setState(() => _pw.text = v),
+            ),
+            if (reveal.shown && _pw.text.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              SecretBox(child: SecretText(_pw.text)),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Icon(
+                      Icons.visibility_outlined,
+                      size: 16,
+                      color: t.muted,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(child: Text(l.ocrAmbiguous, style: tt.bodySmall)),
+                ],
+              ),
+            ],
           ],
         ),
-      ],
+      ),
       if (_advanced) ...[
         gap,
         TextField(
@@ -305,16 +316,28 @@ class _QuickSaveSheetState extends State<QuickSaveSheet> {
       ],
       if (f.chips.isNotEmpty) ...[
         const SizedBox(height: 16),
-        OcrFold(
-          expandKey: const ValueKey('ocr.chips'),
-          initiallyExpanded: _incomplete,
-          icon: Icons.text_snippet_outlined,
-          title: l.ocrChipsTitle,
-          children: [
-            Text(l.ocrTapChip, style: tt.bodySmall),
-            const SizedBox(height: 10),
-            OcrChips(chips: f.chips, onUse: _use),
-          ],
+        // Any piece of the text may be the password: masked until the eye
+        // of this panel is pressed; folding the panel hides it again.
+        RevealBuilder(
+          builder: (context, reveal) => OcrFold(
+            expandKey: const ValueKey('ocr.chips'),
+            initiallyExpanded: _incomplete,
+            icon: Icons.text_snippet_outlined,
+            title: l.ocrChipsTitle,
+            onExpansionChanged: (open) {
+              if (!open) reveal.hide();
+            },
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text(l.ocrTapChip, style: tt.bodySmall)),
+                  RevealButton(reveal: reveal),
+                ],
+              ),
+              const SizedBox(height: 10),
+              OcrChips(chips: f.chips, obscure: !reveal.shown, onUse: _use),
+            ],
+          ),
         ),
       ],
       OcrWhatWasRead(passes: widget.passes),

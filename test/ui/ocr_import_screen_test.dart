@@ -280,6 +280,15 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Pass 1: original'), findsOneWidget);
     final read = find.byKey(const ValueKey('ocr.read'));
+    // The text that was read is masked until the eye of the panel is pressed.
+    expect(
+      find.descendant(of: read, matching: find.text(password)),
+      findsNothing,
+    );
+    await tester.tap(
+      find.descendant(of: read, matching: find.byTooltip('Show')),
+    );
+    await tester.pumpAndSettle();
     expect(
       find.descendant(of: read, matching: find.text(email)),
       findsOneWidget,

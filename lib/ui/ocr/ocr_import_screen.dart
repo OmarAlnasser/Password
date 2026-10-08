@@ -18,6 +18,7 @@ import '../widgets/glass_bar.dart';
 import '../widgets/max_width_body.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/reveal.dart';
+import '../widgets/reveal_controller.dart';
 import '../widgets/secret_text.dart';
 import '../widgets/surface_card.dart';
 import 'ocr_widgets.dart';
@@ -419,17 +420,31 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
                 ),
               ),
               _divider(),
-              _field(Icons.key_rounded, l.password, r.password),
-              Padding(
-                padding: pad,
-                child: Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: OcrCandidates(
-                    values: r.passwordCandidates,
-                    current: r.password ?? '',
-                    onPick: (v) =>
-                        setState(() => _result = r.copyWith(password: v)),
-                  ),
+              // The password is masked: its eye also shows the other
+              // readings of it, and hides them again after 15 s.
+              RevealBuilder(
+                builder: (context, reveal) => Column(
+                  children: [
+                    _field(
+                      Icons.key_rounded,
+                      l.password,
+                      r.password,
+                      reveal: reveal,
+                    ),
+                    Padding(
+                      padding: pad,
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: OcrCandidates(
+                          values: r.passwordCandidates,
+                          current: r.password ?? '',
+                          obscure: !reveal.shown,
+                          onPick: (v) =>
+                              setState(() => _result = r.copyWith(password: v)),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               _divider(),
@@ -451,24 +466,36 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
       ),
       if (r.chips.isNotEmpty) ...[
         const SizedBox(height: 24),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Semantics(
-              header: true,
-              child: Text(l.ocrChipsTitle, style: tt.titleMedium),
-            ),
-            const SizedBox(height: 4),
-            Text(l.ocrTapChip, style: tt.bodySmall),
-            const SizedBox(height: 2),
-            Text(l.ocrAmbiguous, style: tt.bodySmall),
-            const SizedBox(height: 10),
-            OcrChips(
-              chips: r.chips,
-              onUse: _use,
-              onCopy: (v) => copySecretWithToast(context, v),
-            ),
-          ],
+        // Any piece of the text may be the password: masked until the eye
+        // is pressed, and masked again after 15 s.
+        RevealBuilder(
+          builder: (context, reveal) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Semantics(
+                      header: true,
+                      child: Text(l.ocrChipsTitle, style: tt.titleMedium),
+                    ),
+                  ),
+                  RevealButton(reveal: reveal),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(l.ocrTapChip, style: tt.bodySmall),
+              const SizedBox(height: 2),
+              Text(l.ocrAmbiguous, style: tt.bodySmall),
+              const SizedBox(height: 10),
+              OcrChips(
+                chips: r.chips,
+                obscure: !reveal.shown,
+                onUse: _use,
+                onCopy: (v) => copySecretWithToast(context, v),
+              ),
+            ],
+          ),
         ),
       ],
       OcrWhatWasRead(passes: _scan?.passes ?? const []),
@@ -479,16 +506,35 @@ class _OcrImportScreenState extends State<OcrImportScreen> {
 
   /// One detected value: a small icon tile, its label and the value in
   /// monospace (always left-to-right, ambiguous characters highlighted).
-  Widget _field(IconData icon, String label, String? value) {
+  /// With [reveal] the value is a secret: bullets until its eye is pressed.
+  Widget _field(
+    IconData icon,
+    String label,
+    String? value, {
+    RevealController? reveal,
+  }) {
     final t = context.tokens;
     final tt = Theme.of(context).textTheme;
     return ListTile(
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
+      // The eye (48 dp) brings its own padding at the end.
+      contentPadding: EdgeInsetsDirectional.fromSTEB(
+        16,
+        6,
+        reveal == null ? 16 : 8,
+        6,
+      ),
       leading: OcrIconTile(icon: icon),
       title: Text(label, style: tt.bodySmall),
       subtitle: value == null
           ? Text('—', style: tt.bodyLarge!.copyWith(color: t.muted))
-          : SecretText(value, style: tt.bodyLarge!.copyWith(color: t.ink)),
+          : SecretText(
+              value,
+              obscure: reveal != null && !reveal.shown,
+              style: tt.bodyLarge!.copyWith(color: t.ink),
+            ),
+      trailing: value == null || reveal == null
+          ? null
+          : RevealButton(reveal: reveal),
     );
   }
 }

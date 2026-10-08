@@ -1,7 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
+import 'entry_sort.dart';
+
+// The sort preference is part of the settings; the enum lives with the sort
+// function, which must not depend on this file.
+export 'entry_sort.dart' show EntrySort;
 
 /// Non-secret user preferences, stored as JSON in the app support directory.
 class AppSettings extends ChangeNotifier {
@@ -23,6 +30,27 @@ class AppSettings extends ChangeNotifier {
   bool fetchIcons = true;
   String? syncEmail;
 
+  EntrySort _entrySort = EntrySort.recent;
+  bool _updating = false;
+
+  /// How the entry list is ordered (default [EntrySort.recent]). Setting it
+  /// notifies listeners and saves, whether it is assigned directly or inside
+  /// [update]. An unknown value in the file reads as the default.
+  EntrySort get entrySort => _entrySort;
+  set entrySort(EntrySort value) {
+    if (value == _entrySort) return;
+    _entrySort = value;
+    // Inside update() the notification and the save follow anyway.
+    if (_updating) return;
+    unawaited(
+      update((_) {}).catchError(
+        // The preference stays in memory for this run; never throw from a
+        // setter into a UI callback.
+        (Object e) => debugPrint('Settings not saved (${e.runtimeType})'),
+      ),
+    );
+  }
+
   /// Look for a new version on GitHub, at most once a day. Development builds
   /// (no `APP_VERSION`) never check, whatever this says.
   bool checkUpdates = true;
@@ -43,6 +71,8 @@ class AppSettings extends ChangeNotifier {
   Future<void> load() async {
     try {
       final j = jsonDecode(await _file.readAsString()) as Map<String, Object?>;
+      // First, so that nothing unrelated in the file can keep it from loading.
+      _entrySort = _parseEntrySort(j['sort']);
       themeMode = ThemeMode.values.byName(
         (j['theme'] as String?) ?? ThemeMode.dark.name,
       );
@@ -65,7 +95,12 @@ class AppSettings extends ChangeNotifier {
   }
 
   Future<void> update(void Function(AppSettings s) change) async {
-    change(this);
+    _updating = true;
+    try {
+      change(this);
+    } finally {
+      _updating = false;
+    }
     // Clamp to sane, safe ranges regardless of what the UI sent.
     autoLockSeconds = autoLockSeconds.clamp(30, 3600);
     clipboardClearSeconds = clipboardClearSeconds.clamp(10, 120);
@@ -84,6 +119,7 @@ class AppSettings extends ChangeNotifier {
         'bio': biometricsEnabled,
         'hibp': hibpEnabled,
         'icons': fetchIcons,
+        'sort': _entrySort.name,
         'syncEmail': syncEmail,
         'updates': checkUpdates,
         'updChecked': lastUpdateCheck,
@@ -93,6 +129,12 @@ class AppSettings extends ChangeNotifier {
       flush: true,
     );
   }
+
+  /// A saved [EntrySort] name, else the default for anything else (missing,
+  /// an unknown name from a newer version, the wrong type).
+  static EntrySort _parseEntrySort(Object? v) => v is String
+      ? EntrySort.values.asNameMap()[v] ?? EntrySort.recent
+      : EntrySort.recent;
 
   /// A non-negative whole number from the file, else 0.
   static int _count(Object? v) => v is int && v > 0 ? v : 0;
