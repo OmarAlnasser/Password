@@ -191,7 +191,9 @@ void main() {
       await tester.enterText(find.byType(SearchBar), 'zzz');
       await tester.pumpAndSettle();
       expect(row('Example'), findsNothing);
-      expect(find.text('No entries yet'), findsOneWidget);
+      // A search that matches nothing is "No results", not an empty vault.
+      expect(find.text('No results'), findsOneWidget);
+      expect(find.text('No entries yet'), findsNothing);
 
       await tester.tap(find.widgetWithText(OutlinedButton, 'Clear'));
       await tester.pumpAndSettle();
@@ -539,7 +541,9 @@ void main() {
       await openPalette(tester);
       await tester.enterText(find.byType(TextField), 'qqq');
       await tester.pumpAndSettle();
-      expect(find.text('No entries yet'), findsOneWidget);
+      // The vault has entries; nothing matched the query.
+      expect(find.text('No results'), findsOneWidget);
+      expect(find.text('No entries yet'), findsNothing);
     });
   });
 }

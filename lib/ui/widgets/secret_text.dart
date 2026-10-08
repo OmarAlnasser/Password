@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../theme/tokens.dart';
 
 import '../theme/typography.dart';
@@ -50,12 +51,22 @@ class SecretText extends StatelessWidget {
         ? TextAlign.right
         : TextAlign.left;
     if (obscure) {
-      return Directionality(
-        textDirection: TextDirection.ltr,
-        child: Text(
-          '•' * text.length.clamp(8, 16),
-          style: base,
-          textAlign: align,
+      // A screen reader would say "bullet, bullet, ..." for the dots (and
+      // reveal that the count is a fixed 8 to 16), so it hears one phrase.
+      final hidden = Localizations.of<AppLocalizations>(
+        context,
+        AppLocalizations,
+      )?.passwordHidden;
+      return Semantics(
+        label: hidden,
+        excludeSemantics: hidden != null,
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Text(
+            '•' * text.length.clamp(8, 16),
+            style: base,
+            textAlign: align,
+          ),
         ),
       );
     }

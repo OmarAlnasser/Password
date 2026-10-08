@@ -653,6 +653,9 @@ void main() {
       expect(ocrSeen, [shot.path]);
       expectNoCopiesLeft(shot);
 
+      // The stacked buttons take more of this 800 x 600 window, so the
+      // dialog's content scrolls: bring the panel into view first.
+      await tester.ensureVisible(find.text('What was read'));
       await tester.tap(find.text('What was read'));
       await tester.pumpAndSettle();
       expect(find.text('Failed (noLanguage)'), findsOneWidget);

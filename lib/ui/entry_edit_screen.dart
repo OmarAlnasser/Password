@@ -8,6 +8,7 @@ import 'entry_detail_screen.dart' show EntryTitle;
 import 'generator_screen.dart';
 import 'theme/tokens.dart';
 import 'theme/typography.dart';
+import 'widgets/focus_ring.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/max_width_body.dart';
 import 'widgets/reveal.dart';
@@ -304,12 +305,14 @@ class _EntryEditScreenState extends State<EntryEditScreen> {
         gap,
         freeText(_notes, l.notes, minLines: 3, maxLines: 8),
         const SizedBox(height: 6),
-        SwitchListTile(
-          contentPadding: EdgeInsets.zero,
-          secondary: Icon(Icons.star_rounded, color: t.accent2),
-          title: Text(l.favorite),
-          value: _favorite,
-          onChanged: (v) => setState(() => _favorite = v),
+        FocusRing(
+          child: SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            secondary: Icon(Icons.star_rounded, color: t.accent2),
+            title: Text(l.favorite),
+            value: _favorite,
+            onChanged: (v) => setState(() => _favorite = v),
+          ),
         ),
       ]),
     ];

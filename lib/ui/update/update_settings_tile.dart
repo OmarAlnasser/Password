@@ -10,9 +10,29 @@ import '../../services/update/update_failure.dart';
 import '../../services/update/update_providers.dart';
 import '../app_scope.dart';
 import '../theme/tokens.dart';
+import '../widgets/focus_ring.dart';
+import '../widgets/icon_tile.dart';
 import 'update_format.dart';
 import 'update_messages.dart';
 import 'update_sheet.dart';
+
+/// The leading slot of the About rows: as wide as the brand mark above them
+/// (48), with the standard 36 px icon tile centred in it, so the icons sit
+/// under the mark and the text lines up with the app name.
+const double _aboutLeading = 48;
+const double _aboutGap = 16;
+
+/// Gives the list tiles below it the About layout (see [_aboutLeading]).
+Widget _aboutRows({required Widget child}) => ListTileTheme.merge(
+  minLeadingWidth: _aboutLeading,
+  horizontalTitleGap: _aboutGap,
+  child: child,
+);
+
+Widget _aboutIcon(IconData icon) => SizedBox(
+  width: _aboutLeading,
+  child: Center(child: IconTile(icon: icon)),
+);
 
 /// The updates block of the settings screen: the "Check for updates
 /// automatically" switch, the installed version, when the last check was, the
@@ -74,10 +94,13 @@ class UpdateSettingsTile extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final l = AppLocalizations.of(context);
-    return ListTile(
-      leading: const Icon(Icons.system_update_alt),
-      title: Text(l.updateSettingsGroup),
-      subtitle: Text(l.updateDevOff),
+    return _aboutRows(
+      child: ListTile(
+        contentPadding: IconTile.rowPadding,
+        leading: _aboutIcon(Icons.system_update_alt_rounded),
+        title: Text(l.updateSettingsGroup),
+        subtitle: Text(l.updateDevOff),
+      ),
     );
   }
 
@@ -114,14 +137,21 @@ class UpdateSettingsTile extends StatelessWidget {
             ),
           ),
         ),
-        SwitchListTile(
-          title: Text(l.updateAutoCheck),
-          subtitle: Text(l.updateAutoCheckNote),
-          value: s.checkUpdates,
-          onChanged: (v) => unawaited(s.update((x) => x.checkUpdates = v)),
+        _aboutRows(
+          child: FocusRing(
+            child: SwitchListTile(
+              contentPadding: IconTile.rowPadding,
+              secondary: _aboutIcon(Icons.autorenew_rounded),
+              title: Text(l.updateAutoCheck),
+              subtitle: Text(l.updateAutoCheckNote),
+              value: s.checkUpdates,
+              onChanged: (v) => unawaited(s.update((x) => x.checkUpdates = v)),
+            ),
+          ),
         ),
         Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16, 4, 16, 12),
+          // Under the text of the rows above: 16 + the 48 px slot + 16.
+          padding: const EdgeInsetsDirectional.fromSTEB(80, 4, 16, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -260,13 +290,16 @@ class AboutVersionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
     final v = version ?? AppVersion.current;
-    return ListTile(
-      leading: const Icon(Icons.info_outline),
-      title: Text(l.updateVersionTitle),
-      subtitle: Text(
-        v.enabled
-            ? formatUpdateVersion(l, v.version, v.build)
-            : l.updateDevBuild,
+    return _aboutRows(
+      child: ListTile(
+        contentPadding: IconTile.rowPadding,
+        leading: _aboutIcon(Icons.info_outline_rounded),
+        title: Text(l.updateVersionTitle),
+        subtitle: Text(
+          v.enabled
+              ? formatUpdateVersion(l, v.version, v.build)
+              : l.updateDevBuild,
+        ),
       ),
     );
   }

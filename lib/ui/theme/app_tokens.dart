@@ -584,6 +584,20 @@ class AppTokens extends ThemeExtension<AppTokens> {
   /// True for the dark theme.
   bool get isDark => brightness == Brightness.dark;
 
+  /// The same tokens for a user who turned on the system's high-contrast
+  /// setting (`MediaQuery.highContrastOf`): the decorative hairlines and
+  /// borders (1.3 to 1.6:1 against the page) take the `outline` colour,
+  /// which is 3:1 or better, so cards, pills, buttons and dividers stay
+  /// visible. Text and fills are untouched.
+  AppTokens withHighContrast() => copyWith(
+    line: outline,
+    line2: outline,
+    cardBorder: outline,
+    featuredBorder: outline,
+    dialogBorder: outline,
+    tagBorder: outline,
+  );
+
   /// Brand tile: `linear-gradient(135deg, strong, brandEnd)`; identical in
   /// both themes.
   LinearGradient get brandGradient => cssLinear(135, [strong, brandEnd]);

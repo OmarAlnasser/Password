@@ -7,6 +7,7 @@ import '../../l10n/app_localizations.dart';
 import '../../services/import/import_review.dart';
 import '../app_scope.dart';
 import '../theme/theme.dart';
+import '../widgets/focus_ring.dart';
 import '../widgets/glass_bar.dart';
 import '../widgets/max_width_body.dart';
 import '../widgets/primary_button.dart';
@@ -83,6 +84,7 @@ class _ImportReviewScreenState extends State<ImportReviewScreen> {
   Future<void> _edit(ReviewItem item) async {
     final edited = await showDialog<VaultEntry>(
       context: context,
+      animationStyle: context.motionStyle,
       builder: (_) => _EditLoginDialog(entry: item.entry),
     );
     if (edited == null || !mounted) return;
@@ -435,61 +437,78 @@ class _ItemTile extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: Material(
           type: MaterialType.transparency,
-          child: ListTile(
-            contentPadding: const EdgeInsetsDirectional.fromSTEB(6, 6, 12, 8),
-            leading: Checkbox(
-              value: item.include,
-              onChanged: onInclude == null
-                  ? null
-                  : (v) => onInclude!(v ?? false),
-            ),
-            title: e.username.isEmpty
-                ? Text(
-                    l.noUsername,
-                    style: tt.bodyMedium!.copyWith(color: t.muted),
-                  )
-                : LtrText(
-                    e.username,
-                    style: TextStyle(color: t.ink, fontSize: 14),
+          child: FocusRing(
+            radius: AppRadius.card,
+            child: ListTile(
+              contentPadding: const EdgeInsetsDirectional.fromSTEB(6, 6, 12, 8),
+              // Named after the login, so a screen reader says which one it
+              // ticks ("name@example.com, example.com, checked").
+              leading: MergeSemantics(
+                child: Semantics(
+                  label: [
+                    e.username.isEmpty ? l.noUsername : e.username,
+                    if (e.url.isNotEmpty) e.url else e.title,
+                  ].where((x) => x.isNotEmpty).join(', '),
+                  child: Checkbox(
+                    value: item.include,
+                    onChanged: onInclude == null
+                        ? null
+                        : (v) => onInclude!(v ?? false),
                   ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (e.url.isNotEmpty)
-                  LtrText(e.url)
-                else if (e.title.isNotEmpty)
-                  Text(e.title),
-                if (item.action == ReviewAction.updateExisting &&
-                    existing != null) ...[
-                  const SizedBox(height: 2),
-                  Text(l.reviewUpdates(existing.title)),
-                ],
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    _Pill(_actionLabel(l, item.action), tone: tone, icon: icon),
-                    for (final issue in item.issues)
-                      _Pill(
-                        _issueLabel(l, issue),
-                        icon: issue.isBlocking
-                            ? Icons.error_outline_rounded
-                            : Icons.info_outline_rounded,
-                        tone: _Tone(
-                          Colors.transparent,
-                          issue.isBlocking
-                              ? t.error.withValues(alpha: 0.6)
-                              : t.line2,
-                          issue.isBlocking ? t.error : t.muted,
-                        ),
-                      ),
-                  ],
                 ),
-              ],
+              ),
+              title: e.username.isEmpty
+                  ? Text(
+                      l.noUsername,
+                      style: tt.bodyMedium!.copyWith(color: t.muted),
+                    )
+                  : LtrText(
+                      e.username,
+                      style: TextStyle(color: t.ink, fontSize: 14),
+                    ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (e.url.isNotEmpty)
+                    LtrText(e.url)
+                  else if (e.title.isNotEmpty)
+                    Text(e.title),
+                  if (item.action == ReviewAction.updateExisting &&
+                      existing != null) ...[
+                    const SizedBox(height: 2),
+                    Text(l.reviewUpdates(existing.title)),
+                  ],
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      _Pill(
+                        _actionLabel(l, item.action),
+                        tone: tone,
+                        icon: icon,
+                      ),
+                      for (final issue in item.issues)
+                        _Pill(
+                          _issueLabel(l, issue),
+                          icon: issue.isBlocking
+                              ? Icons.error_outline_rounded
+                              : Icons.info_outline_rounded,
+                          tone: _Tone(
+                            Colors.transparent,
+                            issue.isBlocking
+                                ? t.error.withValues(alpha: 0.6)
+                                : t.line2,
+                            issue.isBlocking ? t.error : t.muted,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+              trailing: Icon(Icons.edit_outlined, size: 20, color: t.muted),
+              onTap: onTap,
             ),
-            trailing: Icon(Icons.edit_outlined, size: 20, color: t.muted),
-            onTap: onTap,
           ),
         ),
       ),

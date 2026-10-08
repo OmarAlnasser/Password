@@ -5,6 +5,7 @@ import 'app_scope.dart';
 import 'home_screen.dart';
 import 'ocr/ocr_widgets.dart' show PillSegment, PillSegments;
 import 'theme/theme.dart';
+import 'widgets/focus_ring.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/max_width_body.dart';
 import 'widgets/primary_button.dart';
@@ -413,35 +414,37 @@ class _SwitchRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
-    return SwitchListTile(
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 2, 12, 2),
-      secondary: ExcludeSemantics(
-        child: Container(
-          width: 40,
-          height: 40,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: t.surface2,
-            borderRadius: AppRadius.controlAll,
-            border: Border.all(color: t.line2),
-          ),
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: Text(
-              data.sample,
-              textScaler: TextScaler.noScaling,
-              style: AppText.secretSmall.copyWith(
-                color: data.value ? t.accent2 : t.muted,
-                fontSize: 12.5,
-                fontWeight: FontWeight.w500,
+    return FocusRing(
+      child: SwitchListTile(
+        contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 2, 12, 2),
+        secondary: ExcludeSemantics(
+          child: Container(
+            width: 40,
+            height: 40,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: t.surface2,
+              borderRadius: AppRadius.controlAll,
+              border: Border.all(color: t.line2),
+            ),
+            child: Directionality(
+              textDirection: TextDirection.ltr,
+              child: Text(
+                data.sample,
+                textScaler: TextScaler.noScaling,
+                style: AppText.secretSmall.copyWith(
+                  color: data.value ? t.accent2 : t.muted,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ),
         ),
+        title: Text(data.title),
+        value: data.value,
+        onChanged: onChanged,
       ),
-      title: Text(data.title),
-      value: data.value,
-      onChanged: onChanged,
     );
   }
 }

@@ -441,5 +441,57 @@
   "updateNoticeDamaged": "The update failed and the app may be damaged. Download the latest release from the release page and replace the app’s folder.",
   "updateNoticeAborted": "The update did not start, so nothing was changed.",
   "updateSettingsGroup": "Updates",
-  "updateDevOff": "Updates are off in development builds."
+  "updateDevOff": "Updates are off in development builds.",
+  "crackLessThanSecond": "less than a second",
+  "crackSeconds": "{n, plural, =1{1 second} other{{n} seconds}}",
+  "@crackSeconds": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "crackMinutes": "{n, plural, =1{1 minute} other{{n} minutes}}",
+  "@crackMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "crackHours": "{n, plural, =1{1 hour} other{{n} hours}}",
+  "@crackHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "crackDays": "{n, plural, =1{1 day} other{{n} days}}",
+  "@crackDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "crackMonths": "{n, plural, =1{1 month} other{{n} months}}",
+  "@crackMonths": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "crackYears": "{n, plural, =1{1 year} other{{n} years}}",
+  "@crackYears": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "crackCenturies": "centuries",
+  "noResults": "No results",
+  "passwordHidden": "Password hidden"
 }

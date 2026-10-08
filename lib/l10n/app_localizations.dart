@@ -1765,6 +1765,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Updates are off in development builds.'**
   String get updateDevOff;
+
+  /// No description provided for @crackLessThanSecond.
+  ///
+  /// In en, this message translates to:
+  /// **'less than a second'**
+  String get crackLessThanSecond;
+
+  /// No description provided for @crackSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 second} other{{n} seconds}}'**
+  String crackSeconds(int n);
+
+  /// No description provided for @crackMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 minute} other{{n} minutes}}'**
+  String crackMinutes(int n);
+
+  /// No description provided for @crackHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 hour} other{{n} hours}}'**
+  String crackHours(int n);
+
+  /// No description provided for @crackDays.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 day} other{{n} days}}'**
+  String crackDays(int n);
+
+  /// No description provided for @crackMonths.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 month} other{{n} months}}'**
+  String crackMonths(int n);
+
+  /// No description provided for @crackYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 year} other{{n} years}}'**
+  String crackYears(int n);
+
+  /// No description provided for @crackCenturies.
+  ///
+  /// In en, this message translates to:
+  /// **'centuries'**
+  String get crackCenturies;
+
+  /// No description provided for @noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get noResults;
+
+  /// No description provided for @passwordHidden.
+  ///
+  /// In en, this message translates to:
+  /// **'Password hidden'**
+  String get passwordHidden;
 }
 
 class _AppLocalizationsDelegate

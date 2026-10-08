@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/tokens.dart';
 import '../theme/typography.dart';
+import 'focus_ring.dart';
 
 /// A KPI tile (the portfolio's `.stats div`, DESIGN section 8.5): `surface`
 /// fill, 1 px border, 14 px radius, a big lavender numeral and a small muted
@@ -63,7 +64,10 @@ class StatTile extends StatelessWidget {
     if (onTap != null) {
       content = Material(
         type: MaterialType.transparency,
-        child: InkWell(onTap: onTap, borderRadius: radius, child: content),
+        child: FocusRing(
+          radius: AppRadius.stat,
+          child: InkWell(onTap: onTap, borderRadius: radius, child: content),
+        ),
       );
     }
     return MergeSemantics(

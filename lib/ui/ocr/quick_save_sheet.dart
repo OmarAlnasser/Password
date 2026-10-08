@@ -11,7 +11,8 @@ import '../widgets/secret_text.dart';
 import 'ocr_widgets.dart';
 
 /// Bottom sheet that saves a login read from the clipboard (a pasted
-/// screenshot or text) in a few taps.
+/// screenshot or text) in a few taps. From 600 px of width it is a centred
+/// dialog instead (DESIGN section 8.11), with the same content.
 ///
 /// Quick asks only for a name and shows the detected username and password
 /// for checking. Advanced adds where the login is from, why it exists and
@@ -28,6 +29,7 @@ class QuickSaveSheet extends StatefulWidget {
     super.key,
     required this.found,
     this.passes = const [],
+    this.asDialog = false,
   });
 
   final OcrResult found;
@@ -35,14 +37,56 @@ class QuickSaveSheet extends StatefulWidget {
   /// What each scan pass read, for "What was read". Empty for pasted text.
   final List<ScanPass> passes;
 
-  /// Shows the sheet. True when an entry was saved.
+  /// Drawn as a floating dialog (all corners rounded, no drag handle, no
+  /// keyboard padding: the dialog route already makes room for it) instead
+  /// of a bottom sheet.
+  final bool asDialog;
+
+  /// Shows the sheet, or the dialog on a wide window. True when an entry was
+  /// saved.
   static Future<bool> show(
     BuildContext context,
     OcrResult found, {
     List<ScanPass> passes = const [],
-  }) async =>
+  }) async {
+    if (MediaQuery.sizeOf(context).width >= AppLayout.compact) {
+      return await showDialog<bool>(
+            context: context,
+            animationStyle: context.motionStyle,
+            builder: (_) => Dialog(
+              // The content paints its own surface and glow.
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              shape: const RoundedRectangleBorder(
+                borderRadius: AppRadius.dialogAll,
+              ),
+              clipBehavior: Clip.none,
+              insetPadding: const EdgeInsets.all(24),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: AppLayout.dialog),
+                child: QuickSaveSheet(
+                  found: found,
+                  passes: passes,
+                  asDialog: true,
+                ),
+              ),
+            ),
+          ) ??
+          false;
+    }
+    return _showSheet(context, found, passes);
+  }
+
+  static Future<bool> _showSheet(
+    BuildContext context,
+    OcrResult found,
+    List<ScanPass> passes,
+  ) async =>
       await showModalBottomSheet<bool>(
         context: context,
+        sheetAnimationStyle: context.motionStyle,
         isScrollControlled: true,
         useSafeArea: true,
         // The sheet paints its own surface: the violet gradient, the border
@@ -276,33 +320,41 @@ class _QuickSaveSheetState extends State<QuickSaveSheet> {
       OcrWhatWasRead(passes: widget.passes),
     ];
 
+    final radius = widget.asDialog ? AppRadius.dialogAll : AppRadius.sheetTop;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: t.dialogGradient,
-        borderRadius: AppRadius.sheetTop,
+        borderRadius: radius,
         border: Border.all(color: t.dialogBorder),
         boxShadow: [
-          // The violet glow around the sheet's top edge.
+          // The violet glow around the sheet's top edge (all round for the
+          // dialog).
           BoxShadow(
             color: t.isDark ? t.strong.withValues(alpha: 0.38) : t.shadow,
             blurRadius: 46,
             spreadRadius: -6,
-            offset: const Offset(0, -10),
+            offset: Offset(0, widget.asDialog ? 12 : -10),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: AppRadius.sheetTop,
+        borderRadius: radius,
         child: Padding(
-          // Keep the fields above the on-screen keyboard.
+          // Keep the fields above the on-screen keyboard (a dialog route
+          // does that itself).
           padding: EdgeInsets.only(
-            bottom: MediaQuery.viewInsetsOf(context).bottom,
+            bottom: widget.asDialog
+                ? 0
+                : MediaQuery.viewInsetsOf(context).bottom,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const _Grabber(),
+              if (widget.asDialog)
+                const SizedBox(height: 14)
+              else
+                const _Grabber(),
               Padding(
                 padding: const EdgeInsetsDirectional.fromSTEB(20, 6, 8, 0),
                 child: Row(
@@ -455,8 +507,13 @@ Future<void> offerClearClipboard(
   final messenger = ScaffoldMessenger.of(context);
   final clear = await showDialog<bool>(
     context: context,
+    animationStyle: context.motionStyle,
     builder: (c) => AlertDialog(
-      icon: const OcrIconTile(icon: Icons.content_paste_off_rounded, size: 56),
+      // Centre: the dialog's icon slot is tight, which would stretch a tile
+      // with a fixed size into a flat bar.
+      icon: const Center(
+        child: OcrIconTile(icon: Icons.content_paste_off_rounded, size: 56),
+      ),
       title: Text(
         screenshot ? l.clearScreenshotTitle : l.clearTextTitle,
         textAlign: TextAlign.center,

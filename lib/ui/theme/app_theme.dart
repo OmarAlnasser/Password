@@ -33,20 +33,31 @@ abstract final class AppTheme {
   /// With [transparentScaffold] the `Scaffold` background is transparent, so
   /// the app-wide background (`AppBackground`, with the ambient glow) shows
   /// through every screen. `AppShell` uses it.
+  ///
+  /// With [highContrast] (the system's high-contrast setting, which
+  /// `AppShell` reads from `MediaQuery`) the decorative borders and hairlines
+  /// use the stronger `outline` colour, see [AppTokens.withHighContrast].
   static ThemeData resolve(
     Brightness brightness,
     Locale? locale, {
     bool transparentScaffold = false,
+    bool highContrast = false,
   }) {
     final arabic = locale?.languageCode == 'ar';
-    return _cache.putIfAbsent((
-      brightness,
-      arabic,
-      transparentScaffold,
-    ), () => _build(AppTokens.of(brightness), arabic, transparentScaffold));
+    return _cache.putIfAbsent(
+      (brightness, arabic, transparentScaffold, highContrast),
+      () {
+        final tokens = AppTokens.of(brightness);
+        return _build(
+          highContrast ? tokens.withHighContrast() : tokens,
+          arabic,
+          transparentScaffold,
+        );
+      },
+    );
   }
 
-  static final Map<(Brightness, bool, bool), ThemeData> _cache = {};
+  static final Map<(Brightness, bool, bool, bool), ThemeData> _cache = {};
 }
 
 // -----------------------------------------------------------------------------
@@ -72,7 +83,11 @@ ThemeData _build(AppTokens t, bool arabic, bool transparentScaffold) {
         return t.ink.withValues(alpha: 0.10);
       }
       if (s.contains(WidgetState.pressed)) return t.strongPressed;
-      if (s.contains(WidgetState.hovered)) return t.strongHover;
+      // Focus uses the hover fill (with the ring) instead of a white overlay:
+      // the overlay lightened the fill until the white label fell to 4.28:1.
+      if (s.contains(WidgetState.hovered) || s.contains(WidgetState.focused)) {
+        return t.strongHover;
+      }
       return t.strong;
     }),
     foregroundColor: WidgetStateProperty.resolveWith(
@@ -81,15 +96,13 @@ ThemeData _build(AppTokens t, bool arabic, bool transparentScaffold) {
     iconColor: WidgetStateProperty.resolveWith(
       (s) => s.contains(WidgetState.disabled) ? disabledInk : t.onStrong,
     ),
-    overlayColor: WidgetStateProperty.resolveWith((s) {
-      if (s.contains(WidgetState.pressed)) {
-        return Colors.white.withValues(alpha: 0.16);
-      }
-      if (s.contains(WidgetState.focused)) {
-        return Colors.white.withValues(alpha: 0.10);
-      }
-      return Colors.transparent;
-    }),
+    // A light press ripple only; 8% white keeps the label at 5:1 or more on
+    // the pressed fill in both themes.
+    overlayColor: WidgetStateProperty.resolveWith(
+      (s) => s.contains(WidgetState.pressed)
+          ? Colors.white.withValues(alpha: 0.08)
+          : Colors.transparent,
+    ),
     side: WidgetStateProperty.resolveWith(
       (s) => s.contains(WidgetState.focused) ? ring(t.focusRing) : null,
     ),

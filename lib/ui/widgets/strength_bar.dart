@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../../services/password_generator.dart';
 import '../app_scope.dart';
 import '../theme/tokens.dart';
@@ -54,7 +55,8 @@ class StrengthBar extends StatelessWidget {
         Text(
           [
             labels[s],
-            if (result.crackTimeDisplay.isNotEmpty) result.crackTimeDisplay,
+            if (result.crackTimeDisplay.isNotEmpty)
+              localizedCrackTime(l, result.crackTimeDisplay),
           ].join(' · '),
           style: Theme.of(context).textTheme.bodySmall!
               .copyWith(color: t.rampText[s]),
@@ -62,4 +64,37 @@ class StrengthBar extends StatelessWidget {
       ],
     );
   }
+}
+
+final RegExp _crackTime = RegExp(
+  r'^(\d+) (second|minute|hour|day|month|year)s*$',
+);
+
+/// zxcvbn's crack-time estimate is an English phrase ("3 years", "less than
+/// a second", "centuries"). This turns it into the app's language, with a
+/// proper plural, so an Arabic label is not half English with its numbers
+/// reversed by the bidi algorithm. A phrase it does not know is returned as it
+/// is, kept left to right when it is Latin text in an Arabic sentence.
+String localizedCrackTime(AppLocalizations l, String display) {
+  final text = display.trim();
+  if (text == 'less than a second') return l.crackLessThanSecond;
+  if (text == 'centuries') return l.crackCenturies;
+  final m = _crackTime.firstMatch(text);
+  if (m != null) {
+    final n = int.parse(m.group(1)!);
+    return switch (m.group(2)) {
+      'second' => l.crackSeconds(n),
+      'minute' => l.crackMinutes(n),
+      'hour' => l.crackHours(n),
+      'day' => l.crackDays(n),
+      'month' => l.crackMonths(n),
+      _ => l.crackYears(n),
+    };
+  }
+  final latin = RegExp('[A-Za-z]').hasMatch(text);
+  final arabic = RegExp('[\u0600-\u06FF]').hasMatch(text);
+  if (l.localeName.startsWith('ar') && latin && !arabic) {
+    return '\u2066$text\u2069';
+  }
+  return text;
 }

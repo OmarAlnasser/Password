@@ -8,6 +8,7 @@ import '../services/breach_checker.dart';
 import 'app_scope.dart';
 import 'entry_detail_screen.dart';
 import 'theme/theme.dart';
+import 'widgets/focus_ring.dart';
 import 'widgets/glass_bar.dart';
 import 'widgets/max_width_body.dart';
 import 'widgets/primary_button.dart';
@@ -199,9 +200,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
       content = Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 5, child: stack([hero, ?breachCard, ?breachedList])),
+          // Each column is its own focus group, so Tab finishes one column
+          // before it moves to the other.
+          Expanded(
+            flex: 5,
+            child: FocusTraversalGroup(
+              child: stack([hero, ?breachCard, ?breachedList]),
+            ),
+          ),
           const SizedBox(width: 24),
-          Expanded(flex: 7, child: stack([stats, ...lists], from: 1)),
+          Expanded(
+            flex: 7,
+            child: FocusTraversalGroup(
+              child: stack([stats, ...lists], from: 1),
+            ),
+          ),
         ],
       );
     } else {
@@ -627,33 +640,41 @@ class _FindingCardState extends State<_FindingCard> {
             Semantics(
               button: true,
               expanded: _open,
-              child: InkWell(
-                onTap: () => setState(() => _open = !_open),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(14, 12, 8, 12),
-                  child: Row(
-                    children: [
-                      _IconTile(
-                        icon: clean
-                            ? Icons.check_circle_outline_rounded
-                            : widget.icon,
-                        color: tone,
-                        fill: toneFill,
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(widget.title, style: tt.titleMedium),
-                      ),
-                      const SizedBox(width: 8),
-                      _CountPill(count: items.length, color: tone),
-                      const SizedBox(width: 4),
-                      AnimatedRotation(
-                        turns: _open ? 0.5 : 0,
-                        duration: context.motion(AppMotion.fast),
-                        child: Icon(Icons.expand_more_rounded, color: t.soft),
-                      ),
-                      const SizedBox(width: 4),
-                    ],
+              child: FocusRing(
+                radius: AppRadius.control,
+                child: InkWell(
+                  onTap: () => setState(() => _open = !_open),
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                      14,
+                      12,
+                      8,
+                      12,
+                    ),
+                    child: Row(
+                      children: [
+                        _IconTile(
+                          icon: clean
+                              ? Icons.check_circle_outline_rounded
+                              : widget.icon,
+                          color: tone,
+                          fill: toneFill,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(widget.title, style: tt.titleMedium),
+                        ),
+                        const SizedBox(width: 8),
+                        _CountPill(count: items.length, color: tone),
+                        const SizedBox(width: 4),
+                        AnimatedRotation(
+                          turns: _open ? 0.5 : 0,
+                          duration: context.motion(AppMotion.fast),
+                          child: Icon(Icons.expand_more_rounded, color: t.soft),
+                        ),
+                        const SizedBox(width: 4),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -733,32 +754,35 @@ class _EntryRow extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     final sub = detail ?? entry.username;
     final title = entry.title.isEmpty ? '—' : entry.title;
-    return InkWell(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => EntryDetailScreen(entryId: entry.id),
+    return FocusRing(
+      radius: AppRadius.control,
+      child: InkWell(
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => EntryDetailScreen(entryId: entry.id),
+          ),
         ),
-      ),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 56),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(14, 8, 8, 8),
-          child: Row(
-            children: [
-              SiteIcon(url: entry.url, title: entry.title, size: 36),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    EntryTitle(title, style: tt.titleMedium),
-                    if (sub.isNotEmpty) LtrText(sub),
-                  ],
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 56),
+          child: Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(14, 8, 8, 8),
+            child: Row(
+              children: [
+                SiteIcon(url: entry.url, title: entry.title, size: 36),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EntryTitle(title, style: tt.titleMedium),
+                      if (sub.isNotEmpty) LtrText(sub),
+                    ],
+                  ),
                 ),
-              ),
-              Icon(Icons.chevron_right_rounded, color: t.muted),
-            ],
+                Icon(Icons.chevron_right_rounded, color: t.muted),
+              ],
+            ),
           ),
         ),
       ),
