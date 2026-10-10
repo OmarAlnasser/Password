@@ -503,7 +503,7 @@ void main() {
       // wrong password or unknown email does.
       await tester.enterText(
         find.byType(TextField).at(0),
-        'abcde07@hotmail.com',
+        'someone@example.test',
       );
       await tester.enterText(find.byType(TextField).at(1), 'xQmR42abCD5k');
       await tester.tap(find.widgetWithText(FilledButton, 'فتح'));

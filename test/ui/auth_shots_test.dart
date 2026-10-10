@@ -381,7 +381,7 @@ void main() {
       wrap: scope(),
       afterPump: (t) async {
         final fields = find.byType(TextField);
-        await t.enterText(fields.at(0), 'abcde07@hotmail.com');
+        await t.enterText(fields.at(0), 'someone@example.test');
         await t.enterText(fields.at(1), _pw);
         await t.pump();
         // No sync service in the test services: one generic failure.

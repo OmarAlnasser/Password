@@ -22,7 +22,7 @@ import 'helpers.dart';
 /// an entry's detail, the entry form and the quick-search palette. Every
 /// login here is synthetic.
 void main() {
-  const email = 'abcde07@hotmail.com';
+  const email = 'someone@example.test';
   const exampleKey = 'Tz8pLq2wXv9m';
   const notebookKey = 'xQmR42abCD5k';
 
