@@ -20,6 +20,10 @@ class AppSettings extends ChangeNotifier {
   /// choice (including "system") always wins.
   ThemeMode themeMode = ThemeMode.dark;
   Locale? locale; // null = follow system
+
+  /// Mirror the layout (right to left) when the app is in Arabic. Off by
+  /// default: Arabic keeps the English layout and only the words change.
+  bool mirrorArabic = false;
   int autoLockSeconds = 120;
   bool lockOnBackground = true;
   int clipboardClearSeconds = 30;
@@ -78,6 +82,7 @@ class AppSettings extends ChangeNotifier {
       );
       final lang = j['lang'] as String?;
       locale = lang == null ? null : Locale(lang);
+      mirrorArabic = (j['mirrorAr'] as bool?) ?? false;
       autoLockSeconds = (j['autoLock'] as int?) ?? autoLockSeconds;
       lockOnBackground = (j['lockBg'] as bool?) ?? lockOnBackground;
       clipboardClearSeconds = (j['clip'] as int?) ?? clipboardClearSeconds;
@@ -113,6 +118,7 @@ class AppSettings extends ChangeNotifier {
       jsonEncode({
         'theme': themeMode.name,
         'lang': locale?.languageCode,
+        'mirrorAr': mirrorArabic,
         'autoLock': autoLockSeconds,
         'lockBg': lockOnBackground,
         'clip': clipboardClearSeconds,

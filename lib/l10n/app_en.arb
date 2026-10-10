@@ -97,6 +97,8 @@
   "themeLight": "Light",
   "themeDark": "Dark",
   "language": "Language",
+  "mirrorArabicLayout": "Right-to-left layout",
+  "mirrorArabicLayoutHint": "Mirror the screens while the app is in Arabic.",
   "autoLock": "Auto-lock after inactivity",
   "minutes": "{n} min",
   "@minutes": {

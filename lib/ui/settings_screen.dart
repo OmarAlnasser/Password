@@ -77,6 +77,19 @@ class SettingsScreen extends StatelessWidget {
               onChanged: (v) =>
                   st.update((x) => x.locale = v.isEmpty ? null : Locale(v)),
             ),
+            if (context.isArabic)
+              FocusRing(
+                child: SwitchListTile(
+                  contentPadding: _rowPadding,
+                  secondary: const _IconTile(
+                    icon: Icons.format_textdirection_r_to_l_rounded,
+                  ),
+                  title: Text(l.mirrorArabicLayout),
+                  subtitle: Text(l.mirrorArabicLayoutHint),
+                  value: st.mirrorArabic,
+                  onChanged: (v) => st.update((x) => x.mirrorArabic = v),
+                ),
+              ),
           ],
         );
 

@@ -225,6 +225,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get language => 'اللغة';
 
   @override
+  String get mirrorArabicLayout => 'تخطيط من اليمين إلى اليسار';
+
+  @override
+  String get mirrorArabicLayoutHint =>
+      'اعكس اتجاه الشاشات عندما يكون التطبيق بالعربية.';
+
+  @override
   String get autoLock => 'القفل التلقائي بعد عدم النشاط';
 
   @override

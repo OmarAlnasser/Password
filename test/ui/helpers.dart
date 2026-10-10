@@ -21,6 +21,10 @@ import 'package:hisn/ui/app_scope.dart';
 /// Passes the setup screen's strength check. Synthetic.
 const testMasterPassword = 'violet-harbor-quantum-71-lantern';
 
+/// An Arabic string as the app shows it in its default, left-to-right
+/// layout: a right-to-left isolate (see `AppLocalizationsArLtr`).
+String arLtr(String s) => '\u2067$s\u2069';
+
 /// The native runner's channel (see `PlatformBridge`).
 const platformChannel = MethodChannel('app.vaultsnap/platform');
 

@@ -226,6 +226,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get mirrorArabicLayout => 'Right-to-left layout';
+
+  @override
+  String get mirrorArabicLayoutHint =>
+      'Mirror the screens while the app is in Arabic.';
+
+  @override
   String get autoLock => 'Auto-lock after inactivity';
 
   @override

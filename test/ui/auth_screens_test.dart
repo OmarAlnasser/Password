@@ -135,10 +135,26 @@ void main() {
       expect(field(tester).textAlign, TextAlign.left);
     });
 
-    testWidgets('in Arabic it is still left-to-right, at the right edge', (
+    testWidgets('in Arabic it is left-to-right, at the left edge', (
       tester,
     ) async {
+      // The default layout in Arabic is the English one.
       await setLocale(tester, const Locale('ar'));
+      await lockedVault(tester);
+      await tester.pumpWidget(HisnApp(services: services));
+      await tester.pumpAndSettle();
+      expect(field(tester).textDirection, TextDirection.ltr);
+      expect(field(tester).textAlign, TextAlign.left);
+    });
+
+    testWidgets('in mirrored Arabic it is still left-to-right, at the right '
+        'edge', (tester) async {
+      await tester.runAsync(
+        () => services.settings.update((s) {
+          s.locale = const Locale('ar');
+          s.mirrorArabic = true;
+        }),
+      );
       await lockedVault(tester);
       await tester.pumpWidget(HisnApp(services: services));
       await tester.pumpAndSettle();

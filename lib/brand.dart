@@ -27,9 +27,10 @@ const String appTaglineAr = 'كلمات مرورك، في حماية كاملة.
 String appNameFor(Locale? locale) =>
     locale?.languageCode == 'ar' ? appNameAr : appName;
 
-/// The tagline to show for [locale].
+/// The tagline to show for [locale]. The Arabic one is a right-to-left
+/// isolate, so its full stop stays at the end in either layout.
 String appTaglineFor(Locale? locale) =>
-    locale?.languageCode == 'ar' ? appTaglineAr : appTagline;
+    locale?.languageCode == 'ar' ? '\u2067$appTaglineAr\u2069' : appTagline;
 
 /// First letter of [appName], upper-cased, for the brand tile fallback.
 /// Computed at run time so a rename needs no other edit.

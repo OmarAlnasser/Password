@@ -368,7 +368,7 @@ void main() {
         locale: const Locale('ar'),
       );
       expect(find.text('حول التطبيق'), findsOneWidget);
-      expect(find.text(appTaglineAr), findsOneWidget);
+      expect(find.text(appTaglineFor(const Locale('ar'))), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

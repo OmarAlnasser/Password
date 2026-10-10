@@ -67,6 +67,8 @@
   "themeLight": "فاتح",
   "themeDark": "داكن",
   "language": "اللغة",
+  "mirrorArabicLayout": "تخطيط من اليمين إلى اليسار",
+  "mirrorArabicLayoutHint": "اعكس اتجاه الشاشات عندما يكون التطبيق بالعربية.",
   "autoLock": "القفل التلقائي بعد عدم النشاط",
   "minutes": "{n} دقيقة",
   "lockOnBackground": "القفل عند الانتقال للخلفية",

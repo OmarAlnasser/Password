@@ -500,6 +500,18 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// No description provided for @mirrorArabicLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Right-to-left layout'**
+  String get mirrorArabicLayout;
+
+  /// No description provided for @mirrorArabicLayoutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mirror the screens while the app is in Arabic.'**
+  String get mirrorArabicLayoutHint;
+
   /// No description provided for @autoLock.
   ///
   /// In en, this message translates to:

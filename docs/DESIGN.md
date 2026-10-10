@@ -700,8 +700,15 @@ and errors are plain, generic sentences (section 12).
 
 ## 10. Right-to-left and bidirectional text
 
-The app supports Arabic and English with real RTL. The whole layout mirrors;
-the following rules keep it correct.
+By default Arabic keeps the English, left-to-right layout and only the words
+change: `layoutDirection` (`lib/l10n/layout_localizations.dart`) forces
+`TextDirection.ltr` under `MaterialApp`, and every Arabic string comes from
+`AppLocalizationsArLtr`, which wraps it in a right-to-left isolate so its
+punctuation and numbers stay in place (regenerate it with
+`python3 tool/gen_arabic_ltr.py` after `flutter gen-l10n`). Settings →
+"Right-to-left layout" (`AppSettings.mirrorArabic`) turns on real RTL: the
+whole layout mirrors. Screens must work both ways; the following rules keep
+them correct.
 
 1. Use only directional-agnostic layout: `EdgeInsetsDirectional`,
    `AlignmentDirectional`, `BorderDirectional`, `PositionedDirectional`,

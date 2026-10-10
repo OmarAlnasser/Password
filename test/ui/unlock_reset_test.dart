@@ -119,15 +119,19 @@ void main() {
       () => services.settings.update((s) => s.locale = const Locale('ar')),
     );
     await lockedVault(tester);
-    await tester.tap(find.text('نسيت كلمة المرور؟'));
+    // The default, left-to-right layout: strings are isolates, but the
+    // word typed is compared with the bare word.
+    await tester.tap(find.text(arLtr('نسيت كلمة المرور؟')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('إعادة تعيين الخزنة — مسح كل شيء'));
+    await tester.tap(find.text(arLtr('إعادة تعيين الخزنة — مسح كل شيء')));
     await tester.pumpAndSettle();
 
     VoidCallback? erase() => tester
-        .widget<FilledButton>(find.widgetWithText(FilledButton, 'مسح الخزنة'))
+        .widget<FilledButton>(
+          find.widgetWithText(FilledButton, arLtr('مسح الخزنة')),
+        )
         .onPressed;
-    final word = find.widgetWithText(TextField, 'اكتب «حذف» للتأكيد');
+    final word = find.widgetWithText(TextField, arLtr('اكتب «حذف» للتأكيد'));
     await tester.enterText(word, 'حذ');
     await tester.pump();
     expect(erase(), isNull);
@@ -139,7 +143,7 @@ void main() {
     await tester.pump();
     expect(erase(), isNotNull);
 
-    await tester.tap(find.text('إلغاء'));
+    await tester.tap(find.text(arLtr('إلغاء')));
     await tester.pumpAndSettle();
     expect(header().existsSync(), isTrue);
   });

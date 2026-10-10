@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'l10n/app_localizations.dart';
+import 'l10n/layout_localizations.dart';
 import 'services/platform_bridge.dart';
 import 'services/vault_session.dart';
 import 'ui/app_scope.dart';
@@ -220,37 +220,39 @@ class _HisnAppState extends State<HisnApp> with WidgetsBindingObserver {
               themeMode: s.settings.themeMode,
               locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
+              // Arabic keeps the English layout unless mirroring is on.
+              localizationsDelegates: appLocalizationsDelegates(
+                mirrorArabic: s.settings.mirrorArabic,
+              ),
               home: _home(),
-              builder: (context, child) => AppShell(
-                child: Stack(
-                  children: [
-                    if (child != null)
-                      UpdateGate(
-                        controller: s.updates,
-                        navigatorKey: _navigator,
-                        triggers: s.session,
-                        child: child,
-                      ),
-                    if (_obscured || _captured)
-                      const Positioned.fill(
-                        child: ColoredBox(
-                          color: Colors.black,
-                          child: Center(
-                            child: Icon(
-                              Icons.lock,
-                              color: Colors.white,
-                              size: 64,
+              builder: (context, child) => layoutDirection(
+                context,
+                mirrorArabic: s.settings.mirrorArabic,
+                child: AppShell(
+                  child: Stack(
+                    children: [
+                      if (child != null)
+                        UpdateGate(
+                          controller: s.updates,
+                          navigatorKey: _navigator,
+                          triggers: s.session,
+                          child: child,
+                        ),
+                      if (_obscured || _captured)
+                        const Positioned.fill(
+                          child: ColoredBox(
+                            color: Colors.black,
+                            child: Center(
+                              child: Icon(
+                                Icons.lock,
+                                color: Colors.white,
+                                size: 64,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
