@@ -93,6 +93,10 @@ class BrowserActivityLog extends ChangeNotifier {
   bool _loaded = false;
   Future<void>? _loading;
 
+  /// Completes when the log of the open vault has been read (at once when
+  /// nothing is being read).
+  Future<void> get ready => _loading ?? Future<void>.value();
+
   /// Newest first. Empty while locked.
   List<BrowserActivity> get events => _events;
 

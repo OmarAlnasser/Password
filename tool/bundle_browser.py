@@ -92,8 +92,10 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f'not a version: {args.version}')
     if not args.release_dir.is_dir():
         raise SystemExit(f'not a folder: {args.release_dir}')
-    copy_extension(args.release_dir / 'extension', args.version)
-    build_helper(args.release_dir / HELPER_NAME, args.helper)
+    # Absolute: the helper is compiled from inside browser/bridge.
+    release = args.release_dir.resolve()
+    copy_extension(release / 'extension', args.version)
+    build_helper(release / HELPER_NAME, args.helper)
     print(f'Added {HELPER_NAME} and extension/ to {args.release_dir}')
     return 0
 

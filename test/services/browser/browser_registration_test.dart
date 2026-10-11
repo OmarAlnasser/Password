@@ -155,7 +155,7 @@ void main() {
       await log.add(BrowserActivityKind.filled, host: 'locked.test');
 
       await session.unlockWithPassword('violet-harbor-test-71-lantern');
-      await pumpEventQueue();
+      await log.ready;
       expect(
         [for (final e in log.events) e.kind],
         [
