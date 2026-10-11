@@ -168,13 +168,11 @@ one published; the workflow refuses anything else.
 
 ### 2. Release notes (optional)
 
-The notes shown in the app and on the release page are, in this order:
-
-1. `release/notes/0.2.0.md` if it exists (English, plain text, keep it short:
-   at most 4,000 characters in total),
-2. "Changes since v0.1.0" followed by the commit subjects since the previous
-   release tag (at most 100). These are public, so write commit subjects you are
-   happy to show.
+The notes shown in the app and on the release page are
+`release/notes/0.2.0.md` (English, plain text, keep it short: at most 4,000
+characters). Without that file they are "Changes since v0.1.0" followed by the
+commit subjects since the previous release tag (at most 100). These are
+public, so write commit subjects you are happy to show.
 
 `release/notes/0.2.0.ar.md` (optional) is the Arabic text shown to users whose
 app is in Arabic. Commit the notes before tagging.

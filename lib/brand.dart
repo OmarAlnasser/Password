@@ -9,11 +9,11 @@ library;
 import 'dart:ui' show Locale;
 
 /// Display name in Latin script.
-const String appName = 'Hisn';
+const String appName = 'Khazna';
 
 /// Display name used in the Arabic UI. Until the owner picks an Arabic name it
 /// is the Latin one (brand names are normally kept in Latin script).
-const String appNameAr = 'حصن';
+const String appNameAr = 'خزنة';
 
 /// One-line promise shown under the name on the lock screen and in "About".
 /// Texts that belong to a language live in `lib/l10n/*.arb`; these two are the
@@ -27,9 +27,10 @@ const String appTaglineAr = 'كلمات مرورك، في حماية كاملة.
 String appNameFor(Locale? locale) =>
     locale?.languageCode == 'ar' ? appNameAr : appName;
 
-/// The tagline to show for [locale].
+/// The tagline to show for [locale]. The Arabic one is a right-to-left
+/// isolate, so its full stop stays at the end in either layout.
 String appTaglineFor(Locale? locale) =>
-    locale?.languageCode == 'ar' ? appTaglineAr : appTagline;
+    locale?.languageCode == 'ar' ? '\u2067$appTaglineAr\u2069' : appTagline;
 
 /// First letter of [appName], upper-cased, for the brand tile fallback.
 /// Computed at run time so a rename needs no other edit.

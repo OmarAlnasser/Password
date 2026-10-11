@@ -51,16 +51,65 @@ void main() {
     expect(tester.widget<FilledButton>(saved).onPressed, isNull);
   });
 
-  testWidgets('Arabic locale lays out right-to-left', (tester) async {
+  TextDirection layout(WidgetTester tester) =>
+      Directionality.of(tester.element(find.byType(TextField).first));
+
+  testWidgets('Arabic keeps the English layout by default', (tester) async {
     await tester.runAsync(() async {
       await services.session.init();
       await services.settings.update((s) => s.locale = const Locale('ar'));
     });
     await tester.pumpWidget(HisnApp(services: services));
     await tester.pumpAndSettle();
+    expect(find.text(arLtr('أنشئ خزنتك')), findsOneWidget);
+    expect(layout(tester), TextDirection.ltr);
+  });
+
+  testWidgets('Arabic lays out right-to-left with mirroring on', (
+    tester,
+  ) async {
+    await tester.runAsync(() async {
+      await services.session.init();
+      await services.settings.update((s) {
+        s.locale = const Locale('ar');
+        s.mirrorArabic = true;
+      });
+    });
+    await tester.pumpWidget(HisnApp(services: services));
+    await tester.pumpAndSettle();
     expect(find.text('أنشئ خزنتك'), findsOneWidget);
-    final dir = Directionality.of(tester.element(find.byType(TextField).first));
-    expect(dir, TextDirection.rtl);
+    expect(layout(tester), TextDirection.rtl);
+
+    // Turning it off applies on the next frame too.
+    await tester.runAsync(
+      () => services.settings.update((s) => s.mirrorArabic = false),
+    );
+    await tester.pump();
+    expect(find.text(arLtr('أنشئ خزنتك')), findsOneWidget);
+    expect(layout(tester), TextDirection.ltr);
+  });
+
+  testWidgets('changing the language applies on the next frame', (
+    tester,
+  ) async {
+    await tester.runAsync(() => services.session.init());
+    await tester.pumpWidget(HisnApp(services: services));
+    await tester.pumpAndSettle();
+    expect(find.text('Create your vault'), findsOneWidget);
+
+    // Only the settings change: nothing else rebuilds the app.
+    await tester.runAsync(
+      () => services.settings.update((s) => s.locale = const Locale('ar')),
+    );
+    await tester.pump();
+    expect(find.text(arLtr('أنشئ خزنتك')), findsOneWidget);
+    expect(layout(tester), TextDirection.ltr);
+
+    await tester.runAsync(
+      () => services.settings.update((s) => s.locale = const Locale('en')),
+    );
+    await tester.pump();
+    expect(find.text('Create your vault'), findsOneWidget);
   });
 
   testWidgets('locked vault shows unlock screen; wrong password errors', (

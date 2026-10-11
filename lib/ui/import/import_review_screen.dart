@@ -10,6 +10,7 @@ import '../theme/theme.dart';
 import '../widgets/focus_ring.dart';
 import '../widgets/glass_bar.dart';
 import '../widgets/max_width_body.dart';
+import '../widgets/password_field.dart';
 import '../widgets/primary_button.dart';
 import '../widgets/reveal.dart';
 import '../widgets/site_icon.dart';
@@ -631,16 +632,8 @@ class _EditLoginDialogState extends State<_EditLoginDialog> {
             decoration: InputDecoration(labelText: l.username),
           ),
           gap,
-          TextField(
-            controller: _pw,
-            autocorrect: false,
-            enableSuggestions: false,
-            enableIMEPersonalizedLearning: false,
-            style: mono,
-            textDirection: TextDirection.ltr,
-            textAlign: latinAlign,
-            decoration: InputDecoration(labelText: l.password),
-          ),
+          // Masked like every password; the eye shows it for 15 s.
+          PasswordField(controller: _pw, label: l.password),
           Align(
             alignment: AlignmentDirectional.centerStart,
             child: TextButton.icon(

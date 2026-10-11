@@ -1,4 +1,4 @@
-# Hisn security audit
+# Khazna security audit
 
 Date: 2026-10-05 · Scope: the whole repository at the time of the audit
 (Dart app, Android/iOS/Windows native code, Supabase SQL + edge function).

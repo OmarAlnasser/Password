@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'data/models/vault_entry.dart';
 import 'l10n/app_localizations.dart';
+import 'l10n/layout_localizations.dart';
 import 'services/autofill_matcher.dart';
 import 'services/vault_session.dart';
 import 'ui/app_scope.dart';
@@ -48,11 +48,16 @@ class _AutofillAppState extends State<AutofillApp> {
   void _refresh() => setState(() {});
 
   Future<void> _fill(VaultEntry e) async {
+    final session = widget.services.session;
     await _channel.invokeMethod<void>('fill', {
       'username': e.username,
       'password': e.password,
     });
-    await widget.services.session.lock();
+    // A fill is a use of the entry ("Recently used"). Awaited, so the time
+    // is written before the lock closes the database (a failed write is
+    // only logged there).
+    await session.markUsed(e.id);
+    await session.lock();
   }
 
   @override
@@ -65,15 +70,16 @@ class _AutofillAppState extends State<AutofillApp> {
         theme: AppTheme.light(widget.services.settings.locale),
         darkTheme: AppTheme.dark(widget.services.settings.locale),
         themeMode: widget.services.settings.themeMode,
-        builder: (context, child) => AppShell(child: child!),
+        builder: (context, child) => layoutDirection(
+          context,
+          mirrorArabic: widget.services.settings.mirrorArabic,
+          child: AppShell(child: child!),
+        ),
         locale: widget.services.settings.locale,
         supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+        localizationsDelegates: appLocalizationsDelegates(
+          mirrorArabic: widget.services.settings.mirrorArabic,
+        ),
         home: switch (session.state) {
           VaultState.unlocked => _Picker(
             entries: AutofillMatcher.match(

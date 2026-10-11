@@ -1,6 +1,6 @@
-// Known-answer tests for the libsodium primitives Hisn relies on.
+// Known-answer tests for the libsodium primitives Khazna relies on.
 // These prove the bundled libsodium build and its Dart bindings compute the
-// standard algorithms, independently of Hisn's own format.
+// standard algorithms, independently of Khazna's own format.
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -106,7 +106,7 @@ void main() {
       });
     }
 
-    test('Hisn contexts match hashlib.blake2b', () {
+    test('Khazna contexts match hashlib.blake2b', () {
       // Computed with Python hashlib.blake2b(key=0x42*32, salt=LE64(id),
       // person=ctx, digest_size=32) - see tool/gen_crypto_vectors.py.
       const expected = {
@@ -133,7 +133,7 @@ void main() {
 
   group('Argon2id (crypto_pwhash)', () {
     // Expected values from argon2-cffi, i.e. the PHC reference
-    // implementation, with Hisn's parameters: t=3, m=64 MiB, p=1, 32 B.
+    // implementation, with Khazna's parameters: t=3, m=64 MiB, p=1, 32 B.
     test('ASCII password', () {
       final key = crypto.deriveMasterKey(
         passwordUtf8: Uint8List.fromList(

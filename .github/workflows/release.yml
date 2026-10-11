@@ -414,18 +414,20 @@ jobs:
           if [ -n "$prev" ]; then range="${prev}..HEAD"; else range="HEAD"; fi
           changes="$(git log --no-merges --max-count=100 --pretty='format:- %s' "$range")"
           if [ -z "$changes" ]; then changes="- No notable changes."; fi
-          {
-            if [ -f "release/notes/${VERSION}.md" ]; then
-              cat "release/notes/${VERSION}.md"
-              printf '\n'
-            fi
-            if [ -n "$prev" ]; then
-              printf 'Changes since %s:\n\n' "$prev"
-            else
-              printf 'Changes:\n\n'
-            fi
-            printf '%s\n' "$changes"
-          } > out/release-notes.md
+          # Written notes replace the commit list; the list is only the
+          # fallback for a release without them.
+          if [ -f "release/notes/${VERSION}.md" ]; then
+            cat "release/notes/${VERSION}.md" > out/release-notes.md
+          else
+            {
+              if [ -n "$prev" ]; then
+                printf 'Changes since %s:\n\n' "$prev"
+              else
+                printf 'Changes:\n\n'
+              fi
+              printf '%s\n' "$changes"
+            } > out/release-notes.md
+          fi
 
       - name: Build and sign update.json
         env:

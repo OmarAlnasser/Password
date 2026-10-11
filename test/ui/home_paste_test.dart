@@ -90,17 +90,19 @@ void main() {
     await tester.tap(find.widgetWithIcon(IconButton, Icons.content_paste));
     await tester.pumpAndSettle();
 
-    // Quick: the detected values, editable, and the password preview with
-    // look-alike characters highlighted. No advanced fields.
+    // Quick: the detected values, editable. The password is masked; the eye
+    // shows a preview with look-alike characters highlighted. No advanced
+    // fields.
     expect(find.text('Save login'), findsOneWidget);
     expect(field('abcde07@hotmail.com'), findsOneWidget);
     expect(field('xQmR42abCD5k'), findsOneWidget);
-    expect(
-      find.byWidgetPredicate(
-        (w) => w is SecretText && w.text == 'xQmR42abCD5k',
-      ),
-      findsOneWidget,
+    final preview = find.byWidgetPredicate(
+      (w) => w is SecretText && w.text == 'xQmR42abCD5k',
     );
+    expect(preview, findsNothing);
+    await tester.tap(find.byTooltip('Show'));
+    await tester.pumpAndSettle();
+    expect(preview, findsOneWidget);
     // The Name field has a label and no example text.
     expect(
       tester.widget<TextField>(field('Name')).decoration!.hintText,
@@ -395,7 +397,20 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Pass 1: original'), findsOneWidget);
       expect(find.text('Nothing read'), findsOneWidget);
-      expect(find.text(password), findsWidgets);
+      // What was read is masked until the eye of the panel is pressed.
+      final read = find.byKey(const ValueKey('ocr.read'));
+      expect(
+        find.descendant(of: read, matching: find.text(password)),
+        findsNothing,
+      );
+      final eye = find.descendant(of: read, matching: find.byTooltip('Show'));
+      await tester.ensureVisible(eye);
+      await tester.tap(eye);
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(of: read, matching: find.text(password)),
+        findsWidgets,
+      );
     });
 
     testWidgets('letter-spaced output is closed up', (tester) async {

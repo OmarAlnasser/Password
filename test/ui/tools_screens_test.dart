@@ -169,25 +169,25 @@ void main() {
       VaultEntry(
         id: 'weak',
         title: 'Notion',
-        username: 'abcde07@hotmail.com',
+        username: 'someone@example.test',
         password: '123456',
       ),
       VaultEntry(
         id: 'a',
         title: 'Work email',
-        username: 'abcde07@hotmail.com',
+        username: 'someone@example.test',
         password: 'Rb7#mVq9zLp2',
       ),
       VaultEntry(
         id: 'b',
         title: 'Dropbox',
-        username: 'abcde07@hotmail.com',
+        username: 'someone@example.test',
         password: 'Rb7#mVq9zLp2',
       ),
       VaultEntry(
         id: 'old',
         title: 'GitHub',
-        username: 'abcde07@hotmail.com',
+        username: 'someone@example.test',
         password: 'violet-harbor-quantum-71-lantern',
         passwordChangedAt: old,
       ),
@@ -368,7 +368,7 @@ void main() {
         locale: const Locale('ar'),
       );
       expect(find.text('حول التطبيق'), findsOneWidget);
-      expect(find.text(appTaglineAr), findsOneWidget);
+      expect(find.text(appTaglineFor(const Locale('ar'))), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

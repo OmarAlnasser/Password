@@ -27,6 +27,7 @@ import 'widgets/pulse_dot.dart';
 import 'widgets/reveal.dart';
 import 'widgets/section_header.dart';
 import 'widgets/surface_card.dart';
+import 'widgets/sync_deletion_prompt.dart';
 
 /// Settings in five groups, each a card of rows: appearance, security, sync,
 /// data and about. Choices of two or three are pills on the row; longer lists
@@ -76,6 +77,19 @@ class SettingsScreen extends StatelessWidget {
               onChanged: (v) =>
                   st.update((x) => x.locale = v.isEmpty ? null : Locale(v)),
             ),
+            if (context.isArabic)
+              FocusRing(
+                child: SwitchListTile(
+                  contentPadding: _rowPadding,
+                  secondary: const _IconTile(
+                    icon: Icons.format_textdirection_r_to_l_rounded,
+                  ),
+                  title: Text(l.mirrorArabicLayout),
+                  subtitle: Text(l.mirrorArabicLayoutHint),
+                  value: st.mirrorArabic,
+                  onChanged: (v) => st.update((x) => x.mirrorArabic = v),
+                ),
+              ),
           ],
         );
 
@@ -318,7 +332,7 @@ class SettingsScreen extends StatelessWidget {
     final data = await s.importExport.exportEncrypted(s.session.entries, pw);
     final bytes = Uint8List.fromList(utf8.encode(data));
     final path = await FilePicker.saveFile(
-      fileName: 'hisn-backup.vsnap',
+      fileName: 'khazna-backup.vsnap',
       bytes: bytes,
     );
     if (path != null && (Platform.isWindows || Platform.isLinux)) {
@@ -541,9 +555,15 @@ class _SyncRows extends StatelessWidget {
           trailing: IconButton(
             icon: const Icon(Icons.sync_rounded),
             tooltip: l.syncNow,
-            onPressed: sync.syncNow,
+            onPressed: () => syncNowFromButton(sync),
           ),
         ),
+        // Another device deleted most of the vault: apply it here or keep
+        // the entries (sync here waits for that choice).
+        if (sync.pendingMassDeletion case final count?) ...[
+          const _Rule(),
+          SyncDeletionPrompt(sync: sync, count: count, framed: false),
+        ],
         const _Rule(),
         _Row(
           icon: Icons.logout_rounded,

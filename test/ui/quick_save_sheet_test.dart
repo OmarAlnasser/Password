@@ -195,7 +195,12 @@ void main() {
     expect(tester.widget<ChoiceChip>(secondEmail).selected, isTrue);
     expect(tester.widget<ChoiceChip>(firstEmail).selected, isFalse);
 
+    // The readings of the password are masked until the eye is pressed.
     final otherPassword = find.widgetWithText(ChoiceChip, 'xQmR42abCDSk');
+    expect(otherPassword, findsNothing);
+    await tester.ensureVisible(find.byTooltip('Show'));
+    await tester.tap(find.byTooltip('Show'));
+    await tester.pumpAndSettle();
     await tester.ensureVisible(otherPassword);
     await tester.tap(otherPassword);
     await tester.pumpAndSettle();
@@ -319,6 +324,16 @@ void main() {
     expect(find.text('Pass 1: original'), findsOneWidget);
     expect(find.text('Nothing read'), findsOneWidget);
     expect(find.text('Pass 2: inverted'), findsOneWidget);
+    // The text that was read is masked until the eye of the panel is pressed.
+    expect(find.text('xQmR 42abCD5k'), findsNothing);
+    expect(find.text('hotmai1.com'), findsNothing);
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey('ocr.read')),
+        matching: find.byTooltip('Show'),
+      ),
+    );
+    await tester.pumpAndSettle();
     expect(find.text('xQmR 42abCD5k'), findsOneWidget);
     expect(find.text('hotmai1.com'), findsOneWidget);
     expect(find.text('Pass 3: upscaled'), findsOneWidget);

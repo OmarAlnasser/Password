@@ -36,7 +36,7 @@ class BreachChecker {
   Future<Map<String, int>> _fetch(String prefix) async {
     final res = await _client.get(
       _base.resolve(prefix),
-      headers: const {'Add-Padding': 'true', 'User-Agent': 'Hisn'},
+      headers: const {'Add-Padding': 'true', 'User-Agent': 'Khazna'},
     );
     if (res.statusCode != 200) {
       throw http.ClientException('HIBP returned ${res.statusCode}');

@@ -116,7 +116,7 @@ object PlatformChannel {
                 when (call.method) {
                     "copySensitive" -> {
                         val text = call.argument<String>("text") ?: ""
-                        val clip = ClipData.newPlainText("Hisn", text)
+                        val clip = ClipData.newPlainText("Khazna", text)
                         // Hide from the clipboard preview / keyboard
                         // suggestions (Android 13+; the string key works on 12L-).
                         val extras = PersistableBundle()

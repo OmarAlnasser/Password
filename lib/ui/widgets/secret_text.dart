@@ -28,12 +28,19 @@ class SecretText extends StatelessWidget {
     this.obscure = false,
     this.style,
     this.highlightAmbiguous = true,
+    this.hiddenLabel,
   });
 
   final String text;
   final bool obscure;
   final TextStyle? style;
   final bool highlightAmbiguous;
+
+  /// What a screen reader hears while [obscure]: "Password hidden" unless
+  /// given. Text that is masked only because it might be a password (the
+  /// pieces OCR read) passes the neutral `textHidden` instead. Never the
+  /// value itself.
+  final String? hiddenLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +60,12 @@ class SecretText extends StatelessWidget {
     if (obscure) {
       // A screen reader would say "bullet, bullet, ..." for the dots (and
       // reveal that the count is a fixed 8 to 16), so it hears one phrase.
-      final hidden = Localizations.of<AppLocalizations>(
-        context,
-        AppLocalizations,
-      )?.passwordHidden;
+      final hidden =
+          hiddenLabel ??
+          Localizations.of<AppLocalizations>(
+            context,
+            AppLocalizations,
+          )?.passwordHidden;
       return Semantics(
         label: hidden,
         excludeSemantics: hidden != null,

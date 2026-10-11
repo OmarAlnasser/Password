@@ -16,7 +16,7 @@
       Google Drive backups or device-to-device transfers.
     -->
     <application
-        android:label="Hisn"
+        android:label="Khazna"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:allowBackup="false"
@@ -41,7 +41,7 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <!-- "Share" a screenshot to Hisn for OCR import. -->
+            <!-- "Share" a screenshot to Khazna for OCR import. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Autofill: shown by the system after the user picks Hisn. -->
+        <!-- Autofill: shown by the system after the user picks Khazna. -->
         <activity
             android:name=".AutofillAuthActivity"
             android:exported="false"
@@ -61,7 +61,7 @@
         <service
             android:name=".HisnAutofillService"
             android:exported="true"
-            android:label="Hisn"
+            android:label="Khazna"
             android:permission="android.permission.BIND_AUTOFILL_SERVICE">
             <intent-filter>
                 <action android:name="android.service.autofill.AutofillService"/>

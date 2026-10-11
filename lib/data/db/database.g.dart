@@ -1017,12 +1017,237 @@ class FaviconsCompanion extends UpdateCompanion<Favicon> {
   }
 }
 
+class $EntryUsagesTable extends EntryUsages
+    with TableInfo<$EntryUsagesTable, EntryUsage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EntryUsagesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _entryIdMeta = const VerificationMeta(
+    'entryId',
+  );
+  @override
+  late final GeneratedColumn<String> entryId = GeneratedColumn<String>(
+    'entry_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUsedAtMeta = const VerificationMeta(
+    'lastUsedAt',
+  );
+  @override
+  late final GeneratedColumn<int> lastUsedAt = GeneratedColumn<int>(
+    'last_used_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [entryId, lastUsedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'entry_usages';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EntryUsage> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('entry_id')) {
+      context.handle(
+        _entryIdMeta,
+        entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('last_used_at')) {
+      context.handle(
+        _lastUsedAtMeta,
+        lastUsedAt.isAcceptableOrUnknown(
+          data['last_used_at']!,
+          _lastUsedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUsedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {entryId};
+  @override
+  EntryUsage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EntryUsage(
+      entryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entry_id'],
+      )!,
+      lastUsedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}last_used_at'],
+      )!,
+    );
+  }
+
+  @override
+  $EntryUsagesTable createAlias(String alias) {
+    return $EntryUsagesTable(attachedDatabase, alias);
+  }
+}
+
+class EntryUsage extends DataClass implements Insertable<EntryUsage> {
+  final String entryId;
+
+  /// Time of the last use (ms since epoch, UTC).
+  final int lastUsedAt;
+  const EntryUsage({required this.entryId, required this.lastUsedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['entry_id'] = Variable<String>(entryId);
+    map['last_used_at'] = Variable<int>(lastUsedAt);
+    return map;
+  }
+
+  EntryUsagesCompanion toCompanion(bool nullToAbsent) {
+    return EntryUsagesCompanion(
+      entryId: Value(entryId),
+      lastUsedAt: Value(lastUsedAt),
+    );
+  }
+
+  factory EntryUsage.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EntryUsage(
+      entryId: serializer.fromJson<String>(json['entryId']),
+      lastUsedAt: serializer.fromJson<int>(json['lastUsedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'entryId': serializer.toJson<String>(entryId),
+      'lastUsedAt': serializer.toJson<int>(lastUsedAt),
+    };
+  }
+
+  EntryUsage copyWith({String? entryId, int? lastUsedAt}) => EntryUsage(
+    entryId: entryId ?? this.entryId,
+    lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+  );
+  EntryUsage copyWithCompanion(EntryUsagesCompanion data) {
+    return EntryUsage(
+      entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      lastUsedAt: data.lastUsedAt.present
+          ? data.lastUsedAt.value
+          : this.lastUsedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntryUsage(')
+          ..write('entryId: $entryId, ')
+          ..write('lastUsedAt: $lastUsedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(entryId, lastUsedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EntryUsage &&
+          other.entryId == this.entryId &&
+          other.lastUsedAt == this.lastUsedAt);
+}
+
+class EntryUsagesCompanion extends UpdateCompanion<EntryUsage> {
+  final Value<String> entryId;
+  final Value<int> lastUsedAt;
+  final Value<int> rowid;
+  const EntryUsagesCompanion({
+    this.entryId = const Value.absent(),
+    this.lastUsedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EntryUsagesCompanion.insert({
+    required String entryId,
+    required int lastUsedAt,
+    this.rowid = const Value.absent(),
+  }) : entryId = Value(entryId),
+       lastUsedAt = Value(lastUsedAt);
+  static Insertable<EntryUsage> custom({
+    Expression<String>? entryId,
+    Expression<int>? lastUsedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (entryId != null) 'entry_id': entryId,
+      if (lastUsedAt != null) 'last_used_at': lastUsedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EntryUsagesCompanion copyWith({
+    Value<String>? entryId,
+    Value<int>? lastUsedAt,
+    Value<int>? rowid,
+  }) {
+    return EntryUsagesCompanion(
+      entryId: entryId ?? this.entryId,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (entryId.present) {
+      map['entry_id'] = Variable<String>(entryId.value);
+    }
+    if (lastUsedAt.present) {
+      map['last_used_at'] = Variable<int>(lastUsedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EntryUsagesCompanion(')
+          ..write('entryId: $entryId, ')
+          ..write('lastUsedAt: $lastUsedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$VaultDatabase extends GeneratedDatabase {
   _$VaultDatabase(QueryExecutor e) : super(e);
   $VaultDatabaseManager get managers => $VaultDatabaseManager(this);
   late final $VaultItemsTable vaultItems = $VaultItemsTable(this);
   late final $KvStoreTable kvStore = $KvStoreTable(this);
   late final $FaviconsTable favicons = $FaviconsTable(this);
+  late final $EntryUsagesTable entryUsages = $EntryUsagesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -1031,6 +1256,7 @@ abstract class _$VaultDatabase extends GeneratedDatabase {
     vaultItems,
     kvStore,
     favicons,
+    entryUsages,
   ];
 }
 
@@ -1602,6 +1828,160 @@ typedef $$FaviconsTableProcessedTableManager =
       Favicon,
       PrefetchHooks Function()
     >;
+typedef $$EntryUsagesTableCreateCompanionBuilder =
+    EntryUsagesCompanion Function({
+      required String entryId,
+      required int lastUsedAt,
+      Value<int> rowid,
+    });
+typedef $$EntryUsagesTableUpdateCompanionBuilder =
+    EntryUsagesCompanion Function({
+      Value<String> entryId,
+      Value<int> lastUsedAt,
+      Value<int> rowid,
+    });
+
+class $$EntryUsagesTableFilterComposer
+    extends Composer<_$VaultDatabase, $EntryUsagesTable> {
+  $$EntryUsagesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get entryId => $composableBuilder(
+    column: $table.entryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EntryUsagesTableOrderingComposer
+    extends Composer<_$VaultDatabase, $EntryUsagesTable> {
+  $$EntryUsagesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get entryId => $composableBuilder(
+    column: $table.entryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EntryUsagesTableAnnotationComposer
+    extends Composer<_$VaultDatabase, $EntryUsagesTable> {
+  $$EntryUsagesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get entryId =>
+      $composableBuilder(column: $table.entryId, builder: (column) => column);
+
+  GeneratedColumn<int> get lastUsedAt => $composableBuilder(
+    column: $table.lastUsedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$EntryUsagesTableTableManager
+    extends
+        RootTableManager<
+          _$VaultDatabase,
+          $EntryUsagesTable,
+          EntryUsage,
+          $$EntryUsagesTableFilterComposer,
+          $$EntryUsagesTableOrderingComposer,
+          $$EntryUsagesTableAnnotationComposer,
+          $$EntryUsagesTableCreateCompanionBuilder,
+          $$EntryUsagesTableUpdateCompanionBuilder,
+          (
+            EntryUsage,
+            BaseReferences<_$VaultDatabase, $EntryUsagesTable, EntryUsage>,
+          ),
+          EntryUsage,
+          PrefetchHooks Function()
+        > {
+  $$EntryUsagesTableTableManager(_$VaultDatabase db, $EntryUsagesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EntryUsagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EntryUsagesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EntryUsagesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> entryId = const Value.absent(),
+                Value<int> lastUsedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EntryUsagesCompanion(
+                entryId: entryId,
+                lastUsedAt: lastUsedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String entryId,
+                required int lastUsedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => EntryUsagesCompanion.insert(
+                entryId: entryId,
+                lastUsedAt: lastUsedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$EntryUsagesTable, EntryUsage>(table),
+                  BaseReferences<
+                    _$VaultDatabase,
+                    $EntryUsagesTable,
+                    EntryUsage
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EntryUsagesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$VaultDatabase,
+      $EntryUsagesTable,
+      EntryUsage,
+      $$EntryUsagesTableFilterComposer,
+      $$EntryUsagesTableOrderingComposer,
+      $$EntryUsagesTableAnnotationComposer,
+      $$EntryUsagesTableCreateCompanionBuilder,
+      $$EntryUsagesTableUpdateCompanionBuilder,
+      (
+        EntryUsage,
+        BaseReferences<_$VaultDatabase, $EntryUsagesTable, EntryUsage>,
+      ),
+      EntryUsage,
+      PrefetchHooks Function()
+    >;
 
 class $VaultDatabaseManager {
   final _$VaultDatabase _db;
@@ -1612,4 +1992,6 @@ class $VaultDatabaseManager {
       $$KvStoreTableTableManager(_db, _db.kvStore);
   $$FaviconsTableTableManager get favicons =>
       $$FaviconsTableTableManager(_db, _db.favicons);
+  $$EntryUsagesTableTableManager get entryUsages =>
+      $$EntryUsagesTableTableManager(_db, _db.entryUsages);
 }

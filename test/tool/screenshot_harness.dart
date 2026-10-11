@@ -52,7 +52,8 @@
 /// * Builds a `MaterialApp` configured like the real one: `AppTheme` for the
 ///   locale, `themeMode` from the brightness, the app's localisation
 ///   delegates and `AppShell` (app-wide background with the ambient glow,
-///   locale-aware text theme). Arabic is real RTL.
+///   locale-aware text theme). Arabic keeps the left-to-right layout, as in
+///   the app by default (`mirrorArabic: true` for the mirrored one).
 /// * The widget you pass becomes `home`. Pass a whole screen (a `Scaffold`),
 ///   not a bare component: wrap components in a `Scaffold` yourself.
 /// * Screens that read `context.services` need an `AppScope` **above**
@@ -75,9 +76,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hisn/l10n/app_localizations.dart';
+import 'package:hisn/l10n/layout_localizations.dart';
 import 'package:hisn/ui/theme/app_theme.dart';
 import 'package:hisn/ui/widgets/app_shell.dart';
 
@@ -164,7 +165,8 @@ Future<void> _loadFonts() async {
 
 /// Renders [widget] once and writes `<shotsDir>/<name>.png`.
 ///
-/// * [locale] `Locale('ar')` gives Arabic and real RTL.
+/// * [locale] `Locale('ar')` gives Arabic in the app's default left-to-right
+///   layout; [mirrorArabic] true gives the mirrored, right-to-left one.
 /// * [brightness] picks the dark or light theme.
 /// * [size] is the window in logical pixels; [pixelRatio] scales the PNG
 ///   (2 is crisp enough to read 12 px text).
@@ -184,6 +186,7 @@ Future<File> pumpScreenshot(
   Widget Function(Widget app)? wrap,
   Future<void> Function(WidgetTester tester)? afterPump,
   bool shell = true,
+  bool mirrorArabic = false,
 }) async {
   await tester.runAsync(loadBundledFonts);
   tester.view.physicalSize = size;
@@ -199,15 +202,13 @@ Future<File> pumpScreenshot(
     themeMode: brightness == Brightness.dark ? ThemeMode.dark : ThemeMode.light,
     locale: locale,
     supportedLocales: AppLocalizations.supportedLocales,
-    localizationsDelegates: const [
-      AppLocalizations.delegate,
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
+    localizationsDelegates: appLocalizationsDelegates(
+      mirrorArabic: mirrorArabic,
+    ),
     builder: (context, child) {
       var body = child!;
       if (shell) body = AppShell(child: body);
+      body = layoutDirection(context, mirrorArabic: mirrorArabic, child: body);
       body = MediaQuery(
         data: MediaQuery.of(context)
             .copyWith(textScaler: TextScaler.linear(textScale)),

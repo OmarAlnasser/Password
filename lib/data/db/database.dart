@@ -56,7 +56,31 @@ class Favicons extends Table {
   Set<Column<Object>> get primaryKey => {host};
 }
 
-@DriftDatabase(tables: [VaultItems, KvStore, Favicons])
+/// When each entry was last used (a secret copied, the password shown, the
+/// login filled by autofill), for the "most recently used first" order.
+///
+/// Local only, on purpose: it is not part of the encrypted entry blob and is
+/// never synced. Using a password must not rewrite the entry, wake the sync
+/// push, create a conflict, or tell the server (or another device) which
+/// accounts are in use. It lives in the encrypted database, like [Favicons],
+/// because "which sites I use most" is vault metadata.
+///
+/// There is deliberately no foreign key to [VaultItems] (foreign keys are off
+/// for this database): rows are removed together with their entry in
+/// [VaultDatabase.tombstoneItems], inserted only for a live entry in
+/// [VaultDatabase.putLastUsed], and orphans left by a remote deletion are
+/// removed by [VaultDatabase.pruneLastUsed].
+class EntryUsages extends Table {
+  TextColumn get entryId => text()();
+
+  /// Time of the last use (ms since epoch, UTC).
+  IntColumn get lastUsedAt => integer()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {entryId};
+}
+
+@DriftDatabase(tables: [VaultItems, KvStore, Favicons, EntryUsages])
 class VaultDatabase extends _$VaultDatabase {
   VaultDatabase(super.e);
 
@@ -85,14 +109,16 @@ class VaultDatabase extends _$VaultDatabase {
     );
   }
 
+  /// 1: vault items + key/value store. 2: website icons. 3: last-used times.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) => m.createAll(),
     onUpgrade: (m, from, to) async {
       if (from < 2) await m.createTable(favicons);
+      if (from < 3) await m.createTable(entryUsages);
     },
   );
 
@@ -109,6 +135,26 @@ class VaultDatabase extends _$VaultDatabase {
 
   Future<List<VaultItem>> dirtyItems() =>
       (select(vaultItems)..where((t) => t.dirty.equals(true))).get();
+
+  /// Records that the server accepted [pushed] as [revision]. The row is
+  /// marked clean only if it still holds what was pushed (same payload, same
+  /// deleted flag): an edit or a delete saved while the push was on the
+  /// network stays dirty, now based on [revision], so the next push sends it
+  /// instead of it being overwritten by the older copy that was pushed.
+  Future<void> markPushed(VaultItem pushed, {required int revision}) =>
+      customUpdate(
+        'UPDATE vault_items SET revision = ?1, dirty = CASE '
+        'WHEN payload IS ?2 AND deleted = ?3 THEN 0 ELSE 1 END '
+        'WHERE id = ?4',
+        variables: [
+          Variable.withInt(revision),
+          Variable<Uint8List>(pushed.payload),
+          Variable.withBool(pushed.deleted),
+          Variable.withString(pushed.id),
+        ],
+        updates: {vaultItems},
+        updateKind: UpdateKind.update,
+      );
 
   Future<String?> getKv(String key) async => (await (select(
     kvStore,
@@ -138,5 +184,75 @@ class VaultDatabase extends _$VaultDatabase {
       fetchedAt: fetchedAt,
       failed: Value(failed),
     ),
+  );
+
+  // ---------------------------------------------------------------------------
+  // Deleting and last-used times
+  // ---------------------------------------------------------------------------
+
+  /// Most ids bound in one `IN (...)` list. SQLite's limit is far higher on
+  /// current builds but 999 on old ones.
+  static const int _idChunk = 400;
+
+  /// Turns every id in [ids] into a tombstone (payload wiped, `deleted`,
+  /// `dirty`, revision kept so the next push is based on what the server
+  /// has) and forgets its last-used time, in ONE transaction: either every id
+  /// is deleted or none is. This is the only delete path; the single-entry
+  /// delete is the same call with one id. [now] is ms since epoch.
+  ///
+  /// An id with no row yet still gets a tombstone (revision 0), exactly as a
+  /// single delete always did; callers decide which ids are worth passing.
+  Future<void> tombstoneItems(Iterable<String> ids, {required int now}) {
+    final unique = ids.toSet().toList();
+    if (unique.isEmpty) return Future.value();
+    return transaction(() async {
+      for (var i = 0; i < unique.length; i += _idChunk) {
+        final chunk = unique.sublist(
+          i,
+          i + _idChunk > unique.length ? unique.length : i + _idChunk,
+        );
+        final existing = await (select(
+          vaultItems,
+        )..where((t) => t.id.isIn(chunk))).get();
+        final revisions = {for (final r in existing) r.id: r.revision};
+        await batch((b) {
+          b.insertAllOnConflictUpdate(vaultItems, [
+            for (final id in chunk)
+              VaultItemsCompanion(
+                id: Value(id),
+                payload: const Value(null),
+                localUpdatedAt: Value(now),
+                revision: Value(revisions[id] ?? 0),
+                deleted: const Value(true),
+                dirty: const Value(true),
+              ),
+          ]);
+        });
+        await (delete(entryUsages)..where((t) => t.entryId.isIn(chunk))).go();
+      }
+    });
+  }
+
+  /// Every stored last-used time: entry id -> ms since epoch.
+  Future<Map<String, int>> allLastUsed() async => {
+    for (final r in await select(entryUsages).get()) r.entryId: r.lastUsedAt,
+  };
+
+  /// Records that [entryId] was used at [ms] (ms since epoch, UTC). One
+  /// statement, and only for an entry that exists and is not deleted, so a
+  /// use that races a delete can never leave an orphan row behind.
+  Future<void> putLastUsed(String entryId, int ms) => customStatement(
+    'INSERT INTO entry_usages (entry_id, last_used_at) '
+    'SELECT ?1, ?2 '
+    'WHERE EXISTS (SELECT 1 FROM vault_items WHERE id = ?1 AND deleted = 0) '
+    'ON CONFLICT(entry_id) DO UPDATE SET last_used_at = excluded.last_used_at',
+    [entryId, ms],
+  );
+
+  /// Drops last-used rows whose entry is gone or deleted. Needed after sync
+  /// applied a remote deletion, which never goes through [tombstoneItems].
+  Future<void> pruneLastUsed() => customStatement(
+    'DELETE FROM entry_usages WHERE entry_id NOT IN '
+    '(SELECT id FROM vault_items WHERE deleted = 0)',
   );
 }

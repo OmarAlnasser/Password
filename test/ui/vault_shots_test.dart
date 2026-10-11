@@ -34,7 +34,7 @@ List<VaultEntry> _entries() {
   final github = VaultEntry(
     id: 'github',
     title: 'GitHub',
-    username: 'abcde07@hotmail.com',
+    username: 'someone@example.test',
     password: 'xQmR42abCD5k',
     url: 'https://github.com/login',
     notes: 'Recovery codes are in the safe.',
@@ -47,7 +47,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'google',
       title: 'Google',
-      username: 'abcde07@gmail.com',
+      username: 'someone.else@example.test',
       password: 'violet-harbor-quantum-71-lantern',
       url: 'https://google.com',
       tags: const ['personal'],
@@ -56,7 +56,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'mail',
       title: 'Work email',
-      username: 'abcde07@hotmail.com',
+      username: 'someone@example.test',
       password: 'Rb7#mVq9zLp2',
       url: 'https://outlook.example.com',
       tags: const ['work'],
@@ -64,7 +64,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'notion',
       title: 'Notion',
-      username: 'abcde07@hotmail.com',
+      username: 'someone@example.test',
       password: 'Tz8pLq2wXv9m',
       url: 'https://notion.so',
       tags: const ['work', 'dev'],
@@ -72,7 +72,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'bank',
       title: 'البنك الأهلي',
-      username: 'abcde07',
+      username: 'someone',
       password: 'Nf4%tYu81hQe',
       url: 'https://bank.example.com',
       tags: const ['finance'],
@@ -93,7 +93,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'dropbox',
       title: 'Dropbox',
-      username: 'abcde07@hotmail.com',
+      username: 'someone@example.test',
       password: 'Hk3&pWz70xMc',
       url: 'https://dropbox.com',
       tags: const ['personal'],
@@ -109,7 +109,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'travel',
       title: 'Travel miles',
-      username: 'abcde07',
+      username: 'someone',
       password: 'Qw5^eRt67yUi',
       tags: const ['personal'],
     ),
@@ -380,7 +380,7 @@ void main() {
       EntryEditScreen(
         prefill: VaultEntry(
           id: 'new',
-          username: 'abcde07@hotmail.com',
+          username: 'someone@example.test',
           password: 'xQmR42abCD5k',
         ),
       ),

@@ -35,7 +35,7 @@ import 'package:hisn/ui/settings_screen.dart';
 import '../tool/screenshot_harness.dart';
 import 'helpers.dart';
 
-const _email = 'abcde07@hotmail.com';
+const _email = 'someone@example.test';
 const _password = 'xQmR42abCD5k';
 
 /// Synthetic logins with every kind of finding: weak, reused and old.
@@ -52,7 +52,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'google',
       title: 'Google',
-      username: 'abcde07@gmail.com',
+      username: 'someone.else@example.test',
       password: 'violet-harbor-quantum-71-lantern',
       url: 'https://google.com',
     ),
@@ -80,7 +80,7 @@ List<VaultEntry> _entries() {
     VaultEntry(
       id: 'bank',
       title: 'البنك الأهلي',
-      username: 'abcde07',
+      username: 'someone',
       password: 'Nf4%tYu81hQe',
       url: 'https://bank.example.com',
       createdAt: old,
@@ -448,7 +448,7 @@ void main() {
     await ocrScreen(
       tester,
       'tools-ocr-partial',
-      ['abcde07', _password, 'hotmai1.com'],
+      ['someone', _password, 'hotmai1.com'],
       themes: [Brightness.dark],
       locales: [const Locale('en')],
       textScale: 1.5,
@@ -541,7 +541,7 @@ void main() {
     username: _email,
     password: _password,
     title: 'My account',
-    emailCandidates: [_email, 'abcde07@hotmail.co.uk'],
+    emailCandidates: [_email, 'someone@mail.example.test'],
     passwordCandidates: [_password, 'xQmR42abCD5K', 'xQmR42abCDSk'],
   );
 
@@ -586,7 +586,7 @@ void main() {
       tester,
       'tools-sheet-partial',
       const OcrResult(
-        chips: ['abcde07', _password, 'hotmai1.com', 'Sign in', 'example.org'],
+        chips: ['someone', _password, 'hotmai1.com', 'Sign in', 'example.org'],
         password: _password,
         passwordCandidates: [_password],
       ),
@@ -594,7 +594,7 @@ void main() {
         ScanPass(name: 'original', lines: [], quality: 0),
         ScanPass(
           name: 'inverted',
-          lines: ['abcde07', 'xQmR 42abCD5k', 'hotmai1.com'],
+          lines: ['someone', 'xQmR 42abCD5k', 'hotmai1.com'],
           quality: 0.5,
         ),
         ScanPass(
@@ -690,6 +690,9 @@ class _FakeSync extends ChangeNotifier implements SyncService {
 
   @override
   DateTime? get lastSync => DateTime(2026, 3, 12, 9, 41);
+
+  @override
+  int? get pendingMassDeletion => null;
 
   @override
   Future<void> syncNow() async {}
