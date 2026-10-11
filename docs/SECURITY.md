@@ -257,6 +257,37 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
       Keep the repository's collaborator list short, protect the tags and the
       default branch, and enable two-factor authentication on the account.
 
+21. **The browser extension can read passwords from the running app.** On
+    Windows the Chrome extension (Chrome, Edge, Brave) asks the app for
+    logins through a small helper (see
+    [BROWSER_EXTENSION.md](BROWSER_EXTENSION.md)). *How it is kept in check:*
+    * *Off until the user turns it on* in Settings, and every browser must be
+      paired: the app shows a six-digit code that the extension shows too, and
+      the user allows it. Only a SHA-256 of the extension's random key is
+      kept. Turning the feature off forgets every paired browser.
+    * *Only Khazna's extension can start the helper* (`allowed_origins` in the
+      native messaging manifest, a fixed extension id), and the helper only
+      reaches the app through a loopback port whose number and 256-bit token
+      change at every start and sit in a file in the user's profile. A
+      connection without the token is closed.
+    * *The app decides what a page gets.* The extension sends the page's
+      address, read from the browser, never from the page. The app answers
+      only for https pages, only with the logins of that host
+      (`AutofillMatcher`), only while unlocked, and sends a password only for
+      one of those logins, when the user picks it. The content script checks
+      that the page is still on the same origin before it fills. The
+      extension stores no vault data.
+    * *Saving needs the user.* After a sign-in the extension may offer to save
+      the login or update its password; nothing is written until the user
+      clicks Save or Update (a click the page cannot fake). The old password
+      goes to the entry's history.
+    * *Activity log.* Every fill, save, update and pairing is logged in the
+      encrypted database (site, entry title, browser; never a username or
+      password), with a badge for lines not yet seen.
+    * *Not covered:* malware running as the same Windows user can read the
+      token file, as it could read the browser's memory or log keystrokes;
+      that is outside what an app can defend against.
+
 ## Test vectors
 
 `test/core/crypto/` checks:

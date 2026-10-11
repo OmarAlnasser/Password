@@ -12,6 +12,7 @@ import '../services/settings.dart';
 import '../services/sync/sync_service.dart';
 import '../services/update/app_version.dart';
 import 'app_scope.dart';
+import 'browser/browser_extension_screen.dart';
 import 'import/import_review_screen.dart';
 import 'sign_in_screen.dart';
 import 'theme/theme.dart';
@@ -169,9 +170,34 @@ class SettingsScreen extends StatelessWidget {
 
         final sync = _Group(title: l.sync, children: [_SyncRows()]);
 
+        final browser = s.browser;
         final data = _Group(
           title: x.data,
           children: [
+            if (browser != null)
+              ListenableBuilder(
+                listenable: browser.activity,
+                builder: (context, _) {
+                  final unseen = browser.activity.unseen;
+                  return _Row(
+                    icon: Icons.extension_outlined,
+                    title: l.browserExtension,
+                    subtitle: l.browserExtensionHint,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (unseen > 0) Badge(label: Text('$unseen')),
+                        const _Chevron(),
+                      ],
+                    ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => BrowserExtensionScreen(bridge: browser),
+                      ),
+                    ),
+                  );
+                },
+              ),
             _Row(
               icon: Icons.file_upload_outlined,
               title: l.exportEncrypted,

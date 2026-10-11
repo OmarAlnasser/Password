@@ -57,6 +57,10 @@
 //        ocr_unsupported_image, ocr_image_too_large, ocr_no_language (no OCR
 //        language pack installed: ask the user to add one in Windows
 //        Settings), ocr_failed. Error messages never contain image text.
+//   nativeMessagingHost {manifest?} -> bool: points Chrome's, Edge's and
+//                    Brave's native messaging key for the browser helper at
+//                    the manifest (HKEY_CURRENT_USER); without a manifest it
+//                    removes the keys. True if Chrome's key was written.
 
 namespace {
 
@@ -1685,6 +1689,40 @@ void RunPlatformThreadTask(LPARAM lparam) {
   (*task)();
 }
 
+namespace {
+
+// Chrome, Edge and Brave find the browser helper through these keys under
+// HKEY_CURRENT_USER: the default value is the path of the helper's native
+// messaging manifest (written by the app, see BrowserRegistration).
+constexpr const wchar_t* kNativeHostKeys[] = {
+    L"Software\\Google\\Chrome\\NativeMessagingHosts\\app.khazna.bridge",
+    L"Software\\Microsoft\\Edge\\NativeMessagingHosts\\app.khazna.bridge",
+    L"Software\\BraveSoftware\\Brave-Browser\\NativeMessagingHosts\\"
+    L"app.khazna.bridge",
+};
+
+// Points every key at [manifest]. True if Chrome's key was written.
+bool SetNativeHost(const std::wstring& manifest) {
+  const DWORD bytes =
+      static_cast<DWORD>((manifest.size() + 1) * sizeof(wchar_t));
+  bool chrome = false;
+  for (size_t i = 0; i < std::size(kNativeHostKeys); ++i) {
+    const LSTATUS st =
+        RegSetKeyValueW(HKEY_CURRENT_USER, kNativeHostKeys[i], nullptr,
+                        REG_SZ, manifest.c_str(), bytes);
+    if (i == 0) chrome = st == ERROR_SUCCESS;
+  }
+  return chrome;
+}
+
+void RemoveNativeHost() {
+  for (const wchar_t* key : kNativeHostKeys) {
+    RegDeleteKeyW(HKEY_CURRENT_USER, key);
+  }
+}
+
+}  // namespace
+
 void RegisterHisnChannel(flutter::FlutterEngine* engine, HWND window) {
   // Exclude the window from screenshots, screen recording and screen
   // sharing (Windows 10 2004+). Shows as black in captures.
@@ -1739,6 +1777,20 @@ void RegisterHisnChannel(flutter::FlutterEngine* engine, HWND window) {
           SetWindowDisplayAffinity(window,
                                    on ? WDA_EXCLUDEFROMCAPTURE : WDA_NONE);
           result->Success();
+        } else if (m == "nativeMessagingHost") {
+          // {manifest: <path of a .json>} registers, {} unregisters.
+          const std::string manifest = str_arg("manifest");
+          if (manifest.empty()) {
+            RemoveNativeHost();
+            result->Success(EncodableValue(true));
+          } else if (manifest.size() > 1024 ||
+                     manifest.size() < 6 ||
+                     manifest.compare(manifest.size() - 5, 5, ".json") != 0) {
+            result->Error("bad_arguments", "Not a manifest path");
+          } else {
+            result->Success(
+                EncodableValue(SetNativeHost(Utf8ToWide(manifest))));
+          }
         } else if (m == "deleteImage") {
           std::wstring p = Utf8ToWide(str_arg("uri"));
           result->Success(EncodableValue(DeleteFileW(p.c_str()) != 0));

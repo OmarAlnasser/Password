@@ -1,0 +1,98 @@
+{
+  "extName": {
+    "message": "Khazna"
+  },
+  "extDescription": {
+    "message": "Fill and save logins from the Khazna password manager on this computer."
+  },
+  "loading": {
+    "message": "Connecting to Khazna…"
+  },
+  "notInstalled": {
+    "message": "Khazna is not set up for this browser yet."
+  },
+  "notInstalledHint": {
+    "message": "Open Khazna on this computer, go to Settings > Browser extension and turn it on. Then restart the browser."
+  },
+  "appNotRunning": {
+    "message": "Khazna is not running."
+  },
+  "openKhazna": {
+    "message": "Open Khazna"
+  },
+  "notPaired": {
+    "message": "Pair this browser with Khazna. Khazna will show this code:"
+  },
+  "pairHint": {
+    "message": "Allow it in Khazna only if both codes match."
+  },
+  "pair": {
+    "message": "Pair"
+  },
+  "pairWaiting": {
+    "message": "Waiting for Khazna…"
+  },
+  "pairDenied": {
+    "message": "Not paired. Try again and allow it in Khazna."
+  },
+  "pairBusy": {
+    "message": "Khazna is already asking about another browser."
+  },
+  "locked": {
+    "message": "Khazna is locked. Unlock it to fill logins."
+  },
+  "showKhazna": {
+    "message": "Show Khazna"
+  },
+  "noVault": {
+    "message": "Create your vault in Khazna first."
+  },
+  "insecure": {
+    "message": "Khazna fills logins only on secure (https) pages."
+  },
+  "noLogins": {
+    "message": "No logins for $HOST$.",
+    "placeholders": {
+      "host": {
+        "content": "$1",
+        "example": "github.com"
+      }
+    }
+  },
+  "noLoginsHint": {
+    "message": "Sign in on this page and Khazna offers to save the login."
+  },
+  "fillFailed": {
+    "message": "Could not find a login form on this page."
+  },
+  "error": {
+    "message": "Something went wrong talking to Khazna."
+  },
+  "retry": {
+    "message": "Try again"
+  },
+  "versionMismatch": {
+    "message": "Khazna was updated. Reload this extension in chrome://extensions."
+  },
+  "promptSave": {
+    "message": "Save this login to Khazna?"
+  },
+  "promptUpdate": {
+    "message": "Update the password of $TITLE$ in Khazna?",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "save": {
+    "message": "Save"
+  },
+  "update": {
+    "message": "Update"
+  },
+  "notNow": {
+    "message": "Not now"
+  }
+}

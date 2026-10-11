@@ -14,6 +14,7 @@ See [docs/SECURITY.md](docs/SECURITY.md) for the design, rationale and known wea
 - [x] Phase 5 – autofill + biometrics
 - [x] Phase 6 – security dashboard
 - [x] Security audit – [docs/SECURITY_AUDIT.md](docs/SECURITY_AUDIT.md) (findings open)
+- [x] Browser extension for Chrome, Edge and Brave on Windows – [docs/BROWSER_EXTENSION.md](docs/BROWSER_EXTENSION.md)
 
 ## Running the tests
 

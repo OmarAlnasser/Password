@@ -1,0 +1,98 @@
+{
+  "extName": {
+    "message": "خزنة"
+  },
+  "extDescription": {
+    "message": "املأ تسجيلات الدخول واحفظها من مدير كلمات المرور خزنة على هذا الكمبيوتر."
+  },
+  "loading": {
+    "message": "جارٍ الاتصال بخزنة…"
+  },
+  "notInstalled": {
+    "message": "لم تُعدّ خزنة لهذا المتصفح بعد."
+  },
+  "notInstalledHint": {
+    "message": "افتح خزنة على هذا الكمبيوتر، ثم الإعدادات > إضافة المتصفح وفعّلها، ثم أعد تشغيل المتصفح."
+  },
+  "appNotRunning": {
+    "message": "خزنة غير مفتوحة."
+  },
+  "openKhazna": {
+    "message": "افتح خزنة"
+  },
+  "notPaired": {
+    "message": "اقرن هذا المتصفح بخزنة. ستعرض خزنة هذا الرمز:"
+  },
+  "pairHint": {
+    "message": "اسمح بذلك في خزنة فقط إذا تطابق الرمزان."
+  },
+  "pair": {
+    "message": "اقتران"
+  },
+  "pairWaiting": {
+    "message": "بانتظار خزنة…"
+  },
+  "pairDenied": {
+    "message": "لم يتم الاقتران. حاول مرة أخرى واسمح بذلك في خزنة."
+  },
+  "pairBusy": {
+    "message": "خزنة تسأل الآن عن متصفح آخر."
+  },
+  "locked": {
+    "message": "خزنة مقفلة. افتح قفلها لملء تسجيلات الدخول."
+  },
+  "showKhazna": {
+    "message": "أظهر خزنة"
+  },
+  "noVault": {
+    "message": "أنشئ خزنتك في خزنة أولاً."
+  },
+  "insecure": {
+    "message": "تملأ خزنة تسجيلات الدخول في الصفحات الآمنة (https) فقط."
+  },
+  "noLogins": {
+    "message": "لا توجد تسجيلات دخول لـ $HOST$.",
+    "placeholders": {
+      "host": {
+        "content": "$1",
+        "example": "github.com"
+      }
+    }
+  },
+  "noLoginsHint": {
+    "message": "سجّل الدخول في هذه الصفحة وستعرض خزنة حفظه."
+  },
+  "fillFailed": {
+    "message": "لم يُعثر على نموذج تسجيل دخول في هذه الصفحة."
+  },
+  "error": {
+    "message": "حدث خطأ أثناء الاتصال بخزنة."
+  },
+  "retry": {
+    "message": "حاول مرة أخرى"
+  },
+  "versionMismatch": {
+    "message": "حُدّثت خزنة. أعد تحميل هذه الإضافة من chrome://extensions."
+  },
+  "promptSave": {
+    "message": "حفظ تسجيل الدخول هذا في خزنة؟"
+  },
+  "promptUpdate": {
+    "message": "تحديث كلمة مرور $TITLE$ في خزنة؟",
+    "placeholders": {
+      "title": {
+        "content": "$1",
+        "example": "GitHub"
+      }
+    }
+  },
+  "save": {
+    "message": "حفظ"
+  },
+  "update": {
+    "message": "تحديث"
+  },
+  "notNow": {
+    "message": "ليس الآن"
+  }
+}

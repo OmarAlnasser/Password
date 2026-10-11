@@ -561,5 +561,77 @@
   "syncDeletionKeep": "Keep them",
   "syncDeletionConfirmBody": "They were deleted on another device. This cannot be undone.",
   "textHidden": "Text hidden",
-  "ocrCheckPassword": "Press the eye next to the password to check what was read."
+  "ocrCheckPassword": "Press the eye next to the password to check what was read.",
+  "browserExtension": "Browser extension",
+  "browserExtensionHint": "Fill and save logins in Chrome, Edge and Brave.",
+  "browserExtensionMissing": "This copy of Khazna does not include the browser helper.",
+  "browserSetupTitle": "Add Khazna to your browser",
+  "browserStep1": "Open chrome://extensions (edge://extensions in Edge).",
+  "browserStep2": "Turn on Developer mode.",
+  "browserStep3": "Click Load unpacked and choose this folder:",
+  "browserStep4": "Click the Khazna icon in the toolbar and choose Pair. Khazna then asks you to allow it.",
+  "copyAddress": "Copy address",
+  "addressCopied": "Address copied",
+  "openFolder": "Open folder",
+  "pairedBrowsers": "Paired browsers",
+  "noPairedBrowsers": "No browser is paired yet.",
+  "pairedOn": "Paired {date}",
+  "@pairedOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "unpairBrowser": "Remove",
+  "browserUnknown": "A browser",
+  "browserActivity": "Browser activity",
+  "browserActivityEmpty": "Nothing yet. Logins the browser fills and saves show up here.",
+  "activityFilled": "Filled {title} on {host}",
+  "@activityFilled": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "activitySaved": "Saved a new login for {host}",
+  "@activitySaved": {
+    "placeholders": {
+      "host": {
+        "type": "String"
+      }
+    }
+  },
+  "activityUpdated": "Updated the password of {title}",
+  "@activityUpdated": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "activityPaired": "Paired {browser}",
+  "@activityPaired": {
+    "placeholders": {
+      "browser": {
+        "type": "String"
+      }
+    }
+  },
+  "clearActivity": "Clear",
+  "pairTitle": "Allow this browser?",
+  "pairBody": "{browser} wants to fill and save logins from Khazna. Allow it only if the browser shows the same code.",
+  "@pairBody": {
+    "placeholders": {
+      "browser": {
+        "type": "String"
+      }
+    }
+  },
+  "pairAllow": "Allow",
+  "pairDeny": "Deny"
 }

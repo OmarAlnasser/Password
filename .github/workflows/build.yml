@@ -21,6 +21,7 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test --exclude-tags finding
+      - run: python3 -I tool/test_bundle_browser.py
 
   android:
     runs-on: ubuntu-latest
@@ -55,6 +56,8 @@ jobs:
       - run: flutter pub get
       - name: Build Windows app
         run: flutter build windows --release
+      - name: Add the browser extension
+        run: python tool/bundle_browser.py build/windows/x64/runner/Release
       - uses: actions/upload-artifact@v4
         with:
           name: Khazna-windows

@@ -1,0 +1,12 @@
+name: khazna_bridge
+description: >-
+  The browser helper of Khazna: Chrome's native messaging host for the Khazna
+  extension, and the frame format the app shares with it.
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.10.0
+
+# No dependencies on purpose: the helper is compiled on its own with
+# `dart compile exe` (tool/bundle_browser.py).

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:khazna_bridge/bridge_protocol.dart' show bridgeDirectory;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,6 +16,9 @@ import 'autofill_app.dart';
 import 'core/crypto/crypto.dart';
 import 'services/biometric_unlock.dart';
 import 'services/breach_checker.dart';
+import 'services/browser/browser_activity.dart';
+import 'services/browser/browser_bridge.dart';
+import 'services/browser/browser_registration.dart';
 import 'services/clipboard_service.dart';
 import 'services/favicon_service.dart';
 import 'services/import_export.dart';
@@ -26,6 +30,7 @@ import 'services/settings.dart';
 import 'services/sync/supabase_remote_store.dart';
 import 'services/sync/sync_service.dart';
 import 'services/unlock_throttle.dart';
+import 'services/update/app_version.dart';
 import 'services/update/update_providers.dart';
 import 'services/vault_session.dart';
 import 'ui/app_scope.dart';
@@ -44,6 +49,7 @@ Future<void> main() async {
   unawaited(ImageWorkspace.sweepStale(olderThan: const Duration(minutes: 10)));
   IosAutofillSnapshot(services.session);
   unawaited(services.session.init());
+  unawaited(services.browser?.resume());
   runApp(HisnApp(services: services));
 }
 
@@ -121,6 +127,31 @@ Future<AppServices> bootstrap({bool forAutofill = false}) async {
     sync = SyncService(session, SupabaseRemoteStore(Supabase.instance.client));
   }
 
+  // The browser extension's end (Windows main app). It listens only once the
+  // user turned it on in Settings.
+  BrowserBridge? browser;
+  if (!kIsWeb && Platform.isWindows && !forAutofill) {
+    final browserDir = bridgeDirectory();
+    browser = BrowserBridge(
+      session: session,
+      settings: settings,
+      activity: BrowserActivityLog(session),
+      directory: browserDir,
+      registration: browserDir == null
+          ? null
+          : BrowserRegistration(
+              directory: browserDir,
+              appDirectory: File(Platform.resolvedExecutable).parent,
+              native: bridge.setNativeMessagingHost,
+            ),
+      showWindow: () async {
+        await windowManager.show();
+        await windowManager.focus();
+      },
+      appVersion: AppVersion.current.version,
+    );
+  }
+
   final words = (await rootBundle.loadString('assets/eff_large_wordlist.txt'))
       .split('\n')
       .map((w) => w.trim())
@@ -151,5 +182,6 @@ Future<AppServices> bootstrap({bool forAutofill = false}) async {
             enabled: () => settings.fetchIcons,
           ),
     updates: updates,
+    browser: browser,
   );
 }

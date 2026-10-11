@@ -957,6 +957,88 @@ class AppLocalizationsArLtr extends AppLocalizationsAr {
 
   @override
   String get ocrCheckPassword => _rtl(super.ocrCheckPassword);
+
+  @override
+  String get browserExtension => _rtl(super.browserExtension);
+
+  @override
+  String get browserExtensionHint => _rtl(super.browserExtensionHint);
+
+  @override
+  String get browserExtensionMissing => _rtl(super.browserExtensionMissing);
+
+  @override
+  String get browserSetupTitle => _rtl(super.browserSetupTitle);
+
+  @override
+  String get browserStep1 => _rtl(super.browserStep1);
+
+  @override
+  String get browserStep2 => _rtl(super.browserStep2);
+
+  @override
+  String get browserStep3 => _rtl(super.browserStep3);
+
+  @override
+  String get browserStep4 => _rtl(super.browserStep4);
+
+  @override
+  String get copyAddress => _rtl(super.copyAddress);
+
+  @override
+  String get addressCopied => _rtl(super.addressCopied);
+
+  @override
+  String get openFolder => _rtl(super.openFolder);
+
+  @override
+  String get pairedBrowsers => _rtl(super.pairedBrowsers);
+
+  @override
+  String get noPairedBrowsers => _rtl(super.noPairedBrowsers);
+
+  @override
+  String pairedOn(String date) => _rtl(super.pairedOn(date));
+
+  @override
+  String get unpairBrowser => _rtl(super.unpairBrowser);
+
+  @override
+  String get browserUnknown => _rtl(super.browserUnknown);
+
+  @override
+  String get browserActivity => _rtl(super.browserActivity);
+
+  @override
+  String get browserActivityEmpty => _rtl(super.browserActivityEmpty);
+
+  @override
+  String activityFilled(String title, String host) =>
+      _rtl(super.activityFilled(title, host));
+
+  @override
+  String activitySaved(String host) => _rtl(super.activitySaved(host));
+
+  @override
+  String activityUpdated(String title) => _rtl(super.activityUpdated(title));
+
+  @override
+  String activityPaired(String browser) => _rtl(super.activityPaired(browser));
+
+  @override
+  String get clearActivity => _rtl(super.clearActivity);
+
+  @override
+  String get pairTitle => _rtl(super.pairTitle);
+
+  @override
+  String pairBody(String browser) => _rtl(super.pairBody(browser));
+
+  @override
+  String get pairAllow => _rtl(super.pairAllow);
+
+  @override
+  String get pairDeny => _rtl(super.pairDeny);
 }
 
 String _rtl(String s) => s.isEmpty ? s : '\u2067$s\u2069';

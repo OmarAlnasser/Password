@@ -13,6 +13,7 @@ import 'l10n/layout_localizations.dart';
 import 'services/platform_bridge.dart';
 import 'services/vault_session.dart';
 import 'ui/app_scope.dart';
+import 'ui/browser/browser_extension_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/ocr/ocr_import_screen.dart';
 import 'ui/quick_search_screen.dart';
@@ -236,7 +237,11 @@ class _HisnAppState extends State<HisnApp> with WidgetsBindingObserver {
                           controller: s.updates,
                           navigatorKey: _navigator,
                           triggers: s.session,
-                          child: child,
+                          child: BrowserPairingGate(
+                            bridge: s.browser,
+                            navigatorKey: _navigator,
+                            child: child,
+                          ),
                         ),
                       if (_obscured || _captured)
                         const Positioned.fill(

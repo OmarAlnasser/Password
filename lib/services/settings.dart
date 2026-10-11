@@ -32,6 +32,14 @@ class AppSettings extends ChangeNotifier {
 
   /// Download each login's website icon directly from that site.
   bool fetchIcons = true;
+
+  /// Let the browser extension reach the vault (Windows). Off until the user
+  /// sets it up in Settings.
+  bool browserExtension = false;
+
+  /// The browsers allowed to fill and save logins, newest last. Changed only
+  /// through [update].
+  List<PairedBrowser> pairedBrowsers = const [];
   String? syncEmail;
 
   EntrySort _entrySort = EntrySort.recent;
@@ -89,6 +97,11 @@ class AppSettings extends ChangeNotifier {
       biometricsEnabled = (j['bio'] as bool?) ?? false;
       hibpEnabled = (j['hibp'] as bool?) ?? true;
       fetchIcons = (j['icons'] as bool?) ?? true;
+      browserExtension = (j['browser'] as bool?) ?? false;
+      pairedBrowsers = [
+        for (final b in (j['browsers'] as List?) ?? const [])
+          ?PairedBrowser.tryParse(b),
+      ];
       syncEmail = j['syncEmail'] as String?;
       checkUpdates = (j['updates'] as bool?) ?? true;
       lastUpdateCheck = _count(j['updChecked']);
@@ -125,6 +138,8 @@ class AppSettings extends ChangeNotifier {
         'bio': biometricsEnabled,
         'hibp': hibpEnabled,
         'icons': fetchIcons,
+        'browser': browserExtension,
+        'browsers': [for (final b in pairedBrowsers) b.toJson()],
         'sort': _entrySort.name,
         'syncEmail': syncEmail,
         'updates': checkUpdates,
@@ -144,4 +159,42 @@ class AppSettings extends ChangeNotifier {
 
   /// A non-negative whole number from the file, else 0.
   static int _count(Object? v) => v is int && v > 0 ? v : 0;
+}
+
+/// A browser extension the user allowed to use the vault. Only a hash of its
+/// key is kept: [keyHash] is the SHA-256 of the key, in hex.
+class PairedBrowser {
+  const PairedBrowser({
+    required this.keyHash,
+    required this.name,
+    required this.pairedAt,
+  });
+
+  final String keyHash;
+
+  /// What the extension called its browser ("Chrome", "Edge"...).
+  final String name;
+  final DateTime pairedAt;
+
+  Map<String, Object?> toJson() => {
+    'h': keyHash,
+    'n': name,
+    't': pairedAt.millisecondsSinceEpoch,
+  };
+
+  static PairedBrowser? tryParse(Object? j) {
+    if (j is! Map) return null;
+    final h = j['h'];
+    final n = j['n'];
+    final t = j['t'];
+    if (h is! String || !RegExp(r'^[0-9a-f]{64}$').hasMatch(h)) return null;
+    return PairedBrowser(
+      keyHash: h,
+      name: n is String ? n : '',
+      pairedAt: DateTime.fromMillisecondsSinceEpoch(
+        t is int && t > 0 ? t : 0,
+        isUtc: true,
+      ),
+    );
+  }
 }
