@@ -1213,4 +1213,102 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get ocrCheckPassword =>
       'اضغط زر العين بجانب كلمة المرور لتتحقق مما قُرئ.';
+
+  @override
+  String get browserExtension => 'إضافة المتصفح';
+
+  @override
+  String get browserExtensionHint =>
+      'املأ تسجيلات الدخول واحفظها في Chrome وEdge وBrave.';
+
+  @override
+  String get browserExtensionMissing =>
+      'هذه النسخة من خزنة لا تتضمن مساعد المتصفح.';
+
+  @override
+  String get browserSetupTitle => 'أضف خزنة إلى متصفحك';
+
+  @override
+  String get browserStep1 =>
+      'افتح chrome://extensions (أو edge://extensions في Edge).';
+
+  @override
+  String get browserStep2 => 'فعّل وضع المطوّر (Developer mode).';
+
+  @override
+  String get browserStep3 => 'انقر Load unpacked واختر هذا المجلد:';
+
+  @override
+  String get browserStep4 =>
+      'انقر أيقونة خزنة في شريط الأدوات واختر الاقتران، ثم اسمح بذلك في خزنة.';
+
+  @override
+  String get copyAddress => 'نسخ العنوان';
+
+  @override
+  String get addressCopied => 'نُسخ العنوان';
+
+  @override
+  String get openFolder => 'فتح المجلد';
+
+  @override
+  String get pairedBrowsers => 'المتصفحات المقترنة';
+
+  @override
+  String get noPairedBrowsers => 'لا يوجد متصفح مقترن بعد.';
+
+  @override
+  String pairedOn(String date) {
+    return 'اقترن في $date';
+  }
+
+  @override
+  String get unpairBrowser => 'إزالة';
+
+  @override
+  String get browserUnknown => 'متصفح';
+
+  @override
+  String get browserActivity => 'نشاط المتصفح';
+
+  @override
+  String get browserActivityEmpty =>
+      'لا شيء بعد. ستظهر هنا تسجيلات الدخول التي يملؤها المتصفح ويحفظها.';
+
+  @override
+  String activityFilled(String title, String host) {
+    return 'مُلئ $title في $host';
+  }
+
+  @override
+  String activitySaved(String host) {
+    return 'حُفظ تسجيل دخول جديد لـ $host';
+  }
+
+  @override
+  String activityUpdated(String title) {
+    return 'حُدّثت كلمة مرور $title';
+  }
+
+  @override
+  String activityPaired(String browser) {
+    return 'اقترن $browser';
+  }
+
+  @override
+  String get clearActivity => 'مسح';
+
+  @override
+  String get pairTitle => 'السماح لهذا المتصفح؟';
+
+  @override
+  String pairBody(String browser) {
+    return 'يريد $browser ملء تسجيلات الدخول وحفظها من خزنة. اسمح بذلك فقط إذا عرض المتصفح الرمز نفسه.';
+  }
+
+  @override
+  String get pairAllow => 'سماح';
+
+  @override
+  String get pairDeny => 'رفض';
 }

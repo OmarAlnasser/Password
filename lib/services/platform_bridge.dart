@@ -204,6 +204,22 @@ class PlatformBridge {
     }
   }
 
+  /// Windows only: points Chrome's, Edge's and Brave's native messaging key
+  /// (HKEY_CURRENT_USER) for the browser helper at [manifest], or removes the
+  /// keys when it is null. True if Chrome's key was written; null where the
+  /// native side does not have it (then the caller falls back to reg.exe).
+  Future<bool?> setNativeMessagingHost(String? manifest) async {
+    try {
+      return await _ch.invokeMethod<bool>('nativeMessagingHost', {
+        'manifest': ?manifest,
+      });
+    } on MissingPluginException {
+      return null;
+    } on PlatformException {
+      return false;
+    }
+  }
+
   bool get isDesktop =>
       !kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS);
 }

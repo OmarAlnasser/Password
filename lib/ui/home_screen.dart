@@ -13,6 +13,7 @@ import '../services/ocr/ocr_scanner.dart';
 import '../services/sync/sync_service.dart';
 import '../services/vault_session.dart';
 import 'app_scope.dart';
+import 'browser/browser_extension_screen.dart';
 import 'dashboard_screen.dart';
 import 'entry_detail_screen.dart';
 import 'entry_edit_screen.dart';
@@ -592,6 +593,26 @@ class _HomeScreenState extends State<HomeScreen> {
           tooltip: l.syncNow,
           icon: const Icon(Icons.sync_rounded),
           onPressed: () => syncNowFromButton(services.sync!),
+        ),
+      if (services.browser case final browser?)
+        ListenableBuilder(
+          listenable: Listenable.merge([browser.settings, browser.activity]),
+          builder: (context, _) {
+            if (!browser.settings.browserExtension) {
+              return const SizedBox.shrink();
+            }
+            final unseen = browser.activity.unseen;
+            return IconButton(
+              tooltip: l.browserActivity,
+              icon: Badge(
+                isLabelVisible: unseen > 0,
+                label: Text('$unseen'),
+                child: const Icon(Icons.extension_outlined),
+              ),
+              onPressed: () =>
+                  _open(BrowserActivityScreen(log: browser.activity)),
+            );
+          },
         ),
       IconButton(
         tooltip: l.lock,

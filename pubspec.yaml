@@ -55,6 +55,9 @@ dependencies:
   file_picker: ^11.0.3
   uuid: ^4.6.0
   intl: ^0.20.3
+  # The frame format shared with the browser helper (browser/bridge).
+  khazna_bridge:
+    path: browser/bridge
   flutter_localizations:
     sdk: flutter
 

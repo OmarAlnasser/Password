@@ -181,6 +181,7 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/tooling-venv"
           "$RUNNER_TEMP/tooling-venv/bin/python" -m pip install --disable-pip-version-check --quiet cryptography pyyaml
           "$RUNNER_TEMP/tooling-venv/bin/python" tool/test_update_tools.py
+          python3 -I tool/test_bundle_browser.py
 
   android:
     name: Build Android APK
@@ -343,6 +344,14 @@ jobs:
             --dart-define=APP_VERSION="$APP_VERSION" \
             --dart-define=APP_BUILD="$APP_BUILD"
 
+      # The browser helper (a second exe) and the unpacked extension, next to
+      # the app's exe. See docs/BROWSER_EXTENSION.md.
+      - name: Add the browser extension
+        shell: bash
+        env:
+          APP_VERSION: ${{ needs.check.outputs.version }}
+        run: python tool/bundle_browser.py build/windows/x64/runner/Release --version "$APP_VERSION"
+
       - name: Zip the app (files at the zip root)
         shell: pwsh
         run: |
@@ -371,6 +380,13 @@ jobs:
           }
           if (@($names | Where-Object { $_ -notlike '*/*' -and $_ -like '*.exe' }).Count -lt 1) {
             throw 'No .exe at the zip root.'
+          }
+          # The app's exe and the browser helper's.
+          if (@($names | Where-Object { $_ -notlike '*/*' -and $_ -like '*.exe' }).Count -lt 2) {
+            throw 'The browser helper is missing from the zip.'
+          }
+          foreach ($needed in @('extension/manifest.json', 'extension/background.js')) {
+            if ($names -notcontains $needed) { throw "$needed is missing from the zip." }
           }
           Write-Host "windows-x64.zip: $($names.Count) entries, app files at the zip root"
 

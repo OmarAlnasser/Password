@@ -8,6 +8,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:hisn/core/crypto/crypto.dart';
 import 'package:hisn/services/breach_checker.dart';
+import 'package:hisn/services/browser/browser_activity.dart';
+import 'package:hisn/services/browser/browser_bridge.dart';
 import 'package:hisn/services/clipboard_service.dart';
 import 'package:hisn/services/favicon_service.dart';
 import 'package:hisn/services/import_export.dart';
@@ -29,8 +31,13 @@ String arLtr(String s) => '\u2067$s\u2069';
 const platformChannel = MethodChannel('app.vaultsnap/platform');
 
 /// The app's services over [dir], like `bootstrap` but without network:
-/// website icons are only read from the database, never fetched.
-Future<AppServices> buildTestServices(Directory dir) async {
+/// website icons are only read from the database, never fetched. With
+/// [browser], the browser extension's end too (as on Windows), without the
+/// registration with the browsers.
+Future<AppServices> buildTestServices(
+  Directory dir, {
+  bool browser = false,
+}) async {
   final sodium = await loadSodium();
   final crypto = VaultCrypto(sodium);
   final session = VaultSession(
@@ -38,9 +45,18 @@ Future<AppServices> buildTestServices(Directory dir) async {
     directory: dir,
     throttle: UnlockThrottle(File('${dir.path}/t.json')),
   );
+  final settings = AppSettings(File('${dir.path}/settings.json'));
   return AppServices(
     session: session,
-    settings: AppSettings(File('${dir.path}/settings.json')),
+    settings: settings,
+    browser: browser
+        ? BrowserBridge(
+            session: session,
+            settings: settings,
+            activity: BrowserActivityLog(session),
+            directory: Directory('${dir.path}/bridge'),
+          )
+        : null,
     clipboard: ClipboardService(
       const PlatformBridge(),
       clearAfter: () => const Duration(seconds: 30),

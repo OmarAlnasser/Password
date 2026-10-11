@@ -1981,6 +1981,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Press the eye next to the password to check what was read.'**
   String get ocrCheckPassword;
+
+  /// No description provided for @browserExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser extension'**
+  String get browserExtension;
+
+  /// No description provided for @browserExtensionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill and save logins in Chrome, Edge and Brave.'**
+  String get browserExtensionHint;
+
+  /// No description provided for @browserExtensionMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'This copy of Khazna does not include the browser helper.'**
+  String get browserExtensionMissing;
+
+  /// No description provided for @browserSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Khazna to your browser'**
+  String get browserSetupTitle;
+
+  /// No description provided for @browserStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Open chrome://extensions (edge://extensions in Edge).'**
+  String get browserStep1;
+
+  /// No description provided for @browserStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on Developer mode.'**
+  String get browserStep2;
+
+  /// No description provided for @browserStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Click Load unpacked and choose this folder:'**
+  String get browserStep3;
+
+  /// No description provided for @browserStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Click the Khazna icon in the toolbar and choose Pair. Khazna then asks you to allow it.'**
+  String get browserStep4;
+
+  /// No description provided for @copyAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy address'**
+  String get copyAddress;
+
+  /// No description provided for @addressCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Address copied'**
+  String get addressCopied;
+
+  /// No description provided for @openFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Open folder'**
+  String get openFolder;
+
+  /// No description provided for @pairedBrowsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired browsers'**
+  String get pairedBrowsers;
+
+  /// No description provided for @noPairedBrowsers.
+  ///
+  /// In en, this message translates to:
+  /// **'No browser is paired yet.'**
+  String get noPairedBrowsers;
+
+  /// No description provided for @pairedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired {date}'**
+  String pairedOn(String date);
+
+  /// No description provided for @unpairBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get unpairBrowser;
+
+  /// No description provided for @browserUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'A browser'**
+  String get browserUnknown;
+
+  /// No description provided for @browserActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser activity'**
+  String get browserActivity;
+
+  /// No description provided for @browserActivityEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet. Logins the browser fills and saves show up here.'**
+  String get browserActivityEmpty;
+
+  /// No description provided for @activityFilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Filled {title} on {host}'**
+  String activityFilled(String title, String host);
+
+  /// No description provided for @activitySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved a new login for {host}'**
+  String activitySaved(String host);
+
+  /// No description provided for @activityUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated the password of {title}'**
+  String activityUpdated(String title);
+
+  /// No description provided for @activityPaired.
+  ///
+  /// In en, this message translates to:
+  /// **'Paired {browser}'**
+  String activityPaired(String browser);
+
+  /// No description provided for @clearActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get clearActivity;
+
+  /// No description provided for @pairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow this browser?'**
+  String get pairTitle;
+
+  /// No description provided for @pairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{browser} wants to fill and save logins from Khazna. Allow it only if the browser shows the same code.'**
+  String pairBody(String browser);
+
+  /// No description provided for @pairAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow'**
+  String get pairAllow;
+
+  /// No description provided for @pairDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get pairDeny;
 }
 
 class _AppLocalizationsDelegate

@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import '../l10n/app_localizations.dart';
 import '../services/biometric_unlock.dart';
 import '../services/breach_checker.dart';
+import '../services/browser/browser_bridge.dart';
 import '../services/clipboard_service.dart';
 import '../services/favicon_service.dart';
 import '../services/import_export.dart';
@@ -30,6 +31,7 @@ class AppServices {
     this.sync,
     this.favicons,
     this.updates,
+    this.browser,
   });
 
   final VaultSession session;
@@ -50,6 +52,9 @@ class AppServices {
   /// release builds). Null in development builds, on other platforms and in
   /// the autofill entry point: then the UI shows nothing about updates.
   final UpdateController? updates;
+
+  /// The browser extension's end in the app (Windows main app only).
+  final BrowserBridge? browser;
 
   /// Loads the website icon of every entry in the background. Called after
   /// unlock, save and import; hosts that are already known are skipped. With

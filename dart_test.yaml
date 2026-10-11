@@ -7,3 +7,8 @@ tags:
     # for human review and assert nothing, so they are skipped by default.
     # Run them with:  flutter test --run-skipped -t screenshots <test file>
     skip: "visual review only; run with --run-skipped -t screenshots"
+  e2e:
+    # The browser extension end to end in Chromium (test/tool/extension_e2e_test.dart).
+    # Needs Node, Playwright and Chromium, so it is skipped by default. Run it with:
+    #   flutter test --run-skipped -t e2e test/tool/extension_e2e_test.dart
+    skip: "needs Chromium and Playwright; run with --run-skipped -t e2e"

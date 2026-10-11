@@ -1175,4 +1175,102 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get ocrCheckPassword =>
       'Press the eye next to the password to check what was read.';
+
+  @override
+  String get browserExtension => 'Browser extension';
+
+  @override
+  String get browserExtensionHint =>
+      'Fill and save logins in Chrome, Edge and Brave.';
+
+  @override
+  String get browserExtensionMissing =>
+      'This copy of Khazna does not include the browser helper.';
+
+  @override
+  String get browserSetupTitle => 'Add Khazna to your browser';
+
+  @override
+  String get browserStep1 =>
+      'Open chrome://extensions (edge://extensions in Edge).';
+
+  @override
+  String get browserStep2 => 'Turn on Developer mode.';
+
+  @override
+  String get browserStep3 => 'Click Load unpacked and choose this folder:';
+
+  @override
+  String get browserStep4 =>
+      'Click the Khazna icon in the toolbar and choose Pair. Khazna then asks you to allow it.';
+
+  @override
+  String get copyAddress => 'Copy address';
+
+  @override
+  String get addressCopied => 'Address copied';
+
+  @override
+  String get openFolder => 'Open folder';
+
+  @override
+  String get pairedBrowsers => 'Paired browsers';
+
+  @override
+  String get noPairedBrowsers => 'No browser is paired yet.';
+
+  @override
+  String pairedOn(String date) {
+    return 'Paired $date';
+  }
+
+  @override
+  String get unpairBrowser => 'Remove';
+
+  @override
+  String get browserUnknown => 'A browser';
+
+  @override
+  String get browserActivity => 'Browser activity';
+
+  @override
+  String get browserActivityEmpty =>
+      'Nothing yet. Logins the browser fills and saves show up here.';
+
+  @override
+  String activityFilled(String title, String host) {
+    return 'Filled $title on $host';
+  }
+
+  @override
+  String activitySaved(String host) {
+    return 'Saved a new login for $host';
+  }
+
+  @override
+  String activityUpdated(String title) {
+    return 'Updated the password of $title';
+  }
+
+  @override
+  String activityPaired(String browser) {
+    return 'Paired $browser';
+  }
+
+  @override
+  String get clearActivity => 'Clear';
+
+  @override
+  String get pairTitle => 'Allow this browser?';
+
+  @override
+  String pairBody(String browser) {
+    return '$browser wants to fill and save logins from Khazna. Allow it only if the browser shows the same code.';
+  }
+
+  @override
+  String get pairAllow => 'Allow';
+
+  @override
+  String get pairDeny => 'Deny';
 }
