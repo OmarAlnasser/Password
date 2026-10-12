@@ -100,6 +100,7 @@ class UpdateService {
     required this.workspace,
     required this.version,
     required this.platform,
+    this.assetKeys,
     Future<void> Function(File from, String to)? copyFile,
   }) : _copyFile = copyFile ?? ((from, to) => from.copy(to));
 
@@ -113,6 +114,7 @@ class UpdateService {
     UpdateConfig? config,
     AppVersion? version,
     UpdatePlatform? platform,
+    List<String>? assetKeys,
   }) {
     final cfg = config ?? UpdateConfig();
     return UpdateService(
@@ -122,6 +124,7 @@ class UpdateService {
       workspace: UpdateWorkspace(workRoot),
       version: version ?? AppVersion.current,
       platform: platform ?? UpdatePlatform.current,
+      assetKeys: assetKeys,
     );
   }
 
@@ -135,6 +138,11 @@ class UpdateService {
 
   /// This platform, or null where updates are not offered.
   final UpdatePlatform? platform;
+
+  /// Keys in the manifest's `assets` to install from, best first; null means
+  /// the platform's own [UpdatePlatform.assetKeys] (see
+  /// [UpdateManifest.assetFor]).
+  final List<String>? assetKeys;
 
   /// Copies the package for staging (replaceable in tests).
   final Future<void> Function(File from, String to) _copyFile;
@@ -180,7 +188,7 @@ class UpdateService {
       if (manifest.build < highestSeenBuild) {
         throw const UpdateException(UpdateFailure.rollback);
       }
-      final asset = manifest.assetFor(platform);
+      final asset = manifest.assetFor(platform, keys: assetKeys);
       if (asset == null) throw const UpdateException(UpdateFailure.noAsset);
       return UpdateAvailable(manifest, asset);
     } on UpdateException catch (e) {

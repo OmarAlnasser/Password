@@ -10,6 +10,7 @@ Local files:
         --manifest update.json --signature update.json.sig \\
         --public-key release/update_public_key.txt \\
         --apk dist/android.apk --windows-zip dist/windows-x64.zip \\
+        --windows-setup dist/windows-x64-setup.exe \\
         --version 0.2.0 --build 2000 --tag v0.2.0 --repo OmarAlnasser/Password
 
 What the published release looks like to the world (no credentials, the same
@@ -27,11 +28,11 @@ Order of checks, each one stops the run:
   3. The manifest schema, with the same rules as the app
      (lib/services/update/update_manifest.dart).
   4. With --version/--build/--tag/--repo: the manifest says what the workflow
-     built, and the assets are exactly the two generic packages at the
+     built, and the assets are exactly the three generic packages at the
      canonical URLs of this tag.
-  5. With --apk/--windows-zip: size and SHA-256 of the local files. With
-     --download-assets (remote mode): the same for the files as downloaded from
-     the published release.
+  5. With --apk/--windows-zip/--windows-setup: size and SHA-256 of the local
+     files. With --download-assets (remote mode): the same for every package
+     as downloaded from the published release.
   6. With --check-latest (remote mode): releases/latest/download/update.json is
      byte-identical, i.e. an installed app that polls "latest" sees this
      release.
@@ -263,7 +264,8 @@ def run(args: argparse.Namespace) -> int:
                        tag=args.tag, repo=args.repo,
                        release_layout=args.release_layout)
 
-    for key, option in (('android', args.apk), ('windows', args.windows_zip)):
+    for key, option in (('android', args.apk), ('windows', args.windows_zip),
+                        ('windows_setup', args.windows_setup)):
         if option is None:
             continue
         asset = manifest['assets'].get(key)
@@ -323,13 +325,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument('--public-key', metavar='FILE', help='pinned public key file')
     p.add_argument('--apk', help='local android package to check')
     p.add_argument('--windows-zip', help='local windows package to check')
+    p.add_argument('--windows-setup', help='local windows installer to check')
     p.add_argument('--version', help='expected version, X.Y.Z')
     p.add_argument('--build', type=int, help='expected build number')
     p.add_argument('--tag', help='expected tag, vX.Y.Z')
     p.add_argument('--repo', help='owner/name')
     p.add_argument('--release-layout', action='store_true',
-                   help='require exactly the generic android.apk and '
-                        'windows-x64.zip at the canonical URLs of --tag')
+                   help='require exactly the generic android.apk, '
+                        'windows-x64.zip and windows-x64-setup.exe at the '
+                        'canonical URLs of --tag')
     p.add_argument('--remote', action='store_true',
                    help='fetch update.json and its signature from the GitHub '
                         'release of --repo/--tag instead of local files')

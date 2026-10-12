@@ -16,19 +16,21 @@ git tag v0.2.0 && git push origin v0.2.0
   check     tag is strictly vX.Y.Z; analyze + tests; signing key matches the pinned one
   android   APK signed with the release keystore; fails unless it carries the
             pinned certificate (release/android_cert_sha256.txt) and the right versionCode
-  windows   Windows build, zipped with the exe and dlls at the zip root
+  windows   Windows build, zipped with the exe and dlls at the zip root, and the
+            per-user installer made from the same files (Inno Setup)
   sign      update.json (sizes, SHA-256, URLs, notes) signed with Ed25519
-  publish   draft release → upload 4 files → publish   (the only job that can write)
+  publish   draft release → upload 5 files → publish   (the only job that can write)
   verify    downloads everything from the public URLs like an installed app would
 ```
 
-The release holds exactly four files, with names that never contain the app
+The release holds exactly five files, with names that never contain the app
 name (so a rename never touches the pipeline):
 
 | File | What it is |
 |---|---|
 | `android.apk` | the app, signed with the stable release keystore |
-| `windows-x64.zip` | the Windows app (files at the zip root) |
+| `windows-x64-setup.exe` | the Windows installer: per user, no admin rights, Start menu and desktop shortcuts, an entry in "Installed apps" to uninstall |
+| `windows-x64.zip` | the same Windows app as a plain folder (files at the zip root), for portable use and for apps up to 0.1.2, which only know the zip |
 | `update.json` | the manifest: version, build number, notes, and for each package its URL, size and SHA-256 |
 | `update.json.sig` | base64 Ed25519 signature over the exact bytes of `update.json` |
 
@@ -42,8 +44,15 @@ download the package for their platform, check its size and SHA-256 against the
 * **Android:** the app hands the APK to the system installer; you tap Install.
   Android itself also refuses the update unless it is signed with the same key as
   the installed app.
-* **Windows:** the app unpacks the zip next to itself, locks the vault, exits;
-  a small script swaps the files and starts the new version.
+* **Windows:** the app runs the downloaded `windows-x64-setup.exe` silently,
+  locks the vault and exits; the setup replaces the files in the install folder
+  and starts the new version (or, if it fails, puts the old files back and starts
+  the old version). Apps up to 0.1.2 do not know the setup: they still update
+  with the zip (the app unpacks it and a small script swaps the files).
+
+The manifest lists the Windows app twice: under `windows_setup` (the installer,
+which current apps prefer) and under `windows` (the zip). Older apps ignore keys
+they do not know, so every release keeps both.
 
 Two independent keys protect Android users: the **manifest key** (Ed25519, the
 app checks it) and the **Android keystore** (Android itself checks it), so
@@ -56,20 +65,23 @@ show or offer updates. Only release builds do.
 ## Before the first release
 
 1. **Rename the app first** (`tool/rename_app.py`, see `docs/RENAMING.md`) if you
-   are going to. The Windows updater only accepts a zip whose exe has the same
-   file name as the running exe, and `--ids` changes the Android application id,
-   which Android treats as a different app. A rename after people have installed
-   the app means they have to install the new one by hand. Rename before anyone
-   installs.
+   are going to. The Windows installer is tied to its fixed AppId and exe name
+   (`installer/windows/setup.iss`), the zip updater only accepts a zip whose exe
+   has the same file name as the running exe, and `--ids` changes the Android
+   application id, which Android treats as a different app. A rename after
+   people have installed the app means they have to install the new one by
+   hand. Rename before anyone installs.
 2. **The first release-signed build is installed by hand**, once:
    * Builds before the updater existed cannot update themselves.
    * A phone that has a build from `build.yml` (signed with a debug key) cannot be
      updated to the release-signed APK: Android refuses (different signature).
      Uninstall it first. **Uninstalling deletes the local vault on that phone**:
      export a backup or make sure sync has run first.
-   * Windows: unzip `windows-x64.zip` into a folder your user can write to (for
-     example under your user profile). Not `C:\Program Files`: the updater needs
-     to write there and refuses otherwise.
+   * Windows: run `windows-x64-setup.exe`. It installs for the current user
+     only (`%LOCALAPPDATA%\Programs\<app>`), without asking for admin rights.
+     Whoever still runs a version from the zip (0.1.2 or earlier) runs the setup
+     once and then deletes the old folder; the vault is not in that folder and
+     stays where it is.
 3. Merge `release.yml` into the default branch. GitHub only shows the "Run
    workflow" button (for dry runs) for workflows that exist on the default branch.
    The default branch is `main`; it is "the release branch" in this file. Tag a
@@ -86,9 +98,10 @@ show or offer updates. Only release builds do.
      or "Unknown developer": choose *Install anyway* / *More details*. The first
      in-app update asks for the same permission for the app itself.
    * Windows: Microsoft Defender SmartScreen says "Windows protected your PC" for
-     the unsigned exe: *More info → Run anyway*. A zip downloaded in a browser is
-     marked "from the internet": right-click the zip → Properties → tick
-     **Unblock** before unzipping, or Explorer may block every file.
+     the unsigned setup: *More info → Run anyway*. For the portable zip: a zip
+     downloaded in a browser is marked "from the internet": right-click the zip
+     → Properties → tick **Unblock** before unzipping, or Explorer may block
+     every file.
 
 ## One-time setup: the three secrets
 
@@ -187,7 +200,7 @@ GitHub → **Actions → Release → Run workflow**:
 * "Dry run": leave it **checked**
 
 This runs everything: tests, the signed Android build with the certificate
-check, the Windows build and zip, and the manifest. The manifest is signed with
+check, the Windows build, zip and installer, and the manifest. The manifest is signed with
 a throwaway key that no app trusts, and **nothing is published**. Download the
 artifacts from the run page if you want to try the files; they are kept for 3
 days.
@@ -216,16 +229,16 @@ git push origin v0.2.0
 
 Either way, you tag the commit you want to ship. The run takes about 20 to 30 minutes. Watch
 it under **Actions → Release**. When it is green, the **Releases** page shows
-`v0.2.0` with the four files, and installed apps find it on their next check.
+`v0.2.0` with the five files, and installed apps find it on their next check.
 
 Installed apps check at most once every 24 hours, and only if "check for
 updates" is on in their settings; a user can also check by hand.
 
 ### 5. After the run
 
-* Open the release page and make sure the four files are there.
+* Open the release page and make sure the five files are there.
 * The `verify` job already did the end-to-end check from the public URLs (signature
-  with the pinned key, sizes and SHA-256 of both packages, and that `latest`
+  with the pinned key, sizes and SHA-256 of all three packages, and that `latest`
   serves this release). You can repeat it from any machine with Python 3:
 
   ```sh
@@ -246,11 +259,10 @@ two releases, A and a higher B (use the numbers you like; the example uses
 `v0.2.0` and `v0.2.1`).
 
 1. **Publish A.** Tag `v0.2.0` as in "The real release". Wait for the green run.
-2. **Install A by hand.** Download `android.apk` / `windows-x64.zip` from the
-   Releases page in a browser and install it (see the warnings under "Before the
-   first release"; an Android phone that has a `build.yml` build must uninstall
-   it first, which deletes its local vault). On Windows unzip into a folder your
-   user can write to. Open the app, create or open a vault, and look at
+2. **Install A by hand.** Download `android.apk` / `windows-x64-setup.exe` from
+   the Releases page in a browser and install it (see the warnings under "Before
+   the first release"; an Android phone that has a `build.yml` build must
+   uninstall it first, which deletes its local vault). On Windows run the setup. Open the app, create or open a vault, and look at
    **Settings → Updates**: the Version row must say `0.2.0 (build 2000)`. If it
    says "Development build" and the screen says "Updates are off in development
    builds", that build was not made by the release workflow.
@@ -274,9 +286,11 @@ two releases, A and a higher B (use the numbers you like; the example uses
      installed A is signed with another key than the release keystore (for
      example a debug build): uninstall it and install A from the Releases page.
    * **Windows:** tap **Close and install**. The app locks the vault and closes,
-     and a moment later the new version opens by itself. If the
-     old version comes back with a message "The last update didn’t finish", the
-     install folder is protected or a file was in use: nothing was changed.
+     the setup runs without a window, and a moment later the new version opens
+     by itself. If the old version comes back with "The last update didn’t
+     finish" and "The update did not start, so nothing was changed.", the
+     setup stopped before the end and put the old files back. The setup's log is `%TEMP%\update-setup.log`
+     until the app's next start.
 6. **Check B.** Open **Settings → Updates**: the Version row says `0.2.1 (build
    2001)` and **Check now** answers "You have the latest version." Your vault is still there
    after unlocking.
@@ -306,8 +320,8 @@ GitHub secrets are write-only. If your copies are gone, the keys are gone.
 * **Manifest seed lost** (no leak): installed apps pin the old public key, so
   they cannot verify any new manifest. They keep working but never update. Users
   must install a new build that pins a new public key by hand. (Android keeps
-  the data when the same keystore signs the new APK; on Windows unzip over the
-  old folder.)
+  the data when the same keystore signs the new APK; on Windows run the new
+  setup, which installs over the old version.)
 
 ### Leaked keys
 
@@ -391,11 +405,13 @@ What to do:
 | `.github/workflows/release.yml` | the pipeline |
 | `tool/make_update_manifest.py` | builds and signs `update.json` (pure Python 3.9+, standard library only, so the job that holds the key installs nothing from the network) |
 | `tool/verify_update_manifest.py` | verifies manifest, signature and packages, locally or against a published release |
-| `tool/test_update_tools.py` | tests for both tools and static checks of the workflow; run `python3 tool/test_update_tools.py` |
+| `tool/test_update_tools.py` | tests for both tools and static checks of the workflows and the installer script; run `python3 tool/test_update_tools.py` |
+| `installer/windows/setup.iss` | the Windows installer (Inno Setup 6); `build.yml` builds it on every push and installs and uninstalls it once as a check |
+| `tool/windows_update_helper/` | the file swap script for zip updates (apps up to 0.1.2) |
 | `release/update_public_key.txt` | the pinned manifest public key (also compiled into the app) |
 | `release/android_cert_sha256.txt` | the release certificate fingerprint the APK must carry |
 | `release/notes/<version>.md`, `.ar.md` | optional release notes |
-| `test/services/update/fixtures/release_tool/` | manifest and signature made by the tool with a throwaway key; `release_tool_fixture_test.dart` feeds them to the app's own parser, so a drift between the tool and the app fails `flutter test` |
+| `test/services/update/fixtures/release_tool/` | manifest and signature made by the tool's functions with a throwaway key, in the layout of the releases up to 0.1.2 (no installer); `release_tool_fixture_test.dart` feeds them to the app's own parser, so a drift between the tool and the app fails `flutter test` |
 | `.gitattributes` | keeps the signed test fixtures byte for byte on every checkout (a signature covers exact bytes; CRLF conversion would break it) |
 
 Third-party actions are referenced by major version tag (`actions/checkout@v4`

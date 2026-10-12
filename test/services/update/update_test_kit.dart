@@ -67,13 +67,16 @@ Map<String, Object?> manifestJson({
   int? build,
   Uint8List? apk,
   Uint8List? zip,
+  Uint8List? setup,
   Map<String, Object?>? override,
   bool android = true,
   bool windows = true,
+  bool windowsSetup = false,
 }) {
   final v = AppVersion.tryParse(version)!;
   final a = apk ?? payload(3000, seed: 1);
   final z = zip ?? payload(5000, seed: 2);
+  final s = setup ?? payload(4000, seed: 3);
   final json = <String, Object?>{
     'schema': 1,
     'version': version,
@@ -94,6 +97,13 @@ Map<String, Object?> manifestJson({
           'url': assetUrl('app-windows.zip', tag: 'v$version').toString(),
           'size': z.length,
           'sha256': sha256Hex(z),
+        },
+      if (windowsSetup)
+        'windows_setup': {
+          'name': 'app-windows-setup.exe',
+          'url': assetUrl('app-windows-setup.exe', tag: 'v$version').toString(),
+          'size': s.length,
+          'sha256': sha256Hex(s),
         },
     },
   };
@@ -188,13 +198,21 @@ class FakeNet {
 
 /// One simulated GitHub release plus everything a test needs around it.
 class UpdateEnv {
-  UpdateEnv._(this.signer, this.config, this.dir, this.version, this.platform);
+  UpdateEnv._(
+    this.signer,
+    this.config,
+    this.dir,
+    this.version,
+    this.platform,
+    this.assetKeys,
+  );
 
   static Future<UpdateEnv> create({
     AppVersion? version,
     UpdatePlatform? platform = UpdatePlatform.android,
     TestSigner? signer,
     UpdateConfig Function(String publicKeyBase64)? configBuilder,
+    List<String>? assetKeys,
   }) async {
     final s = signer ?? await TestSigner.create();
     final dir = await Directory.systemTemp.createTemp('update-test-');
@@ -211,6 +229,7 @@ class UpdateEnv {
       dir,
       version ?? AppVersion.tryParse('0.1.0')!,
       platform,
+      assetKeys,
     );
   }
 
@@ -219,6 +238,7 @@ class UpdateEnv {
   final Directory dir;
   final AppVersion version;
   final UpdatePlatform? platform;
+  final List<String>? assetKeys;
   final FakeNet net = FakeNet();
 
   Directory get workRoot => Directory(p.join(dir.path, 'updates'));
@@ -234,6 +254,7 @@ class UpdateEnv {
     workspace: workspace,
     version: version,
     platform: platform,
+    assetKeys: assetKeys,
   );
 
   AppSettings newSettings() => AppSettings(File(p.join(dir.path, 's.json')));
@@ -248,6 +269,7 @@ class UpdateEnv {
     TestSigner? signedBy,
     Uint8List? apk,
     Uint8List? zip,
+    Uint8List? setup,
   }) {
     final mBytes = manifestBytes ?? jsonBytes(manifest ?? manifestJson());
     final sig = signatureBytes ?? (signedBy ?? signer).signatureFile(mBytes);
@@ -273,6 +295,7 @@ class UpdateEnv {
     }
     serveAsset('app-release.apk', apk ?? payload(3000, seed: 1));
     serveAsset('app-windows.zip', zip ?? payload(5000, seed: 2));
+    serveAsset('app-windows-setup.exe', setup ?? payload(4000, seed: 3));
   }
 
   /// Serves a package from its tag URL through one CDN redirect.

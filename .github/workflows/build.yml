@@ -62,6 +62,90 @@ jobs:
         with:
           name: Khazna-windows
           path: build/windows/x64/runner/Release/
+      # The same installer the release workflow builds (installer/windows/setup.iss).
+      - name: Build the installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # setup.iss needs Inno Setup 6.3 or newer (x64compatible); an older
+          # copy on the runner counts as missing, and choco upgrades it.
+          function Find-Iscc {
+            foreach ($root in @(${env:ProgramFiles(x86)}, $env:ProgramFiles)) {
+              if (-not $root) { continue }
+              $candidate = Join-Path $root 'Inno Setup 6\ISCC.exe'
+              if (-not (Test-Path -LiteralPath $candidate)) { continue }
+              $info = (Get-Item -LiteralPath $candidate).VersionInfo
+              if ($info.FileMajorPart -gt 6 -or ($info.FileMajorPart -eq 6 -and $info.FileMinorPart -ge 3)) {
+                return $candidate
+              }
+              Write-Host "Ignoring Inno Setup $($info.FileVersion) at $candidate (6.3 or newer needed)."
+            }
+            return $null
+          }
+          $iscc = Find-Iscc
+          if (-not $iscc) {
+            choco upgrade innosetup -y --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Installing Inno Setup failed.' }
+            $iscc = Find-Iscc
+          }
+          if (-not $iscc) { throw 'ISCC.exe (Inno Setup 6.3 or newer) was not found.' }
+          $release = Join-Path $env:GITHUB_WORKSPACE 'build\windows\x64\runner\Release'
+          $dist = Join-Path $env:GITHUB_WORKSPACE 'dist'
+          $iss = Join-Path $env:GITHUB_WORKSPACE 'installer\windows\setup.iss'
+          & $iscc "/DSourceDir=$release" "/O$dist" $iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed (exit code $LASTEXITCODE)." }
+          if (-not (Test-Path -LiteralPath (Join-Path $dist 'windows-x64-setup.exe') -PathType Leaf)) {
+            throw 'dist/windows-x64-setup.exe was not created.'
+          }
+      # Install silently into a temporary folder (without starting the app),
+      # check the files, then uninstall silently.
+      - name: Install and uninstall the setup (silent)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $setup = Join-Path $env:GITHUB_WORKSPACE 'dist\windows-x64-setup.exe'
+          $work = Join-Path $env:RUNNER_TEMP 'setup-smoke'
+          $dir = Join-Path $work 'app'
+          $log = Join-Path $work 'setup.log'
+          $result = Join-Path $work 'setup.result'
+          New-Item -ItemType Directory -Force -Path $work | Out-Null
+
+          $install = Start-Process -FilePath $setup -Wait -PassThru -ArgumentList @(
+            '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/SP-',
+            "/DIR=`"$dir`"", "/LOG=`"$log`"", "/result=`"$result`"")
+          if ($install.ExitCode -ne 0) {
+            if (Test-Path -LiteralPath $log) { Get-Content -LiteralPath $log -Tail 60 }
+            throw "Setup failed (exit code $($install.ExitCode))."
+          }
+          foreach ($needed in @('hisn.exe', 'flutter_windows.dll', 'data', 'extension\manifest.json', 'unins000.exe')) {
+            if (-not (Test-Path -LiteralPath (Join-Path $dir $needed))) {
+              throw "$needed is missing from the installed app."
+            }
+          }
+          if (-not (Test-Path -LiteralPath $result -PathType Leaf)) {
+            throw 'Setup did not write the result file.'
+          }
+          $outcome = (Get-Content -LiteralPath $result -Raw).Trim()
+          if ($outcome -ne 'success') { throw "Setup wrote '$outcome', not 'success'." }
+          Write-Host 'Installed; result file says success.'
+
+          $uninstall = Start-Process -FilePath (Join-Path $dir 'unins000.exe') -Wait -PassThru `
+            -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES')
+          if ($uninstall.ExitCode -ne 0) { throw "Uninstall failed (exit code $($uninstall.ExitCode))." }
+          # The uninstaller finishes from a copy of itself in %TEMP%; give it time.
+          $deadline = (Get-Date).AddSeconds(60)
+          while ((Test-Path -LiteralPath (Join-Path $dir 'hisn.exe')) -and (Get-Date) -lt $deadline) {
+            Start-Sleep -Milliseconds 500
+          }
+          if (Test-Path -LiteralPath (Join-Path $dir 'hisn.exe')) {
+            throw 'hisn.exe is still there after uninstalling.'
+          }
+          Write-Host 'Uninstalled.'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Khazna-windows-setup
+          path: dist/windows-x64-setup.exe
+          if-no-files-found: error
 
   ios:
     runs-on: macos-latest

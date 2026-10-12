@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 import 'package:hisn/services/update/update_installer.dart';
 import 'package:hisn/services/update/windows_installer.dart';
+import 'package:hisn/services/update/windows_setup_installer.dart';
 
 // ---------------------------------------------------------------------------
 // A tiny zip writer, independent of the code under test, that can also write
@@ -1326,6 +1327,22 @@ void main() {
         expect(exe.readAsBytesSync(), [0x4d, 0x5a, 1, 2, 3]);
       });
 
+      test('an old setup result is deleted before the script starts', () async {
+        final result = File(p.join(logDir.path, 'update-setup.result'))
+          ..writeAsStringSync('success');
+        final setupLog = File(p.join(logDir.path, 'update-setup.log'))
+          ..writeAsStringSync('Log opened.');
+        var sawOld = true;
+        onStart = (call) {
+          sawOld = result.existsSync() || setupLog.existsSync();
+          File(call.arg('-ReadyFile')).writeAsStringSync('ready');
+        };
+
+        expect(await run(makeInstaller()), InstallOutcome.started);
+        // Else the next start would report it instead of the script's log.
+        expect(sawOld, isFalse);
+      });
+
       test('a release zipped as one top folder is accepted', () async {
         final installer = makeInstaller();
 
@@ -1920,6 +1937,262 @@ void main() {
 
         log().writeAsStringSync('x' * (70 * 1024));
         expect(await read(), WindowsUpdateHelperResult.none);
+      });
+
+      group('the setup result', () {
+        File result() => File(p.join(logDir.path, 'update-setup.result'));
+        File setupLog() => File(p.join(logDir.path, 'update-setup.log'));
+
+        test('every value, and the files are consumed', () async {
+          const values = {
+            'success': WindowsUpdateHelperResult.succeeded,
+            'aborted': WindowsUpdateHelperResult.aborted,
+            'success\r\n': WindowsUpdateHelperResult.succeeded,
+            'rolled-back': WindowsUpdateHelperResult.none,
+            'SUCCESS': WindowsUpdateHelperResult.none,
+            'successful': WindowsUpdateHelperResult.none,
+            '': WindowsUpdateHelperResult.none,
+            'garbage \u0000\u0001': WindowsUpdateHelperResult.none,
+          };
+          for (final entry in values.entries) {
+            result().writeAsStringSync(entry.key);
+            setupLog().writeAsStringSync('Log opened.\n');
+
+            expect(await read(), entry.value, reason: entry.key);
+            expect(result().existsSync(), isFalse, reason: 'shown once');
+            expect(setupLog().existsSync(), isFalse);
+          }
+        });
+
+        test('an oversized result file is ignored and deleted', () async {
+          result().writeAsStringSync('success${' ' * 100}');
+
+          expect(await read(), WindowsUpdateHelperResult.none);
+          expect(result().existsSync(), isFalse);
+        });
+
+        test('deleteLog false leaves both files in place', () async {
+          result().writeAsStringSync('aborted');
+          setupLog().writeAsStringSync('Log opened.\n');
+
+          expect(
+            await read(deleteLog: false),
+            WindowsUpdateHelperResult.aborted,
+          );
+
+          expect(result().existsSync(), isTrue);
+          expect(setupLog().existsSync(), isTrue);
+          // Read again: the same answer.
+          expect(await read(), WindowsUpdateHelperResult.aborted);
+        });
+
+        test('it takes precedence over the swap script log, which is '
+            'stale and goes too', () async {
+          result().writeAsStringSync('success');
+          log().writeAsStringSync('2026-10-07 09:00:01 RESULT aborted x\n');
+
+          expect(await read(), WindowsUpdateHelperResult.succeeded);
+
+          expect(log().existsSync(), isFalse);
+          // Next start: nothing left to report.
+          expect(await read(), WindowsUpdateHelperResult.none);
+        });
+
+        test('with deleteLog false the swap script log stays too', () async {
+          result().writeAsStringSync('success');
+          log().writeAsStringSync('2026-10-07 09:00:01 RESULT aborted x\n');
+
+          expect(
+            await read(deleteLog: false),
+            WindowsUpdateHelperResult.succeeded,
+          );
+          expect(log().existsSync(), isTrue);
+        });
+
+        test(
+          'only a setup log, no result: the swap script log is read',
+          () async {
+            setupLog().writeAsStringSync('Log opened.\n');
+            log().writeAsStringSync(
+              '2026-10-07 09:00:01 RESULT rolled-back x\n',
+            );
+
+            expect(await read(), WindowsUpdateHelperResult.rolledBack);
+            // The setup log is not this function's to remove without a result.
+            expect(setupLog().existsSync(), isTrue);
+          },
+        );
+
+        test('a setup log that cannot be deleted is tolerated', () async {
+          result().writeAsStringSync('success');
+          // A non-empty folder by that name cannot be deleted as a file.
+          Directory(p.join(setupLog().path, 'x')).createSync(recursive: true);
+
+          expect(await read(), WindowsUpdateHelperResult.succeeded);
+          expect(result().existsSync(), isFalse);
+        });
+
+        test('a result path that is a folder is not a result', () async {
+          Directory(result().path).createSync();
+          log().writeAsStringSync('2026-10-07 09:00:01 RESULT success\n');
+
+          expect(await read(), WindowsUpdateHelperResult.succeeded);
+        });
+      });
+    });
+
+    group('a setup package', () {
+      File setupFile([String name = 'app-windows-setup.exe']) =>
+          File(p.join(work.path, name))..writeAsBytesSync(
+            Uint8List(1024 * 1024 + 16)
+              ..[0] = 0x4d
+              ..[1] = 0x5a,
+          );
+
+      setUp(() {
+        // The fake setup creates its log and reports that it runs, as the
+        // real one does when it starts.
+        onStart = (_) {
+          File(p.join(logDir.path, 'update-setup.log'))
+              .writeAsStringSync('Log opened.');
+          File(p.join(logDir.path, 'update-setup.result'))
+              .writeAsStringSync('started');
+        };
+      });
+
+      test(
+        'an .exe goes to the setup installer, not the swap script',
+        () async {
+          final installer = makeInstaller();
+          final setup = setupFile();
+
+          final outcome = await installer.install(
+            setup,
+            prepareExit: prepareExit,
+          );
+
+          expect(outcome, InstallOutcome.started);
+          expect(installer.lastError, isNull);
+          expect(installer.lastZipRejection, isNull);
+          expect(events, ['prepareExit', 'start', 'exit:0']);
+          final call = starts.single;
+          expect(call.executable, p.normalize(setup.absolute.path));
+          expect(call.executable, isNot(systemPowerShell.path));
+          expect(call.mode, ProcessStartMode.detached);
+          expect(call.arguments, [
+            '/VERYSILENT',
+            '/SUPPRESSMSGBOXES',
+            '/NORESTART',
+            '/SP-',
+            '/NOCANCEL',
+            '/CLOSEAPPLICATIONS',
+            '/relaunch=1',
+            '/LOG=${p.join(logDir.path, 'update-setup.log')}',
+            '/result=${p.join(logDir.path, 'update-setup.result')}',
+          ]);
+          // Nothing of the zip flow happened.
+          expect(leftovers(), ['app-windows-setup.exe']);
+          expect(installDir.listSync().map((e) => p.basename(e.path)), [
+            'app.exe',
+          ]);
+        },
+      );
+
+      test('the extension is compared without case', () async {
+        final installer = makeInstaller();
+
+        final outcome = await installer.install(
+          setupFile('SETUP.EXE'),
+          prepareExit: prepareExit,
+        );
+
+        expect(outcome, InstallOutcome.started);
+        expect(starts.single.arguments.first, '/VERYSILENT');
+      });
+
+      test('a zip still goes to the swap script', () async {
+        final installer = makeInstaller();
+        onStart = (call) =>
+            File(call.arg('-ReadyFile')).writeAsStringSync('ready');
+
+        expect(await run(installer), InstallOutcome.started);
+
+        expect(starts.single.executable, systemPowerShell.path);
+      });
+
+      test('not Windows', () async {
+        final installer = makeInstaller(isWindows: false);
+
+        expect(
+          await installer.install(setupFile(), prepareExit: prepareExit),
+          InstallOutcome.unsupported,
+        );
+        expect(events, isEmpty);
+      });
+
+      test('the setup installer can be replaced, and its error is '
+          'reported', () async {
+        final setupStarts = <String>[];
+        final setupInstaller = WindowsSetupInstaller(
+          isWindows: true,
+          logDirectory: logDir,
+          minSetupBytes: 2 * 1024 * 1024,
+          startProcess:
+              (
+                executable,
+                arguments, {
+                String? workingDirectory,
+                ProcessStartMode mode = ProcessStartMode.normal,
+              }) async {
+                setupStarts.add(executable);
+                return helper;
+              },
+          exitProcess: (_) => events.add('setup exit'),
+        );
+        final installer = WindowsUpdateInstaller(
+          executablePath: exe.path,
+          isWindows: true,
+          environment: {'SystemRoot': p.join(tmp.path, 'SysRoot')},
+          logDirectory: logDir,
+          setupInstaller: setupInstaller,
+        );
+        expect(installer.setupInstaller, same(setupInstaller));
+
+        // Too small for this setup installer.
+        expect(
+          await installer.install(setupFile(), prepareExit: prepareExit),
+          InstallOutcome.failed,
+        );
+        expect(installer.lastError, WindowsInstallError.badPackage);
+        expect(installer.lastZipRejection, isNull);
+        expect(events, isEmpty);
+        expect(setupStarts, isEmpty);
+      });
+
+      test('a zip error does not linger after a setup run', () async {
+        final installer = makeInstaller();
+        await installer.install(
+          writeZip(Uint8List.fromList([1, 2, 3])),
+          prepareExit: prepareExit,
+        );
+        expect(installer.lastZipRejection, ZipRejection.notAZip);
+
+        final outcome = await installer.install(
+          setupFile('tiny.exe')..writeAsBytesSync([0x4d, 0x5a]),
+          prepareExit: prepareExit,
+        );
+
+        expect(outcome, InstallOutcome.failed);
+        expect(installer.lastError, WindowsInstallError.badPackage);
+        expect(installer.lastZipRejection, isNull);
+      });
+
+      test('the default setup installer shares the overrides', () async {
+        final installer = makeInstaller();
+        expect(installer.setupInstaller.minSetupBytes, 1024 * 1024);
+        expect(installer.setupInstaller.requirePeHeader, isTrue);
+        // Proven by the first test: it used the fake starter, exit and the
+        // log folder given here.
       });
     });
   });

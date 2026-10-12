@@ -477,6 +477,110 @@ void main() {
       rejects(withAsset({'url': 'https://${'a' * 600}.com/x'}));
     });
 
+    test('windows: the setup is preferred over the zip', () {
+      final m = parse(manifestJson(windowsSetup: true));
+      final setup = m.assetFor(UpdatePlatform.windows)!;
+      expect(setup.name, 'app-windows-setup.exe');
+      expect(setup.size, 4000);
+      expect(setup.sha256, sha256Hex(payload(4000, seed: 3)));
+      // The zip is still there for older apps, which read only `windows`.
+      expect(m.assets['windows']!.name, 'app-windows.zip');
+      // Android is not affected.
+      expect(m.assetFor(UpdatePlatform.android)!.name, 'app-release.apk');
+    });
+
+    test('windows: the zip when there is no setup', () {
+      final m = parse(manifestJson());
+      expect(m.assets.containsKey('windows_setup'), isFalse);
+      expect(m.assetFor(UpdatePlatform.windows)!.name, 'app-windows.zip');
+    });
+
+    test('windows: with keys passed in, only those', () {
+      final m = parse(manifestJson(windowsSetup: true));
+      expect(
+        m.assetFor(UpdatePlatform.windows, keys: const ['windows'])!.name,
+        'app-windows.zip',
+      );
+      expect(
+        parse(manifestJson(windows: false, windowsSetup: true))
+            .assetFor(UpdatePlatform.windows, keys: const ['windows']),
+        isNull,
+      );
+    });
+
+    test('windows: the setup alone is enough', () {
+      final m = parse(manifestJson(windows: false, windowsSetup: true));
+      expect(m.assetFor(UpdatePlatform.windows)!.name, 'app-windows-setup.exe');
+      expect(
+        parse(manifestJson(windows: false)).assetFor(UpdatePlatform.windows),
+        isNull,
+      );
+    });
+
+    test('windows: the setup must be an .exe, the zip a .zip', () {
+      Map<String, Object?> renamed(String key, String name) {
+        final m = manifestJson(windowsSetup: true);
+        final assets = Map<String, Object?>.from(m['assets']! as Map);
+        assets[key] = Map<String, Object?>.from(assets[key]! as Map)
+          ..addAll({'name': name, 'url': assetUrl(name).toString()});
+        m['assets'] = assets;
+        return m;
+      }
+
+      for (final bad in [
+        'app-windows-setup.zip',
+        'app-windows-setup.msi',
+        'app-windows-setup.EXE',
+        'app-windows-setup.exe.zip',
+        'app-windows-setup',
+      ]) {
+        rejects(renamed('windows_setup', bad), reason: bad);
+      }
+      rejects(renamed('windows', 'app-windows.exe'));
+      parse(renamed('windows_setup', 'other-setup.exe'));
+    });
+
+    test('unknown asset keys are kept but never chosen', () {
+      final m = parse(
+        manifestJson(
+          override: {
+            'assets': {
+              ...(manifestJson()['assets']! as Map<String, Object?>),
+              'linux': {
+                'name': 'app.tar.gz',
+                'url': assetUrl('app.tar.gz').toString(),
+                'size': 10,
+                'sha256': sha256Hex([1]),
+              },
+            },
+          },
+        ),
+      );
+      expect(m.assets['linux']!.name, 'app.tar.gz');
+      expect(m.assetFor(UpdatePlatform.android)!.name, 'app-release.apk');
+      expect(m.assetFor(UpdatePlatform.windows)!.name, 'app-windows.zip');
+    });
+
+    test('platform keys, extensions and asset keys agree', () {
+      expect(UpdatePlatform.android.key, 'android');
+      expect(UpdatePlatform.android.extension, '.apk');
+      expect(UpdatePlatform.android.assetKeys, ['android']);
+      expect(UpdatePlatform.windows.key, 'windows');
+      expect(UpdatePlatform.windows.extension, '.zip');
+      expect(UpdatePlatform.windows.assetKeys, ['windows_setup', 'windows']);
+      for (final platform in UpdatePlatform.values) {
+        expect(platform.assetKeys, contains(platform.key));
+        expect(
+          UpdatePlatform.assetExtensions[platform.key],
+          platform.extension,
+        );
+        for (final key in platform.assetKeys) {
+          expect(UpdatePlatform.assetExtensions, contains(key));
+        }
+      }
+      expect(UpdatePlatform.assetExtensions['windows_setup'], '.exe');
+    });
+
     test('malformed JSON, empty and oversized input', () {
       for (final bytes in [
         Uint8List(0),

@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:path/path.dart' as p;
 
 import 'update_installer.dart';
+import 'windows_setup_installer.dart';
 
 // ---------------------------------------------------------------------------
 // Zip extraction
@@ -734,8 +735,9 @@ class _EntrySink implements Sink<List<int>> {
 // Installer
 // ---------------------------------------------------------------------------
 
-/// Why [WindowsUpdateInstaller.install] did not hand over to the swap script.
-/// Only these values are ever kept: never a path or a system message.
+/// Why [WindowsUpdateInstaller.install] (or [WindowsSetupInstaller.install])
+/// did not hand over to the swap script or the setup. Only these values are
+/// ever kept: never a path or a system message.
 enum WindowsInstallError {
   /// The install folder is a network (UNC) or device path, the drive root, or
   /// the program is not an `.exe` this installer can replace.
@@ -745,7 +747,8 @@ enum WindowsInstallError {
   /// Controlled folder access). The release page is the way out.
   notWritable,
 
-  /// The zip is not acceptable, see [WindowsUpdateInstaller.lastZipRejection].
+  /// The zip is not acceptable, see [WindowsUpdateInstaller.lastZipRejection],
+  /// or the setup is not an `.exe` of a sane size that starts with `MZ`.
   badPackage,
 
   /// The zip unpacked fine but is not a release of this program: no `.exe` of
@@ -757,12 +760,14 @@ enum WindowsInstallError {
   prepareExitFailed,
 
   /// The helper script could not be written or PowerShell could not be
-  /// started.
+  /// started; or the setup could not be started, or the log of an earlier
+  /// setup run could not be deleted.
   helperUnavailable,
 
   /// PowerShell started but the script did not report back in time (a group
-  /// policy or a security product blocked it), or reported a problem. The app
-  /// keeps running and nothing was changed.
+  /// policy or a security product blocked it), or reported a problem; or the
+  /// setup did not create its log in time. The app keeps running and nothing
+  /// was changed.
   helperNotReady,
 
   /// Anything else.
@@ -796,7 +801,11 @@ typedef WindowsProcessStarter = Future<Process> Function(
   ProcessStartMode mode,
 });
 
-/// Installs an update on Windows: unpacks the verified zip, then hands over to a
+/// Installs an update on Windows. A setup program (`.exe`, what releases ship
+/// now) is handed to [setupInstaller], which runs it silently; the rest of this
+/// comment is about a zip, the portable folder that older releases used.
+///
+/// For a zip: unpacks the verified zip, then hands over to a
 /// small PowerShell script that waits for this process to exit, copies the new
 /// files over the install folder and starts the new version.
 ///
@@ -840,6 +849,7 @@ class WindowsUpdateInstaller implements UpdateInstaller {
     Map<String, String>? environment,
     Directory? logDirectory,
     Random? random,
+    WindowsSetupInstaller? setupInstaller,
     this.extractor = const SafeZipExtractor(),
     this.minTotalBytes = defaultMinTotalBytes,
     this.requirePeHeader = true,
@@ -852,7 +862,16 @@ class WindowsUpdateInstaller implements UpdateInstaller {
        _exit = exitProcess ?? exit,
        _environment = environment ?? Platform.environment,
        _logDirectory = logDirectory ?? Directory.systemTemp,
-       _random = random ?? Random.secure();
+       _random = random ?? Random.secure(),
+       setupInstaller =
+           setupInstaller ??
+           WindowsSetupInstaller(
+             isWindows: isWindows,
+             startProcess: startProcess,
+             exitProcess: exitProcess,
+             logDirectory: logDirectory,
+             environment: environment,
+           );
 
   /// A release folder is far bigger (the engine dll alone is tens of MB).
   static const int defaultMinTotalBytes = 1024 * 1024;
@@ -862,6 +881,9 @@ class WindowsUpdateInstaller implements UpdateInstaller {
 
   /// Name of the log the script writes in the temp folder.
   static const String helperLogFileName = 'update-helper.log';
+
+  /// Runs a setup program; [install] hands every `.exe` package to it.
+  final WindowsSetupInstaller setupInstaller;
 
   final SafeZipExtractor extractor;
 
@@ -909,6 +931,20 @@ class WindowsUpdateInstaller implements UpdateInstaller {
     _busy = true;
     _lastError = null;
     _lastZipRejection = null;
+    if (p.extension(package.path).toLowerCase() == '.exe') {
+      try {
+        final outcome = await setupInstaller.install(
+          package,
+          prepareExit: prepareExit,
+        );
+        _lastError = setupInstaller.lastError;
+        return outcome;
+      } on Object {
+        return _fail(WindowsInstallError.internal);
+      } finally {
+        _busy = false;
+      }
+    }
     // The controller's private folder for this update; the package is in it.
     final work = package.parent;
     final stage = Directory(p.join(work.path, 'stage'));
@@ -936,6 +972,14 @@ class WindowsUpdateInstaller implements UpdateInstaller {
 
       final log = File(p.join(_logDirectory.path, helperLogFileName));
       await _deleteQuietly(ready);
+      // A setup result left from an earlier update would be read at the next
+      // start instead of this script's log.
+      for (final name in [
+        WindowsSetupInstaller.setupResultFileName,
+        WindowsSetupInstaller.setupLogFileName,
+      ]) {
+        await _deleteQuietly(File(p.join(_logDirectory.path, name)));
+      }
       final args = buildArguments(
         scriptPath: script.path,
         installDir: location.directory.path,
@@ -1023,9 +1067,11 @@ class WindowsUpdateInstaller implements UpdateInstaller {
     logFile,
   ];
 
-  /// What the swap script reported on its last run, from the log it leaves in
-  /// the temp folder. Call it once at start-up (it deletes the log unless
-  /// [deleteLog] is false): after [WindowsUpdateHelperResult.rolledBack],
+  /// What the last update reported, from the files it leaves in the temp
+  /// folder: the setup's result file (`success` or `aborted`) when there is
+  /// one, else the last line of the swap script's log. Call it once at
+  /// start-up (it deletes those files unless [deleteLog] is false): after
+  /// [WindowsUpdateHelperResult.rolledBack],
   /// [WindowsUpdateHelperResult.rollbackFailed] or
   /// [WindowsUpdateHelperResult.aborted] the user should be told that the
   /// update did not happen. Never throws.
@@ -1033,9 +1079,10 @@ class WindowsUpdateInstaller implements UpdateInstaller {
     Directory? logDirectory,
     bool deleteLog = true,
   }) async {
-    final file = File(
-      p.join((logDirectory ?? Directory.systemTemp).path, helperLogFileName),
-    );
+    final dir = logDirectory ?? Directory.systemTemp;
+    final setupResult = await _readSetupResult(dir, deleteLog: deleteLog);
+    if (setupResult != null) return setupResult;
+    final file = File(p.join(dir.path, helperLogFileName));
     try {
       if (!await file.exists()) return WindowsUpdateHelperResult.none;
       if (await file.length() > 64 * 1024) {
@@ -1063,6 +1110,51 @@ class WindowsUpdateInstaller implements UpdateInstaller {
     } on Object {
       return WindowsUpdateHelperResult.none;
     }
+  }
+
+  /// The setup's result, or null when it left no result file. The setup
+  /// relaunches the app itself, so a result file is always newer than a swap
+  /// script log; that log is deleted along with the setup's files.
+  static Future<WindowsUpdateHelperResult?> _readSetupResult(
+    Directory dir, {
+    required bool deleteLog,
+  }) async {
+    final file = File(
+      p.join(dir.path, WindowsSetupInstaller.setupResultFileName),
+    );
+    try {
+      if (!await file.exists()) return null;
+    } on Object {
+      return null;
+    }
+    var result = WindowsUpdateHelperResult.none;
+    try {
+      if (await file.length() <= 64) {
+        final token = (await file.readAsString()).trim();
+        if (token == 'success') {
+          result = WindowsUpdateHelperResult.succeeded;
+        } else if (token == 'aborted') {
+          result = WindowsUpdateHelperResult.aborted;
+        }
+      }
+    } on Object {
+      // Unreadable: nothing to report.
+    }
+    if (deleteLog) {
+      for (final name in [
+        WindowsSetupInstaller.setupResultFileName,
+        // The exiting setup may still hold its log open; then it stays.
+        WindowsSetupInstaller.setupLogFileName,
+        helperLogFileName,
+      ]) {
+        try {
+          await File(p.join(dir.path, name)).delete();
+        } on Object {
+          // Gone or in use.
+        }
+      }
+    }
+    return result;
   }
 
   // --- Steps ---------------------------------------------------------------
