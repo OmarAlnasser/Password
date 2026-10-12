@@ -400,24 +400,20 @@ jobs:
           APP_VERSION: ${{ needs.check.outputs.version }}
         run: |
           $ErrorActionPreference = 'Stop'
-          # setup.iss needs Inno Setup 6.3 or newer (x64compatible); an older
-          # copy on the runner counts as missing, and choco upgrades it.
+          # setup.iss needs Inno Setup 6.3 or newer (x64compatible). ISCC.exe has no
+          # version resource to check; an older one fails the compile on that line.
           function Find-Iscc {
             foreach ($root in @(${env:ProgramFiles(x86)}, $env:ProgramFiles)) {
               if (-not $root) { continue }
               $candidate = Join-Path $root 'Inno Setup 6\ISCC.exe'
               if (-not (Test-Path -LiteralPath $candidate)) { continue }
-              $info = (Get-Item -LiteralPath $candidate).VersionInfo
-              if ($info.FileMajorPart -gt 6 -or ($info.FileMajorPart -eq 6 -and $info.FileMinorPart -ge 3)) {
-                return $candidate
-              }
-              Write-Host "Ignoring Inno Setup $($info.FileVersion) at $candidate (6.3 or newer needed)."
+              return $candidate
             }
             return $null
           }
           $iscc = Find-Iscc
           if (-not $iscc) {
-            choco upgrade innosetup -y --no-progress
+            choco install innosetup -y --no-progress
             if ($LASTEXITCODE -ne 0) { throw 'Installing Inno Setup failed.' }
             $iscc = Find-Iscc
           }

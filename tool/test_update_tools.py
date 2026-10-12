@@ -1968,8 +1968,7 @@ class WorkflowStructureTests(unittest.TestCase):
         self.assertEqual(iscc['shell'], 'pwsh')
         for needed in ('installer\\windows\\setup.iss', '/DAppVersion=$env:APP_VERSION',
                        '/DSourceDir=', '/O$dist', 'windows-x64-setup.exe',
-                       'choco upgrade innosetup', 'Inno Setup 6\\ISCC.exe',
-                       'FileMajorPart', 'FileMinorPart -ge 3',
+                       'choco install innosetup', 'Inno Setup 6\\ISCC.exe',
                        '${env:ProgramFiles(x86)}', '$env:ProgramFiles', '0x4D', '0x5A',
                        '$LASTEXITCODE'):
             self.assertIn(needed, iscc['run'])
