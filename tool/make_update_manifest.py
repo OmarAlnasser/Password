@@ -8,6 +8,7 @@ pip install in the job that holds the signing key).
         --version 0.2.0 --build 2000 --tag v0.2.0 \\
         --repo OmarAlnasser/Password \\
         --apk dist/android.apk --windows-zip dist/windows-x64.zip \\
+        --windows-setup dist/windows-x64-setup.exe \\
         --notes-file notes.md --out-dir out \\
         --published-at 2026-10-07T12:00:00Z \\
         --expect-public-key release/update_public_key.txt
@@ -16,8 +17,9 @@ What it does, in this order, and stops at the first problem:
 
   1. Checks the arguments (strict version, build = major*1000000 + minor*1000 +
      patch, tag = "v" + version, repository name).
-  2. Hashes both packages (SHA-256, size) and sanity-checks them (zip magic,
-     size cap, the Windows zip has the exe and flutter_windows.dll at its root).
+  2. Hashes the three packages (SHA-256, size) and sanity-checks them (size
+     cap; the APK and the Windows zip are zips, the zip has the exe and
+     flutter_windows.dll at its root; the Windows setup is a Windows program).
   3. Writes the manifest in a canonical form: fixed key order, 2-space indent,
      UTF-8 without BOM, one trailing newline. Same inputs give the same bytes.
   4. Signs the EXACT bytes with Ed25519. The key is the base64 of the raw
@@ -34,8 +36,13 @@ What it does, in this order, and stops at the first problem:
 The public key is printed (and written with --public-key-out) so that the
 result can be checked; no installed app trusts it.
 
-Asset names are generic on purpose (android.apk, windows-x64.zip): the app name
-is not part of any file name, so renaming the app never touches the pipeline.
+Asset names are generic on purpose (android.apk, windows-x64.zip,
+windows-x64-setup.exe): the app name is not part of any file name, so renaming
+the app never touches the pipeline.
+
+The Windows app is listed twice. "windows_setup" is the installer that current
+apps download. "windows" is the zip, which apps up to 0.1.2 read (they ignore
+keys they do not know), and which stays for people who keep a portable folder.
 
 This file also holds the pieces the verify tool shares: the Ed25519
 implementation (RFC 8032, pure Python) and the manifest schema checks that
@@ -77,10 +84,12 @@ MAX_VERSION_LENGTH = 32
 
 ANDROID_ASSET = 'android.apk'
 WINDOWS_ASSET = 'windows-x64.zip'
-# (manifest key, generic file name, required extension)
+WINDOWS_SETUP_ASSET = 'windows-x64-setup.exe'
+# (manifest key, generic file name, required extension), in manifest order.
 PLATFORMS: Tuple[Tuple[str, str, str], ...] = (
     ('android', ANDROID_ASSET, '.apk'),
     ('windows', WINDOWS_ASSET, '.zip'),
+    ('windows_setup', WINDOWS_SETUP_ASSET, '.exe'),
 )
 EXTENSION_OF = {key: ext for key, _name, ext in PLATFORMS}
 
@@ -376,7 +385,11 @@ def sha256_and_size(path: Path) -> Tuple[str, int]:
 
 def inspect_package(platform: str, path: Path) -> None:
     """Cheap sanity checks that catch a wrong or broken file before it is
-    signed: it is a zip, and it looks like what the platform expects."""
+    signed: it is a zip (or, for the setup, a Windows program), and it looks
+    like what the platform expects."""
+    if platform == 'windows_setup':
+        inspect_windows_program(path)
+        return
     try:
         with open(path, 'rb') as handle:
             magic = handle.read(4)
@@ -403,6 +416,25 @@ def inspect_package(platform: str, path: Path) -> None:
             raise ToolError(f'{path.name} has no flutter_windows.dll at its root')
         if not any(n.lower().endswith('.exe') for n in roots):
             raise ToolError(f'{path.name} has no .exe at its root')
+
+
+def inspect_windows_program(path: Path) -> None:
+    """A Windows .exe: the "MZ" header, and the "PE" signature where the
+    header says it is. Catches a zip or an HTML error page saved as .exe."""
+    try:
+        with open(path, 'rb') as handle:
+            header = handle.read(64)
+            if len(header) < 64 or header[:2] != b'MZ':
+                raise ToolError(f'{path.name} is not a Windows program (no MZ header)')
+            offset = int.from_bytes(header[60:64], 'little')
+            if offset < 64 or offset > 64 * 1024:
+                raise ToolError(f'{path.name} is not a Windows program (bad PE offset)')
+            handle.seek(offset)
+            signature = handle.read(4)
+    except OSError:
+        raise ToolError(f'cannot read {path.name}') from None
+    if signature != b'PE\0\0':
+        raise ToolError(f'{path.name} is not a Windows program (no PE signature)')
 
 
 # --------------------------------------------------------------------------
@@ -552,12 +584,13 @@ def _validate_asset(platform: str, asset: Dict[str, Any]) -> None:
 def check_release_layout(data: Dict[str, Any], *, repo: str, tag: str,
                          version: str) -> None:
     """What the release workflow publishes, beyond what the app accepts:
-    exactly the two generic assets, at the canonical URLs of this tag."""
+    exactly the three generic assets, at the canonical URLs of this tag."""
     if tag != f'v{version}':
         raise ToolError('tag does not match the manifest version')
     assets = data['assets']
     if set(assets) != {key for key, _n, _e in PLATFORMS}:
-        raise ToolError('manifest must hold exactly the android and windows assets')
+        raise ToolError('manifest must hold exactly the android, windows and '
+                        'windows_setup assets')
     for key, name, _ext in PLATFORMS:
         asset = assets[key]
         if asset['name'] != name:
@@ -683,7 +716,8 @@ def make_release(args: argparse.Namespace) -> int:
             raise ToolError('--notes-ar-file is empty')
 
     assets: Dict[str, Dict[str, Any]] = {}
-    sources = {'android': args.apk, 'windows': args.windows_zip}
+    sources = {'android': args.apk, 'windows': args.windows_zip,
+               'windows_setup': args.windows_setup}
     for key, name, extension in PLATFORMS:
         path = Path(sources[key])
         if path.suffix != extension:
@@ -767,6 +801,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument('--repo', default=DEFAULT_REPO, help='owner/name')
     p.add_argument('--apk', help='the signed release APK')
     p.add_argument('--windows-zip', help='the Windows zip (files at its root)')
+    p.add_argument('--windows-setup', help='the Windows installer (.exe)')
     p.add_argument('--notes-file', help='release notes (UTF-8), English')
     p.add_argument('--notes-ar-file', help='optional Arabic release notes')
     p.add_argument('--out-dir', help='where update.json and update.json.sig go')
@@ -786,7 +821,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 _REQUIRED_FOR_RELEASE = ('version', 'build', 'tag', 'apk', 'windows_zip',
-                         'notes_file', 'out_dir')
+                         'windows_setup', 'notes_file', 'out_dir')
 
 
 def main(argv: Optional[List[str]] = None) -> int:

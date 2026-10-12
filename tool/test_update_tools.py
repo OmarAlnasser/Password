@@ -51,6 +51,8 @@ THIS_FILE = Path(__file__).resolve()
 FIXTURE_DIR = ROOT / 'test' / 'services' / 'update' / 'fixtures' / 'release_tool'
 PINNED_KEY_FILE = ROOT / 'release' / 'update_public_key.txt'
 WORKFLOW = ROOT / '.github' / 'workflows' / 'release.yml'
+BUILD_WORKFLOW = ROOT / '.github' / 'workflows' / 'build.yml'
+SETUP_SCRIPT = ROOT / 'installer' / 'windows' / 'setup.iss'
 DART_DIR = ROOT / 'lib' / 'services' / 'update'
 
 REQUIRE_OPTIONAL = os.environ.get('REQUIRE_OPTIONAL_TESTS') == '1'
@@ -136,6 +138,15 @@ def write_fake_windows_zip(path: Path) -> None:
     })
 
 
+def write_fake_windows_setup(path: Path) -> None:
+    """An "MZ" header that points at a "PE" signature, then filler: enough
+    for the tool's check, not a program."""
+    header = bytearray(b'MZ' + b'\0' * 62)
+    header[60:64] = (128).to_bytes(4, 'little')
+    body = expand('setup.stub', 62) + b'\0' * 2 + b'PE\0\0'
+    path.write_bytes(bytes(header) + body + expand('setup.exe', 1500))
+
+
 def run_python(script: Path, args: List[str], *, key: Optional[str] = None,
                cwd: Optional[Path] = None) -> subprocess.CompletedProcess:
     env = {k: v for k, v in os.environ.items()
@@ -159,7 +170,8 @@ def good_manifest() -> Dict[str, Any]:
         version='0.2.0', build=2000, published_at=PUBLISHED_AT,
         notes={'en': 'Fixes.', 'ar': 'إصلاحات.'},
         assets={'android': asset('android.apk', 1234),
-                'windows': asset('windows-x64.zip', 5678)})
+                'windows': asset('windows-x64.zip', 5678),
+                'windows_setup': asset('windows-x64-setup.exe', 9012)})
 
 
 def optional_missing(what: str) -> None:
@@ -313,6 +325,12 @@ GOLDEN_MANIFEST = '''{
       "url": "https://github.com/OmarAlnasser/Password/releases/download/v0.2.0/windows-x64.zip",
       "size": 5678,
       "sha256": "SHA_WINDOWS"
+    },
+    "windows_setup": {
+      "name": "windows-x64-setup.exe",
+      "url": "https://github.com/OmarAlnasser/Password/releases/download/v0.2.0/windows-x64-setup.exe",
+      "size": 9012,
+      "sha256": "SHA_SETUP"
     }
   }
 }
@@ -323,7 +341,9 @@ class CanonicalBytesTests(unittest.TestCase):
     def test_golden_bytes(self) -> None:
         expected = (GOLDEN_MANIFEST
                     .replace('SHA_ANDROID', hashlib.sha256(b'android.apk').hexdigest())
-                    .replace('SHA_WINDOWS', hashlib.sha256(b'windows-x64.zip').hexdigest()))
+                    .replace('SHA_WINDOWS', hashlib.sha256(b'windows-x64.zip').hexdigest())
+                    .replace('SHA_SETUP',
+                             hashlib.sha256(b'windows-x64-setup.exe').hexdigest()))
         self.assertEqual(mum.canonical_bytes(good_manifest()), expected.encode('utf-8'))
 
     def test_format_properties(self) -> None:
@@ -340,7 +360,7 @@ class CanonicalBytesTests(unittest.TestCase):
         data = json.loads(mum.canonical_bytes(good_manifest()))
         self.assertEqual(list(data), ['schema', 'version', 'build', 'publishedAt',
                                       'notes', 'assets'])
-        self.assertEqual(list(data['assets']), ['android', 'windows'])
+        self.assertEqual(list(data['assets']), ['android', 'windows', 'windows_setup'])
         for asset in data['assets'].values():
             self.assertEqual(list(asset), ['name', 'url', 'size', 'sha256'])
 
@@ -498,6 +518,10 @@ class ManifestValidationTests(unittest.TestCase):
             self.assert_bad(mutated('assets', 'android', 'name', bad), f'name {bad!r}')
         self.assert_bad(mutated('assets', 'windows', 'name', 'windows-x64.apk'),
                         'windows needs .zip')
+        for bad in ['windows-x64-setup.zip', 'windows-x64-setup.EXE',
+                    'windows-x64-setup.exe.zip', 'windows-x64-setup']:
+            self.assert_bad(mutated('assets', 'windows_setup', 'name', bad),
+                            f'windows_setup needs .exe, not {bad!r}')
 
     def test_asset_url(self) -> None:
         good = mum.asset_url(REPO, 'v0.2.0', 'android.apk')
@@ -561,6 +585,19 @@ class ManifestValidationTests(unittest.TestCase):
         del data['assets']['windows']
         with self.assertRaises(ToolError):
             layout(data)
+        # Apps up to 0.1.2 read only "windows"; every release keeps it, and
+        # the installer is required next to it.
+        data = good_manifest()
+        del data['assets']['windows_setup']
+        mum.validate_manifest(data)
+        with self.assertRaises(ToolError):
+            layout(data)
+        data = good_manifest()
+        data['assets']['windows_setup']['name'] = 'setup.exe'
+        data['assets']['windows_setup']['url'] = mum.asset_url(REPO, 'v0.2.0', 'setup.exe')
+        mum.validate_manifest(data)
+        with self.assertRaises(ToolError):
+            layout(data)
 
     def test_duplicate_keys_and_non_json_numbers(self) -> None:
         for raw in [
@@ -616,18 +653,21 @@ class SignatureFileTests(unittest.TestCase):
 # --------------------------------------------------------------------------
 
 class ToolCase(unittest.TestCase):
-    """A temporary directory with a fake APK, a fake Windows zip and notes."""
+    """A temporary directory with a fake APK, a fake Windows zip, a fake
+    Windows setup and notes."""
 
     def setUp(self) -> None:
         self.work = Path(tempfile.mkdtemp(prefix='update-tools-'))
         self.addCleanup(shutil.rmtree, self.work, True)
         self.apk = self.work / 'android.apk'
         self.win = self.work / 'windows-x64.zip'
+        self.setup_exe = self.work / 'windows-x64-setup.exe'
         self.notes = self.work / 'notes.md'
         self.pub_file = self.work / 'public_key.txt'
         self.out = self.work / 'out'
         write_fake_apk(self.apk)
         write_fake_windows_zip(self.win)
+        write_fake_windows_setup(self.setup_exe)
         self.notes.write_text(NOTES_EN, encoding='utf-8')
         self.pub_file.write_text(
             base64.b64encode(public_of(THROWAWAY_SEED)).decode() + '\n')
@@ -637,7 +677,8 @@ class ToolCase(unittest.TestCase):
     def make_args(self, **over: Any) -> List[str]:
         opts: Dict[str, Any] = {
             'version': '0.2.0', 'build': '2000', 'tag': 'v0.2.0', 'repo': REPO,
-            'apk': self.apk, 'windows-zip': self.win, 'notes-file': self.notes,
+            'apk': self.apk, 'windows-zip': self.win,
+            'windows-setup': self.setup_exe, 'notes-file': self.notes,
             'out-dir': self.out, 'published-at': PUBLISHED_AT,
             'expect-public-key': self.pub_file,
         }
@@ -703,7 +744,9 @@ class MakeToolTests(ToolCase):
         self.assertEqual(manifest['publishedAt'], PUBLISHED_AT)
         self.assertEqual(manifest['notes'], {'en': mum.clean_notes(NOTES_EN)})
         for key, path, name in [('android', self.apk, 'android.apk'),
-                                ('windows', self.win, 'windows-x64.zip')]:
+                                ('windows', self.win, 'windows-x64.zip'),
+                                ('windows_setup', self.setup_exe,
+                                 'windows-x64-setup.exe')]:
             asset = manifest['assets'][key]
             data = path.read_bytes()
             self.assertEqual(asset['name'], name)
@@ -717,7 +760,8 @@ class MakeToolTests(ToolCase):
 
         # Verified by the verify tool (a separate process) ...
         checked = self.verify_cli('--apk', str(self.apk), '--windows-zip',
-                                  str(self.win), '--version', '0.2.0', '--build',
+                                  str(self.win), '--windows-setup',
+                                  str(self.setup_exe), '--version', '0.2.0', '--build',
                                   '2000', '--tag', 'v0.2.0', '--repo', REPO,
                                   '--release-layout')
         self.assertEqual(checked.returncode, 0, checked.stderr)
@@ -740,7 +784,7 @@ class MakeToolTests(ToolCase):
     def test_android_is_always_listed_before_windows(self) -> None:
         self.make_ok()
         manifest = json.loads((self.out / 'update.json').read_bytes())
-        self.assertEqual(list(manifest['assets']), ['android', 'windows'])
+        self.assertEqual(list(manifest['assets']), ['android', 'windows', 'windows_setup'])
 
     def test_arabic_notes(self) -> None:
         ar = self.work / 'notes-ar.md'
@@ -817,7 +861,8 @@ class MakeToolTests(ToolCase):
     def test_check_key_mode(self) -> None:
         good = self.make(key=THROWAWAY_SEED_B64, check_key=True,
                          **{k: None for k in ('version', 'build', 'tag', 'repo', 'apk',
-                                              'windows_zip', 'notes_file', 'out_dir',
+                                              'windows_zip', 'windows_setup',
+                                              'notes_file', 'out_dir',
                                               'published_at')})
         self.assertEqual(good.returncode, 0, good.stderr)
         self.assertIn(base64.b64encode(public_of(THROWAWAY_SEED)).decode(), good.stdout)
@@ -825,7 +870,8 @@ class MakeToolTests(ToolCase):
         bad = self.make(key=THROWAWAY_SEED_B64, check_key=True,
                         expect_public_key=PINNED_KEY_FILE,
                         **{k: None for k in ('version', 'build', 'tag', 'repo', 'apk',
-                                             'windows_zip', 'notes_file', 'out_dir',
+                                             'windows_zip', 'windows_setup',
+                                             'notes_file', 'out_dir',
                                              'published_at')})
         self.assertEqual(bad.returncode, 1)
         self.assertIn('does NOT match', bad.stderr)
@@ -904,6 +950,12 @@ class MakeToolTests(ToolCase):
                           cwd=self.work)
         self.assertEqual(proc.returncode, 2)
         self.assertIn('missing', proc.stderr)
+        # The installer is required for a release, like the other packages.
+        proc = run_python(MAKE, self.make_args(windows_setup=None),
+                          key=THROWAWAY_SEED_B64, cwd=self.work)
+        self.assertEqual(proc.returncode, 2)
+        self.assertIn('--windows-setup', proc.stderr)
+        self.assertEqual(self.out_files(), [])
 
     def test_package_validation(self) -> None:
         self.assert_refused('missing apk', apk=self.work / 'nope.apk')
@@ -930,6 +982,52 @@ class MakeToolTests(ToolCase):
             self.assert_refused(f'unsafe entry {evil}', windows_zip=bad)
         (self.work / 'dir.apk').mkdir()
         self.assert_refused('apk is a directory', apk=self.work / 'dir.apk')
+
+    def test_setup_validation(self) -> None:
+        self.assert_refused('missing setup', windows_setup=self.work / 'nope.exe')
+        (self.work / 'dir.exe').mkdir()
+        self.assert_refused('setup is a directory', windows_setup=self.work / 'dir.exe')
+        renamed_zip = self.work / 'zip-named.exe'
+        shutil.copy(self.win, renamed_zip)
+        self.assert_refused('a zip named .exe', windows_setup=renamed_zip)
+        html = self.work / 'error-page.exe'
+        html.write_bytes(b'<!DOCTYPE html><html>Not Found</html>' + b' ' * 200)
+        self.assert_refused('an error page named .exe', windows_setup=html)
+        empty = self.work / 'empty.exe'
+        empty.write_bytes(b'')
+        self.assert_refused('empty setup', windows_setup=empty)
+        short = self.work / 'short.exe'
+        short.write_bytes(b'MZ')
+        self.assert_refused('only the MZ bytes', windows_setup=short)
+        dos_only = self.work / 'dos.exe'
+        dos_only.write_bytes(b'MZ' + b'\0' * 62 + expand('dos', 400))
+        self.assert_refused('MZ without a PE header', windows_setup=dos_only)
+        far = self.work / 'far.exe'
+        header = bytearray(b'MZ' + b'\0' * 62)
+        header[60:64] = (10 ** 9).to_bytes(4, 'little')
+        far.write_bytes(bytes(header) + expand('far', 400))
+        self.assert_refused('PE offset out of range', windows_setup=far)
+        wrong_name = self.work / 'setup.msi'
+        shutil.copy(self.setup_exe, wrong_name)
+        self.assert_refused('setup is not .exe', windows_setup=wrong_name)
+        self.assert_refused('the zip given as the setup', windows_setup=self.win)
+        self.assert_refused('the setup given as the zip', windows_zip=self.setup_exe)
+        mum.inspect_package('windows_setup', self.setup_exe)
+
+    def test_local_setup_check_in_the_verify_tool(self) -> None:
+        self.make_ok()
+        ok = self.verify_cli('--windows-setup', str(self.setup_exe))
+        self.assertEqual(ok.returncode, 0, ok.stderr)
+        self.assertIn('local windows_setup package matches', ok.stdout)
+        data = bytearray(self.setup_exe.read_bytes())
+        data[-1] ^= 0x01
+        self.setup_exe.write_bytes(bytes(data))
+        changed = self.verify_cli('--windows-setup', str(self.setup_exe))
+        self.assertEqual(changed.returncode, 1)
+        self.assertIn('SHA-256 differs', changed.stderr)
+        self.assertEqual(
+            self.verify_cli('--windows-setup', str(self.win)).returncode, 1,
+            'the zip is not the setup')
 
     def test_notes_validation(self) -> None:
         self.notes.write_bytes(b'')
@@ -1274,6 +1372,7 @@ class RemoteFlowTests(ToolCase):
             self.base + 'update.json.sig': signature,
             self.base + 'android.apk': self.apk.read_bytes(),
             self.base + 'windows-x64.zip': self.win.read_bytes(),
+            self.base + 'windows-x64-setup.exe': self.setup_exe.read_bytes(),
             self.latest + 'update.json': manifest,
             self.latest + 'update.json.sig': signature,
         }
@@ -1308,6 +1407,20 @@ class RemoteFlowTests(ToolCase):
         self.assertEqual(code, 0, err)
         self.assertIn('VERIFIED', out)
         self.assertIn('installed apps will see this release', out)
+        for key in ('android', 'windows', 'windows_setup'):
+            self.assertIn(f'published {key} package matches the manifest', out)
+
+    def test_published_setup_that_differs_is_caught(self) -> None:
+        data = bytearray(self.store[self.base + 'windows-x64-setup.exe'])
+        data[-1] ^= 1
+        self.store[self.base + 'windows-x64-setup.exe'] = bytes(data)
+        code, _out, err = self.run_remote('--download-assets')
+        self.assertEqual(code, 1)
+        self.assertIn('windows-x64-setup.exe does not match the signed manifest', err)
+        del self.store[self.base + 'windows-x64-setup.exe']
+        code, _out, err = self.run_remote('--download-assets')
+        self.assertEqual(code, 1)
+        self.assertIn('404', err)
 
     def test_published_package_that_differs_is_caught(self) -> None:
         data = bytearray(self.store[self.base + 'android.apk'])
@@ -1377,17 +1490,33 @@ same bytes). To rewrite them, run
 '''
 
 
-def fixture_make_args(directory: Path, out: Path, public_file: Path) -> List[str]:
-    notes_en = directory / 'notes-en.md'
-    return [
-        '--version', '0.2.0', '--build', '2000', '--tag', 'v0.2.0', '--repo', REPO,
-        '--apk', str(directory / 'android.apk'),
-        '--windows-zip', str(directory / 'windows-x64.zip'),
-        '--notes-file', str(notes_en),
-        '--notes-ar-file', str(directory / 'notes-ar.md'),
-        '--out-dir', str(out), '--published-at', PUBLISHED_AT,
-        '--expect-public-key', str(public_file),
-    ]
+# The fixture keeps the layout of the releases up to 0.1.2: android and windows
+# (the zip), no windows_setup. That is still a manifest the app must accept
+# (it falls back to the zip), and the Dart tests read the zip from it. The
+# release tool now refuses to make a release without the installer, so the
+# fixture is built from the tool's own functions instead of its command line:
+# the same functions, the same bytes.
+FIXTURE_ASSETS = (('android', 'android.apk'), ('windows', 'windows-x64.zip'))
+
+
+def fixture_bytes(directory: Path) -> Any:
+    """(update.json, update.json.sig) for the packages in [directory]."""
+    assets: Dict[str, Dict[str, Any]] = {}
+    for key, name in FIXTURE_ASSETS:
+        path = directory / name
+        mum.inspect_package(key, path)
+        digest, size = mum.sha256_and_size(path)
+        assets[key] = {'name': name, 'url': mum.asset_url(REPO, 'v0.2.0', name),
+                       'size': size, 'sha256': digest}
+    manifest = mum.build_manifest(
+        version='0.2.0', build=2000, published_at=PUBLISHED_AT,
+        notes={'en': mum.clean_notes(NOTES_EN), 'ar': mum.clean_notes(NOTES_AR)},
+        assets=assets)
+    raw = mum.canonical_bytes(manifest)
+    mum.parse_manifest_bytes(raw)
+    signature, _public = mum.sign_and_check(raw, THROWAWAY_SEED,
+                                            public_of(THROWAWAY_SEED))
+    return raw, mum.encode_signature_file(signature)
 
 
 def write_fixtures() -> None:
@@ -1397,19 +1526,9 @@ def write_fixtures() -> None:
     public_text = base64.b64encode(public_of(THROWAWAY_SEED)).decode() + '\n'
     (FIXTURE_DIR / 'public_key.txt').write_text(public_text, encoding='ascii')
     (FIXTURE_DIR / 'README.txt').write_text(FIXTURE_README, encoding='utf-8')
-    with tempfile.TemporaryDirectory() as tmp:
-        work = Path(tmp)
-        (work / 'notes-en.md').write_text(NOTES_EN, encoding='utf-8')
-        (work / 'notes-ar.md').write_text(NOTES_AR, encoding='utf-8')
-        for name in ('android.apk', 'windows-x64.zip'):
-            shutil.copy(FIXTURE_DIR / name, work / name)
-        proc = run_python(MAKE, fixture_make_args(
-            work, work / 'out', FIXTURE_DIR / 'public_key.txt'),
-            key=THROWAWAY_SEED_B64, cwd=work)
-        if proc.returncode != 0:
-            raise SystemExit(proc.stderr)
-        for name in ('update.json', 'update.json.sig'):
-            shutil.copy(work / 'out' / name, FIXTURE_DIR / name)
+    raw, signature = fixture_bytes(FIXTURE_DIR)
+    (FIXTURE_DIR / 'update.json').write_bytes(raw)
+    (FIXTURE_DIR / 'update.json.sig').write_bytes(signature)
     print(f'fixtures written to {FIXTURE_DIR.relative_to(ROOT)}')
 
 
@@ -1432,7 +1551,11 @@ class FixtureTests(unittest.TestCase):
         manifest = verify.verify_signed_manifest(self.manifest, self.signature,
                                                  self.public)
         self.assertEqual(manifest['version'], '0.2.0')
-        mum.check_release_layout(manifest, repo=REPO, tag='v0.2.0', version='0.2.0')
+        self.assertEqual(list(manifest['assets']), [k for k, _n in FIXTURE_ASSETS])
+        for key, name in FIXTURE_ASSETS:
+            self.assertEqual(manifest['assets'][key]['name'], name)
+            self.assertEqual(manifest['assets'][key]['url'],
+                             mum.asset_url(REPO, 'v0.2.0', name))
         self.assertEqual(manifest['notes']['ar'], mum.clean_notes(NOTES_AR))
         self.assertEqual(manifest['publishedAt'], PUBLISHED_AT)
         if HAVE_CRYPTOGRAPHY:
@@ -1445,9 +1568,18 @@ class FixtureTests(unittest.TestCase):
                 self.manifest, self.signature,
                 mum.read_public_key_file(PINNED_KEY_FILE))
 
+    def test_it_is_the_layout_of_an_older_release(self) -> None:
+        """No installer: what releases up to 0.1.2 published. A release made
+        today must carry the installer too."""
+        manifest = mum.parse_manifest_bytes(self.manifest)
+        self.assertNotIn('windows_setup', manifest['assets'])
+        with self.assertRaises(ToolError):
+            mum.check_release_layout(manifest, repo=REPO, tag='v0.2.0',
+                                     version='0.2.0')
+
     def test_packages_match_the_manifest(self) -> None:
         manifest = json.loads(self.manifest)
-        for key, name in [('android', 'android.apk'), ('windows', 'windows-x64.zip')]:
+        for key, name in FIXTURE_ASSETS:
             path = FIXTURE_DIR / name
             verify.check_file_against_asset(path, manifest['assets'][key], name)
             mum.inspect_package(key, path)
@@ -1456,19 +1588,36 @@ class FixtureTests(unittest.TestCase):
     def test_the_tool_reproduces_the_stored_files(self) -> None:
         """Same inputs, same bytes (the zips are taken as stored, so this does
         not depend on the zip library of the machine)."""
+        raw, signature = fixture_bytes(FIXTURE_DIR)
+        self.assertEqual(raw, self.manifest)
+        self.assertEqual(signature, self.signature)
+
+    def test_the_command_line_writes_what_the_functions_write(self) -> None:
+        """The CLI and fixture_bytes() agree: the same functions, the same
+        bytes, here with the installer added."""
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp)
             (work / 'notes-en.md').write_text(NOTES_EN, encoding='utf-8')
             (work / 'notes-ar.md').write_text(NOTES_AR, encoding='utf-8')
             for name in ('android.apk', 'windows-x64.zip'):
                 shutil.copy(FIXTURE_DIR / name, work / name)
-            proc = run_python(MAKE, fixture_make_args(
-                work, work / 'out', FIXTURE_DIR / 'public_key.txt'),
-                key=THROWAWAY_SEED_B64, cwd=work)
+            write_fake_windows_setup(work / 'windows-x64-setup.exe')
+            proc = run_python(MAKE, [
+                '--version', '0.2.0', '--build', '2000', '--tag', 'v0.2.0',
+                '--repo', REPO, '--apk', str(work / 'android.apk'),
+                '--windows-zip', str(work / 'windows-x64.zip'),
+                '--windows-setup', str(work / 'windows-x64-setup.exe'),
+                '--notes-file', str(work / 'notes-en.md'),
+                '--notes-ar-file', str(work / 'notes-ar.md'),
+                '--out-dir', str(work / 'out'), '--published-at', PUBLISHED_AT,
+                '--expect-public-key', str(FIXTURE_DIR / 'public_key.txt'),
+            ], key=THROWAWAY_SEED_B64, cwd=work)
             self.assertEqual(proc.returncode, 0, proc.stderr)
-            self.assertEqual((work / 'out' / 'update.json').read_bytes(), self.manifest)
-            self.assertEqual((work / 'out' / 'update.json.sig').read_bytes(),
-                             self.signature)
+            written = json.loads((work / 'out' / 'update.json').read_bytes())
+            stored = json.loads(self.manifest)
+            setup = written['assets'].pop('windows_setup')
+            self.assertEqual(setup['name'], 'windows-x64-setup.exe')
+            self.assertEqual(written, stored)
 
     def test_verify_cli_accepts_the_fixture_directory(self) -> None:
         proc = run_python(VERIFY, [
@@ -1478,7 +1627,7 @@ class FixtureTests(unittest.TestCase):
             '--apk', str(FIXTURE_DIR / 'android.apk'),
             '--windows-zip', str(FIXTURE_DIR / 'windows-x64.zip'),
             '--version', '0.2.0', '--build', '2000', '--tag', 'v0.2.0',
-            '--repo', REPO, '--release-layout'])
+            '--repo', REPO])
         self.assertEqual(proc.returncode, 0, proc.stderr)
 
 
@@ -1543,11 +1692,20 @@ class DartMirrorTests(unittest.TestCase):
 
     def test_asset_names_and_extensions(self) -> None:
         text = self.dart('update_manifest.dart')
-        self.assertIn("android('android', '.apk')", text)
-        self.assertIn("windows('windows', '.zip')", text)
         self.assertEqual([(k, n, e) for k, n, e in mum.PLATFORMS],
                          [('android', 'android.apk', '.apk'),
-                          ('windows', 'windows-x64.zip', '.zip')])
+                          ('windows', 'windows-x64.zip', '.zip'),
+                          ('windows_setup', 'windows-x64-setup.exe', '.exe')])
+        block = re.search(r'assetExtensions\s*=\s*\{(.*?)\}', text, re.S)
+        self.assertIsNotNone(block, 'UpdatePlatform.assetExtensions not found')
+        dart_extensions = dict(re.findall(r"'([a-z0-9_]+)'\s*:\s*'([^']+)'",
+                                          block.group(1)))
+        self.assertEqual(dart_extensions, mum.EXTENSION_OF)
+        # On Windows the app prefers the setup and falls back to the zip.
+        windows = re.search(r"windows\('windows',\s*'\.zip',\s*\[([^\]]*)\]", text)
+        self.assertIsNotNone(windows, 'UpdatePlatform.windows not found')
+        self.assertEqual(re.findall(r"'([a-z0-9_]+)'", windows.group(1)),
+                         ['windows_setup', 'windows'])
 
 
 # --------------------------------------------------------------------------
@@ -1602,9 +1760,10 @@ class WorkflowTextTests(unittest.TestCase):
         text = workflow_text()
         self.assertIn(mum.ANDROID_ASSET, text)
         self.assertIn(mum.WINDOWS_ASSET, text)
+        self.assertIn(mum.WINDOWS_SETUP_ASSET, text)
         for tool in ('tool/make_update_manifest.py', 'tool/verify_update_manifest.py',
                      'tool/test_update_tools.py', 'release/update_public_key.txt',
-                     'release/android_cert_sha256.txt'):
+                     'release/android_cert_sha256.txt', 'installer/windows/setup.iss'):
             self.assertIn(tool, text)
             self.assertTrue((ROOT / tool).exists(), tool)
 
@@ -1759,11 +1918,15 @@ class WorkflowStructureTests(unittest.TestCase):
         self.assertIn('--verify-tag', publish_text)
         self.assertIn('--draft=false', publish_text)
 
-    def test_publish_uploads_exactly_the_four_files(self) -> None:
+    def test_publish_uploads_exactly_the_five_files(self) -> None:
         create = next(s for s in self.steps('publish')
                       if 'gh release create' in s.get('run', ''))['run']
-        for name in ('android.apk', 'windows-x64.zip', 'update.json', 'update.json.sig'):
-            self.assertIn(name, create)
+        files = re.findall(r'^\s*(artifacts/\S+)', create, re.M)
+        self.assertEqual(sorted(Path(f).name for f in files
+                                if not f.endswith('release-notes.md')),
+                         sorted(['android.apk', 'windows-x64.zip',
+                                 'windows-x64-setup.exe', 'update.json',
+                                 'update.json.sig']))
         self.assertIn('--title "$TAG"', create)
         before = [s for s in self.steps('publish')
                   if 'verify_update_manifest.py' in s.get('run', '')]
@@ -1795,6 +1958,34 @@ class WorkflowStructureTests(unittest.TestCase):
         self.assertIn('$false)', zip_step['run'], 'includeBaseDirectory = false')
         self.assertIn('flutter_windows.dll', zip_step['run'])
 
+    def test_the_installer_is_built_checked_and_signed_for(self) -> None:
+        steps = self.steps('windows')
+        zip_index = next(i for i, s in enumerate(steps)
+                         if 'CreateFromDirectory' in s.get('run', ''))
+        iscc_index = next(i for i, s in enumerate(steps) if 'ISCC' in s.get('run', ''))
+        self.assertGreater(iscc_index, zip_index, 'same files as the zip, after it')
+        iscc = steps[iscc_index]
+        self.assertEqual(iscc['shell'], 'pwsh')
+        for needed in ('installer\\windows\\setup.iss', '/DAppVersion=$env:APP_VERSION',
+                       '/DSourceDir=', '/O$dist', 'windows-x64-setup.exe',
+                       'choco install innosetup', 'Inno Setup 6\\ISCC.exe',
+                       '${env:ProgramFiles(x86)}', '$env:ProgramFiles', '0x4D', '0x5A',
+                       '$LASTEXITCODE'):
+            self.assertIn(needed, iscc['run'])
+        self.assertIn('needs.check.outputs.version', iscc['env']['APP_VERSION'])
+        upload = next(s for s in steps if s.get('uses', '').startswith(
+            'actions/upload-artifact'))
+        self.assertEqual(upload['with']['name'], 'windows-release')
+        self.assertEqual(upload['with']['path'].split(),
+                         ['dist/windows-x64.zip', 'dist/windows-x64-setup.exe'])
+        self.assertGreater(steps.index(upload), iscc_index)
+        for job, step_text in (('sign', 'make_update_manifest.py'),
+                               ('sign', 'verify_update_manifest.py'),
+                               ('publish', 'verify_update_manifest.py')):
+            run = next(s['run'] for s in self.steps(job) if step_text in s.get('run', ''))
+            self.assertIn('--windows-setup artifacts/windows/windows-x64-setup.exe',
+                          run, f'{job}: {step_text}')
+
     def test_keystore_is_removed_even_after_a_failure(self) -> None:
         steps = self.steps('android')
         cleanup = [s for s in steps if s.get('if') == 'always()']
@@ -1806,6 +1997,173 @@ class WorkflowStructureTests(unittest.TestCase):
         decode = next(s for s in steps if 'base64 --decode' in s.get('run', ''))
         self.assertIn('chmod 600', decode['run'])
         self.assertIn('umask 077', decode['run'])
+
+
+# --------------------------------------------------------------------------
+# The Windows installer (installer/windows/setup.iss)
+#
+# Inno Setup only runs on Windows, so the script is compiled and installed by
+# build.yml; these are the static checks of the parts the app relies on.
+# --------------------------------------------------------------------------
+
+def setup_sections() -> Dict[str, List[str]]:
+    """Lines of setup.iss by [Section], without blank and ';' comment lines."""
+    sections: Dict[str, List[str]] = {}
+    current = ''
+    for line in SETUP_SCRIPT.read_text(encoding='utf-8').splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith(';'):
+            continue
+        match = re.match(r'^\[([A-Za-z]+)\]$', stripped)
+        if match:
+            current = match.group(1)
+            sections.setdefault(current, [])
+            continue
+        sections.setdefault(current, []).append(stripped)
+    return sections
+
+
+@unittest.skipUnless(SETUP_SCRIPT.exists(), 'setup.iss not present')
+class SetupScriptTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.text = SETUP_SCRIPT.read_text(encoding='utf-8')
+        self.sections = setup_sections()
+        self.setup = {}
+        for line in self.sections['Setup']:
+            key, _sep, value = line.partition('=')
+            self.setup[key.strip()] = value.strip()
+
+    def test_ascii_without_bom(self) -> None:
+        raw = SETUP_SCRIPT.read_bytes()
+        raw.decode('ascii')
+        self.assertFalse(raw.startswith(b'\xef\xbb\xbf'))
+
+    def test_per_user_install_without_admin_rights(self) -> None:
+        self.assertEqual(self.setup['PrivilegesRequired'], 'lowest')
+        self.assertNotIn('PrivilegesRequiredOverridesAllowed', self.setup)
+        self.assertEqual(self.setup['DefaultDirName'], '{autopf}\\{#AppName}')
+        self.assertEqual(self.setup['ArchitecturesAllowed'], 'x64compatible')
+        self.assertEqual(self.setup['ArchitecturesInstallIn64BitMode'], 'x64compatible')
+
+    def test_identity_and_output_name(self) -> None:
+        # The AppId never changes: it is how an update finds the installed copy.
+        self.assertEqual(self.setup['AppId'], '{{41550A45-C370-474B-9CFB-D10618916CEA}')
+        self.assertEqual(self.setup['OutputBaseFilename'] + '.exe',
+                         mum.WINDOWS_SETUP_ASSET)
+        self.assertEqual(self.setup['AppVersion'], '{#AppVersion}')
+        self.assertEqual(self.setup['VersionInfoVersion'], '{#AppVersion}')
+        self.assertIn('SetupMutex', self.setup)
+        self.assertIn('#define AppExe "hisn.exe"', self.text)
+        icon = SETUP_SCRIPT.parent / self.setup['SetupIconFile'].replace('\\', '/')
+        self.assertTrue(icon.resolve().is_file(), 'SetupIconFile')
+        default_source = re.search(r'#define SourceDir "([^"]+)"', self.text)
+        self.assertIsNotNone(default_source)
+        self.assertEqual(
+            (SETUP_SCRIPT.parent / default_source.group(1).replace('\\', '/')).resolve(),
+            (ROOT / 'build' / 'windows' / 'x64' / 'runner' / 'Release').resolve())
+
+    def test_exe_name_matches_the_windows_build(self) -> None:
+        cmake = (ROOT / 'windows' / 'CMakeLists.txt').read_text(encoding='utf-8')
+        binary = re.search(r'set\(BINARY_NAME "([^"]+)"\)', cmake)
+        self.assertIsNotNone(binary)
+        self.assertIn(f'#define AppExe "{binary.group(1)}.exe"', self.text)
+
+    def test_running_copies_are_closed_and_not_restarted_by_setup(self) -> None:
+        self.assertEqual(self.setup['CloseApplications'], 'force')
+        self.assertEqual(self.setup['RestartApplications'], 'no')
+        run = self.sections['Run']
+        self.assertEqual(len(run), 1)
+        for flag in ('nowait', 'postinstall', 'skipifsilent'):
+            self.assertIn(flag, run[0])
+
+    def test_files_and_shortcuts(self) -> None:
+        files = self.sections['Files']
+        self.assertEqual(len(files), 1)
+        for flag in ('ignoreversion', 'recursesubdirs', 'createallsubdirs'):
+            self.assertIn(flag, files[0])
+        self.assertIn('Source: "{#SourceDir}\\*"', files[0])
+        icons = self.sections['Icons']
+        self.assertTrue(any(i.startswith('Name: "{autoprograms}') for i in icons))
+        self.assertTrue(any(i.startswith('Name: "{autodesktop}') and
+                            'Tasks: desktopicon' in i for i in icons))
+        tasks = self.sections['Tasks']
+        self.assertEqual(len(tasks), 1)
+        self.assertNotIn('unchecked', tasks[0], 'the desktop icon is on by default')
+
+    def test_uninstall_removes_the_browser_registration_only(self) -> None:
+        native = (ROOT / 'windows' / 'runner' / 'platform_channel.cpp')
+        if native.exists():
+            block = re.search(r'kNativeHostKeys\[\]\s*=\s*\{(.*?)\};',
+                              native.read_text(encoding='utf-8'), re.S)
+            self.assertIsNotNone(block)
+            # One entry per comma; adjacent C++ string literals are one string.
+            keys = [''.join(re.findall(r'L"([^"]*)"', item)).replace('\\\\', '\\')
+                    for item in block.group(1).split(',') if 'L"' in item]
+        else:
+            keys = []
+        registry = self.sections['Registry']
+        subkeys = []
+        for line in registry:
+            self.assertIn('Root: HKCU;', line)
+            self.assertIn('Flags: uninsdeletekey dontcreatekey', line)
+            self.assertNotIn('ValueType', line, 'setup never writes a value')
+            subkeys.append(re.search(r'Subkey: "([^"]+)"', line).group(1))
+        self.assertEqual(len(subkeys), 3)
+        if keys:
+            self.assertEqual(subkeys, keys)
+        delete = self.sections['UninstallDelete']
+        self.assertEqual(
+            delete, ['Type: filesandordirs; Name: "{localappdata}\\Hisn\\Browser"'])
+        self.assertNotIn('InstallDelete', self.sections)
+
+    def test_languages(self) -> None:
+        languages = self.sections['Languages']
+        self.assertEqual(languages[0],
+                         'Name: "english"; MessagesFile: "compiler:Default.isl"')
+        self.assertIn('#if FileExists(CompilerPath + "Languages\\Arabic.isl")', languages)
+
+    def test_the_contract_with_the_app(self) -> None:
+        """The options WindowsSetupInstaller passes, and what it reads back."""
+        code = '\n'.join(self.sections['Code'])
+        self.assertIn("ExpandConstant('{param:relaunch|0}') = '1'", code)
+        self.assertIn('WizardSilent', code)
+        self.assertIn("ExpandConstant('{param:result|}')", code)
+        self.assertIn("Outcome := 'success'", code)
+        self.assertIn("Outcome := 'aborted'", code)
+        self.assertIn('SaveStringToFile(ResultFile, Outcome, False)', code)
+        self.assertIn('if CurStep = ssPostInstall then', code)
+        self.assertIn('procedure DeinitializeSetup();', code)
+        self.assertIn('ewNoWait', code)
+        self.assertIn("'\\{#AppExe}'", code)
+        self.assertEqual(code.count('try'), code.count('except'))
+        self.assertEqual(code.count('try'), 3)
+        # The app waits for 'started' before it exits; written first thing.
+        self.assertIn('function InitializeSetup(): Boolean;', code)
+        self.assertIn("SaveStringToFile(ResultFile, 'started', False)", code)
+        self.assertIn('Result := True;', code)
+        # Pascal brace comments end at the first '}', so a constant inside one
+        # would end it early: comments in [Code] are '//' only.
+        for line in self.sections['Code']:
+            self.assertFalse(line.startswith('{') or line.startswith('(*'), line)
+
+    def test_pascal_blocks_are_balanced(self) -> None:
+        code = '\n'.join(l.split('//')[0] for l in self.sections['Code'])
+        code = re.sub(r"'[^']*'", "''", code)
+        opened = len(re.findall(r'\b(begin|try)\b', code))
+        closed = len(re.findall(r'\bend\b', code))
+        self.assertEqual(opened, closed)
+
+    def test_the_build_workflow_installs_and_uninstalls_it(self) -> None:
+        text = BUILD_WORKFLOW.read_text(encoding='utf-8')
+        self.assertIn('installer\\windows\\setup.iss', text)
+        for needed in ("'/VERYSILENT'", "'/SUPPRESSMSGBOXES'", "'/NORESTART'", "'/SP-'",
+                       '/DIR=', '/LOG=', '/result=', 'unins000.exe', '-Wait -PassThru',
+                       "'hisn.exe'", "'flutter_windows.dll'", "'data'",
+                       "'extension\\manifest.json'", "-ne 'success'",
+                       'still there after uninstalling', 'windows-x64-setup.exe'):
+            self.assertIn(needed, text)
+        # The smoke test must not start the app on the runner.
+        self.assertNotIn('/relaunch', text)
 
 
 # --------------------------------------------------------------------------
@@ -1824,6 +2182,8 @@ class NoAppNameTests(unittest.TestCase):
     def test_release_files_do_not_hard_code_the_app_name(self) -> None:
         names = self.names()
         self.assertTrue(names)
+        # installer/windows/setup.iss holds the display name on purpose (it is
+        # what the user sees); only its path is referenced from these files.
         files = [WORKFLOW, MAKE, VERIFY, THIS_FILE, ROOT / 'docs' / 'RELEASING.md']
         files += [p for p in FIXTURE_DIR.rglob('*') if p.is_file()]
         checked = 0

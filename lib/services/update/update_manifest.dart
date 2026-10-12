@@ -8,16 +8,31 @@ import 'update_failure.dart';
 
 /// A platform that has a downloadable package.
 enum UpdatePlatform {
-  android('android', '.apk'),
-  windows('windows', '.zip');
+  android('android', '.apk', ['android']),
+  // The setup first; the zip (the portable folder) is what releases before the
+  // setup shipped, and what older apps still read.
+  windows('windows', '.zip', ['windows_setup', 'windows']);
 
-  const UpdatePlatform(this.key, this.extension);
+  const UpdatePlatform(this.key, this.extension, this.assetKeys);
 
-  /// Key in `assets` of the manifest.
+  /// The original key in `assets` of the manifest; every release keeps it,
+  /// since older apps read only this one.
   final String key;
 
-  /// Required file extension of the package.
+  /// Required file extension of the package under [key].
   final String extension;
+
+  /// Keys in `assets` this platform can install, best first. Includes [key].
+  final List<String> assetKeys;
+
+  /// Required file extension of the package under each known asset key. A
+  /// manifest with another extension under one of these keys is invalid;
+  /// unknown keys are not checked here (they are never installed).
+  static const Map<String, String> assetExtensions = {
+    'android': '.apk',
+    'windows': '.zip',
+    'windows_setup': '.exe',
+  };
 
   /// The platform this process runs on, or null where updates are not
   /// offered (iOS, macOS, Linux).
@@ -74,13 +89,21 @@ class UpdateManifest {
   /// Release notes by language code (`en`, `ar`, ...).
   final Map<String, String> notes;
 
-  /// Packages by platform key (`android`, `windows`).
+  /// Packages by asset key (`android`, `windows`, `windows_setup`).
   final Map<String, UpdateAsset> assets;
 
   int get build => version.build;
 
-  /// The package for [platform], or null.
-  UpdateAsset? assetFor(UpdatePlatform platform) => assets[platform.key];
+  /// The package for [platform], or null: the first of [keys] (by default its
+  /// [UpdatePlatform.assetKeys]: on Windows the setup, else the zip) the
+  /// manifest has.
+  UpdateAsset? assetFor(UpdatePlatform platform, {List<String>? keys}) {
+    for (final key in keys ?? platform.assetKeys) {
+      final asset = assets[key];
+      if (asset != null) return asset;
+    }
+    return null;
+  }
 
   /// Release notes in [languageCode], else English, else any, else null.
   String? notesFor(String languageCode) =>
@@ -218,9 +241,8 @@ class UpdateManifest {
         !_sha256.hasMatch(hash)) {
       _bad();
     }
-    for (final p in UpdatePlatform.values) {
-      if (p.key == platformKey && !name.endsWith(p.extension)) _bad();
-    }
+    final extension = UpdatePlatform.assetExtensions[platformKey];
+    if (extension != null && !name.endsWith(extension)) _bad();
 
     final uri = Uri.tryParse(url);
     if (uri == null ||

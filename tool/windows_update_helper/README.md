@@ -1,10 +1,23 @@
 # Windows update helper
 
-The Windows build of the app is a plain folder (exe, dlls, `data/`) that the
-user unzipped somewhere they can write: Downloads, the Desktop, `C:\Users\x\Apps`.
-There is no installer. To update itself the app therefore has to replace its own
-files, and a running program cannot overwrite its own exe. This folder holds the
-small PowerShell script that does the swap after the app has exited.
+**This is the fallback, not the normal path.** Since 0.1.3 the Windows app is
+installed with `windows-x64-setup.exe` (Inno Setup, `installer/windows/setup.iss`)
+and updates by running the next release's setup silently
+(`WindowsSetupInstaller`). The manifest lists that setup under `windows_setup`,
+and the app prefers it. The swap script below is used only when the package is
+the zip:
+
+* apps up to 0.1.2, which know only the `windows` asset (the zip) and update
+  themselves with this script, until their user installs the setup once;
+* a manifest without `windows_setup` (releases up to 0.1.2);
+
+Every release keeps publishing `windows-x64.zip` under `windows` for them.
+
+Before the installer, the Windows build of the app was a plain folder (exe,
+dlls, `data/`) that the user unzipped somewhere they can write: Downloads, the
+Desktop, `C:\Users\x\Apps`. To update itself the app therefore has to replace
+its own files, and a running program cannot overwrite its own exe. This folder
+holds the small PowerShell script that does the swap after the app has exited.
 
 | File | What it is |
 |---|---|
@@ -23,7 +36,9 @@ python3 tool/windows_update_helper/embed_script.py --check  # exit 1 when stale
 
 ## Flow
 
-`WindowsUpdateInstaller.install` (`lib/services/update/windows_installer.dart`):
+`WindowsUpdateInstaller.install` (`lib/services/update/windows_installer.dart`)
+hands a `.exe` package to `WindowsSetupInstaller` and keeps the steps below for a
+`.zip`:
 
 1. The install folder is the folder of the running exe. A `\\server\share` path
    or a drive root is refused. A probe file is created and deleted in the folder;
@@ -116,8 +131,8 @@ fail on syntax newer than Windows PowerShell 5.1.
 
 What cannot be tested on Linux: the real `robocopy.exe`, file locking by running
 programs and antivirus, `Process.Path` of Windows processes, and Windows
-PowerShell 5.1 itself. Before the first release that carries the updater, do this
-once on Windows 10/11:
+PowerShell 5.1 itself. Before a release that changes this script, do this once
+on Windows 10/11:
 
 1. Unzip release N into `C:\Users\<you>\Apps\Test Folder (1)\` (with a space and a
    bracket on purpose) and start it. Keep a second window of it open.

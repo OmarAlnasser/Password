@@ -6,11 +6,12 @@ name: Release
 #   check     validates the tag, derives version and build, runs analyze + tests
 #   android   builds the APK, signed with the stable release keystore, and
 #             fails unless it carries the pinned release certificate
-#   windows   builds the Windows app and zips it (files at the zip root)
+#   windows   builds the Windows app, zips it (files at the zip root) and
+#             makes the installer from the same files (Inno Setup)
 #   sign      hashes the packages, writes update.json and signs it
 #             (Ed25519, key from the UPDATE_SIGNING_KEY secret); read-only token
 #   publish   the only job with write access: re-checks the files, then makes a
-#             draft release, uploads the four files and publishes it; holds no
+#             draft release, uploads the five files and publishes it; holds no
 #             signing key
 #   verify    downloads everything again from the public URLs, like an
 #             installed app, and checks it end to end; read-only, re-runnable
@@ -390,10 +391,61 @@ jobs:
           }
           Write-Host "windows-x64.zip: $($names.Count) entries, app files at the zip root"
 
+      # The per-user installer (no admin rights), made from the same folder as
+      # the zip. Current apps update with it; apps up to 0.1.2 read only the
+      # zip. See installer/windows/setup.iss.
+      - name: Build the installer
+        shell: pwsh
+        env:
+          APP_VERSION: ${{ needs.check.outputs.version }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # setup.iss needs Inno Setup 6.3 or newer (x64compatible). ISCC.exe has no
+          # version resource to check; an older one fails the compile on that line.
+          function Find-Iscc {
+            foreach ($root in @(${env:ProgramFiles(x86)}, $env:ProgramFiles)) {
+              if (-not $root) { continue }
+              $candidate = Join-Path $root 'Inno Setup 6\ISCC.exe'
+              if (-not (Test-Path -LiteralPath $candidate)) { continue }
+              return $candidate
+            }
+            return $null
+          }
+          $iscc = Find-Iscc
+          if (-not $iscc) {
+            choco install innosetup -y --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Installing Inno Setup failed.' }
+            $iscc = Find-Iscc
+          }
+          if (-not $iscc) { throw 'ISCC.exe (Inno Setup 6.3 or newer) was not found.' }
+
+          $release = Join-Path $env:GITHUB_WORKSPACE 'build\windows\x64\runner\Release'
+          $dist = Join-Path $env:GITHUB_WORKSPACE 'dist'
+          $iss = Join-Path $env:GITHUB_WORKSPACE 'installer\windows\setup.iss'
+          & $iscc "/DAppVersion=$env:APP_VERSION" "/DSourceDir=$release" "/O$dist" $iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed (exit code $LASTEXITCODE)." }
+
+          $setup = Join-Path $dist 'windows-x64-setup.exe'
+          if (-not (Test-Path -LiteralPath $setup -PathType Leaf)) {
+            throw 'dist/windows-x64-setup.exe was not created.'
+          }
+          $stream = [System.IO.File]::OpenRead($setup)
+          try {
+            $magic = New-Object byte[] 2
+            $read = $stream.Read($magic, 0, 2)
+          }
+          finally { $stream.Dispose() }
+          if ($read -ne 2 -or $magic[0] -ne 0x4D -or $magic[1] -ne 0x5A) {
+            throw 'windows-x64-setup.exe is not a Windows program (no MZ header).'
+          }
+          Write-Host "windows-x64-setup.exe: $((Get-Item -LiteralPath $setup).Length) bytes"
+
       - uses: actions/upload-artifact@v4
         with:
           name: windows-release
-          path: dist/windows-x64.zip
+          path: |
+            dist/windows-x64.zip
+            dist/windows-x64-setup.exe
           if-no-files-found: error
           retention-days: 3
 
@@ -464,6 +516,7 @@ jobs:
             --repo "$REPO"
             --apk artifacts/android/android.apk
             --windows-zip artifacts/windows/windows-x64.zip
+            --windows-setup artifacts/windows/windows-x64-setup.exe
             --notes-file out/release-notes.md
             --out-dir out
             --published-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -503,6 +556,7 @@ jobs:
             --public-key "$key_file" \
             --apk artifacts/android/android.apk \
             --windows-zip artifacts/windows/windows-x64.zip \
+            --windows-setup artifacts/windows/windows-x64-setup.exe \
             --version "$VERSION" --build "$BUILD" --tag "$TAG" --repo "$REPO" \
             --release-layout
 
@@ -567,6 +621,7 @@ jobs:
             --public-key release/update_public_key.txt \
             --apk artifacts/android/android.apk \
             --windows-zip artifacts/windows/windows-x64.zip \
+            --windows-setup artifacts/windows/windows-x64-setup.exe \
             --version "$VERSION" --build "$BUILD" --tag "$TAG" --repo "$REPO" \
             --release-layout
 
@@ -621,6 +676,7 @@ jobs:
             --notes-file artifacts/manifest/release-notes.md \
             artifacts/android/android.apk \
             artifacts/windows/windows-x64.zip \
+            artifacts/windows/windows-x64-setup.exe \
             artifacts/manifest/update.json \
             artifacts/manifest/update.json.sig
 
@@ -660,7 +716,7 @@ jobs:
         run: |
           set -euo pipefail
           # No credentials: this is what an installed app sees. It downloads
-          # update.json, its signature and both packages from the public URLs,
+          # update.json, its signature and every package from the public URLs,
           # follows the redirects, verifies the signature with the pinned key
           # and compares sizes and SHA-256, and checks that "latest" serves it.
           python3 tool/verify_update_manifest.py \

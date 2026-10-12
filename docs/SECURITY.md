@@ -228,20 +228,43 @@ with associated data `"vaultsnap/v1/<context>"`, where context is `entry/<uuid>`
       anyway, so a package signed with another key cannot replace the app. A
       copy installed from a debug-signed or differently signed build therefore
       has to be updated by hand once.
-    * *Windows install.* The zip is unpacked by a hardened extractor (no
-      absolute or `..` paths, no links, no reserved names, size and count
-      limits) into a private staging folder, then a PowerShell script is started
-      from `System32` by full path (never from the app folder or `PATH`) which
-      waits for the app to exit, swaps the folder with a backup and rolls back
-      if anything fails. The files are not code-signed, so Windows may show
+    * *Windows install.* Releases ship a per-user setup
+      (`windows-x64-setup.exe`, built with Inno Setup from
+      `installer/windows/setup.iss`) that installs into
+      `%LOCALAPPDATA%\Programs` and never asks for administrator rights. The
+      signed manifest lists it under its own key next to the zip (older apps
+      read only the zip), and the app prefers it. Like every package, the setup
+      is checked against the size and SHA-256 from the Ed25519-signed manifest
+      before it runs, and again on the private copy that is started; the app
+      also refuses a file that is not an `.exe`, is too small or does not start
+      with `MZ`. It is started by its full path with the arguments as a list
+      (never a command line string), silently, as the user, with no elevation.
+      The vault is locked first; if the setup does not write `started` into
+      its result file within a minute, the setup and the programs it started
+      are stopped and the app keeps running. The setup closes
+      the app, replaces the files (Inno Setup puts the old ones back if that
+      fails), writes `success` or `aborted` into a result file in the temp
+      folder and starts the app again, which reads and deletes that file at
+      start-up. Uninstalling removes the program files, the browser bridge
+      registration and its folder, never the vault (it lives in the user's
+      application data, not in the program folder).
+    * *Windows zip (older releases).* Releases also keep the portable zip. An
+      app up to 0.1.2 (or a manifest without the setup) takes the zip; a
+      newer app always takes the setup, even when it runs from a portable
+      folder (it then moves to the installed copy); it unpacks it with a
+      hardened extractor (no absolute or `..` paths, no links, no reserved
+      names, size and count limits) into a private staging folder, then starts a PowerShell script from `System32`
+      by full path (never from the app folder or `PATH`) which waits for the
+      app to exit, swaps the folder with a backup and rolls back if anything
+      fails. That needs a user-writable install folder; otherwise the app
+      explains it and links to the release page.
+    * *Windows, both ways.* The files are not code-signed, so Windows may show
       SmartScreen on the first download; the signature check above is what
       protects the update path. The private folders rely on the per-user ACL of
       `%APPDATA%`: another program running as the same user could replace the
       staged files, as it could replace the app itself; the SHA-256 of the
       staged copy is checked right before the hand-over, which shrinks that
-      window to the hand-over itself. The install needs a user-writable install
-      folder (a per-user install); otherwise the app explains it and links to
-      the release page.
+      window to the hand-over itself.
     * *The vault is locked first.* The vault is locked and its keys are wiped
       before the process exits for the swap or the system installer opens. If
       the lock fails, nothing is installed.

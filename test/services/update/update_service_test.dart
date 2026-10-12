@@ -57,6 +57,34 @@ void main() {
       expect(r.asset.size, 5000);
     });
 
+    test('asset keys passed in: only those are offered', () async {
+      final win = await UpdateEnv.create(
+        platform: UpdatePlatform.windows,
+        assetKeys: const ['windows'],
+      );
+      addTearDown(win.dispose);
+      win.publish(manifest: manifestJson(windowsSetup: true));
+      final r = available(await win.service.check());
+      expect(r.asset.name, 'app-windows.zip');
+    });
+
+    test('the Windows build gets the setup when there is one', () async {
+      final win = await UpdateEnv.create(platform: UpdatePlatform.windows);
+      addTearDown(win.dispose);
+      win.publish(manifest: manifestJson(windowsSetup: true));
+      final r = available(await win.service.check());
+      expect(r.asset.name, 'app-windows-setup.exe');
+      expect(r.asset.size, 4000);
+
+      // Downloaded and staged under its own name, so the installer can tell a
+      // setup from a zip.
+      final download = await win.service.download(r);
+      await win.service.verify(download);
+      final staged = await win.service.stageForInstall(download);
+      expect(p.basename(staged.file.path), 'app-windows-setup.exe');
+      expect(await staged.file.readAsBytes(), payload(4000, seed: 3));
+    });
+
     test('bad signature (random bytes)', () async {
       env.publish(
         signatureBytes: Uint8List.fromList(
