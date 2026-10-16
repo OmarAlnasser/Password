@@ -1,0 +1,19 @@
+# Wally
+/Packages
+/ServerPackages
+/DevPackages
+wally.lock.bak
+
+# Rojo / luau-lsp
+sourcemap.json
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+!assets/**/*.rbxm
+
+# Tooling
+node_modules
+.DS_Store
+roblox.d.luau
+globalTypes.d.luau

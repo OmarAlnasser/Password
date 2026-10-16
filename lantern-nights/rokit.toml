@@ -1,0 +1,9 @@
+# Toolchain, pinned to the versions this project was checked with.
+# Install: `rokit install` (https://github.com/rojo-rbx/rokit)
+# luau-lsp (type checking) ships inside the "Luau Language Server" VS Code extension.
+[tools]
+rojo = "rojo-rbx/rojo@7.7.1"
+wally = "UpliftGames/wally@0.3.2"
+wally-package-types = "JohnnyMorganz/wally-package-types@1.3.2"
+stylua = "JohnnyMorganz/StyLua@2.6.0"
+selene = "Kampfkarren/selene@0.31.0"

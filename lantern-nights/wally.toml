@@ -1,0 +1,9 @@
+[package]
+name = "lantern-nights/game"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+private = true
+
+[dependencies]
+Fusion = "elttob/fusion@0.3.0"

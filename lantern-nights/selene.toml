@@ -1,0 +1,6 @@
+std = "roblox"
+
+[lints]
+# Fusion's `scope:New("Frame")({...})` style shadows nothing, but component
+# files deliberately re-bind `scope` inside Computed callbacks.
+shadowing = "allow"
