@@ -1,0 +1,75 @@
+<Window x:Class="PcDoctor.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:PcDoctor.App.Localization"
+        xmlns:c="clr-namespace:PcDoctor.App.Controls"
+        xmlns:p="clr-namespace:PcDoctor.App.Pages"
+        xmlns:v="clr-namespace:PcDoctor.App.Views"
+        Title="{Binding AppTitle}"
+        Width="1280" Height="820" MinWidth="820" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="{DynamicResource Font.Ui}" FontSize="14.5"
+        Background="{DynamicResource Bg}"
+        Foreground="{DynamicResource Ink}"
+        TextOptions.TextFormattingMode="Ideal"
+        UseLayoutRounding="True"
+        FlowDirection="{Binding FlowDirection, Source={x:Static loc:LocSource.Instance}}"
+        AutomationProperties.Name="{Binding AppTitle}">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type p:OverviewViewModel}"><v:OverviewView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:FindingsViewModel}"><v:FindingsView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:CrashesViewModel}"><v:CrashesView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:ChangesViewModel}"><v:ChangesView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:SettingsViewModel}"><v:SettingsView /></DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Ambient violet glow, physical top-right corner in both directions (DESIGN.md 6). -->
+        <Canvas IsHitTestVisible="False" FlowDirection="LeftToRight" ClipToBounds="True">
+            <Ellipse x:Name="Glow" Width="980" Height="760" Fill="{DynamicResource AmbientGlow}"
+                     Canvas.Top="-260" Canvas.Right="-260" />
+        </Canvas>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="252" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Navigation rail -->
+            <Border Grid.Column="0" Background="{DynamicResource Bg2}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0">
+                <DockPanel Margin="14,18,14,16">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,0,0,26" FlowDirection="LeftToRight"
+                                HorizontalAlignment="Left">
+                        <Border Width="36" Height="36" CornerRadius="11" Background="{DynamicResource BrandGradient}">
+                            <Border.Effect><DropShadowEffect BlurRadius="20" ShadowDepth="4" Direction="270" Opacity="0.5" Color="{DynamicResource ButtonGlowColor}" /></Border.Effect>
+                            <TextBlock Text="&#xE90F;" Style="{StaticResource Text.Icon}" FontSize="17" HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource BrandGlyph}" />
+                        </Border>
+                        <TextBlock Text="{loc:Loc app.wordmark}" FontFamily="{StaticResource Font.Brand}" FontWeight="SemiBold" FontSize="15"
+                                   VerticalAlignment="Center" Margin="12,0,0,0" Foreground="{DynamicResource Ink}" />
+                    </StackPanel>
+
+                    <Border DockPanel.Dock="Bottom" Style="{StaticResource Kicker}" Margin="2,12,0,0" HorizontalAlignment="Stretch">
+                        <DockPanel>
+                            <c:LiveDot DockPanel.Dock="Left" DotBrush="{DynamicResource Good}" Margin="0,0,6,0" />
+                            <TextBlock Text="{Binding Privacy}" Style="{StaticResource Text.Caption}" Foreground="{DynamicResource Soft}"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                    </Border>
+
+                    <ListBox ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPage}" Style="{StaticResource PlainList}"
+                             ItemContainerStyle="{StaticResource NavItem}" KeyboardNavigation.DirectionalNavigation="Cycle"
+                             AutomationProperties.Name="{loc:Loc shell.navigation}" />
+                </DockPanel>
+            </Border>
+
+            <!-- Page -->
+            <ScrollViewer Grid.Column="1" x:Name="PageScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                          Focusable="False">
+                <c:PageHost Content="{Binding SelectedPage}" Margin="40,34,40,40" MaxWidth="1180" HorizontalAlignment="Stretch"
+                            Focusable="False" />
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

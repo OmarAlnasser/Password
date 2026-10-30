@@ -1,0 +1,1 @@
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event"><System><Provider Name="EventLog"/><EventID>6008</EventID><TimeCreated SystemTime="2026-10-25T03:00:30.0000000Z"/><Channel>System</Channel></System><EventData><Data>03:00:00</Data><Data>10/25/2026</Data></EventData></Event>

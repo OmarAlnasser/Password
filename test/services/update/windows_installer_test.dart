@@ -2359,6 +2359,7 @@ void main() {
       late Directory bin;
       late Directory base;
       late String sleepPath;
+      late List<String> Function(int seconds) sleepArgs;
 
       setUp(() {
         base = Directory(p.join(tmp.path, 'e2e'))..createSync();
@@ -2382,10 +2383,9 @@ cp -R "$1"/. "$2"/ && exit 1
 exit 16
 ''');
         Process.runSync('chmod', ['+x', shim.path]);
-        sleepPath = [
-          '/bin/sleep',
-          '/usr/bin/sleep',
-        ].firstWhere((f) => File(f).existsSync(), orElse: () => '');
+        final sleeper = _longRunningProgram(tmp);
+        sleepPath = sleeper?.path ?? '';
+        sleepArgs = sleeper?.args ?? (s) => ['$s'];
       });
 
       /// An install or staging folder; `app.exe` is a script that records
@@ -2572,7 +2572,7 @@ exit 16
             final copy = File(p.join(base.path, 'host', 'app.exe'));
             copy.parent.createSync(recursive: true);
             File(sleepPath).copySync(copy.path);
-            app = await Process.start(copy.path, ['3']);
+            app = await Process.start(copy.path, sleepArgs(3));
             unawaited(app.exitCode);
             return app.pid;
           },
@@ -2592,7 +2592,7 @@ exit 16
               final copy = File(p.join(base.path, 'host', 'app.exe'));
               copy.parent.createSync(recursive: true);
               File(sleepPath).copySync(copy.path);
-              final app = await Process.start(copy.path, ['120']);
+              final app = await Process.start(copy.path, sleepArgs(120));
               unawaited(app.exitCode);
               // The installer gave up: it deletes the ready file once the
               // script has written it, and the app then ends by itself later.
@@ -2635,7 +2635,7 @@ exit 16
               final copy = File(p.join(base.path, 'host', 'app.exe'));
               copy.parent.createSync(recursive: true);
               File(sleepPath).copySync(copy.path);
-              app = await Process.start(copy.path, ['30']);
+              app = await Process.start(copy.path, sleepArgs(30));
               unawaited(app.exitCode);
               return app.pid;
             },
@@ -2757,3 +2757,44 @@ const String _pythonPlainZip =
 
 const String _pythonStreamingZip =
     'UEsDBBQACAAIAHdOR10AAAAAAAAAAAAAAAAHAAAAYXBwLmV4ZfONYqADAABQSwcIV3V+jAcAAABmAAAAUEsDBBQACAAIAHdOR10AAAAAAAAAAAAAAAAFAAAAZGF0YS8DAFBLBwgAAAAAAgAAAAAAAABQSwMEFAAIAAgAd05HXQAAAAAAAAAAAAAAAA4AAABkYXRhL2hlbGxvLnR4dMtIzcnJV8jAR3LhlR1VM6pmEKkBAFBLBwhQ2yqrFQAAANACAABQSwMEFAAICAAAAAAhAAAAAAAAAAAAAAAAABMAAABkYXRhL2NhZsOpINin2YQudHh0dW5pY29kZVBLBwhgtLHTBwAAAAcAAABQSwMEFAAIAAAAAAAhAAAAAAAAAAAAAAAAAAoAAABzdG9yZWQuYmluAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/1BLBwhzjAUpAAEAAAABAABQSwECFAMUAAgACAB3TkddV3V+jAcAAABmAAAABwAAAAAAAAAAAAAAgAEAAAAAYXBwLmV4ZVBLAQIUAxQACAAIAHdOR10AAAAAAgAAAAAAAAAFAAAAAAAAAAAAEAD9QTwAAABkYXRhL1BLAQIUAxQACAAIAHdOR11Q2yqrFQAAANACAAAOAAAAAAAAAAAAAACAAXEAAABkYXRhL2hlbGxvLnR4dFBLAQIUAxQACAgAAAAAIQBgtLHTBwAAAAcAAAATAAAAAAAAAAAAAACAAcIAAABkYXRhL2NhZsOpINin2YQudHh0UEsBAhQDFAAIAAAAAAAhAHOMBSkAAQAAAAEAAAoAAAAAAAAAAAAAAIABCgEAAHN0b3JlZC5iaW5QSwUGAAAAAAUABQAdAQAAQgIAAAAA';
+
+typedef _Sleeper = ({String path, List<String> Function(int seconds) args});
+
+_Sleeper? _probedSleeper;
+bool _sleeperProbed = false;
+
+/// A program that keeps running for a given number of seconds when copied
+/// to `app.exe` and started from there, as the tests need for "the app is
+/// still running".
+///
+/// A copy of `sleep` is not enough everywhere: uutils coreutils (the default
+/// on newer Ubuntu) is one multi-call binary that picks its tool from the
+/// name it was started as, so `app.exe 30` exits at once. Each candidate is
+/// therefore tried as `app.exe` and kept only if it really stays alive.
+_Sleeper? _longRunningProgram(Directory tmp) {
+  if (_sleeperProbed) return _probedSleeper;
+  _sleeperProbed = true;
+  final candidates = <_Sleeper>[
+    (path: '/bin/sleep', args: (s) => ['$s']),
+    (path: '/usr/bin/sleep', args: (s) => ['$s']),
+    (path: '/usr/bin/perl', args: (s) => ['-e', 'sleep $s']),
+  ];
+  final probeDir = Directory(p.join(tmp.path, 'sleep-probe'))
+    ..createSync(recursive: true);
+  try {
+    for (final c in candidates) {
+      if (!File(c.path).existsSync()) continue;
+      final copy = File(p.join(probeDir.path, 'app.exe'));
+      File(c.path).copySync(copy.path);
+      final watch = Stopwatch()..start();
+      final r = Process.runSync(copy.path, c.args(1));
+      watch.stop();
+      if (r.exitCode == 0 && watch.elapsedMilliseconds >= 900) {
+        return _probedSleeper = c;
+      }
+    }
+    return null;
+  } finally {
+    probeDir.deleteSync(recursive: true);
+  }
+}

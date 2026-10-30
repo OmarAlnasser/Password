@@ -1,0 +1,108 @@
+<UserControl x:Class="PcDoctor.App.Views.CrashesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:PcDoctor.App.Localization"
+             xmlns:c="clr-namespace:PcDoctor.App.Controls"
+             xmlns:v="clr-namespace:PcDoctor.App.Views">
+    <UserControl.Resources>
+        <v:SeverityBrushConverter x:Key="SeverityBrush" />
+        <v:SeverityBackgroundConverter x:Key="SeverityBg" />
+        <v:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <v:InverseBoolToVisibilityConverter x:Key="InverseBool" />
+    </UserControl.Resources>
+    <StackPanel>
+        <v:PageHeader />
+
+        <!-- Deep Scan prompt: dump files need administrator rights -->
+        <c:Card IsFeatured="True" IsInteractive="False" Margin="0,0,0,18" Visibility="{Binding NeedsDeepScan, Converter={StaticResource BoolToVisibility}}"
+                c:Motion.Appear="True" c:Motion.Index="3">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Primary}" Command="{Binding DeepScanCommand}" Margin="16,0,0,0"
+                        VerticalAlignment="Center" Content="{loc:Loc action.deepScan}" />
+                <StackPanel>
+                    <TextBlock Text="{loc:Loc crashes.deep.title}" Style="{StaticResource Text.TitleMedium}" />
+                    <TextBlock Text="{loc:Loc crashes.deep.body}" Style="{StaticResource Text.Body}" Margin="0,4,0,0" />
+                </StackPanel>
+            </DockPanel>
+        </c:Card>
+
+        <!-- Verdicts -->
+        <ItemsControl ItemsSource="{Binding Verdicts}" Focusable="False">
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="c:Motion.Appear" Value="True" />
+                    <Setter Property="Margin" Value="0,0,0,10" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <c:Card Padding="20,16">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Left" Width="44" Height="44" CornerRadius="12" Margin="0,0,16,0" VerticalAlignment="Top"
+                                    Background="{Binding Severity, Converter={StaticResource SeverityBg}}">
+                                <TextBlock Text="&#xE7BA;" Style="{StaticResource Text.Icon}" HorizontalAlignment="Center"
+                                           Foreground="{Binding Severity, Converter={StaticResource SeverityBrush}}" />
+                            </Border>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource Text.TitleMedium}" />
+                                <TextBlock Text="{Binding Badges}" Style="{StaticResource Text.Caption}" Margin="0,2,0,6"
+                                           Foreground="{Binding Severity, Converter={StaticResource SeverityBrush}}" />
+                                <TextBlock Text="{Binding Why}" Style="{StaticResource Text.Body}" />
+                                <TextBlock Text="{Binding Action}" Style="{StaticResource Text.Body}" Foreground="{DynamicResource Ink}" Margin="0,6,0,0" />
+                            </StackPanel>
+                        </DockPanel>
+                    </c:Card>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="{loc:Loc crashes.timeline}" Style="{StaticResource SectionHeader}" Margin="0,16,0,10" />
+        <ListBox ItemsSource="{Binding Filters}" SelectedItem="{Binding Filter}" Style="{StaticResource PlainList}"
+                 ItemContainerStyle="{StaticResource PillItem}" DisplayMemberPath="Label" AutomationProperties.Name="{loc:Loc crashes.timeline}">
+            <ListBox.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ListBox.ItemsPanel>
+        </ListBox>
+
+        <c:Card IsInteractive="False" Padding="28" Margin="0,8,0,0" Visibility="{Binding HasData, Converter={StaticResource InverseBool}}">
+            <StackPanel HorizontalAlignment="Center">
+                <TextBlock Text="&#xE73E;" Style="{StaticResource Text.Icon}" FontSize="30" HorizontalAlignment="Center" Foreground="{DynamicResource Good}" />
+                <TextBlock Text="{loc:Loc crashes.empty}" Style="{StaticResource Text.Body}" TextAlignment="Center" Margin="0,12,0,0" MaxWidth="520" />
+            </StackPanel>
+        </c:Card>
+
+        <!-- Timeline: a vertical rail with a dot per event -->
+        <ItemsControl ItemsSource="{Binding Items}" Margin="0,8,0,0" Focusable="False">
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="c:Motion.Appear" Value="True" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,0,0,2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="104" />
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Margin="0,14,8,0" FlowDirection="LeftToRight" HorizontalAlignment="Right">
+                            <TextBlock Text="{Binding Day}" Style="{StaticResource Text.Caption}" HorizontalAlignment="Right" />
+                            <TextBlock Text="{Binding Time}" FontFamily="{StaticResource Font.Mono}" FontSize="12" Foreground="{DynamicResource Muted}"
+                                       HorizontalAlignment="Right" />
+                        </StackPanel>
+                        <Border Grid.Column="1" Width="2" Background="{DynamicResource Line2}" HorizontalAlignment="Center" />
+                        <Ellipse Grid.Column="1" Width="12" Height="12" VerticalAlignment="Top" Margin="0,18,0,0"
+                                 Fill="{Binding Severity, Converter={StaticResource SeverityBrush}}"
+                                 Stroke="{DynamicResource Bg}" StrokeThickness="2" />
+                        <c:Card Grid.Column="2" Padding="16,12" Margin="6,6,0,6">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource Text.TitleMedium}" FontSize="15" />
+                                <TextBlock Text="{Binding Detail}" Style="{StaticResource Text.Caption}" Margin="0,3,0,0"
+                                           Visibility="{Binding HasDetail, Converter={StaticResource BoolToVisibility}}" />
+                            </StackPanel>
+                        </c:Card>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="app.title" xml:space="preserve"><value>PC Doctor</value></data>
+  <data name="action.healthCheck" xml:space="preserve"><value>Health Check</value></data>
+  <data name="action.healthCheck.tip" xml:space="preserve"><value>Read-only. Does not need administrator rights.</value></data>
+  <data name="action.deepScan" xml:space="preserve"><value>Deep Scan</value></data>
+  <data name="action.deepScan.tip" xml:space="preserve"><value>Also reads data that needs administrator rights. Windows will ask for permission (UAC).</value></data>
+  <data name="action.cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="action.export" xml:space="preserve"><value>Export report…</value></data>
+  <data name="action.copy" xml:space="preserve"><value>Copy as text</value></data>
+  <data name="action.applyFix" xml:space="preserve"><value>Apply fix…</value></data>
+  <data name="action.refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="dashboard.intro" xml:space="preserve"><value>Run a Health Check to see what PC Doctor can check on this PC. Nothing is changed without your consent.</value></data>
+  <data name="dashboard.summary" xml:space="preserve"><value>Summary</value></data>
+  <data name="dashboard.findings" xml:space="preserve"><value>Findings</value></data>
+  <data name="dashboard.checks" xml:space="preserve"><value>What was checked</value></data>
+  <data name="dashboard.splitter" xml:space="preserve"><value>Resize panels</value></data>
+  <data name="filter.severity" xml:space="preserve"><value>Severity:</value></data>
+  <data name="filter.all" xml:space="preserve"><value>All</value></data>
+  <data name="filter.search" xml:space="preserve"><value>Search:</value></data>
+  <data name="filter.showHidden" xml:space="preserve"><value>Show hidden items</value></data>
+  <data name="checks.status" xml:space="preserve"><value>Status</value></data>
+  <data name="checks.item" xml:space="preserve"><value>Check</value></data>
+  <data name="checks.detail" xml:space="preserve"><value>Detail</value></data>
+  <data name="finding.why" xml:space="preserve"><value>Why it matters</value></data>
+  <data name="finding.suggested" xml:space="preserve"><value>Suggested action:</value></data>
+  <data name="finding.undo" xml:space="preserve"><value>Undo:</value></data>
+  <data name="finding.evidence" xml:space="preserve"><value>Evidence</value></data>
+  <data name="severity.Info" xml:space="preserve"><value>Info</value></data>
+  <data name="severity.Low" xml:space="preserve"><value>Low</value></data>
+  <data name="severity.Medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="severity.High" xml:space="preserve"><value>High</value></data>
+  <data name="severity.Critical" xml:space="preserve"><value>Critical</value></data>
+  <data name="confidence.Confirmed" xml:space="preserve"><value>Confirmed</value></data>
+  <data name="confidence.Probable" xml:space="preserve"><value>Probable</value></data>
+  <data name="confidence.Possible" xml:space="preserve"><value>Possible</value></data>
+  <data name="source.Defender" xml:space="preserve"><value>Microsoft Defender</value></data>
+  <data name="source.MicrosoftTool" xml:space="preserve"><value>Microsoft tool</value></data>
+  <data name="source.EventLog" xml:space="preserve"><value>Event log</value></data>
+  <data name="source.Wmi" xml:space="preserve"><value>WMI</value></data>
+  <data name="source.Registry" xml:space="preserve"><value>Windows setting (registry)</value></data>
+  <data name="source.Heuristic" xml:space="preserve"><value>PC Doctor heuristic</value></data>
+  <data name="source.VirusTotal" xml:space="preserve"><value>VirusTotal</value></data>
+  <data name="check.status.Pass" xml:space="preserve"><value>Pass</value></data>
+  <data name="check.status.Warn" xml:space="preserve"><value>Warning</value></data>
+  <data name="check.status.Fail" xml:space="preserve"><value>Fail</value></data>
+  <data name="check.status.Info" xml:space="preserve"><value>Info</value></data>
+  <data name="check.status.NotAvailable" xml:space="preserve"><value>Not available on this PC</value></data>
+  <data name="check.status.NotChecked" xml:space="preserve"><value>Not checked</value></data>
+  <data name="check.needsDeepScan" xml:space="preserve"><value>Needs administrator rights. Run a Deep Scan to check this.</value></data>
+  <data name="check.notAvailable" xml:space="preserve"><value>Not available on this PC.</value></data>
+  <data name="check.notInThisVersion" xml:space="preserve"><value>Not checked: this version of PC Doctor does not include it yet (planned for phase {0}).</value></data>
+  <data name="check.readFailed" xml:space="preserve"><value>Could not read this: {0}: {1}</value></data>
+  <data name="scan.done" xml:space="preserve"><value>Done</value></data>
+  <data name="status.startingBroker" xml:space="preserve"><value>Waiting for administrator permission…</value></data>
+  <data name="status.brokerDeclined" xml:space="preserve"><value>Administrator permission was not given. Running the read-only Health Check instead.</value></data>
+  <data name="status.scanning" xml:space="preserve"><value>Checking {0} of {1}: {2}</value></data>
+  <data name="status.done" xml:space="preserve"><value>Scan finished.</value></data>
+  <data name="status.cancelled" xml:space="preserve"><value>Scan cancelled. Partial results were discarded.</value></data>
+  <data name="status.exported" xml:space="preserve"><value>Report saved to {0}</value></data>
+  <data name="status.fixApplied" xml:space="preserve"><value>Change applied and recorded in the change journal.</value></data>
+  <data name="status.fixFailed" xml:space="preserve"><value>Not applied: {0} {1}</value></data>
+  <data name="status.undone" xml:space="preserve"><value>Undone: {0}. Changed since by something else (left as is): {1}. Failed: {2}.</value></data>
+  <data name="status.journalUnreadable" xml:space="preserve"><value>The change journal could not be read.</value></data>
+  <data name="status.settingsUnsaved" xml:space="preserve"><value>Settings could not be saved.</value></data>
+  <data name="summary.checked" xml:space="preserve"><value>{0} items checked across {1} areas.</value></data>
+  <data name="summary.notChecked" xml:space="preserve"><value>{0} items were not checked and {1} are not available on this PC (see "What was checked").</value></data>
+  <data name="summary.noActionableFindings" xml:space="preserve"><value>No actionable findings in the areas that were checked.</value></data>
+  <data name="summary.findings" xml:space="preserve"><value>{0} findings: {1} critical, {2} high, {3} medium, {4} low or informational.</value></data>
+  <data name="summary.healthCheckScope" xml:space="preserve"><value>This was a read-only Health Check. A Deep Scan reads more (disk counters, TPM, BitLocker).</value></data>
+  <data name="summary.disclaimer" xml:space="preserve"><value>These results describe only what was checked. They do not guarantee the PC is free of malware or faults.</value></data>
+  <data name="report.title" xml:space="preserve"><value>Scan report</value></data>
+  <data name="report.conditions" xml:space="preserve"><value>Scan conditions</value></data>
+  <data name="report.cond.app" xml:space="preserve"><value>PC Doctor version</value></data>
+  <data name="report.cond.os" xml:space="preserve"><value>Windows</value></data>
+  <data name="report.cond.uptime" xml:space="preserve"><value>Uptime</value></data>
+  <data name="report.cond.power" xml:space="preserve"><value>Power source / plan</value></data>
+  <data name="report.cond.mode" xml:space="preserve"><value>Scan type</value></data>
+  <data name="report.cond.time" xml:space="preserve"><value>Time (UTC)</value></data>
+  <data name="report.checks" xml:space="preserve"><value>What was checked</value></data>
+  <data name="undo.nothingChanged" xml:space="preserve"><value>Nothing to undo: PC Doctor only reported this and changed nothing.</value></data>
+  <data name="undo.reversible" xml:space="preserve"><value>Reversible.</value></data>
+  <data name="undo.notReversible" xml:space="preserve"><value>Not reversible.</value></data>
+  <data name="fix.dumpsAutomatic.title" xml:space="preserve"><value>Turn on automatic crash dumps</value></data>
+  <data name="fix.dumpsAutomatic.explain" xml:space="preserve"><value>Sets the crash dump type to "Automatic memory dump" (Windows' default) so the next blue screen leaves a file that names the cause.</value></data>
+  <data name="fix.preview.changes" xml:space="preserve"><value>Exact changes:</value></data>
+  <data name="fix.preview.restorePoint" xml:space="preserve"><value>PC Doctor will first create a System Restore point and check that it exists. If it cannot, nothing is changed. Every change is recorded so you can undo it from the Changes tab.</value></data>
+  <data name="fix.preview.restart" xml:space="preserve"><value>Takes effect after a restart.</value></data>
+  <data name="journal.when" xml:space="preserve"><value>When</value></data>
+  <data name="journal.source" xml:space="preserve"><value>Fix</value></data>
+  <data name="journal.state" xml:space="preserve"><value>State</value></data>
+  <data name="journal.change" xml:space="preserve"><value>Change (old → new)</value></data>
+  <data name="journal.undo" xml:space="preserve"><value>Undo</value></data>
+  <data name="journal.undoBatch" xml:space="preserve"><value>Undo batch</value></data>
+  <data name="journal.undoAll" xml:space="preserve"><value>Undo everything PC Doctor did</value></data>
+  <data name="journal.undoAll.confirm" xml:space="preserve"><value>Put back every change PC Doctor made, newest first? Settings that something else changed since will be left as they are and listed.</value></data>
+  <data name="journal.restorePointNote" xml:space="preserve"><value>Undo puts back the exact old values. A System Restore point is the last resort: it also rolls back drivers, apps and updates installed after it.</value></data>
+  <data name="journal.state.Planned" xml:space="preserve"><value>Started (not confirmed)</value></data>
+  <data name="journal.state.Applied" xml:space="preserve"><value>Applied</value></data>
+  <data name="journal.state.Failed" xml:space="preserve"><value>Failed (not applied)</value></data>
+  <data name="journal.state.Undone" xml:space="preserve"><value>Undone</value></data>
+  <data name="journal.state.UndoConflict" xml:space="preserve"><value>Changed since by something else; not undone</value></data>
+  <data name="settings.language" xml:space="preserve"><value>Language</value></data>
+  <data name="settings.digits" xml:space="preserve"><value>Digits in Arabic text</value></data>
+  <data name="settings.theme" xml:space="preserve"><value>Theme</value></data>
+  <data name="settings.export" xml:space="preserve"><value>Reports</value></data>
+  <data name="settings.redact" xml:space="preserve"><value>Hide my user name and PC name in exported reports</value></data>
+  <data name="settings.privacy" xml:space="preserve"><value>Privacy</value></data>
+  <data name="settings.privacy.text" xml:space="preserve"><value>Everything PC Doctor does happens on this PC. It sends no telemetry. Network use is limited to features you start: Defender signature updates, the Microsoft symbol server, the Microsoft Safety Scanner download, optional VirusTotal hash lookups with your own key, and the optional update check.</value></data>
+  <data name="language.en" xml:space="preserve"><value>English</value></data>
+  <data name="language.ar" xml:space="preserve"><value>العربية</value></data>
+  <data name="theme.system" xml:space="preserve"><value>Same as Windows</value></data>
+  <data name="theme.light" xml:space="preserve"><value>Light</value></data>
+  <data name="theme.dark" xml:space="preserve"><value>Dark</value></data>
+  <data name="digits.western" xml:space="preserve"><value>Western (0123)</value></data>
+  <data name="digits.arabicIndic" xml:space="preserve"><value>Arabic-Indic (٠١٢٣)</value></data>
+  <data name="m11.name" xml:space="preserve"><value>Security settings</value></data>
+  <data name="m11.check.winget" xml:space="preserve"><value>Outdated apps (winget upgrade)</value></data>
+  <data name="m11.win10.check" xml:space="preserve"><value>Windows version support</value></data>
+  <data name="m11.win10.title" xml:space="preserve"><value>Windows 10 support ended on {0}</value></data>
+  <data name="m11.win10.why" xml:space="preserve"><value>Without security updates, newly found Windows vulnerabilities stay open on this PC unless it is enrolled in Extended Security Updates (ESU). PC Doctor cannot detect ESU enrolment.</value></data>
+  <data name="m11.win10.action" xml:space="preserve"><value>Upgrade to Windows 11 if the PC supports it, or enrol in ESU. The ESU dates in the evidence change often; check Microsoft's page.</value></data>
+  <data name="m11.win10.detail" xml:space="preserve"><value>Windows 10: mainstream security updates ended {0}.</value></data>
+  <data name="m11.win11.detail" xml:space="preserve"><value>Windows 11 (build {0}).</value></data>
+  <data name="m11.av.check" xml:space="preserve"><value>Antivirus</value></data>
+  <data name="m11.av.defender" xml:space="preserve"><value>Microsoft Defender Antivirus is the active antivirus.</value></data>
+  <data name="m11.av.thirdParty" xml:space="preserve"><value>Your active antivirus is {0}. Defender is in "{1}" mode, so a Defender scan is not available. Use {0} to scan.</value></data>
+  <data name="m11.noAv.check" xml:space="preserve"><value>Antivirus</value></data>
+  <data name="m11.noAv.title" xml:space="preserve"><value>No active antivirus was found</value></data>
+  <data name="m11.noAv.why" xml:space="preserve"><value>Defender is not running in normal mode and Windows Security Center lists no other enabled antivirus.</value></data>
+  <data name="m11.noAv.action" xml:space="preserve"><value>Open Windows Security &gt; Virus &amp; threat protection and turn protection on, or check that your antivirus is running.</value></data>
+  <data name="m11.rtp.check" xml:space="preserve"><value>Defender real-time protection</value></data>
+  <data name="m11.rtp.title" xml:space="preserve"><value>Defender real-time protection is off</value></data>
+  <data name="m11.rtp.why" xml:space="preserve"><value>Files are not checked when they are downloaded or opened.</value></data>
+  <data name="m11.rtp.action" xml:space="preserve"><value>Turn it on in Windows Security &gt; Virus &amp; threat protection &gt; Manage settings. PC Doctor never changes Defender settings itself.</value></data>
+  <data name="m11.tamper.check" xml:space="preserve"><value>Tamper Protection</value></data>
+  <data name="m11.tamper.title" xml:space="preserve"><value>Defender Tamper Protection is off</value></data>
+  <data name="m11.tamper.why" xml:space="preserve"><value>Without it, malware running as administrator can turn Defender off.</value></data>
+  <data name="m11.tamper.action" xml:space="preserve"><value>Turn it on in Windows Security &gt; Virus &amp; threat protection &gt; Manage settings.</value></data>
+  <data name="m11.signatures.check" xml:space="preserve"><value>Defender security intelligence age</value></data>
+  <data name="m11.signatures.title" xml:space="preserve"><value>Defender security intelligence is {0} days old</value></data>
+  <data name="m11.signatures.why" xml:space="preserve"><value>Out-of-date definitions miss recent threats.</value></data>
+  <data name="m11.signatures.action" xml:space="preserve"><value>Run Windows Update or Windows Security &gt; Protection updates &gt; Check for updates.</value></data>
+  <data name="m11.firewall.check" xml:space="preserve"><value>Windows Firewall</value></data>
+  <data name="m11.firewall.detail" xml:space="preserve"><value>Profiles: {0}</value></data>
+  <data name="m11.firewall.title" xml:space="preserve"><value>Windows Firewall is off for: {0}</value></data>
+  <data name="m11.firewall.why" xml:space="preserve"><value>Programs on other devices in the network can reach services on this PC.</value></data>
+  <data name="m11.firewall.action" xml:space="preserve"><value>Turn the firewall back on in Windows Security &gt; Firewall &amp; network protection, unless another firewall product manages it.</value></data>
+  <data name="m11.uac.check" xml:space="preserve"><value>User Account Control</value></data>
+  <data name="m11.uac.title" xml:space="preserve"><value>User Account Control is turned off</value></data>
+  <data name="m11.uac.why" xml:space="preserve"><value>Every program you start runs with full administrator rights.</value></data>
+  <data name="m11.uac.action" xml:space="preserve"><value>Set EnableLUA back to 1 (Control Panel &gt; User Accounts &gt; Change User Account Control settings) and restart.</value></data>
+  <data name="m11.uacPrompt.check" xml:space="preserve"><value>UAC prompt for administrators</value></data>
+  <data name="m11.uacPrompt.title" xml:space="preserve"><value>Administrators are elevated without a prompt</value></data>
+  <data name="m11.uacPrompt.why" xml:space="preserve"><value>Programs can gain administrator rights silently.</value></data>
+  <data name="m11.uacPrompt.action" xml:space="preserve"><value>Move the User Account Control slider back to the default level.</value></data>
+  <data name="m11.secureBoot.check" xml:space="preserve"><value>Secure Boot</value></data>
+  <data name="m11.secureBoot.title" xml:space="preserve"><value>Secure Boot is off</value></data>
+  <data name="m11.secureBoot.why" xml:space="preserve"><value>Malware that loads before Windows (bootkits) is not blocked.</value></data>
+  <data name="m11.secureBoot.action" xml:space="preserve"><value>Turn Secure Boot on in the UEFI/BIOS settings. Check the PC maker's instructions first.</value></data>
+  <data name="m11.secureBoot.legacy" xml:space="preserve"><value>No UEFI Secure Boot state: the PC may be booting in legacy BIOS mode.</value></data>
+  <data name="m11.tpm.check" xml:space="preserve"><value>TPM</value></data>
+  <data name="m11.tpm.detail" xml:space="preserve"><value>Specification {0}.</value></data>
+  <data name="m11.tpm.title" xml:space="preserve"><value>The TPM is missing, disabled or not activated</value></data>
+  <data name="m11.tpm.why" xml:space="preserve"><value>BitLocker, Windows Hello and Windows 11 rely on the TPM.</value></data>
+  <data name="m11.tpm.action" xml:space="preserve"><value>Enable the TPM (often called PTT or fTPM) in the UEFI/BIOS settings.</value></data>
+  <data name="m11.bitlocker.check" xml:space="preserve"><value>Drive encryption (BitLocker)</value></data>
+  <data name="m11.bitlocker.title" xml:space="preserve"><value>The system drive is not encrypted</value></data>
+  <data name="m11.bitlocker.why" xml:space="preserve"><value>If the PC is lost or stolen, its files can be read by removing the drive.</value></data>
+  <data name="m11.bitlocker.action" xml:space="preserve"><value>Turn on BitLocker or Device Encryption in Settings, and store the recovery key somewhere safe.</value></data>
+  <data name="m11.vbs.check" xml:space="preserve"><value>Virtualization-based security</value></data>
+  <data name="m11.vbs.detail" xml:space="preserve"><value>Status {0} (0 off, 1 configured but not running, 2 running).</value></data>
+  <data name="m11.hvci.check" xml:space="preserve"><value>Memory integrity (HVCI)</value></data>
+  <data name="m11.hvci.title" xml:space="preserve"><value>Memory integrity is off</value></data>
+  <data name="m11.hvci.why" xml:space="preserve"><value>Memory integrity stops malicious or vulnerable drivers from running kernel code. Some older drivers are incompatible, and it can cost some gaming performance.</value></data>
+  <data name="m11.hvci.action" xml:space="preserve"><value>Windows Security &gt; Device security &gt; Core isolation lists the drivers that block it.</value></data>
+  <data name="m11.sac.check" xml:space="preserve"><value>Smart App Control</value></data>
+  <data name="m11.sac.on" xml:space="preserve"><value>On.</value></data>
+  <data name="m11.sac.eval" xml:space="preserve"><value>Evaluation mode: Windows is deciding whether to turn it on.</value></data>
+  <data name="m11.sac.off" xml:space="preserve"><value>Off. Turning it back on requires resetting or reinstalling Windows.</value></data>
+  <data name="m11.lsa.check" xml:space="preserve"><value>LSA protection</value></data>
+  <data name="m11.lsa.title" xml:space="preserve"><value>LSA protection is off</value></data>
+  <data name="m11.lsa.why" xml:space="preserve"><value>Credential-stealing tools can read sign-in secrets from the LSA process more easily.</value></data>
+  <data name="m11.lsa.action" xml:space="preserve"><value>Turn on Local Security Authority protection in Windows Security &gt; Device security &gt; Core isolation.</value></data>
+  <data name="m11.smb1.check" xml:space="preserve"><value>SMBv1 file sharing protocol</value></data>
+  <data name="m11.smb1.title" xml:space="preserve"><value>The obsolete SMBv1 protocol is installed</value></data>
+  <data name="m11.smb1.why" xml:space="preserve"><value>SMBv1 has no modern protections and was used by the WannaCry worm.</value></data>
+  <data name="m11.smb1.action" xml:space="preserve"><value>Remove "SMB 1.0/CIFS File Sharing Support" in Windows Features, unless an old device you use needs it.</value></data>
+  <data name="m11.rdp.check" xml:space="preserve"><value>Remote Desktop</value></data>
+  <data name="m11.rdp.off" xml:space="preserve"><value>Remote Desktop connections are off.</value></data>
+  <data name="m11.rdp.nla" xml:space="preserve"><value>Remote Desktop is on, with Network Level Authentication.</value></data>
+  <data name="m11.rdp.noNla" xml:space="preserve"><value>Remote Desktop is on without Network Level Authentication.</value></data>
+  <data name="m11.rdp.title" xml:space="preserve"><value>Remote Desktop is on without Network Level Authentication</value></data>
+  <data name="m11.rdp.why" xml:space="preserve"><value>Attackers can reach the Windows sign-in screen before proving who they are.</value></data>
+  <data name="m11.rdp.action" xml:space="preserve"><value>Turn on "Require devices to use Network Level Authentication" in Settings &gt; System &gt; Remote Desktop, or turn Remote Desktop off.</value></data>
+  <data name="m11.reboot.check" xml:space="preserve"><value>Pending restart</value></data>
+  <data name="m11.reboot.title" xml:space="preserve"><value>A restart is pending</value></data>
+  <data name="m11.reboot.why" xml:space="preserve"><value>Some updates or changes are not finished until Windows restarts.</value></data>
+  <data name="m11.reboot.action" xml:space="preserve"><value>Restart when convenient.</value></data>
+  <data name="m11.lastUpdate.check" xml:space="preserve"><value>Last Windows update installed</value></data>
+  <data name="m11.lastUpdate.detail" xml:space="preserve"><value>Newest installed update: {0}.</value></data>
+  <data name="m11.lastUpdate.title" xml:space="preserve"><value>No Windows update installed in {0} days</value></data>
+  <data name="m11.lastUpdate.why" xml:space="preserve"><value>Windows normally installs security updates every month.</value></data>
+  <data name="m11.lastUpdate.action" xml:space="preserve"><value>Open Settings &gt; Windows Update and check for updates. Look for an error code if it fails.</value></data>
+  <data name="m11.admins.check" xml:space="preserve"><value>Local administrator accounts</value></data>
+  <data name="m11.admins.detail" xml:space="preserve"><value>{0} members: {1}</value></data>
+  <data name="m5.name" xml:space="preserve"><value>Crashes and stability</value></data>
+  <data name="m5.check.events" xml:space="preserve"><value>Crash-related events in the System and Application logs</value></data>
+  <data name="m5.check.events.detail" xml:space="preserve"><value>{0} events read from the last {1} days; {2} unexpected stops.</value></data>
+  <data name="m5.check.suppressed" xml:space="preserve"><value>Known harmless events</value></data>
+  <data name="m5.check.suppressed.detail" xml:space="preserve"><value>{0} Kernel-PnP 219 events for WudfRd at startup were not reported: they are a harmless timing message.</value></data>
+  <data name="m5.check.stability" xml:space="preserve"><value>Reliability Monitor stability index</value></data>
+  <data name="m5.check.stability.detail" xml:space="preserve"><value>{0} of 10 (as of {1}).</value></data>
+  <data name="m5.check.stability.none" xml:space="preserve"><value>Reliability data is not being collected on this PC.</value></data>
+  <data name="m5.check.dumpAnalysis" xml:space="preserve"><value>Crash dump analysis with the Windows debugger</value></data>
+  <data name="m5.check.dumpConfig" xml:space="preserve"><value>Crash dump setting</value></data>
+  <data name="m5.dumpMode.none" xml:space="preserve"><value>Off: blue screens leave no dump file.</value></data>
+  <data name="m5.dumpMode.complete" xml:space="preserve"><value>Complete memory dump.</value></data>
+  <data name="m5.dumpMode.kernel" xml:space="preserve"><value>Kernel memory dump.</value></data>
+  <data name="m5.dumpMode.small" xml:space="preserve"><value>Small memory dump (minidump).</value></data>
+  <data name="m5.dumpMode.automatic" xml:space="preserve"><value>Automatic memory dump (Windows default).</value></data>
+  <data name="m5.dumpMode.unknown" xml:space="preserve"><value>Unrecognised value.</value></data>
+  <data name="m5.dumpsDisabled.title" xml:space="preserve"><value>Crash dumps are turned off</value></data>
+  <data name="m5.dumpsDisabled.why" xml:space="preserve"><value>Without a dump file, the cause of the next blue screen cannot be identified.</value></data>
+  <data name="m5.dumpsDisabled.action" xml:space="preserve"><value>Turn on automatic crash dumps (Windows' default). PC Doctor can do it for you, with undo.</value></data>
+  <data name="m5.dumpsDisabled.undo" xml:space="preserve"><value>The old value is kept in the change journal and can be put back from the Changes tab.</value></data>
+  <data name="m5.noPagefile.title" xml:space="preserve"><value>No page file is configured</value></data>
+  <data name="m5.noPagefile.why" xml:space="preserve"><value>Windows writes crash dumps through the page file; without one, a blue screen may leave no dump.</value></data>
+  <data name="m5.noPagefile.action" xml:space="preserve"><value>Set the page file back to "Automatically manage" in System Properties &gt; Advanced &gt; Performance &gt; Virtual memory.</value></data>
+  <data name="m5.dumpFailed.title" xml:space="preserve"><value>Windows could not save a crash dump ({0} times)</value></data>
+  <data name="m5.dumpFailed.why" xml:space="preserve"><value>The crash happened, but the file that would explain it was not written (volmgr event 161).</value></data>
+  <data name="m5.dumpFailed.action" xml:space="preserve"><value>Check that the page file is system-managed and the system drive has free space.</value></data>
+  <data name="m5.check.dumps" xml:space="preserve"><value>Crash dump files</value></data>
+  <data name="m5.check.dumps.detail" xml:space="preserve"><value>{0} dump files found; newest {1}.</value></data>
+  <data name="m5.check.dumps.none" xml:space="preserve"><value>No crash dump files on this PC.</value></data>
+  <data name="m5.bsod.title" xml:space="preserve"><value>{0} of {1} blue screens in {2} days had stop code {3} ({4})</value></data>
+  <data name="m5.bsod.why.unknown" xml:space="preserve"><value>PC Doctor's knowledge base has no explanation for this stop code yet.</value></data>
+  <data name="m5.bsod.action.unknown" xml:space="preserve"><value>Look up the stop code in Microsoft's bug check reference.</value></data>
+  <data name="m5.forcedOff.title" xml:space="preserve"><value>The PC was forced off while unresponsive ({0} times)</value></data>
+  <data name="m5.forcedOff.why" xml:space="preserve"><value>Windows recorded that the power button was held down. That usually means the PC froze.</value></data>
+  <data name="m5.forcedOff.action" xml:space="preserve"><value>Note what was running when it froze. Check graphics and storage drivers and temperatures.</value></data>
+  <data name="m5.forcedOff.action.related" xml:space="preserve"><value>{0} related events (graphics or storage resets, hardware errors) happened just before. See the evidence.</value></data>
+  <data name="m5.powerLoss.title" xml:space="preserve"><value>The PC stopped without shutting down ({0} times)</value></data>
+  <data name="m5.powerLoss.why" xml:space="preserve"><value>There was no blue screen and no power-button press: power was lost or the PC hung hard.</value></data>
+  <data name="m5.powerLoss.action" xml:space="preserve"><value>Check hardware errors below, the power supply and cabling, temperatures, and remove overclocks.</value></data>
+  <data name="m5.powerLoss.action.related" xml:space="preserve"><value>{0} related events (graphics or storage resets, hardware errors) happened just before. See the evidence.</value></data>
+  <data name="m5.wheaFatal.title" xml:space="preserve"><value>Fatal hardware errors reported ({0})</value></data>
+  <data name="m5.wheaFatal.why" xml:space="preserve"><value>The processor or memory reported an error it could not correct (WHEA-Logger 18).</value></data>
+  <data name="m5.wheaPcie.title" xml:space="preserve"><value>{0} corrected PCI Express errors from device {1}</value></data>
+  <data name="m5.wheaPcie.why" xml:space="preserve"><value>Corrected errors are fixed by the hardware, but many of them can point to a loose card, a riser cable or link power saving problems.</value></data>
+  <data name="m5.wheaPcie.action" xml:space="preserve"><value>Reseat the device, update chipset drivers and BIOS. The vendor and device IDs identify the device.</value></data>
+  <data name="m5.wheaCorrected.title" xml:space="preserve"><value>Corrected processor or memory errors ({0})</value></data>
+  <data name="m5.wheaCorrected.why" xml:space="preserve"><value>The hardware fixed these itself, but they often precede uncorrectable errors on unstable overclocks or failing memory.</value></data>
+  <data name="m5.tdr.title" xml:space="preserve"><value>The display driver stopped responding and recovered {0} times</value></data>
+  <data name="m5.tdr.why" xml:space="preserve"><value>Windows reset the graphics driver (Display event 4101). Repeated resets can end in a freeze or blue screen.</value></data>
+  <data name="m5.tdr.action" xml:space="preserve"><value>Install the current driver from the GPU maker, remove GPU overclocks and check GPU temperatures. Do not edit the TDR registry keys.</value></data>
+  <data name="m5.firmwareLimit.title" xml:space="preserve"><value>Firmware limited the processor speed ({0} times)</value></data>
+  <data name="m5.firmwareLimit.why" xml:space="preserve"><value>This is not a failure. It means the CPU was slowed, often because of heat or power limits (Kernel-Processor-Power 37).</value></data>
+  <data name="m5.firmwareLimit.action" xml:space="preserve"><value>If the PC feels slow, check cooling and the power plan. On laptops this is common on battery.</value></data>
+  <data name="m5.storage.disk7.title" xml:space="preserve"><value>The disk reported bad blocks ({0} events)</value></data>
+  <data name="m5.storage.disk7.why" xml:space="preserve"><value>Part of the disk could not be read reliably. Data in those blocks may be lost.</value></data>
+  <data name="m5.storage.disk11.title" xml:space="preserve"><value>The disk controller reported errors ({0} events)</value></data>
+  <data name="m5.storage.disk11.why" xml:space="preserve"><value>Commands to the disk failed. Cables, ports, the controller driver or the disk itself can cause this.</value></data>
+  <data name="m5.storage.disk51.title" xml:space="preserve"><value>Errors while paging to disk ({0} events)</value></data>
+  <data name="m5.storage.disk51.why" xml:space="preserve"><value>Windows had trouble writing memory pages to disk, which can cause freezes and crashes.</value></data>
+  <data name="m5.storage.ntfs55.title" xml:space="preserve"><value>File system corruption detected ({0} events)</value></data>
+  <data name="m5.storage.ntfs55.why" xml:space="preserve"><value>NTFS found damaged file system structures. Files on that volume may be affected.</value></data>
+  <data name="m5.storage.ntfs98.title" xml:space="preserve"><value>A volume needs a file system check ({0} events)</value></data>
+  <data name="m5.storage.ntfs98.why" xml:space="preserve"><value>NTFS marked a volume as needing repair.</value></data>
+  <data name="m5.storage.ntfs50.title" xml:space="preserve"><value>Delayed writes failed ({0} events)</value></data>
+  <data name="m5.storage.ntfs50.why" xml:space="preserve"><value>Data Windows had cached could not be written to disk, so some changes may be lost.</value></data>
+  <data name="m5.storage.ntfs140.title" xml:space="preserve"><value>Failed file system flushes ({0} events)</value></data>
+  <data name="m5.storage.ntfs140.why" xml:space="preserve"><value>Often logged when a USB drive is removed without ejecting. Repeated on an internal disk, it can point to a storage problem.</value></data>
+  <data name="m5.storage.storport129.title" xml:space="preserve"><value>The storage driver reset the disk ({0} events)</value></data>
+  <data name="m5.storage.storport129.why" xml:space="preserve"><value>The disk stopped answering and was reset. This often comes before freezes.</value></data>
+  <data name="m5.storage.storport153.title" xml:space="preserve"><value>Disk operations were retried ({0} events)</value></data>
+  <data name="m5.storage.storport153.why" xml:space="preserve"><value>Reads or writes timed out and were retried. Firmware, drivers, cables or a failing disk can cause this.</value></data>
+  <data name="m5.storage.disk157.title" xml:space="preserve"><value>A disk was removed unexpectedly ({0} events)</value></data>
+  <data name="m5.storage.disk157.why" xml:space="preserve"><value>Normal for USB drives pulled out without ejecting. For an internal disk it can mean a loose connection.</value></data>
+  <data name="m5.storage.action" xml:space="preserve"><value>Check the disk health section, update storage drivers and SSD firmware, and check cables.</value></data>
+  <data name="m5.storage.action.backup" xml:space="preserve"><value>Back up your files now, then check the disk health section and run a read-only disk check (chkdsk /scan).</value></data>
+  <data name="m5.serviceCrash.title" xml:space="preserve"><value>The service "{0}" stopped unexpectedly {1} times</value></data>
+  <data name="m5.serviceCrash.why" xml:space="preserve"><value>A background service crashed. Windows may have restarted it, but whatever it provides was interrupted.</value></data>
+  <data name="m5.serviceCrash.action" xml:space="preserve"><value>Update or reinstall the app the service belongs to.</value></data>
+  <data name="m5.serviceStart.title" xml:space="preserve"><value>{0} services failed to start or timed out</value></data>
+  <data name="m5.serviceStart.why" xml:space="preserve"><value>This is common on healthy PCs (for example, a service for a device that is not present). It matters only if something you use does not work.</value></data>
+  <data name="m5.serviceStart.action" xml:space="preserve"><value>If a feature you use is broken, update or reinstall the app that owns the service named in the evidence.</value></data>
+  <data name="m5.app.title" xml:space="preserve"><value>{0} crashed {1} times and stopped responding {2} times</value></data>
+  <data name="m5.app.why" xml:space="preserve"><value>Repeated crashes of one app usually come from that app or a plug-in it loads, not from Windows.</value></data>
+  <data name="m5.app.action" xml:space="preserve"><value>Update or reinstall the app. If the faulting module in the evidence belongs to another product, update that product.</value></data>
+  <data name="m7.name" xml:space="preserve"><value>Disk health</value></data>
+  <data name="m7.check.disks" xml:space="preserve"><value>Physical disks</value></data>
+  <data name="m7.check.disks.none" xml:space="preserve"><value>Windows' storage management data could not be read.</value></data>
+  <data name="m7.check.reliability" xml:space="preserve"><value>Disk reliability counters (temperature, wear, errors)</value></data>
+  <data name="m7.check.nvme" xml:space="preserve"><value>NVMe health log</value></data>
+  <data name="m7.check.smart" xml:space="preserve"><value>SATA SMART attributes</value></data>
+  <data name="m7.check.usbRaid" xml:space="preserve"><value>USB and RAID disks</value></data>
+  <data name="m7.check.usbRaid.detail" xml:space="preserve"><value>Windows does not pass health data through most USB enclosures and RAID controllers. If smartctl is installed it can read them; PC Doctor does not ship it.</value></data>
+  <data name="m7.check.health" xml:space="preserve"><value>Windows health status: {0}</value></data>
+  <data name="m7.health.healthy" xml:space="preserve"><value>Windows reports Healthy. This is the drive's own self-assessment, not a guarantee.</value></data>
+  <data name="m7.health.warning" xml:space="preserve"><value>Windows reports Warning.</value></data>
+  <data name="m7.health.unhealthy" xml:space="preserve"><value>Windows reports Unhealthy.</value></data>
+  <data name="m7.health.unknown" xml:space="preserve"><value>Not reported by this drive.</value></data>
+  <data name="m7.unhealthy.title" xml:space="preserve"><value>Back up now: {0} reports it is failing</value></data>
+  <data name="m7.warning.title" xml:space="preserve"><value>{0} reports a health warning</value></data>
+  <data name="m7.unhealthy.why" xml:space="preserve"><value>The drive's own monitoring says it is degrading. Drives in this state can stop working without further warning.</value></data>
+  <data name="m7.backupNow" xml:space="preserve"><value>Back up your files now. Then replace the drive or contact the PC maker.</value></data>
+  <data name="m7.check.reliabilityFor" xml:space="preserve"><value>Reliability counters: {0}</value></data>
+  <data name="m7.notReported" xml:space="preserve"><value>Not reported by this drive.</value></data>
+  <data name="m7.uncorrected.title" xml:space="preserve"><value>{0} has {1} uncorrected read/write errors</value></data>
+  <data name="m7.uncorrected.why" xml:space="preserve"><value>Uncorrected errors mean data could not be read or written correctly.</value></data>
+  <data name="m7.latency.title" xml:space="preserve"><value>{0} took more than {1} seconds to answer at least once</value></data>
+  <data name="m7.latency.why" xml:space="preserve"><value>Very slow responses cause freezes and can be an early sign of a failing drive or connection.</value></data>
+  <data name="m7.latency.action" xml:space="preserve"><value>Update SSD firmware and storage drivers, check cables, and keep a current backup.</value></data>
+  <data name="m7.wear.title" xml:space="preserve"><value>{0} has used {1}% of its rated endurance</value></data>
+  <data name="m7.wear.why" xml:space="preserve"><value>SSDs wear with writes. Once the counter passes its rated maximum the drive is outside its rated life, though many keep working.</value></data>
+  <data name="m7.wear.action" xml:space="preserve"><value>Keep backups current and plan a replacement.</value></data>
+  <data name="m7.check.nvmeFor" xml:space="preserve"><value>NVMe health log: {0}</value></data>
+  <data name="m7.nvme.badLog" xml:space="preserve"><value>The drive returned a health log PC Doctor could not read.</value></data>
+  <data name="m7.nvme.summary" xml:space="preserve"><value>Endurance used {0}%, spare {1}%, temperature {2} °C.</value></data>
+  <data name="m7.nvmeCritical.title" xml:space="preserve"><value>Back up now: {0} raised a critical warning ({1})</value></data>
+  <data name="m7.nvmeCritical.why" xml:space="preserve"><value>The NVMe drive itself flagged a critical condition (spare space, temperature, reliability or read-only mode).</value></data>
+  <data name="m7.nvmeMedia.title" xml:space="preserve"><value>{0} logged {1} media and data integrity errors</value></data>
+  <data name="m7.nvmeMedia.why" xml:space="preserve"><value>The drive could not recover some data it stored. If this number grows, the drive is failing.</value></data>
+  <data name="m7.nvmeTemp.title" xml:space="preserve"><value>{0} is at its warning temperature ({1} °C)</value></data>
+  <data name="m7.nvmeTemp.why" xml:space="preserve"><value>Hot NVMe drives slow themselves down and wear faster.</value></data>
+  <data name="m7.nvmeTemp.action" xml:space="preserve"><value>Improve airflow or add a heatsink to the drive.</value></data>
+  <data name="m7.check.smartFor" xml:space="preserve"><value>SMART attributes: {0}</value></data>
+  <data name="m7.smart.title" xml:space="preserve"><value>Disk {0} reports reallocated or unreadable sectors</value></data>
+  <data name="m7.smart.why" xml:space="preserve"><value>SMART attributes 5, 187, 197 and 198 count sectors the drive had to replace or could not read. Rising counts predict failure.</value></data>
+  <data name="m9.name" xml:space="preserve"><value>Drivers and devices</value></data>
+  <data name="m9.check.devices" xml:space="preserve"><value>Devices with problems in Device Manager</value></data>
+  <data name="m9.check.devices.detail" xml:space="preserve"><value>{0} devices with problems; {1} not connected or disabled by you (hidden).</value></data>
+  <data name="m9.device.title" xml:space="preserve"><value>{0} has a problem (code {1})</value></data>
+  <data name="m9.device.action" xml:space="preserve"><value>Open Device Manager, check the device's status, and install the driver from the device or PC maker.</value></data>
+  <data name="m9.code.1" xml:space="preserve"><value>The device is not configured correctly (code 1).</value></data>
+  <data name="m9.code.3" xml:space="preserve"><value>The driver may be damaged, or Windows is low on memory (code 3).</value></data>
+  <data name="m9.code.10" xml:space="preserve"><value>The device cannot start (code 10).</value></data>
+  <data name="m9.code.12" xml:space="preserve"><value>The device cannot find enough free resources (code 12).</value></data>
+  <data name="m9.code.14" xml:space="preserve"><value>The device needs a restart to work (code 14).</value></data>
+  <data name="m9.code.18" xml:space="preserve"><value>The driver needs to be reinstalled (code 18).</value></data>
+  <data name="m9.code.19" xml:space="preserve"><value>Windows cannot start the device because its registry configuration is damaged (code 19).</value></data>
+  <data name="m9.code.21" xml:space="preserve"><value>Windows is removing the device (code 21).</value></data>
+  <data name="m9.code.22" xml:space="preserve"><value>The device is disabled (code 22).</value></data>
+  <data name="m9.code.24" xml:space="preserve"><value>The device is not present, not working, or missing drivers (code 24).</value></data>
+  <data name="m9.code.28" xml:space="preserve"><value>The driver is not installed (code 28).</value></data>
+  <data name="m9.code.31" xml:space="preserve"><value>Windows cannot load the driver (code 31).</value></data>
+  <data name="m9.code.39" xml:space="preserve"><value>The driver is corrupted or missing (code 39).</value></data>
+  <data name="m9.code.43" xml:space="preserve"><value>Windows stopped the device because it reported problems (code 43).</value></data>
+  <data name="m9.code.45" xml:space="preserve"><value>The device is not connected (code 45).</value></data>
+  <data name="m9.code.48" xml:space="preserve"><value>The driver was blocked because it has known problems (code 48).</value></data>
+  <data name="m9.code.52" xml:space="preserve"><value>Windows cannot verify the driver's signature (code 52).</value></data>
+  <data name="m9.code.other" xml:space="preserve"><value>Device Manager reports problem code {0}.</value></data>
+  <data name="m9.check.drivers" xml:space="preserve"><value>Installed device drivers</value></data>
+  <data name="m9.check.drivers.detail" xml:space="preserve"><value>{0} driver entries read.</value></data>
+  <data name="m9.unsigned.title" xml:space="preserve"><value>{0} unsigned drivers are installed</value></data>
+  <data name="m9.unsigned.why" xml:space="preserve"><value>Windows normally requires signed drivers. Unsigned ones were installed with signing checks relaxed, and their origin cannot be verified.</value></data>
+  <data name="m9.unsigned.action" xml:space="preserve"><value>Replace them with signed drivers from the device maker, or remove the device software if you do not use it.</value></data>
+  <data name="m9.old.title" xml:space="preserve"><value>{0} third-party drivers are more than {1} years old</value></data>
+  <data name="m9.old.why" xml:space="preserve"><value>Old drivers are not necessarily a problem. They are worth updating only if the device misbehaves or appears in crashes.</value></data>
+  <data name="m9.old.action" xml:space="preserve"><value>If one of these devices causes trouble, check Windows Update and the device maker for a newer driver.</value></data>
+  <data name="m9.check.knownBad" xml:space="preserve"><value>Known vulnerable drivers (WinRing0)</value></data>
+  <data name="m9.winring0.title" xml:space="preserve"><value>Vulnerable WinRing0 driver installed by software in {0}</value></data>
+  <data name="m9.winring0.why" xml:space="preserve"><value>WinRing0 (CVE-2020-14979) lets any program on the PC read and write hardware directly. Defender flags it as HackTool:Win32/Winring0.</value></data>
+  <data name="m9.winring0.action" xml:space="preserve"><value>Update the monitoring or fan-control app in that folder to a version that no longer uses WinRing0, or uninstall it.</value></data>
+  <data name="m9.check.crashStacks" xml:space="preserve"><value>Third-party drivers named in crash dumps</value></data>
+  <data name="m10.name" xml:space="preserve"><value>Battery</value></data>
+  <data name="m10.check.battery" xml:space="preserve"><value>Battery report (powercfg)</value></data>
+  <data name="m10.check.reportFailed" xml:space="preserve"><value>powercfg could not produce a battery report.</value></data>
+  <data name="m10.check.noBattery" xml:space="preserve"><value>No battery (desktop PC).</value></data>
+  <data name="m10.check.batteryFor" xml:space="preserve"><value>Battery {0}</value></data>
+  <data name="m10.check.noDesign" xml:space="preserve"><value>The battery does not report its design capacity.</value></data>
+  <data name="m10.check.detail" xml:space="preserve"><value>Holds {0} of {1} mWh as designed ({2}%); {3} charge cycles.</value></data>
+  <data name="m10.worn.title" xml:space="preserve"><value>The battery holds {0}% of its original charge</value></data>
+  <data name="m10.replace.title" xml:space="preserve"><value>The battery holds only {0}% of its original charge</value></data>
+  <data name="m10.worn.why" xml:space="preserve"><value>Batteries lose capacity with age and charge cycles. The 80% and 60% thresholds are PC Doctor's rule of thumb, not a manufacturer limit.</value></data>
+  <data name="m10.worn.action" xml:space="preserve"><value>Expect shorter battery life. No action is needed unless it no longer lasts long enough for you.</value></data>
+  <data name="m10.replace.action" xml:space="preserve"><value>Consider replacing the battery through the PC maker or an authorized service.</value></data>
+  <data name="m10.check.energy" xml:space="preserve"><value>Power efficiency diagnostics (powercfg /energy)</value></data>
+  <data name="page.crashes.title" xml:space="preserve"><value>Crashes</value></data>
+  <data name="page.crashes.eyebrow" xml:space="preserve"><value>Stability</value></data>
+  <data name="page.crashes.subtitle" xml:space="preserve"><value>Blue screens, freezes and sudden power-offs from the last 30 days, with the driver Microsoft's debugger names when the dump files can be read.</value></data>
+  <data name="crashes.timeline" xml:space="preserve"><value>Timeline</value></data>
+  <data name="crashes.filter.all" xml:space="preserve"><value>Everything</value></data>
+  <data name="crashes.filter.bsod" xml:space="preserve"><value>Blue screens</value></data>
+  <data name="crashes.filter.freeze" xml:space="preserve"><value>Freezes and power-offs</value></data>
+  <data name="crashes.filter.hardware" xml:space="preserve"><value>Hardware and disk</value></data>
+  <data name="crashes.filter.gpu" xml:space="preserve"><value>Graphics</value></data>
+  <data name="crashes.empty" xml:space="preserve"><value>No crashes, freezes or hardware errors were recorded in the period checked.</value></data>
+  <data name="crashes.deep.title" xml:space="preserve"><value>Read the crash dump files</value></data>
+  <data name="crashes.deep.body" xml:space="preserve"><value>Dump files name the driver that crashed, but Windows only lets administrators read them. A Deep Scan reads them through PC Doctor's helper.</value></data>
+  <data name="m5.check.dumpAnalysis.debugger" xml:space="preserve"><value>Windows debugger analysed {0} of {1} dump files.</value></data>
+  <data name="m5.check.dumpAnalysis.offline" xml:space="preserve"><value>The Windows debugger is not installed. The stop code was read from {0} of {1} dump files without it.</value></data>
+  <data name="m5.check.dumpRead" xml:space="preserve"><value>Dump file {0}</value></data>
+  <data name="m5.check.wer" xml:space="preserve"><value>Windows Error Reporting reports</value></data>
+  <data name="m5.check.wer.detail" xml:space="preserve"><value>{0} reports read.</value></data>
+  <data name="m5.culprit.title" xml:space="preserve"><value>{0} of {1} blue screens in {2} days name {3} ({4}), stop codes {5}</value></data>
+  <data name="m5.culprit.why.unknown" xml:space="preserve"><value>Microsoft's debugger found this driver on the crashing code path. PC Doctor does not know which product it belongs to; its file properties name the maker.</value></data>
+  <data name="m5.culprit.action.unknown" xml:space="preserve"><value>Find which program or device installed {0} (its file properties show the maker), then update or remove it.</value></data>
+  <data name="m5.culprit.core.title" xml:space="preserve"><value>{0} of {1} blue screens in {2} days stop inside Windows itself ({3})</value></data>
+  <data name="m5.culprit.core.why" xml:space="preserve"><value>When the debugger can only name the Windows kernel, the real cause is usually elsewhere: a driver that corrupted memory earlier, unstable RAM, or an overclock.</value></data>
+  <data name="m5.culprit.core.action" xml:space="preserve"><value>Remove overclocks, run the Windows Memory Diagnostic, and update recently changed drivers.</value></data>
+  <data name="m5.needDebugger.title" xml:space="preserve"><value>Install the Windows debugger to name the driver behind these blue screens</value></data>
+  <data name="m5.needDebugger.why" xml:space="preserve"><value>Without it PC Doctor can read the stop code from each dump but cannot tell which driver crashed. The module names listed are only what the dump contains, not a verdict.</value></data>
+  <data name="m5.needDebugger.action" xml:space="preserve"><value>Install "Debugging Tools for Windows" from the Windows SDK installer (only that feature is needed), then run a Deep Scan again.</value></data>
+  <data name="m5.liveKernelGpu.title" xml:space="preserve"><value>The graphics hardware hung and was reset {0} times (live kernel reports)</value></data>
+  <data name="m5.timeline.bsod" xml:space="preserve"><value>Blue screen {0} {1}</value></data>
+  <data name="m5.timeline.culprit" xml:space="preserve"><value>Debugger names {0}</value></data>
+  <data name="m5.timeline.forced" xml:space="preserve"><value>Forced off while not responding</value></data>
+  <data name="m5.timeline.power" xml:space="preserve"><value>Stopped without shutting down</value></data>
+  <data name="m5.timeline.whea" xml:space="preserve"><value>Fatal hardware error</value></data>
+  <data name="m5.timeline.tdr" xml:space="preserve"><value>Display driver reset</value></data>
+  <data name="m5.timeline.disk" xml:space="preserve"><value>Disk or file system error</value></data>
+  <data name="m5.timeline.dumpFailed" xml:space="preserve"><value>Crash dump could not be saved</value></data>
+  <data name="settings.network" xml:space="preserve"><value>Network features</value></data>
+  <data name="settings.symbols" xml:space="preserve"><value>Let the Windows debugger download Microsoft's public symbols</value></data>
+  <data name="settings.symbols.note" xml:space="preserve"><value>Makes crash analysis more precise. Only file names of Windows components are requested from msdl.microsoft.com, over HTTPS. Off by default.</value></data>
+  <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
+  <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
+  <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>
+  <data name="page.overview.title" xml:space="preserve"><value>What's going on with this PC</value></data>
+  <data name="page.overview.eyebrow" xml:space="preserve"><value>Overview</value></data>
+  <data name="page.overview.subtitle" xml:space="preserve"><value>PC Doctor reads what Windows already records and explains it in plain words. Nothing changes without your consent, and every change can be undone.</value></data>
+  <data name="page.findings.title" xml:space="preserve"><value>Findings</value></data>
+  <data name="page.findings.eyebrow" xml:space="preserve"><value>Results</value></data>
+  <data name="page.findings.subtitle" xml:space="preserve"><value>Only things worth acting on are listed. Each one says where it came from, how sure PC Doctor is, and what was not checked.</value></data>
+  <data name="page.changes.title" xml:space="preserve"><value>Changes</value></data>
+  <data name="page.changes.eyebrow" xml:space="preserve"><value>Change journal</value></data>
+  <data name="page.changes.subtitle" xml:space="preserve"><value>Everything PC Doctor changed on this PC, with the old values, so each change can be put back.</value></data>
+  <data name="page.settings.title" xml:space="preserve"><value>Settings</value></data>
+  <data name="page.settings.eyebrow" xml:space="preserve"><value>Preferences</value></data>
+  <data name="page.settings.subtitle" xml:space="preserve"><value>Language, look and privacy. PC Doctor sends nothing anywhere by default.</value></data>
+  <data name="overview.scan.title" xml:space="preserve"><value>Check this PC</value></data>
+  <data name="overview.scan.body" xml:space="preserve"><value>The Health Check is read-only and needs no administrator rights. The Deep Scan also reads disk counters, the TPM and BitLocker, and Windows will ask for permission.</value></data>
+  <data name="overview.lastScan" xml:space="preserve"><value>Last scan {0} · {1}</value></data>
+  <data name="overview.neverScanned" xml:space="preserve"><value>Not scanned yet</value></data>
+  <data name="scanMode.HealthCheck" xml:space="preserve"><value>Health Check</value></data>
+  <data name="scanMode.DeepScan" xml:space="preserve"><value>Deep Scan</value></data>
+  <data name="overview.stat.critical" xml:space="preserve"><value>Critical</value></data>
+  <data name="overview.stat.high" xml:space="preserve"><value>High</value></data>
+  <data name="overview.stat.medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="overview.stat.low" xml:space="preserve"><value>Low or info</value></data>
+  <data name="overview.stat.checked" xml:space="preserve"><value>Items checked</value></data>
+  <data name="overview.stat.notChecked" xml:space="preserve"><value>Not checked or not available</value></data>
+  <data name="overview.areas" xml:space="preserve"><value>Areas</value></data>
+  <data name="overview.module.nothing" xml:space="preserve"><value>Nothing to act on in what was checked.</value></data>
+  <data name="overview.module.counts" xml:space="preserve"><value>{0} findings · {1} checked · {2} not checked</value></data>
+  <data name="filter.allAreas" xml:space="preserve"><value>All areas</value></data>
+  <data name="filter.area" xml:space="preserve"><value>Area</value></data>
+  <data name="findings.empty.title" xml:space="preserve"><value>No scan yet</value></data>
+  <data name="findings.empty.body" xml:space="preserve"><value>Run a Health Check from the Overview to see findings here.</value></data>
+  <data name="findings.noMatch" xml:space="preserve"><value>No findings match these filters.</value></data>
+  <data name="status.copied" xml:space="preserve"><value>Copied to the clipboard.</value></data>
+  <data name="action.applyFix.confirm" xml:space="preserve"><value>Apply</value></data>
+  <data name="journal.undoAll.button" xml:space="preserve"><value>Undo everything</value></data>
+  <data name="journal.empty" xml:space="preserve"><value>PC Doctor has not changed anything on this PC.</value></data>
+  <data name="settings.appearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="settings.reduceMotion" xml:space="preserve"><value>Reduce motion</value></data>
+  <data name="settings.about" xml:space="preserve"><value>About</value></data>
+  <data name="settings.version" xml:space="preserve"><value>Version</value></data>
+  <data name="settings.licenses" xml:space="preserve"><value>Fonts: Outfit, IBM Plex Sans Arabic and JetBrains Mono, under the SIL Open Font License 1.1 (license texts are next to the app).</value></data>
+</root>

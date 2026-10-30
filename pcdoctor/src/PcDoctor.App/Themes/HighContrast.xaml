@@ -1,0 +1,60 @@
+<!-- High contrast: every token follows the user's system colours; gradients and glows go flat. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="Bg" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Bg2" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Surface" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Surface2" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Surface3" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="GhostFill" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="CardGradient" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="FeaturedGradient" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="DialogGradient" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="PrimaryContainer" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="GoodContainer" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="WarnContainer" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="ErrorContainer" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="TopHighlight" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="AmbientGlow" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="CardHoverGlow" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="SeverityBg.Critical" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="SeverityBg.High" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="SeverityBg.Medium" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="SeverityBg.Low" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="SeverityBg.Info" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Ink" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Soft" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Muted" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Line" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Line2" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="OutlineBrush" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Good" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Warn" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="ErrorBrush" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="CardBorder" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="FeaturedBorder" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="DialogBorder" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="BrandGlyph" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Severity.Critical" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Severity.High" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Severity.Medium" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Severity.Low" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Severity.Info" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Accent" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="Accent2" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="Strong" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="StrongHover" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="StrongPressed" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="SelectedFill" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="SelectedBorder" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="CardHoverBorder" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="BrandGradient" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="ProgressGradient" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="HeroTextGradient" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="HoverFill" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="OnStrong" Color="{x:Static SystemColors.HighlightTextColor}" />
+    <SolidColorBrush x:Key="Scrim" Color="{x:Static SystemColors.WindowColor}" Opacity="0.8" />
+    <Color x:Key="ShadowColor">#00000000</Color>
+    <Color x:Key="ButtonGlowColor">#00000000</Color>
+    <Color x:Key="DotGoodColor">#00000000</Color>
+</ResourceDictionary>

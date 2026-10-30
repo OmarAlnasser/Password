@@ -1,0 +1,68 @@
+name: PC Doctor
+
+on:
+  push:
+    paths: ["pcdoctor/**", ".github/workflows/pcdoctor.yml"]
+  pull_request:
+    paths: ["pcdoctor/**", ".github/workflows/pcdoctor.yml"]
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: pcdoctor
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: pcdoctor/global.json
+      - name: String tables are generated from tools/strings_*.py
+        shell: bash
+        run: python -I tools/gen_resx.py && git diff --exit-code -- src/PcDoctor.Core/Resources
+      - run: dotnet build PcDoctor.sln -c Release
+      - run: dotnet test PcDoctor.sln -c Release --no-build --logger "trx;LogFileName=results.trx"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: pcdoctor/tests/**/TestResults/*.trx
+
+  publish:
+    needs: test
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        rid: [win-x64, win-arm64]
+    env:
+      # Set these repository secrets to sign. One stable identity for every binary; do not rotate near releases.
+      SIGNING_CERT_PFX_BASE64: ${{ secrets.PCDOCTOR_SIGNING_PFX_BASE64 }}
+      SIGNING_CERT_PASSWORD: ${{ secrets.PCDOCTOR_SIGNING_PFX_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: pcdoctor/global.json
+      - run: dotnet publish src/PcDoctor.App -c Release -r ${{ matrix.rid }} --self-contained false -o out/${{ matrix.rid }}
+      - name: Sign every PE file (when a signing identity is configured)
+        if: env.SIGNING_CERT_PFX_BASE64 != ''
+        shell: pwsh
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'pcdoctor.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:SIGNING_CERT_PFX_BASE64))
+          $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName | Select-Object -Last 1
+          $files = Get-ChildItem out/${{ matrix.rid }} -Recurse -Include *.exe, *.dll | ForEach-Object FullName
+          & $signtool.FullName sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /f $pfx /p $env:SIGNING_CERT_PASSWORD $files
+          if ($LASTEXITCODE -ne 0) { throw "signtool failed" }
+          Remove-Item $pfx
+      - name: Verify signatures and package contents
+        shell: pwsh
+        run: |
+          $require = [bool]$env:SIGNING_CERT_PFX_BASE64
+          ./tools/verify-signatures.ps1 -Path out/${{ matrix.rid }} -RequireSigned:$require
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcdoctor-${{ matrix.rid }}
+          path: pcdoctor/out/${{ matrix.rid }}
