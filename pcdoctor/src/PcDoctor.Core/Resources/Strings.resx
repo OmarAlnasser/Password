@@ -5,9 +5,6 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <data name="app.title" xml:space="preserve"><value>PC Doctor</value></data>
-  <data name="tab.dashboard" xml:space="preserve"><value>Dashboard</value></data>
-  <data name="tab.changes" xml:space="preserve"><value>Changes</value></data>
-  <data name="tab.settings" xml:space="preserve"><value>Settings</value></data>
   <data name="action.healthCheck" xml:space="preserve"><value>Health Check</value></data>
   <data name="action.healthCheck.tip" xml:space="preserve"><value>Read-only. Does not need administrator rights.</value></data>
   <data name="action.deepScan" xml:space="preserve"><value>Deep Scan</value></data>
@@ -384,4 +381,48 @@
   <data name="m10.worn.action" xml:space="preserve"><value>Expect shorter battery life. No action is needed unless it no longer lasts long enough for you.</value></data>
   <data name="m10.replace.action" xml:space="preserve"><value>Consider replacing the battery through the PC maker or an authorized service.</value></data>
   <data name="m10.check.energy" xml:space="preserve"><value>Power efficiency diagnostics (powercfg /energy)</value></data>
+  <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
+  <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
+  <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>
+  <data name="page.overview.title" xml:space="preserve"><value>What's going on with this PC</value></data>
+  <data name="page.overview.eyebrow" xml:space="preserve"><value>Overview</value></data>
+  <data name="page.overview.subtitle" xml:space="preserve"><value>PC Doctor reads what Windows already records and explains it in plain words. Nothing changes without your consent, and every change can be undone.</value></data>
+  <data name="page.findings.title" xml:space="preserve"><value>Findings</value></data>
+  <data name="page.findings.eyebrow" xml:space="preserve"><value>Results</value></data>
+  <data name="page.findings.subtitle" xml:space="preserve"><value>Only things worth acting on are listed. Each one says where it came from, how sure PC Doctor is, and what was not checked.</value></data>
+  <data name="page.changes.title" xml:space="preserve"><value>Changes</value></data>
+  <data name="page.changes.eyebrow" xml:space="preserve"><value>Change journal</value></data>
+  <data name="page.changes.subtitle" xml:space="preserve"><value>Everything PC Doctor changed on this PC, with the old values, so each change can be put back.</value></data>
+  <data name="page.settings.title" xml:space="preserve"><value>Settings</value></data>
+  <data name="page.settings.eyebrow" xml:space="preserve"><value>Preferences</value></data>
+  <data name="page.settings.subtitle" xml:space="preserve"><value>Language, look and privacy. PC Doctor sends nothing anywhere by default.</value></data>
+  <data name="overview.scan.title" xml:space="preserve"><value>Check this PC</value></data>
+  <data name="overview.scan.body" xml:space="preserve"><value>The Health Check is read-only and needs no administrator rights. The Deep Scan also reads disk counters, the TPM and BitLocker, and Windows will ask for permission.</value></data>
+  <data name="overview.lastScan" xml:space="preserve"><value>Last scan {0} · {1}</value></data>
+  <data name="overview.neverScanned" xml:space="preserve"><value>Not scanned yet</value></data>
+  <data name="scanMode.HealthCheck" xml:space="preserve"><value>Health Check</value></data>
+  <data name="scanMode.DeepScan" xml:space="preserve"><value>Deep Scan</value></data>
+  <data name="overview.stat.critical" xml:space="preserve"><value>Critical</value></data>
+  <data name="overview.stat.high" xml:space="preserve"><value>High</value></data>
+  <data name="overview.stat.medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="overview.stat.low" xml:space="preserve"><value>Low or info</value></data>
+  <data name="overview.stat.checked" xml:space="preserve"><value>Items checked</value></data>
+  <data name="overview.stat.notChecked" xml:space="preserve"><value>Not checked or not available</value></data>
+  <data name="overview.areas" xml:space="preserve"><value>Areas</value></data>
+  <data name="overview.module.nothing" xml:space="preserve"><value>Nothing to act on in what was checked.</value></data>
+  <data name="overview.module.counts" xml:space="preserve"><value>{0} findings · {1} checked · {2} not checked</value></data>
+  <data name="filter.allAreas" xml:space="preserve"><value>All areas</value></data>
+  <data name="filter.area" xml:space="preserve"><value>Area</value></data>
+  <data name="findings.empty.title" xml:space="preserve"><value>No scan yet</value></data>
+  <data name="findings.empty.body" xml:space="preserve"><value>Run a Health Check from the Overview to see findings here.</value></data>
+  <data name="findings.noMatch" xml:space="preserve"><value>No findings match these filters.</value></data>
+  <data name="status.copied" xml:space="preserve"><value>Copied to the clipboard.</value></data>
+  <data name="action.applyFix.confirm" xml:space="preserve"><value>Apply</value></data>
+  <data name="journal.undoAll.button" xml:space="preserve"><value>Undo everything</value></data>
+  <data name="journal.empty" xml:space="preserve"><value>PC Doctor has not changed anything on this PC.</value></data>
+  <data name="settings.appearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="settings.reduceMotion" xml:space="preserve"><value>Reduce motion</value></data>
+  <data name="settings.about" xml:space="preserve"><value>About</value></data>
+  <data name="settings.version" xml:space="preserve"><value>Version</value></data>
+  <data name="settings.licenses" xml:space="preserve"><value>Fonts: Outfit, IBM Plex Sans Arabic and JetBrains Mono, under the SIL Open Font License 1.1 (license texts are next to the app).</value></data>
 </root>

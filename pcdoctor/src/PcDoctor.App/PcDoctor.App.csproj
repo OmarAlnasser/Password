@@ -9,6 +9,11 @@
     <RootNamespace>PcDoctor.App</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Same OFL fonts as Khazna (assets/fonts), bundled so nothing is fetched at run time. -->
+    <Resource Include="Fonts\*.ttf" />
+    <Content Include="Fonts\OFL-*.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
   </ItemGroup>
   <ItemGroup>

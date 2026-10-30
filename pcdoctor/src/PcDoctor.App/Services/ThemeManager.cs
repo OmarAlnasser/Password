@@ -15,7 +15,7 @@ public static class ThemeManager
                 ThemeChoice.Dark => "Dark",
                 _ => SystemUsesLightTheme() ? "Light" : "Dark",
             };
-        var dict = new ResourceDictionary { Source = new Uri($"Themes/{name}.xaml", UriKind.Relative) };
+        var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/PcDoctor.App;component/Themes/{name}.xaml") };
         var merged = Application.Current.Resources.MergedDictionaries;
         if (merged.Count > 0)
         {
@@ -24,6 +24,11 @@ public static class ThemeManager
         else
         {
             merged.Add(dict);
+        }
+        Views.MainWindow.IsDark = name == "Dark";
+        if (Application.Current.MainWindow is Views.MainWindow window)
+        {
+            window.ApplyTitleBarTheme(Views.MainWindow.IsDark);
         }
     }
 

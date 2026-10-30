@@ -11,7 +11,9 @@ public sealed record ScanReport
     public required ScanConditions Conditions { get; init; }
     public required IReadOnlyList<ModuleResult> Modules { get; init; }
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public IEnumerable<Finding> AllFindings => Modules.SelectMany(m => m.Findings);
+    [System.Text.Json.Serialization.JsonIgnore]
     public IEnumerable<CheckResult> AllChecks => Modules.SelectMany(m => m.Checks);
 }
 

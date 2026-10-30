@@ -22,9 +22,11 @@ public sealed record ScanConditions
     public string MachineName { get; init; } = "";
     public string UserName { get; init; } = "";
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public int BuildNumber =>
         OsBuild.Split('.') is { Length: >= 3 } parts && int.TryParse(parts[2], out var b) ? b : 0;
 
+    [System.Text.Json.Serialization.JsonIgnore]
     public bool IsWindows10 => BuildNumber is > 0 and < 22000;
 }
 

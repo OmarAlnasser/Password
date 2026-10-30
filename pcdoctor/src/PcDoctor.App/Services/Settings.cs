@@ -11,7 +11,9 @@ public sealed record AppSettings
 {
     public string Language { get; init; } = "en-US";
     public DigitStyle Digits { get; init; } = DigitStyle.Western;
-    public ThemeChoice Theme { get; init; } = ThemeChoice.System;
+    /// <summary>Dark is the identity, as in Khazna; new installs start dark.</summary>
+    public ThemeChoice Theme { get; init; } = ThemeChoice.Dark;
+    public bool ReduceMotion { get; init; }
     public bool RedactExports { get; init; }
 
     public static string Folder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PCDoctor");

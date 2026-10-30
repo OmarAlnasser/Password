@@ -2,9 +2,6 @@
 S = [
 # --- app / UI
 ("app.title", "PC Doctor", "طبيب الحاسوب"),
-("tab.dashboard", "Dashboard", "لوحة المعلومات"),
-("tab.changes", "Changes", "التغييرات"),
-("tab.settings", "Settings", "الإعدادات"),
 ("action.healthCheck", "Health Check", "فحص الصحة"),
 ("action.healthCheck.tip", "Read-only. Does not need administrator rights.", "للقراءة فقط. لا يحتاج صلاحيات المسؤول."),
 ("action.deepScan", "Deep Scan", "فحص معمّق"),
