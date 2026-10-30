@@ -6,6 +6,7 @@ using System.Security.Principal;
 using PcDoctor.Core.Ipc;
 using PcDoctor.Core.Journal;
 using PcDoctor.Core.Platform;
+using PcDoctor.Modules.Crash;
 using PcDoctor.Modules.Disk;
 using PcDoctor.Modules.Security;
 
@@ -88,6 +89,8 @@ internal static partial class Program
         ElevatedData.SmartData => DiskReader.ReadSmart(),
         ElevatedData.Tpm => SecurityReader.ReadTpm(),
         ElevatedData.BitLocker => SecurityReader.ReadBitLocker(),
+        ElevatedData.CrashDumps => DumpReader.Read(allowSymbolDownload: false, CancellationToken.None),
+        ElevatedData.CrashDumpsWithSymbols => DumpReader.Read(allowSymbolDownload: true, CancellationToken.None),
         _ => null,
     };
 

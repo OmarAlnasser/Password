@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Crash\PcDoctor.Modules.Crash.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
   </ItemGroup>

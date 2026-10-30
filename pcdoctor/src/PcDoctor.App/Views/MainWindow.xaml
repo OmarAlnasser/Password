@@ -18,6 +18,7 @@
     <Window.Resources>
         <DataTemplate DataType="{x:Type p:OverviewViewModel}"><v:OverviewView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:FindingsViewModel}"><v:FindingsView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:CrashesViewModel}"><v:CrashesView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:ChangesViewModel}"><v:ChangesView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:SettingsViewModel}"><v:SettingsView /></DataTemplate>
     </Window.Resources>

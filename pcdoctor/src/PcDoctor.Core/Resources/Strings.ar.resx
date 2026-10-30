@@ -381,6 +381,44 @@
   <data name="m10.worn.action" xml:space="preserve"><value>توقّع عمراً أقصر للبطارية. لا حاجة لأي إجراء ما لم تعد تكفي احتياجك.</value></data>
   <data name="m10.replace.action" xml:space="preserve"><value>فكّر في استبدال البطارية عبر الشركة المصنّعة أو مركز خدمة معتمد.</value></data>
   <data name="m10.check.energy" xml:space="preserve"><value>تشخيص كفاءة الطاقة (powercfg /energy)</value></data>
+  <data name="page.crashes.title" xml:space="preserve"><value>الانهيارات</value></data>
+  <data name="page.crashes.eyebrow" xml:space="preserve"><value>الاستقرار</value></data>
+  <data name="page.crashes.subtitle" xml:space="preserve"><value>الشاشات الزرقاء والتجمّد وانقطاع الطاقة المفاجئ خلال آخر 30 يوماً، مع التعريف الذي يحدده مصحح أخطاء مايكروسوفت عندما يمكن قراءة ملفات التفريغ.</value></data>
+  <data name="crashes.timeline" xml:space="preserve"><value>الخط الزمني</value></data>
+  <data name="crashes.filter.all" xml:space="preserve"><value>الكل</value></data>
+  <data name="crashes.filter.bsod" xml:space="preserve"><value>الشاشات الزرقاء</value></data>
+  <data name="crashes.filter.freeze" xml:space="preserve"><value>التجمّد وانقطاع الطاقة</value></data>
+  <data name="crashes.filter.hardware" xml:space="preserve"><value>العتاد والقرص</value></data>
+  <data name="crashes.filter.gpu" xml:space="preserve"><value>الرسوميات</value></data>
+  <data name="crashes.empty" xml:space="preserve"><value>لم تُسجَّل انهيارات أو تجمّد أو أخطاء عتاد في الفترة التي تم فحصها.</value></data>
+  <data name="crashes.deep.title" xml:space="preserve"><value>اقرأ ملفات تفريغ الانهيار</value></data>
+  <data name="crashes.deep.body" xml:space="preserve"><value>ملفات التفريغ تحدد التعريف الذي انهار، لكن ويندوز لا يسمح بقراءتها إلا للمسؤولين. الفحص المعمّق يقرؤها عبر المساعد الخاص بطبيب الحاسوب.</value></data>
+  <data name="m5.check.dumpAnalysis.debugger" xml:space="preserve"><value>حلّل مصحح أخطاء ويندوز {0} من {1} ملفات تفريغ.</value></data>
+  <data name="m5.check.dumpAnalysis.offline" xml:space="preserve"><value>مصحح أخطاء ويندوز غير مثبت. قُرئ رمز الإيقاف من {0} من {1} ملفات تفريغ بدونه.</value></data>
+  <data name="m5.check.dumpRead" xml:space="preserve"><value>ملف التفريغ {0}</value></data>
+  <data name="m5.check.wer" xml:space="preserve"><value>تقارير الإبلاغ عن الأخطاء في ويندوز</value></data>
+  <data name="m5.check.wer.detail" xml:space="preserve"><value>قُرئ {0} تقريراً.</value></data>
+  <data name="m5.culprit.title" xml:space="preserve"><value>{0} من {1} شاشات زرقاء خلال {2} يوماً تذكر {3} ({4})، رموز الإيقاف {5}</value></data>
+  <data name="m5.culprit.why.unknown" xml:space="preserve"><value>وجد مصحح أخطاء مايكروسوفت هذا التعريف في مسار الشيفرة المنهارة. لا يعرف طبيب الحاسوب المنتج الذي يتبع له؛ خصائص الملف تذكر الشركة المصنّعة.</value></data>
+  <data name="m5.culprit.action.unknown" xml:space="preserve"><value>اعرف البرنامج أو الجهاز الذي ثبّت {0} (خصائص الملف تُظهر الشركة المصنّعة)، ثم حدّثه أو أزله.</value></data>
+  <data name="m5.culprit.core.title" xml:space="preserve"><value>{0} من {1} شاشات زرقاء خلال {2} يوماً تتوقف داخل ويندوز نفسه ({3})</value></data>
+  <data name="m5.culprit.core.why" xml:space="preserve"><value>عندما لا يستطيع مصحح الأخطاء إلا تسمية نواة ويندوز، يكون السبب الحقيقي عادة في مكان آخر: تعريف أفسد الذاكرة قبل ذلك، أو ذاكرة غير مستقرة، أو رفع تردد.</value></data>
+  <data name="m5.culprit.core.action" xml:space="preserve"><value>ألغِ رفع التردد، وشغّل أداة تشخيص الذاكرة في ويندوز، وحدّث التعريفات التي تغيّرت مؤخراً.</value></data>
+  <data name="m5.needDebugger.title" xml:space="preserve"><value>ثبّت مصحح أخطاء ويندوز لتحديد التعريف المسبب لهذه الشاشات الزرقاء</value></data>
+  <data name="m5.needDebugger.why" xml:space="preserve"><value>بدونه يستطيع طبيب الحاسوب قراءة رمز الإيقاف من كل ملف تفريغ، لكنه لا يستطيع معرفة التعريف الذي انهار. أسماء الوحدات المعروضة هي فقط ما يحتويه الملف، وليست حكماً.</value></data>
+  <data name="m5.needDebugger.action" xml:space="preserve"><value>ثبّت "Debugging Tools for Windows" من مثبّت Windows SDK (هذه الميزة فقط مطلوبة)، ثم شغّل الفحص المعمّق مرة أخرى.</value></data>
+  <data name="m5.liveKernelGpu.title" xml:space="preserve"><value>تجمّد عتاد الرسوميات وأُعيد تعيينه {0} مرات (تقارير النواة الحية)</value></data>
+  <data name="m5.timeline.bsod" xml:space="preserve"><value>شاشة زرقاء {0} {1}</value></data>
+  <data name="m5.timeline.culprit" xml:space="preserve"><value>مصحح الأخطاء يذكر {0}</value></data>
+  <data name="m5.timeline.forced" xml:space="preserve"><value>أُطفئ قسراً أثناء عدم الاستجابة</value></data>
+  <data name="m5.timeline.power" xml:space="preserve"><value>توقف دون إيقاف تشغيل سليم</value></data>
+  <data name="m5.timeline.whea" xml:space="preserve"><value>خطأ عتاد قاتل</value></data>
+  <data name="m5.timeline.tdr" xml:space="preserve"><value>إعادة تعيين تعريف العرض</value></data>
+  <data name="m5.timeline.disk" xml:space="preserve"><value>خطأ في القرص أو نظام الملفات</value></data>
+  <data name="m5.timeline.dumpFailed" xml:space="preserve"><value>تعذّر حفظ ملف التفريغ</value></data>
+  <data name="settings.network" xml:space="preserve"><value>ميزات الشبكة</value></data>
+  <data name="settings.symbols" xml:space="preserve"><value>السماح لمصحح أخطاء ويندوز بتنزيل الرموز العامة من مايكروسوفت</value></data>
+  <data name="settings.symbols.note" xml:space="preserve"><value>يجعل تحليل الانهيارات أدق. تُطلب فقط أسماء ملفات مكونات ويندوز من msdl.microsoft.com عبر HTTPS. متوقف افتراضياً.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

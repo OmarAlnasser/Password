@@ -24,10 +24,14 @@ public sealed record CheckResult(
     Text? Detail = null,
     FindingSource? Source = null);
 
+/// <summary>One event on a module's timeline (crashes, hardware errors, scans).</summary>
+public sealed record TimelineEntry(DateTimeOffset Time, Severity Severity, Text Title, Text? Detail = null, string? Tag = null);
+
 public sealed record ModuleResult
 {
     public required string ModuleId { get; init; }
     public required Text ModuleName { get; init; }
     public IReadOnlyList<CheckResult> Checks { get; init; } = [];
     public IReadOnlyList<Finding> Findings { get; init; } = [];
+    public IReadOnlyList<TimelineEntry> Timeline { get; init; } = [];
 }

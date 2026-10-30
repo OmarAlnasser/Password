@@ -20,4 +20,9 @@ public sealed record CrashSnapshot
     public IReadOnlyList<EventRecordData> Events { get; init; } = [];
     public StabilityInfo? Stability { get; init; }
     public TimeSpan Window { get; init; } = TimeSpan.FromDays(30);
+    /// <summary>Null = not read (dump files need administrator rights: Deep Scan).</summary>
+    public IReadOnlyList<DumpAnalysis>? DumpAnalyses { get; init; }
+    /// <summary>Whether the Windows debugger (cdb.exe) was found when the dumps were read.</summary>
+    public bool DebuggerAvailable { get; init; }
+    public IReadOnlyList<WerReport> WerReports { get; init; } = [];
 }

@@ -18,6 +18,7 @@ public sealed partial class SettingsViewModel : PageViewModel
         _selectedDigits = DigitStyles.First(d => d.Value == s.Digits);
         _redactExports = s.RedactExports;
         _reduceMotion = s.ReduceMotion;
+        _allowSymbolDownload = s.AllowSymbolDownload;
     }
 
     public override string Key => "settings";
@@ -34,6 +35,7 @@ public sealed partial class SettingsViewModel : PageViewModel
     [ObservableProperty] private Choice<DigitStyle> _selectedDigits;
     [ObservableProperty] private bool _redactExports;
     [ObservableProperty] private bool _reduceMotion;
+    [ObservableProperty] private bool _allowSymbolDownload;
 
     public string Version => typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? "0.0.0";
 
@@ -58,6 +60,8 @@ public sealed partial class SettingsViewModel : PageViewModel
         Services.UpdateSettings(s => s with { Theme = value.Value });
         Services.RaiseTextsChanged();
     }
+
+    partial void OnAllowSymbolDownloadChanged(bool value) => Services.UpdateSettings(s => s with { AllowSymbolDownload = value });
 
     partial void OnRedactExportsChanged(bool value) => Services.UpdateSettings(s => s with { RedactExports = value });
 

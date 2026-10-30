@@ -38,12 +38,20 @@
 
         <c:Card IsInteractive="False" Margin="0,14,0,0" c:Motion.Appear="True" c:Motion.Index="5">
             <StackPanel>
+                <TextBlock Text="{loc:Loc settings.network}" Style="{StaticResource Text.TitleMedium}" Margin="0,0,0,8" />
+                <CheckBox Style="{StaticResource Switch}" Content="{loc:Loc settings.symbols}" IsChecked="{Binding AllowSymbolDownload}" />
+                <TextBlock Text="{loc:Loc settings.symbols.note}" Style="{StaticResource Text.Caption}" Margin="56,0,0,0" />
+            </StackPanel>
+        </c:Card>
+
+        <c:Card IsInteractive="False" Margin="0,14,0,0" c:Motion.Appear="True" c:Motion.Index="6">
+            <StackPanel>
                 <TextBlock Text="{loc:Loc settings.privacy}" Style="{StaticResource Text.TitleMedium}" Margin="0,0,0,8" />
                 <TextBlock Text="{loc:Loc settings.privacy.text}" Style="{StaticResource Text.Body}" />
             </StackPanel>
         </c:Card>
 
-        <c:Card IsInteractive="False" Margin="0,14,0,0" c:Motion.Appear="True" c:Motion.Index="6">
+        <c:Card IsInteractive="False" Margin="0,14,0,0" c:Motion.Appear="True" c:Motion.Index="7">
             <StackPanel>
                 <TextBlock Text="{loc:Loc settings.about}" Style="{StaticResource Text.TitleMedium}" Margin="0,0,0,8" />
                 <WrapPanel>

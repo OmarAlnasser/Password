@@ -16,11 +16,11 @@ public static class AppModules
 
     public static string JournalPath => Path.Combine(ProgramDataFolder, "journal", "journal.jsonl");
 
-    /// <summary>The P1 read-only health modules, in report order.</summary>
-    public static IReadOnlyList<IModule> Create() =>
+    /// <summary>Every scan module, in report order.</summary>
+    public static IReadOnlyList<IModule> Create(AppServices services) =>
     [
         SecurityModule.ForWindows(Path.Combine(ProgramDataFolder, "config", "os-support.json")),
-        CrashModule.ForWindows(new WindowsEventSource()),
+        CrashModule.ForWindows(new WindowsEventSource(), () => services.Settings.AllowSymbolDownload),
         DiskModule.ForWindows(),
         DriversModule.ForWindows(),
         new BatteryModule(),

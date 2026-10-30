@@ -39,6 +39,10 @@ public enum ElevatedData
     SmartData,
     Tpm,
     BitLocker,
+    /// <summary>Kernel dumps: header and module names, plus `!analyze -v` when cdb is installed (no symbol download).</summary>
+    CrashDumps,
+    /// <summary>Same, allowing the debugger to download public symbols from msdl.microsoft.com (user setting).</summary>
+    CrashDumpsWithSymbols,
 }
 
 public sealed record ReadElevatedRequest(ElevatedData Data) : BrokerRequest;

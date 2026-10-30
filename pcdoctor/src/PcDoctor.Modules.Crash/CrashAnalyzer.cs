@@ -16,7 +16,11 @@ public sealed record CrashIncident(
     IReadOnlyList<string> Parameters,
     string? DumpPath,
     IReadOnlyList<EventRecordData> Events,
-    IReadOnlyList<EventRecordData> Preceding);
+    IReadOnlyList<EventRecordData> Preceding)
+{
+    /// <summary>The dump written for this stop, when one was found and read.</summary>
+    public DumpAnalysis? Dump { get; init; }
+}
 
 /// <summary>M5 event correlation and dump configuration. Pure: everything comes in through the snapshot.</summary>
 public static partial class CrashAnalyzer
@@ -37,7 +41,11 @@ public static partial class CrashAnalyzer
         checks.Add(new CheckResult("M5.events", new Text("m5.check.events"), CheckStatus.Info,
             new Text("m5.check.events.detail", events.Count, (int)s.Window.TotalDays, incidents.Count), FindingSource.EventLog));
 
+        incidents = AttachDumps(incidents, s.DumpAnalyses);
         findings.AddRange(BlueScreenFindings(incidents, s.Window));
+        findings.AddRange(DriverVerdicts(incidents, s.Window));
+        AnalyzeDumpCoverage(s, incidents, checks, findings);
+        findings.AddRange(WerFindings(s.WerReports, checks));
         findings.AddRange(StopFindings(incidents, CrashKind.ForcedOff, "M5.forcedOff", "m5.forcedOff", Severity.Medium));
         findings.AddRange(StopFindings(incidents, CrashKind.PowerLossOrHang, "M5.powerLoss", "m5.powerLoss", Severity.Medium));
         findings.AddRange(WheaFindings(events));
@@ -68,6 +76,7 @@ public static partial class CrashAnalyzer
             ModuleName = new Text("m5.name"),
             Checks = checks,
             Findings = findings,
+            Timeline = BuildTimeline(incidents, events),
         };
     }
 
@@ -260,7 +269,10 @@ public static partial class CrashAnalyzer
                     evidence.Add(new Evidence("Dump", i.DumpPath, EvidenceKind.Path));
                 }
             }
-            evidence.Add(new Evidence("Event XML", latest.Events[0].Xml, EvidenceKind.EventXml));
+            if (latest.Events.Count > 0)
+            {
+                evidence.Add(new Evidence("Event XML", latest.Events[0].Xml, EvidenceKind.EventXml));
+            }
 
             yield return new Finding
             {

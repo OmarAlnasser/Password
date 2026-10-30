@@ -81,7 +81,7 @@ public sealed partial class AppServices : ObservableObject, IAsyncDisposable
                     ? Loc.Format("status.scanning", p.Completed + 1, p.Total, Loc.Resolve(p.CurrentModule))
                     : Loc.Get("status.done");
             });
-            var runner = new ScanRunner(AppModules.Create(), new WindowsConditionsReader());
+            var runner = new ScanRunner(AppModules.Create(this), new WindowsConditionsReader());
             var report = await Task.Run(() => runner.RunAsync(mode, elevated, progress, _scanCts.Token));
             Report = report;
             History.Save(report);

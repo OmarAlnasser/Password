@@ -16,6 +16,9 @@ public sealed record AppSettings
     public bool ReduceMotion { get; init; }
     public bool RedactExports { get; init; }
 
+    /// <summary>Lets the debugger download public symbols from msdl.microsoft.com (off until the user turns it on).</summary>
+    public bool AllowSymbolDownload { get; init; }
+
     public static string Folder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PCDoctor");
     private static string FilePath => Path.Combine(Folder, "settings.json");
 

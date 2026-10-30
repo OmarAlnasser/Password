@@ -14,11 +14,20 @@ public sealed record BugcheckEntry(uint Code, string Name, string Kind, IReadOnl
 public static class BugcheckKnowledgeBase
 {
     private static readonly Lazy<IReadOnlyDictionary<uint, BugcheckEntry>> Entries = new(Load);
+    private static readonly Lazy<(IReadOnlyList<DriverInfo> Drivers, IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>> Texts)> DriverData = new(LoadDrivers);
+
+    internal static IReadOnlyList<DriverInfo> DriverEntries => DriverData.Value.Drivers;
 
     static BugcheckKnowledgeBase()
     {
         Loc.RegisterProvider((key, culture) =>
         {
+            if (key.StartsWith("driver.", StringComparison.Ordinal))
+            {
+                return DriverData.Value.Texts.TryGetValue(key, out var byLang)
+                    ? byLang.GetValueOrDefault(culture.TwoLetterISOLanguageName) ?? byLang.GetValueOrDefault("en")
+                    : null;
+            }
             if (!key.StartsWith("kb.", StringComparison.Ordinal))
             {
                 return null;
@@ -50,7 +59,30 @@ public static class BugcheckKnowledgeBase
                 : null;
     }
 
-    public static void EnsureRegistered() => _ = Entries.Value;
+    public static void EnsureRegistered()
+    {
+        _ = Entries.Value;
+        _ = DriverData.Value;
+    }
+
+    private static (IReadOnlyList<DriverInfo>, IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>) LoadDrivers()
+    {
+        using var stream = typeof(BugcheckKnowledgeBase).Assembly
+            .GetManifestResourceStream("PcDoctor.Modules.Crash.bugchecks.json")!;
+        using var doc = JsonDocument.Parse(stream);
+        var drivers = new List<DriverInfo>();
+        var texts = new Dictionary<string, IReadOnlyDictionary<string, string>>();
+        foreach (var e in doc.RootElement.GetProperty("drivers").EnumerateArray())
+        {
+            var key = e.GetProperty("key").GetString()!;
+            drivers.Add(new DriverInfo(key, e.GetProperty("files").EnumerateArray().Select(f => f.GetString()!).ToList()));
+            foreach (var field in new[] { "name", "why", "action" })
+            {
+                texts[$"driver.{key}.{field}"] = Fields(e.GetProperty(field));
+            }
+        }
+        return (drivers, texts);
+    }
 
     private static IReadOnlyDictionary<uint, BugcheckEntry> Load()
     {
