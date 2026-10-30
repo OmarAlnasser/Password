@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>PcDoctor.App</AssemblyName>
+    <RootNamespace>PcDoctor.App</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Battery\PcDoctor.Modules.Battery.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Crash\PcDoctor.Modules.Crash.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Drivers\PcDoctor.Modules.Drivers.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
+    <!-- The Broker ships next to the app; the app checks for it there and nowhere else. -->
+    <ProjectReference Include="..\PcDoctor.Broker\PcDoctor.Broker.csproj" />
+  </ItemGroup>
+</Project>

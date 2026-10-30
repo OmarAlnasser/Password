@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AssemblyName>PcDoctor.Broker</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
+  </ItemGroup>
+</Project>

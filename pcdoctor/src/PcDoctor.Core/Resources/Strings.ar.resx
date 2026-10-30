@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="app.title" xml:space="preserve"><value>طبيب الحاسوب</value></data>
+  <data name="tab.dashboard" xml:space="preserve"><value>لوحة المعلومات</value></data>
+  <data name="tab.changes" xml:space="preserve"><value>التغييرات</value></data>
+  <data name="tab.settings" xml:space="preserve"><value>الإعدادات</value></data>
+  <data name="action.healthCheck" xml:space="preserve"><value>فحص الصحة</value></data>
+  <data name="action.healthCheck.tip" xml:space="preserve"><value>للقراءة فقط. لا يحتاج صلاحيات المسؤول.</value></data>
+  <data name="action.deepScan" xml:space="preserve"><value>فحص معمّق</value></data>
+  <data name="action.deepScan.tip" xml:space="preserve"><value>يقرأ أيضاً بيانات تحتاج صلاحيات المسؤول. سيطلب ويندوز الإذن (UAC).</value></data>
+  <data name="action.cancel" xml:space="preserve"><value>إلغاء</value></data>
+  <data name="action.export" xml:space="preserve"><value>تصدير التقرير…</value></data>
+  <data name="action.copy" xml:space="preserve"><value>نسخ كنص</value></data>
+  <data name="action.applyFix" xml:space="preserve"><value>تطبيق الإصلاح…</value></data>
+  <data name="action.refresh" xml:space="preserve"><value>تحديث</value></data>
+  <data name="dashboard.intro" xml:space="preserve"><value>شغّل فحص الصحة لترى ما يستطيع طبيب الحاسوب فحصه على هذا الجهاز. لا يتغير أي شيء دون موافقتك.</value></data>
+  <data name="dashboard.summary" xml:space="preserve"><value>الملخص</value></data>
+  <data name="dashboard.findings" xml:space="preserve"><value>النتائج</value></data>
+  <data name="dashboard.checks" xml:space="preserve"><value>ما الذي تم فحصه</value></data>
+  <data name="dashboard.splitter" xml:space="preserve"><value>تغيير حجم الأقسام</value></data>
+  <data name="filter.severity" xml:space="preserve"><value>الخطورة:</value></data>
+  <data name="filter.all" xml:space="preserve"><value>الكل</value></data>
+  <data name="filter.search" xml:space="preserve"><value>بحث:</value></data>
+  <data name="filter.showHidden" xml:space="preserve"><value>إظهار العناصر المخفية</value></data>
+  <data name="checks.status" xml:space="preserve"><value>الحالة</value></data>
+  <data name="checks.item" xml:space="preserve"><value>الفحص</value></data>
+  <data name="checks.detail" xml:space="preserve"><value>التفاصيل</value></data>
+  <data name="finding.why" xml:space="preserve"><value>لماذا يهم ذلك</value></data>
+  <data name="finding.suggested" xml:space="preserve"><value>الإجراء المقترح:</value></data>
+  <data name="finding.undo" xml:space="preserve"><value>التراجع:</value></data>
+  <data name="finding.evidence" xml:space="preserve"><value>الأدلة</value></data>
+  <data name="severity.Info" xml:space="preserve"><value>معلومة</value></data>
+  <data name="severity.Low" xml:space="preserve"><value>منخفضة</value></data>
+  <data name="severity.Medium" xml:space="preserve"><value>متوسطة</value></data>
+  <data name="severity.High" xml:space="preserve"><value>عالية</value></data>
+  <data name="severity.Critical" xml:space="preserve"><value>حرجة</value></data>
+  <data name="confidence.Confirmed" xml:space="preserve"><value>مؤكد</value></data>
+  <data name="confidence.Probable" xml:space="preserve"><value>مرجّح</value></data>
+  <data name="confidence.Possible" xml:space="preserve"><value>محتمل</value></data>
+  <data name="source.Defender" xml:space="preserve"><value>Microsoft Defender</value></data>
+  <data name="source.MicrosoftTool" xml:space="preserve"><value>أداة من مايكروسوفت</value></data>
+  <data name="source.EventLog" xml:space="preserve"><value>سجل الأحداث</value></data>
+  <data name="source.Wmi" xml:space="preserve"><value>WMI</value></data>
+  <data name="source.Registry" xml:space="preserve"><value>إعداد ويندوز (السجل)</value></data>
+  <data name="source.Heuristic" xml:space="preserve"><value>تقدير من طبيب الحاسوب</value></data>
+  <data name="source.VirusTotal" xml:space="preserve"><value>VirusTotal</value></data>
+  <data name="check.status.Pass" xml:space="preserve"><value>سليم</value></data>
+  <data name="check.status.Warn" xml:space="preserve"><value>تحذير</value></data>
+  <data name="check.status.Fail" xml:space="preserve"><value>فشل</value></data>
+  <data name="check.status.Info" xml:space="preserve"><value>معلومة</value></data>
+  <data name="check.status.NotAvailable" xml:space="preserve"><value>غير متاح على هذا الجهاز</value></data>
+  <data name="check.status.NotChecked" xml:space="preserve"><value>لم يُفحص</value></data>
+  <data name="check.needsDeepScan" xml:space="preserve"><value>يحتاج صلاحيات المسؤول. شغّل الفحص المعمّق لفحص ذلك.</value></data>
+  <data name="check.notAvailable" xml:space="preserve"><value>غير متاح على هذا الجهاز.</value></data>
+  <data name="check.notInThisVersion" xml:space="preserve"><value>لم يُفحص: هذا الإصدار من طبيب الحاسوب لا يتضمنه بعد (مخطط للمرحلة {0}).</value></data>
+  <data name="check.readFailed" xml:space="preserve"><value>تعذّرت قراءة ذلك: {0}: {1}</value></data>
+  <data name="scan.done" xml:space="preserve"><value>اكتمل</value></data>
+  <data name="status.startingBroker" xml:space="preserve"><value>بانتظار إذن المسؤول…</value></data>
+  <data name="status.brokerDeclined" xml:space="preserve"><value>لم يُمنح إذن المسؤول. سيتم تشغيل فحص الصحة للقراءة فقط بدلاً من ذلك.</value></data>
+  <data name="status.scanning" xml:space="preserve"><value>جارٍ فحص {0} من {1}: {2}</value></data>
+  <data name="status.done" xml:space="preserve"><value>انتهى الفحص.</value></data>
+  <data name="status.cancelled" xml:space="preserve"><value>أُلغي الفحص. تم تجاهل النتائج الجزئية.</value></data>
+  <data name="status.exported" xml:space="preserve"><value>حُفظ التقرير في {0}</value></data>
+  <data name="status.fixApplied" xml:space="preserve"><value>طُبّق التغيير وسُجّل في سجل التغييرات.</value></data>
+  <data name="status.fixFailed" xml:space="preserve"><value>لم يُطبّق: {0} {1}</value></data>
+  <data name="status.undone" xml:space="preserve"><value>تم التراجع: {0}. تغيّر لاحقاً بفعل شيء آخر (تُرك كما هو): {1}. فشل: {2}.</value></data>
+  <data name="status.journalUnreadable" xml:space="preserve"><value>تعذّرت قراءة سجل التغييرات.</value></data>
+  <data name="status.settingsUnsaved" xml:space="preserve"><value>تعذّر حفظ الإعدادات.</value></data>
+  <data name="summary.checked" xml:space="preserve"><value>تم فحص {0} عنصراً في {1} مجالات.</value></data>
+  <data name="summary.notChecked" xml:space="preserve"><value>{0} عنصراً لم يُفحص و{1} غير متاح على هذا الجهاز (راجع "ما الذي تم فحصه").</value></data>
+  <data name="summary.noActionableFindings" xml:space="preserve"><value>لا توجد نتائج تستدعي إجراءً في المجالات التي تم فحصها.</value></data>
+  <data name="summary.findings" xml:space="preserve"><value>{0} نتيجة: {1} حرجة، {2} عالية، {3} متوسطة، {4} منخفضة أو للعلم.</value></data>
+  <data name="summary.healthCheckScope" xml:space="preserve"><value>كان هذا فحص صحة للقراءة فقط. الفحص المعمّق يقرأ أكثر (عدّادات الأقراص وTPM وBitLocker).</value></data>
+  <data name="summary.disclaimer" xml:space="preserve"><value>تصف هذه النتائج ما تم فحصه فقط، ولا تضمن خلو الجهاز من البرمجيات الخبيثة أو الأعطال.</value></data>
+  <data name="report.title" xml:space="preserve"><value>تقرير الفحص</value></data>
+  <data name="report.conditions" xml:space="preserve"><value>ظروف الفحص</value></data>
+  <data name="report.cond.app" xml:space="preserve"><value>إصدار طبيب الحاسوب</value></data>
+  <data name="report.cond.os" xml:space="preserve"><value>ويندوز</value></data>
+  <data name="report.cond.uptime" xml:space="preserve"><value>مدة التشغيل</value></data>
+  <data name="report.cond.power" xml:space="preserve"><value>مصدر الطاقة / الخطة</value></data>
+  <data name="report.cond.mode" xml:space="preserve"><value>نوع الفحص</value></data>
+  <data name="report.cond.time" xml:space="preserve"><value>الوقت (UTC)</value></data>
+  <data name="report.checks" xml:space="preserve"><value>ما الذي تم فحصه</value></data>
+  <data name="undo.nothingChanged" xml:space="preserve"><value>لا شيء للتراجع عنه: طبيب الحاسوب أبلغ عن ذلك فقط ولم يغيّر شيئاً.</value></data>
+  <data name="undo.reversible" xml:space="preserve"><value>قابل للتراجع.</value></data>
+  <data name="undo.notReversible" xml:space="preserve"><value>غير قابل للتراجع.</value></data>
+  <data name="fix.dumpsAutomatic.title" xml:space="preserve"><value>تفعيل تفريغ الذاكرة التلقائي عند الانهيار</value></data>
+  <data name="fix.dumpsAutomatic.explain" xml:space="preserve"><value>يضبط نوع تفريغ الذاكرة على "تفريغ الذاكرة التلقائي" (الإعداد الافتراضي في ويندوز) حتى تترك الشاشة الزرقاء القادمة ملفاً يحدد السبب.</value></data>
+  <data name="fix.preview.changes" xml:space="preserve"><value>التغييرات بالتحديد:</value></data>
+  <data name="fix.preview.restorePoint" xml:space="preserve"><value>سينشئ طبيب الحاسوب أولاً نقطة استعادة للنظام ويتحقق من وجودها. إذا تعذّر ذلك فلن يتغير شيء. يُسجَّل كل تغيير لتتمكن من التراجع عنه من تبويب التغييرات.</value></data>
+  <data name="fix.preview.restart" xml:space="preserve"><value>يسري بعد إعادة التشغيل.</value></data>
+  <data name="journal.when" xml:space="preserve"><value>الوقت</value></data>
+  <data name="journal.source" xml:space="preserve"><value>الإصلاح</value></data>
+  <data name="journal.state" xml:space="preserve"><value>الحالة</value></data>
+  <data name="journal.change" xml:space="preserve"><value>التغيير (القديم ← الجديد)</value></data>
+  <data name="journal.undo" xml:space="preserve"><value>تراجع</value></data>
+  <data name="journal.undoBatch" xml:space="preserve"><value>تراجع عن الدفعة</value></data>
+  <data name="journal.undoAll" xml:space="preserve"><value>التراجع عن كل ما فعله طبيب الحاسوب</value></data>
+  <data name="journal.undoAll.confirm" xml:space="preserve"><value>إعادة كل تغيير أجراه طبيب الحاسوب، بدءاً بالأحدث؟ الإعدادات التي غيّرها شيء آخر لاحقاً ستُترك كما هي وتُعرض في القائمة.</value></data>
+  <data name="journal.restorePointNote" xml:space="preserve"><value>التراجع يعيد القيم القديمة نفسها. نقطة استعادة النظام هي الملاذ الأخير: فهي تُرجع أيضاً التعريفات والتطبيقات والتحديثات المثبّتة بعدها.</value></data>
+  <data name="journal.state.Planned" xml:space="preserve"><value>بدأ (غير مؤكد)</value></data>
+  <data name="journal.state.Applied" xml:space="preserve"><value>مطبّق</value></data>
+  <data name="journal.state.Failed" xml:space="preserve"><value>فشل (لم يُطبّق)</value></data>
+  <data name="journal.state.Undone" xml:space="preserve"><value>تم التراجع</value></data>
+  <data name="journal.state.UndoConflict" xml:space="preserve"><value>تغيّر لاحقاً بفعل شيء آخر؛ لم يتم التراجع</value></data>
+  <data name="settings.language" xml:space="preserve"><value>اللغة</value></data>
+  <data name="settings.digits" xml:space="preserve"><value>الأرقام في النص العربي</value></data>
+  <data name="settings.theme" xml:space="preserve"><value>المظهر</value></data>
+  <data name="settings.export" xml:space="preserve"><value>التقارير</value></data>
+  <data name="settings.redact" xml:space="preserve"><value>إخفاء اسم المستخدم واسم الجهاز في التقارير المصدّرة</value></data>
+  <data name="settings.privacy" xml:space="preserve"><value>الخصوصية</value></data>
+  <data name="settings.privacy.text" xml:space="preserve"><value>كل ما يفعله طبيب الحاسوب يجري على هذا الجهاز، ولا يرسل أي بيانات قياس. يقتصر استخدام الشبكة على ميزات تبدؤها أنت: تحديثات تواقيع Defender، وخادم رموز مايكروسوفت، وتنزيل Microsoft Safety Scanner، والاستعلام الاختياري عن البصمات في VirusTotal بمفتاحك الخاص، والتحقق الاختياري من التحديثات.</value></data>
+  <data name="language.en" xml:space="preserve"><value>English</value></data>
+  <data name="language.ar" xml:space="preserve"><value>العربية</value></data>
+  <data name="theme.system" xml:space="preserve"><value>مثل ويندوز</value></data>
+  <data name="theme.light" xml:space="preserve"><value>فاتح</value></data>
+  <data name="theme.dark" xml:space="preserve"><value>داكن</value></data>
+  <data name="digits.western" xml:space="preserve"><value>غربية (0123)</value></data>
+  <data name="digits.arabicIndic" xml:space="preserve"><value>هندية عربية (٠١٢٣)</value></data>
+  <data name="m11.name" xml:space="preserve"><value>إعدادات الأمان</value></data>
+  <data name="m11.check.winget" xml:space="preserve"><value>التطبيقات القديمة (winget upgrade)</value></data>
+  <data name="m11.win10.check" xml:space="preserve"><value>دعم إصدار ويندوز</value></data>
+  <data name="m11.win10.title" xml:space="preserve"><value>انتهى دعم ويندوز 10 في {0}</value></data>
+  <data name="m11.win10.why" xml:space="preserve"><value>بدون تحديثات الأمان تبقى الثغرات المكتشفة حديثاً في ويندوز مفتوحة على هذا الجهاز ما لم يكن مسجلاً في التحديثات الأمنية الممتدة (ESU). لا يستطيع طبيب الحاسوب اكتشاف التسجيل في ESU.</value></data>
+  <data name="m11.win10.action" xml:space="preserve"><value>رقِّ الجهاز إلى ويندوز 11 إن كان يدعمه، أو سجّل في ESU. تواريخ ESU في الأدلة تتغير كثيراً؛ راجع صفحة مايكروسوفت.</value></data>
+  <data name="m11.win10.detail" xml:space="preserve"><value>ويندوز 10: انتهت تحديثات الأمان الأساسية في {0}.</value></data>
+  <data name="m11.win11.detail" xml:space="preserve"><value>ويندوز 11 (الإصدار {0}).</value></data>
+  <data name="m11.av.check" xml:space="preserve"><value>مكافحة الفيروسات</value></data>
+  <data name="m11.av.defender" xml:space="preserve"><value>برنامج Microsoft Defender لمكافحة الفيروسات هو البرنامج النشط.</value></data>
+  <data name="m11.av.thirdParty" xml:space="preserve"><value>برنامج مكافحة الفيروسات النشط لديك هو {0}. يعمل Defender في وضع "{1}"، لذا فإن فحص Defender غير متاح. استخدم {0} للفحص.</value></data>
+  <data name="m11.noAv.check" xml:space="preserve"><value>مكافحة الفيروسات</value></data>
+  <data name="m11.noAv.title" xml:space="preserve"><value>لم يُعثر على برنامج مكافحة فيروسات نشط</value></data>
+  <data name="m11.noAv.why" xml:space="preserve"><value>لا يعمل Defender في الوضع العادي، ولا يعرض مركز أمان ويندوز أي برنامج آخر مفعّل لمكافحة الفيروسات.</value></data>
+  <data name="m11.noAv.action" xml:space="preserve"><value>افتح أمن ويندوز &gt; الحماية من الفيروسات والمخاطر وفعّل الحماية، أو تأكد أن برنامج مكافحة الفيروسات لديك يعمل.</value></data>
+  <data name="m11.rtp.check" xml:space="preserve"><value>الحماية في الوقت الحقيقي في Defender</value></data>
+  <data name="m11.rtp.title" xml:space="preserve"><value>الحماية في الوقت الحقيقي في Defender متوقفة</value></data>
+  <data name="m11.rtp.why" xml:space="preserve"><value>لا تُفحص الملفات عند تنزيلها أو فتحها.</value></data>
+  <data name="m11.rtp.action" xml:space="preserve"><value>فعّلها من أمن ويندوز &gt; الحماية من الفيروسات والمخاطر &gt; إدارة الإعدادات. لا يغيّر طبيب الحاسوب إعدادات Defender بنفسه أبداً.</value></data>
+  <data name="m11.tamper.check" xml:space="preserve"><value>الحماية من العبث</value></data>
+  <data name="m11.tamper.title" xml:space="preserve"><value>الحماية من العبث في Defender متوقفة</value></data>
+  <data name="m11.tamper.why" xml:space="preserve"><value>بدونها تستطيع البرمجيات الخبيثة التي تعمل كمسؤول إيقاف Defender.</value></data>
+  <data name="m11.tamper.action" xml:space="preserve"><value>فعّلها من أمن ويندوز &gt; الحماية من الفيروسات والمخاطر &gt; إدارة الإعدادات.</value></data>
+  <data name="m11.signatures.check" xml:space="preserve"><value>عمر معلومات الأمان في Defender</value></data>
+  <data name="m11.signatures.title" xml:space="preserve"><value>عمر معلومات الأمان في Defender {0} يوماً</value></data>
+  <data name="m11.signatures.why" xml:space="preserve"><value>التعريفات القديمة لا تكتشف التهديدات الحديثة.</value></data>
+  <data name="m11.signatures.action" xml:space="preserve"><value>شغّل Windows Update أو أمن ويندوز &gt; تحديثات الحماية &gt; التحقق من وجود تحديثات.</value></data>
+  <data name="m11.firewall.check" xml:space="preserve"><value>جدار حماية ويندوز</value></data>
+  <data name="m11.firewall.detail" xml:space="preserve"><value>الملفات الشخصية: {0}</value></data>
+  <data name="m11.firewall.title" xml:space="preserve"><value>جدار حماية ويندوز متوقف لـ: {0}</value></data>
+  <data name="m11.firewall.why" xml:space="preserve"><value>يمكن للبرامج على الأجهزة الأخرى في الشبكة الوصول إلى الخدمات على هذا الجهاز.</value></data>
+  <data name="m11.firewall.action" xml:space="preserve"><value>أعد تشغيل جدار الحماية من أمن ويندوز &gt; جدار الحماية وحماية الشبكة، ما لم يكن منتج آخر يديره.</value></data>
+  <data name="m11.uac.check" xml:space="preserve"><value>التحكم في حساب المستخدم</value></data>
+  <data name="m11.uac.title" xml:space="preserve"><value>التحكم في حساب المستخدم متوقف</value></data>
+  <data name="m11.uac.why" xml:space="preserve"><value>كل برنامج تشغّله يعمل بصلاحيات المسؤول الكاملة.</value></data>
+  <data name="m11.uac.action" xml:space="preserve"><value>أعد EnableLUA إلى 1 (لوحة التحكم &gt; حسابات المستخدمين &gt; تغيير إعدادات التحكم في حساب المستخدم) ثم أعد التشغيل.</value></data>
+  <data name="m11.uacPrompt.check" xml:space="preserve"><value>مطالبة UAC للمسؤولين</value></data>
+  <data name="m11.uacPrompt.title" xml:space="preserve"><value>يُرفع المسؤولون دون مطالبة</value></data>
+  <data name="m11.uacPrompt.why" xml:space="preserve"><value>يمكن للبرامج الحصول على صلاحيات المسؤول بصمت.</value></data>
+  <data name="m11.uacPrompt.action" xml:space="preserve"><value>أعد شريط التحكم في حساب المستخدم إلى المستوى الافتراضي.</value></data>
+  <data name="m11.secureBoot.check" xml:space="preserve"><value>التمهيد الآمن</value></data>
+  <data name="m11.secureBoot.title" xml:space="preserve"><value>التمهيد الآمن متوقف</value></data>
+  <data name="m11.secureBoot.why" xml:space="preserve"><value>لا تُحظر البرمجيات الخبيثة التي تُحمَّل قبل ويندوز (bootkits).</value></data>
+  <data name="m11.secureBoot.action" xml:space="preserve"><value>فعّل التمهيد الآمن من إعدادات UEFI/BIOS. راجع تعليمات الشركة المصنّعة أولاً.</value></data>
+  <data name="m11.secureBoot.legacy" xml:space="preserve"><value>لا توجد حالة للتمهيد الآمن UEFI: قد يكون الجهاز يقلع بوضع BIOS القديم.</value></data>
+  <data name="m11.tpm.check" xml:space="preserve"><value>شريحة TPM</value></data>
+  <data name="m11.tpm.detail" xml:space="preserve"><value>المواصفة {0}.</value></data>
+  <data name="m11.tpm.title" xml:space="preserve"><value>شريحة TPM مفقودة أو معطلة أو غير مفعّلة</value></data>
+  <data name="m11.tpm.why" xml:space="preserve"><value>يعتمد BitLocker وWindows Hello وويندوز 11 على شريحة TPM.</value></data>
+  <data name="m11.tpm.action" xml:space="preserve"><value>فعّل TPM (يُسمى غالباً PTT أو fTPM) من إعدادات UEFI/BIOS.</value></data>
+  <data name="m11.bitlocker.check" xml:space="preserve"><value>تشفير الأقراص (BitLocker)</value></data>
+  <data name="m11.bitlocker.title" xml:space="preserve"><value>قرص النظام غير مشفّر</value></data>
+  <data name="m11.bitlocker.why" xml:space="preserve"><value>إذا فُقد الجهاز أو سُرق فيمكن قراءة ملفاته بنزع القرص.</value></data>
+  <data name="m11.bitlocker.action" xml:space="preserve"><value>فعّل BitLocker أو تشفير الجهاز من الإعدادات، واحفظ مفتاح الاسترداد في مكان آمن.</value></data>
+  <data name="m11.vbs.check" xml:space="preserve"><value>الأمان المعتمد على المحاكاة الافتراضية</value></data>
+  <data name="m11.vbs.detail" xml:space="preserve"><value>الحالة {0} (0 متوقف، 1 مُعدّ لكنه لا يعمل، 2 يعمل).</value></data>
+  <data name="m11.hvci.check" xml:space="preserve"><value>سلامة الذاكرة (HVCI)</value></data>
+  <data name="m11.hvci.title" xml:space="preserve"><value>سلامة الذاكرة متوقفة</value></data>
+  <data name="m11.hvci.why" xml:space="preserve"><value>تمنع سلامة الذاكرة التعريفات الخبيثة أو الضعيفة من تشغيل شيفرة في النواة. بعض التعريفات القديمة غير متوافقة معها، وقد تخفض أداء الألعاب قليلاً.</value></data>
+  <data name="m11.hvci.action" xml:space="preserve"><value>أمن ويندوز &gt; أمان الجهاز &gt; عزل النواة يعرض التعريفات التي تمنعها.</value></data>
+  <data name="m11.sac.check" xml:space="preserve"><value>التحكم الذكي في التطبيقات</value></data>
+  <data name="m11.sac.on" xml:space="preserve"><value>مفعّل.</value></data>
+  <data name="m11.sac.eval" xml:space="preserve"><value>وضع التقييم: ويندوز يقرر ما إذا كان سيفعّله.</value></data>
+  <data name="m11.sac.off" xml:space="preserve"><value>متوقف. إعادة تشغيله تتطلب إعادة تعيين ويندوز أو إعادة تثبيته.</value></data>
+  <data name="m11.lsa.check" xml:space="preserve"><value>حماية LSA</value></data>
+  <data name="m11.lsa.title" xml:space="preserve"><value>حماية LSA متوقفة</value></data>
+  <data name="m11.lsa.why" xml:space="preserve"><value>يمكن لأدوات سرقة بيانات الاعتماد قراءة أسرار تسجيل الدخول من عملية LSA بسهولة أكبر.</value></data>
+  <data name="m11.lsa.action" xml:space="preserve"><value>فعّل حماية سلطة الأمان المحلية من أمن ويندوز &gt; أمان الجهاز &gt; عزل النواة.</value></data>
+  <data name="m11.smb1.check" xml:space="preserve"><value>بروتوكول مشاركة الملفات SMBv1</value></data>
+  <data name="m11.smb1.title" xml:space="preserve"><value>بروتوكول SMBv1 المتقادم مثبت</value></data>
+  <data name="m11.smb1.why" xml:space="preserve"><value>لا يملك SMBv1 حمايات حديثة، وقد استخدمته دودة WannaCry.</value></data>
+  <data name="m11.smb1.action" xml:space="preserve"><value>أزل "دعم مشاركة الملفات SMB 1.0/CIFS" من ميزات ويندوز، ما لم يحتجه جهاز قديم تستخدمه.</value></data>
+  <data name="m11.rdp.check" xml:space="preserve"><value>سطح المكتب البعيد</value></data>
+  <data name="m11.rdp.off" xml:space="preserve"><value>اتصالات سطح المكتب البعيد متوقفة.</value></data>
+  <data name="m11.rdp.nla" xml:space="preserve"><value>سطح المكتب البعيد مفعّل مع مصادقة مستوى الشبكة.</value></data>
+  <data name="m11.rdp.noNla" xml:space="preserve"><value>سطح المكتب البعيد مفعّل بدون مصادقة مستوى الشبكة.</value></data>
+  <data name="m11.rdp.title" xml:space="preserve"><value>سطح المكتب البعيد مفعّل بدون مصادقة مستوى الشبكة</value></data>
+  <data name="m11.rdp.why" xml:space="preserve"><value>يستطيع المهاجمون الوصول إلى شاشة تسجيل الدخول قبل إثبات هويتهم.</value></data>
+  <data name="m11.rdp.action" xml:space="preserve"><value>فعّل "مطالبة الأجهزة باستخدام مصادقة مستوى الشبكة" من الإعدادات &gt; النظام &gt; سطح المكتب البعيد، أو أوقف سطح المكتب البعيد.</value></data>
+  <data name="m11.reboot.check" xml:space="preserve"><value>إعادة تشغيل معلّقة</value></data>
+  <data name="m11.reboot.title" xml:space="preserve"><value>توجد إعادة تشغيل معلّقة</value></data>
+  <data name="m11.reboot.why" xml:space="preserve"><value>بعض التحديثات أو التغييرات لا تكتمل حتى يُعاد تشغيل ويندوز.</value></data>
+  <data name="m11.reboot.action" xml:space="preserve"><value>أعد التشغيل في الوقت المناسب.</value></data>
+  <data name="m11.lastUpdate.check" xml:space="preserve"><value>آخر تحديث ويندوز مثبت</value></data>
+  <data name="m11.lastUpdate.detail" xml:space="preserve"><value>أحدث تحديث مثبت: {0}.</value></data>
+  <data name="m11.lastUpdate.title" xml:space="preserve"><value>لم يُثبَّت أي تحديث لويندوز منذ {0} يوماً</value></data>
+  <data name="m11.lastUpdate.why" xml:space="preserve"><value>يثبّت ويندوز عادة تحديثات الأمان كل شهر.</value></data>
+  <data name="m11.lastUpdate.action" xml:space="preserve"><value>افتح الإعدادات &gt; Windows Update وتحقق من التحديثات. ابحث عن رمز الخطأ إن فشل ذلك.</value></data>
+  <data name="m11.admins.check" xml:space="preserve"><value>حسابات المسؤول المحلية</value></data>
+  <data name="m11.admins.detail" xml:space="preserve"><value>{0} أعضاء: {1}</value></data>
+  <data name="m5.name" xml:space="preserve"><value>الانهيارات والاستقرار</value></data>
+  <data name="m5.check.events" xml:space="preserve"><value>الأحداث المتعلقة بالانهيار في سجلَّي النظام والتطبيقات</value></data>
+  <data name="m5.check.events.detail" xml:space="preserve"><value>قُرئ {0} حدثاً من آخر {1} يوماً؛ {2} توقفاً غير متوقع.</value></data>
+  <data name="m5.check.suppressed" xml:space="preserve"><value>أحداث معروفة بأنها غير ضارة</value></data>
+  <data name="m5.check.suppressed.detail" xml:space="preserve"><value>لم يُبلّغ عن {0} حدثاً من Kernel-PnP 219 الخاص بـWudfRd عند بدء التشغيل: إنها رسالة توقيت غير ضارة.</value></data>
+  <data name="m5.check.stability" xml:space="preserve"><value>مؤشر الاستقرار في مراقب الموثوقية</value></data>
+  <data name="m5.check.stability.detail" xml:space="preserve"><value>{0} من 10 (بتاريخ {1}).</value></data>
+  <data name="m5.check.stability.none" xml:space="preserve"><value>لا تُجمع بيانات الموثوقية على هذا الجهاز.</value></data>
+  <data name="m5.check.dumpAnalysis" xml:space="preserve"><value>تحليل ملفات التفريغ بمصحح أخطاء ويندوز</value></data>
+  <data name="m5.check.dumpConfig" xml:space="preserve"><value>إعداد تفريغ الذاكرة عند الانهيار</value></data>
+  <data name="m5.dumpMode.none" xml:space="preserve"><value>متوقف: الشاشات الزرقاء لا تترك ملف تفريغ.</value></data>
+  <data name="m5.dumpMode.complete" xml:space="preserve"><value>تفريغ كامل للذاكرة.</value></data>
+  <data name="m5.dumpMode.kernel" xml:space="preserve"><value>تفريغ ذاكرة النواة.</value></data>
+  <data name="m5.dumpMode.small" xml:space="preserve"><value>تفريغ صغير للذاكرة (minidump).</value></data>
+  <data name="m5.dumpMode.automatic" xml:space="preserve"><value>تفريغ تلقائي للذاكرة (الإعداد الافتراضي في ويندوز).</value></data>
+  <data name="m5.dumpMode.unknown" xml:space="preserve"><value>قيمة غير معروفة.</value></data>
+  <data name="m5.dumpsDisabled.title" xml:space="preserve"><value>تفريغ الذاكرة عند الانهيار متوقف</value></data>
+  <data name="m5.dumpsDisabled.why" xml:space="preserve"><value>بدون ملف تفريغ لا يمكن تحديد سبب الشاشة الزرقاء القادمة.</value></data>
+  <data name="m5.dumpsDisabled.action" xml:space="preserve"><value>فعّل تفريغ الذاكرة التلقائي (الإعداد الافتراضي في ويندوز). يستطيع طبيب الحاسوب فعل ذلك مع إمكانية التراجع.</value></data>
+  <data name="m5.dumpsDisabled.undo" xml:space="preserve"><value>تُحفظ القيمة القديمة في سجل التغييرات ويمكن إعادتها من تبويب التغييرات.</value></data>
+  <data name="m5.noPagefile.title" xml:space="preserve"><value>لا يوجد ملف ترحيل مُعدّ</value></data>
+  <data name="m5.noPagefile.why" xml:space="preserve"><value>يكتب ويندوز ملفات التفريغ عبر ملف الترحيل؛ وبدونه قد لا تترك الشاشة الزرقاء ملف تفريغ.</value></data>
+  <data name="m5.noPagefile.action" xml:space="preserve"><value>أعد ملف الترحيل إلى "إدارة تلقائية" من خصائص النظام &gt; خيارات متقدمة &gt; الأداء &gt; الذاكرة الظاهرية.</value></data>
+  <data name="m5.dumpFailed.title" xml:space="preserve"><value>تعذّر على ويندوز حفظ ملف التفريغ ({0} مرات)</value></data>
+  <data name="m5.dumpFailed.why" xml:space="preserve"><value>حدث الانهيار، لكن الملف الذي يشرحه لم يُكتب (الحدث 161 من volmgr).</value></data>
+  <data name="m5.dumpFailed.action" xml:space="preserve"><value>تأكد أن ملف الترحيل يُدار من النظام وأن قرص النظام فيه مساحة فارغة.</value></data>
+  <data name="m5.check.dumps" xml:space="preserve"><value>ملفات تفريغ الانهيار</value></data>
+  <data name="m5.check.dumps.detail" xml:space="preserve"><value>عُثر على {0} ملف تفريغ؛ أحدثها {1}.</value></data>
+  <data name="m5.check.dumps.none" xml:space="preserve"><value>لا توجد ملفات تفريغ انهيار على هذا الجهاز.</value></data>
+  <data name="m5.bsod.title" xml:space="preserve"><value>{0} من {1} شاشات زرقاء خلال {2} يوماً كان رمز الإيقاف فيها {3} ({4})</value></data>
+  <data name="m5.bsod.why.unknown" xml:space="preserve"><value>لا تحتوي قاعدة معارف طبيب الحاسوب على شرح لرمز الإيقاف هذا بعد.</value></data>
+  <data name="m5.bsod.action.unknown" xml:space="preserve"><value>ابحث عن رمز الإيقاف في مرجع رموز الأخطاء من مايكروسوفت.</value></data>
+  <data name="m5.forcedOff.title" xml:space="preserve"><value>أُطفئ الجهاز قسراً وهو لا يستجيب ({0} مرات)</value></data>
+  <data name="m5.forcedOff.why" xml:space="preserve"><value>سجّل ويندوز أن زر التشغيل ضُغط مطوّلاً. يعني ذلك عادة أن الجهاز تجمّد.</value></data>
+  <data name="m5.forcedOff.action" xml:space="preserve"><value>لاحظ ما كان يعمل عند التجمد. تحقق من تعريفات الرسوميات والتخزين ومن درجات الحرارة.</value></data>
+  <data name="m5.forcedOff.action.related" xml:space="preserve"><value>وقع {0} حدثاً مرتبطاً (إعادة تعيين الرسوميات أو التخزين، أخطاء عتاد) قبل ذلك مباشرة. راجع الأدلة.</value></data>
+  <data name="m5.powerLoss.title" xml:space="preserve"><value>توقف الجهاز دون إيقاف تشغيل سليم ({0} مرات)</value></data>
+  <data name="m5.powerLoss.why" xml:space="preserve"><value>لم تظهر شاشة زرقاء ولم يُضغط زر التشغيل: انقطعت الطاقة أو تجمّد الجهاز تماماً.</value></data>
+  <data name="m5.powerLoss.action" xml:space="preserve"><value>راجع أخطاء العتاد أدناه، ومزوّد الطاقة والكابلات، ودرجات الحرارة، وألغِ رفع التردد.</value></data>
+  <data name="m5.powerLoss.action.related" xml:space="preserve"><value>وقع {0} حدثاً مرتبطاً (إعادة تعيين الرسوميات أو التخزين، أخطاء عتاد) قبل ذلك مباشرة. راجع الأدلة.</value></data>
+  <data name="m5.wheaFatal.title" xml:space="preserve"><value>أُبلغ عن أخطاء عتاد قاتلة ({0})</value></data>
+  <data name="m5.wheaFatal.why" xml:space="preserve"><value>أبلغ المعالج أو الذاكرة عن خطأ لم يتمكن من تصحيحه (WHEA-Logger 18).</value></data>
+  <data name="m5.wheaPcie.title" xml:space="preserve"><value>{0} خطأ PCI Express مُصحّح من الجهاز {1}</value></data>
+  <data name="m5.wheaPcie.why" xml:space="preserve"><value>تُصحَّح هذه الأخطاء بواسطة العتاد، لكن كثرتها قد تشير إلى بطاقة غير مثبتة جيداً أو كابل توصيل أو مشكلات توفير طاقة الرابط.</value></data>
+  <data name="m5.wheaPcie.action" xml:space="preserve"><value>أعد تركيب الجهاز، وحدّث تعريفات الشرائح وBIOS. معرّفا المصنّع والجهاز يحددان الجهاز.</value></data>
+  <data name="m5.wheaCorrected.title" xml:space="preserve"><value>أخطاء مُصحّحة في المعالج أو الذاكرة ({0})</value></data>
+  <data name="m5.wheaCorrected.why" xml:space="preserve"><value>أصلحها العتاد بنفسه، لكنها غالباً تسبق أخطاء غير قابلة للتصحيح عند رفع تردد غير مستقر أو ذاكرة تتعطل.</value></data>
+  <data name="m5.tdr.title" xml:space="preserve"><value>توقف تعريف العرض عن الاستجابة ثم تعافى {0} مرات</value></data>
+  <data name="m5.tdr.why" xml:space="preserve"><value>أعاد ويندوز تعيين تعريف الرسوميات (الحدث 4101). تكرار ذلك قد ينتهي بتجمّد أو شاشة زرقاء.</value></data>
+  <data name="m5.tdr.action" xml:space="preserve"><value>ثبّت أحدث تعريف من الشركة المصنّعة لبطاقة الرسوميات، وألغِ رفع ترددها، وراقب حرارتها. لا تعدّل مفاتيح TDR في السجل.</value></data>
+  <data name="m5.firmwareLimit.title" xml:space="preserve"><value>حدّ البرنامج الثابت من سرعة المعالج ({0} مرات)</value></data>
+  <data name="m5.firmwareLimit.why" xml:space="preserve"><value>ليس هذا عطلاً. يعني أن المعالج أُبطئ، غالباً بسبب الحرارة أو حدود الطاقة (Kernel-Processor-Power 37).</value></data>
+  <data name="m5.firmwareLimit.action" xml:space="preserve"><value>إذا شعرت ببطء الجهاز فتحقق من التبريد وخطة الطاقة. في الحواسيب المحمولة هذا شائع عند العمل على البطارية.</value></data>
+  <data name="m5.storage.disk7.title" xml:space="preserve"><value>أبلغ القرص عن كتل تالفة ({0} حدثاً)</value></data>
+  <data name="m5.storage.disk7.why" xml:space="preserve"><value>تعذّرت قراءة جزء من القرص بشكل موثوق. قد تُفقد البيانات في تلك الكتل.</value></data>
+  <data name="m5.storage.disk11.title" xml:space="preserve"><value>أبلغ متحكم القرص عن أخطاء ({0} حدثاً)</value></data>
+  <data name="m5.storage.disk11.why" xml:space="preserve"><value>فشلت أوامر إلى القرص. قد يكون السبب الكابلات أو المنافذ أو تعريف المتحكم أو القرص نفسه.</value></data>
+  <data name="m5.storage.disk51.title" xml:space="preserve"><value>أخطاء أثناء الترحيل إلى القرص ({0} حدثاً)</value></data>
+  <data name="m5.storage.disk51.why" xml:space="preserve"><value>واجه ويندوز صعوبة في كتابة صفحات الذاكرة إلى القرص، مما قد يسبب تجمّداً وانهيارات.</value></data>
+  <data name="m5.storage.ntfs55.title" xml:space="preserve"><value>اكتُشف تلف في نظام الملفات ({0} حدثاً)</value></data>
+  <data name="m5.storage.ntfs55.why" xml:space="preserve"><value>وجد NTFS بنى تالفة في نظام الملفات. قد تتأثر الملفات على ذلك المجلد.</value></data>
+  <data name="m5.storage.ntfs98.title" xml:space="preserve"><value>يحتاج مجلد إلى فحص نظام الملفات ({0} حدثاً)</value></data>
+  <data name="m5.storage.ntfs98.why" xml:space="preserve"><value>وضع NTFS علامة على مجلد بأنه يحتاج إلى إصلاح.</value></data>
+  <data name="m5.storage.ntfs50.title" xml:space="preserve"><value>فشلت عمليات كتابة مؤجلة ({0} حدثاً)</value></data>
+  <data name="m5.storage.ntfs50.why" xml:space="preserve"><value>تعذّرت كتابة بيانات خزّنها ويندوز مؤقتاً إلى القرص، لذا قد تُفقد بعض التغييرات.</value></data>
+  <data name="m5.storage.ntfs140.title" xml:space="preserve"><value>فشل تفريغ نظام الملفات ({0} حدثاً)</value></data>
+  <data name="m5.storage.ntfs140.why" xml:space="preserve"><value>يُسجَّل غالباً عند نزع قرص USB دون إخراجه. تكراره على قرص داخلي قد يشير إلى مشكلة في التخزين.</value></data>
+  <data name="m5.storage.storport129.title" xml:space="preserve"><value>أعاد تعريف التخزين تعيين القرص ({0} حدثاً)</value></data>
+  <data name="m5.storage.storport129.why" xml:space="preserve"><value>توقف القرص عن الاستجابة وأُعيد تعيينه. يسبق ذلك التجمّد غالباً.</value></data>
+  <data name="m5.storage.storport153.title" xml:space="preserve"><value>أُعيدت محاولة عمليات القرص ({0} حدثاً)</value></data>
+  <data name="m5.storage.storport153.why" xml:space="preserve"><value>انتهت مهلة القراءة أو الكتابة وأُعيدت المحاولة. قد يسببه البرنامج الثابت أو التعريفات أو الكابلات أو قرص يتعطل.</value></data>
+  <data name="m5.storage.disk157.title" xml:space="preserve"><value>أُزيل قرص بشكل غير متوقع ({0} حدثاً)</value></data>
+  <data name="m5.storage.disk157.why" xml:space="preserve"><value>طبيعي لأقراص USB المنزوعة دون إخراج. أما للقرص الداخلي فقد يعني توصيلاً غير محكم.</value></data>
+  <data name="m5.storage.action" xml:space="preserve"><value>راجع قسم صحة الأقراص، وحدّث تعريفات التخزين والبرنامج الثابت لقرص SSD، وتحقق من الكابلات.</value></data>
+  <data name="m5.storage.action.backup" xml:space="preserve"><value>انسخ ملفاتك احتياطياً الآن، ثم راجع قسم صحة الأقراص وشغّل فحص القرص للقراءة فقط (chkdsk /scan).</value></data>
+  <data name="m5.serviceCrash.title" xml:space="preserve"><value>توقفت الخدمة "{0}" بشكل غير متوقع {1} مرات</value></data>
+  <data name="m5.serviceCrash.why" xml:space="preserve"><value>انهارت خدمة تعمل في الخلفية. ربما أعاد ويندوز تشغيلها، لكن ما تقدمه قد انقطع.</value></data>
+  <data name="m5.serviceCrash.action" xml:space="preserve"><value>حدّث التطبيق الذي تتبع له الخدمة أو أعد تثبيته.</value></data>
+  <data name="m5.serviceStart.title" xml:space="preserve"><value>{0} خدمات فشلت في البدء أو انتهت مهلتها</value></data>
+  <data name="m5.serviceStart.why" xml:space="preserve"><value>هذا شائع في الأجهزة السليمة (مثل خدمة لجهاز غير موجود). لا يهم إلا إذا كان شيء تستخدمه لا يعمل.</value></data>
+  <data name="m5.serviceStart.action" xml:space="preserve"><value>إذا كانت ميزة تستخدمها معطلة، فحدّث أو أعد تثبيت التطبيق المالك للخدمة المذكورة في الأدلة.</value></data>
+  <data name="m5.app.title" xml:space="preserve"><value>انهار {0} {1} مرات وتوقف عن الاستجابة {2} مرات</value></data>
+  <data name="m5.app.why" xml:space="preserve"><value>الانهيارات المتكررة لتطبيق واحد تأتي عادة من التطبيق نفسه أو من إضافة يحمّلها، لا من ويندوز.</value></data>
+  <data name="m5.app.action" xml:space="preserve"><value>حدّث التطبيق أو أعد تثبيته. إذا كانت الوحدة المسببة في الأدلة تتبع منتجاً آخر فحدّث ذلك المنتج.</value></data>
+  <data name="m7.name" xml:space="preserve"><value>صحة الأقراص</value></data>
+  <data name="m7.check.disks" xml:space="preserve"><value>الأقراص الفعلية</value></data>
+  <data name="m7.check.disks.none" xml:space="preserve"><value>تعذّرت قراءة بيانات إدارة التخزين في ويندوز.</value></data>
+  <data name="m7.check.reliability" xml:space="preserve"><value>عدّادات موثوقية الأقراص (الحرارة، الاهتراء، الأخطاء)</value></data>
+  <data name="m7.check.nvme" xml:space="preserve"><value>سجل صحة NVMe</value></data>
+  <data name="m7.check.smart" xml:space="preserve"><value>سمات SMART لأقراص SATA</value></data>
+  <data name="m7.check.usbRaid" xml:space="preserve"><value>أقراص USB وRAID</value></data>
+  <data name="m7.check.usbRaid.detail" xml:space="preserve"><value>لا يمرّر ويندوز بيانات الصحة عبر معظم حاويات USB ومتحكمات RAID. إذا كان smartctl مثبتاً فيمكنه قراءتها؛ طبيب الحاسوب لا يتضمنه.</value></data>
+  <data name="m7.check.health" xml:space="preserve"><value>حالة الصحة في ويندوز: {0}</value></data>
+  <data name="m7.health.healthy" xml:space="preserve"><value>يبلّغ ويندوز بأنه سليم. هذا تقييم القرص لنفسه، وليس ضماناً.</value></data>
+  <data name="m7.health.warning" xml:space="preserve"><value>يبلّغ ويندوز بتحذير.</value></data>
+  <data name="m7.health.unhealthy" xml:space="preserve"><value>يبلّغ ويندوز بأنه غير سليم.</value></data>
+  <data name="m7.health.unknown" xml:space="preserve"><value>لم يبلّغ عنه هذا القرص.</value></data>
+  <data name="m7.unhealthy.title" xml:space="preserve"><value>انسخ احتياطياً الآن: {0} يبلّغ بأنه يتعطل</value></data>
+  <data name="m7.warning.title" xml:space="preserve"><value>{0} يبلّغ عن تحذير صحي</value></data>
+  <data name="m7.unhealthy.why" xml:space="preserve"><value>مراقبة القرص الذاتية تقول إنه يتدهور. الأقراص في هذه الحالة قد تتوقف عن العمل دون تحذير إضافي.</value></data>
+  <data name="m7.backupNow" xml:space="preserve"><value>انسخ ملفاتك احتياطياً الآن، ثم استبدل القرص أو تواصل مع الشركة المصنّعة للجهاز.</value></data>
+  <data name="m7.check.reliabilityFor" xml:space="preserve"><value>عدّادات الموثوقية: {0}</value></data>
+  <data name="m7.notReported" xml:space="preserve"><value>لم يبلّغ عنها هذا القرص.</value></data>
+  <data name="m7.uncorrected.title" xml:space="preserve"><value>لدى {0} عدد {1} من أخطاء القراءة/الكتابة غير المُصحّحة</value></data>
+  <data name="m7.uncorrected.why" xml:space="preserve"><value>الأخطاء غير المُصحّحة تعني أن البيانات لم تُقرأ أو تُكتب بشكل صحيح.</value></data>
+  <data name="m7.latency.title" xml:space="preserve"><value>استغرق {0} أكثر من {1} ثانية للاستجابة مرة واحدة على الأقل</value></data>
+  <data name="m7.latency.why" xml:space="preserve"><value>الاستجابات البطيئة جداً تسبب التجمّد وقد تكون علامة مبكرة على قرص أو توصيل يتعطل.</value></data>
+  <data name="m7.latency.action" xml:space="preserve"><value>حدّث البرنامج الثابت لقرص SSD وتعريفات التخزين، وتحقق من الكابلات، واحتفظ بنسخة احتياطية حديثة.</value></data>
+  <data name="m7.wear.title" xml:space="preserve"><value>استهلك {0} نسبة {1}% من قدرة التحمّل المقدّرة</value></data>
+  <data name="m7.wear.why" xml:space="preserve"><value>تهترئ أقراص SSD مع الكتابة. عندما يتجاوز العدّاد حده الأقصى المقدّر يكون القرص خارج عمره المقدّر، وإن استمر كثير منها في العمل.</value></data>
+  <data name="m7.wear.action" xml:space="preserve"><value>حافظ على نسخ احتياطية حديثة وخطّط لاستبدال القرص.</value></data>
+  <data name="m7.check.nvmeFor" xml:space="preserve"><value>سجل صحة NVMe: {0}</value></data>
+  <data name="m7.nvme.badLog" xml:space="preserve"><value>أعاد القرص سجل صحة لم يتمكن طبيب الحاسوب من قراءته.</value></data>
+  <data name="m7.nvme.summary" xml:space="preserve"><value>التحمّل المستهلك {0}%، الاحتياطي {1}%، الحرارة {2} °م.</value></data>
+  <data name="m7.nvmeCritical.title" xml:space="preserve"><value>انسخ احتياطياً الآن: {0} أطلق تحذيراً حرجاً ({1})</value></data>
+  <data name="m7.nvmeCritical.why" xml:space="preserve"><value>أشار قرص NVMe نفسه إلى حالة حرجة (المساحة الاحتياطية، الحرارة، الموثوقية أو وضع القراءة فقط).</value></data>
+  <data name="m7.nvmeMedia.title" xml:space="preserve"><value>سجّل {0} عدد {1} من أخطاء الوسائط وسلامة البيانات</value></data>
+  <data name="m7.nvmeMedia.why" xml:space="preserve"><value>لم يتمكن القرص من استعادة بعض البيانات المخزنة. إذا ازداد هذا الرقم فالقرص يتعطل.</value></data>
+  <data name="m7.nvmeTemp.title" xml:space="preserve"><value>{0} عند درجة حرارة التحذير ({1} °م)</value></data>
+  <data name="m7.nvmeTemp.why" xml:space="preserve"><value>أقراص NVMe الساخنة تبطئ نفسها وتهترئ أسرع.</value></data>
+  <data name="m7.nvmeTemp.action" xml:space="preserve"><value>حسّن تدفق الهواء أو أضف مشتتاً حرارياً للقرص.</value></data>
+  <data name="m7.check.smartFor" xml:space="preserve"><value>سمات SMART: {0}</value></data>
+  <data name="m7.smart.title" xml:space="preserve"><value>القرص {0} يبلّغ عن قطاعات مُعاد تخصيصها أو غير مقروءة</value></data>
+  <data name="m7.smart.why" xml:space="preserve"><value>سمات SMART رقم 5 و187 و197 و198 تعدّ القطاعات التي اضطر القرص لاستبدالها أو لم يستطع قراءتها. ازديادها ينبئ بالتعطل.</value></data>
+  <data name="m9.name" xml:space="preserve"><value>التعريفات والأجهزة</value></data>
+  <data name="m9.check.devices" xml:space="preserve"><value>الأجهزة التي فيها مشكلات في إدارة الأجهزة</value></data>
+  <data name="m9.check.devices.detail" xml:space="preserve"><value>{0} أجهزة فيها مشكلات؛ {1} غير متصلة أو عطّلتها أنت (مخفية).</value></data>
+  <data name="m9.device.title" xml:space="preserve"><value>الجهاز {0} فيه مشكلة (الرمز {1})</value></data>
+  <data name="m9.device.action" xml:space="preserve"><value>افتح إدارة الأجهزة، وتحقق من حالة الجهاز، وثبّت التعريف من الشركة المصنّعة للجهاز أو الحاسوب.</value></data>
+  <data name="m9.code.1" xml:space="preserve"><value>الجهاز غير مُعدّ بشكل صحيح (الرمز 1).</value></data>
+  <data name="m9.code.3" xml:space="preserve"><value>قد يكون التعريف تالفاً، أو أن ذاكرة ويندوز منخفضة (الرمز 3).</value></data>
+  <data name="m9.code.10" xml:space="preserve"><value>لا يمكن تشغيل الجهاز (الرمز 10).</value></data>
+  <data name="m9.code.12" xml:space="preserve"><value>لا يجد الجهاز موارد حرة كافية (الرمز 12).</value></data>
+  <data name="m9.code.14" xml:space="preserve"><value>يحتاج الجهاز إلى إعادة تشغيل ليعمل (الرمز 14).</value></data>
+  <data name="m9.code.18" xml:space="preserve"><value>يجب إعادة تثبيت التعريف (الرمز 18).</value></data>
+  <data name="m9.code.19" xml:space="preserve"><value>لا يستطيع ويندوز تشغيل الجهاز لأن إعداداته في السجل تالفة (الرمز 19).</value></data>
+  <data name="m9.code.21" xml:space="preserve"><value>ويندوز يزيل الجهاز (الرمز 21).</value></data>
+  <data name="m9.code.22" xml:space="preserve"><value>الجهاز معطّل (الرمز 22).</value></data>
+  <data name="m9.code.24" xml:space="preserve"><value>الجهاز غير موجود أو لا يعمل أو تنقصه التعريفات (الرمز 24).</value></data>
+  <data name="m9.code.28" xml:space="preserve"><value>التعريف غير مثبت (الرمز 28).</value></data>
+  <data name="m9.code.31" xml:space="preserve"><value>لا يستطيع ويندوز تحميل التعريف (الرمز 31).</value></data>
+  <data name="m9.code.39" xml:space="preserve"><value>التعريف تالف أو مفقود (الرمز 39).</value></data>
+  <data name="m9.code.43" xml:space="preserve"><value>أوقف ويندوز الجهاز لأنه أبلغ عن مشكلات (الرمز 43).</value></data>
+  <data name="m9.code.45" xml:space="preserve"><value>الجهاز غير متصل (الرمز 45).</value></data>
+  <data name="m9.code.48" xml:space="preserve"><value>حُظر التعريف لأن فيه مشكلات معروفة (الرمز 48).</value></data>
+  <data name="m9.code.52" xml:space="preserve"><value>لا يستطيع ويندوز التحقق من توقيع التعريف (الرمز 52).</value></data>
+  <data name="m9.code.other" xml:space="preserve"><value>تبلّغ إدارة الأجهزة عن رمز المشكلة {0}.</value></data>
+  <data name="m9.check.drivers" xml:space="preserve"><value>تعريفات الأجهزة المثبتة</value></data>
+  <data name="m9.check.drivers.detail" xml:space="preserve"><value>قُرئ {0} من مدخلات التعريفات.</value></data>
+  <data name="m9.unsigned.title" xml:space="preserve"><value>{0} تعريفات غير موقّعة مثبتة</value></data>
+  <data name="m9.unsigned.why" xml:space="preserve"><value>يشترط ويندوز عادة تعريفات موقّعة. غير الموقّعة ثُبّتت مع تخفيف فحص التوقيع، ولا يمكن التحقق من مصدرها.</value></data>
+  <data name="m9.unsigned.action" xml:space="preserve"><value>استبدلها بتعريفات موقّعة من الشركة المصنّعة، أو أزل برنامج الجهاز إذا كنت لا تستخدمه.</value></data>
+  <data name="m9.old.title" xml:space="preserve"><value>{0} تعريفات من جهات خارجية عمرها أكثر من {1} سنوات</value></data>
+  <data name="m9.old.why" xml:space="preserve"><value>التعريفات القديمة ليست مشكلة بالضرورة. يستحق تحديثها فقط إذا أساء الجهاز التصرف أو ظهر في الانهيارات.</value></data>
+  <data name="m9.old.action" xml:space="preserve"><value>إذا تسبب أحد هذه الأجهزة في مشكلات، فابحث عن تعريف أحدث في Windows Update ولدى الشركة المصنّعة.</value></data>
+  <data name="m9.check.knownBad" xml:space="preserve"><value>تعريفات معروفة بأنها ضعيفة (WinRing0)</value></data>
+  <data name="m9.winring0.title" xml:space="preserve"><value>تعريف WinRing0 الضعيف مثبت بواسطة برنامج في {0}</value></data>
+  <data name="m9.winring0.why" xml:space="preserve"><value>يسمح WinRing0 (CVE-2020-14979) لأي برنامج على الجهاز بقراءة العتاد والكتابة إليه مباشرة. يصنّفه Defender على أنه HackTool:Win32/Winring0.</value></data>
+  <data name="m9.winring0.action" xml:space="preserve"><value>حدّث تطبيق المراقبة أو التحكم بالمراوح في ذلك المجلد إلى إصدار لا يستخدم WinRing0، أو أزل تثبيته.</value></data>
+  <data name="m9.check.crashStacks" xml:space="preserve"><value>تعريفات الجهات الخارجية المذكورة في ملفات التفريغ</value></data>
+  <data name="m10.name" xml:space="preserve"><value>البطارية</value></data>
+  <data name="m10.check.battery" xml:space="preserve"><value>تقرير البطارية (powercfg)</value></data>
+  <data name="m10.check.reportFailed" xml:space="preserve"><value>لم يتمكن powercfg من إنشاء تقرير البطارية.</value></data>
+  <data name="m10.check.noBattery" xml:space="preserve"><value>لا توجد بطارية (حاسوب مكتبي).</value></data>
+  <data name="m10.check.batteryFor" xml:space="preserve"><value>البطارية {0}</value></data>
+  <data name="m10.check.noDesign" xml:space="preserve"><value>لا تبلّغ البطارية عن سعتها التصميمية.</value></data>
+  <data name="m10.check.detail" xml:space="preserve"><value>تحتفظ بـ{0} من {1} ميلي واط ساعة حسب التصميم ({2}%)؛ {3} دورة شحن.</value></data>
+  <data name="m10.worn.title" xml:space="preserve"><value>تحتفظ البطارية بـ{0}% من شحنتها الأصلية</value></data>
+  <data name="m10.replace.title" xml:space="preserve"><value>تحتفظ البطارية بـ{0}% فقط من شحنتها الأصلية</value></data>
+  <data name="m10.worn.why" xml:space="preserve"><value>تفقد البطاريات سعتها مع العمر ودورات الشحن. عتبتا 80% و60% قاعدة تقريبية من طبيب الحاسوب، وليستا حداً من الشركة المصنّعة.</value></data>
+  <data name="m10.worn.action" xml:space="preserve"><value>توقّع عمراً أقصر للبطارية. لا حاجة لأي إجراء ما لم تعد تكفي احتياجك.</value></data>
+  <data name="m10.replace.action" xml:space="preserve"><value>فكّر في استبدال البطارية عبر الشركة المصنّعة أو مركز خدمة معتمد.</value></data>
+  <data name="m10.check.energy" xml:space="preserve"><value>تشخيص كفاءة الطاقة (powercfg /energy)</value></data>
+</root>

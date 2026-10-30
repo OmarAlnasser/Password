@@ -1,0 +1,1 @@
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event"><System><Provider Name="Microsoft-Windows-Ntfs"/><EventID>55</EventID><TimeCreated SystemTime="2026-10-24T13:00:00.0000000Z"/><Channel>System</Channel></System><EventData><Data Name="DriveName">C:</Data></EventData></Event>

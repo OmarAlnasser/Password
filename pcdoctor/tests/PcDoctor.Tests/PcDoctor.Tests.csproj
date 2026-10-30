@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PcDoctor.Core\PcDoctor.Core.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Battery\PcDoctor.Modules.Battery.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Crash\PcDoctor.Modules.Crash.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Drivers\PcDoctor.Modules.Drivers.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BatteryReport xmlns="http://schemas.microsoft.com/battery/2012">
+  <ReportInformation><ReportVersion>1</ReportVersion></ReportInformation>
+  <Batteries>
+    <Battery>
+      <Id>DELL 5YRYV0B</Id>
+      <Manufacturer>SMP</Manufacturer>
+      <SerialNumber>1234</SerialNumber>
+      <Chemistry>LiP</Chemistry>
+      <LongTerm>1</LongTerm>
+      <RelativeCapacity>0</RelativeCapacity>
+      <DesignCapacity>56000</DesignCapacity>
+      <FullChargeCapacity>40320</FullChargeCapacity>
+      <CycleCount>412</CycleCount>
+    </Battery>
+  </Batteries>
+</BatteryReport>

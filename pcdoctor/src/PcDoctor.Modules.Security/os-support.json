@@ -1,0 +1,16 @@
+{
+  "_comment": "Windows 10 end-of-support and ESU dates. Kept out of code because Microsoft has changed them several times. Overridden by %ProgramData%\\PCDoctor\\config\\os-support.json when present (the update check writes it). Every ESU row is marked verify until checked against Microsoft's lifecycle page.",
+  "asOf": "2026-10-30",
+  "windows10": {
+    "endOfSupport": "2025-10-14",
+    "esu": [
+      { "program": "Consumer ESU", "ends": "2026-10-13", "verify": true,
+        "note": "Originally announced end date. Some 2026 coverage reports an extension; check Microsoft's page." },
+      { "program": "Consumer ESU (reported extension)", "ends": "2027-10-12", "verify": true,
+        "note": "Reported by Help Net Security, June 2026. Not confirmed from a Microsoft primary source." },
+      { "program": "Commercial ESU (year 3)", "ends": "2028-10-10", "verify": true,
+        "note": "Paid commercial program, up to three years." }
+    ],
+    "guidanceUrl": "https://learn.microsoft.com/windows/whats-new/extended-security-updates"
+  }
+}

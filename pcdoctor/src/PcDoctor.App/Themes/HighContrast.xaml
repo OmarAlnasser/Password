@@ -1,0 +1,17 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- High contrast: follow the user's system colors exactly. -->
+    <SolidColorBrush x:Key="Brush.Background" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Brush.Surface" Color="{x:Static SystemColors.WindowColor}" />
+    <SolidColorBrush x:Key="Brush.Foreground" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Subtle" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Border" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Accent" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="Brush.AccentText" Color="{x:Static SystemColors.HighlightTextColor}" />
+    <SolidColorBrush x:Key="Brush.Selection" Color="{x:Static SystemColors.HighlightColor}" />
+    <SolidColorBrush x:Key="Brush.Severity.Critical" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Severity.High" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Severity.Medium" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Severity.Low" Color="{x:Static SystemColors.WindowTextColor}" />
+    <SolidColorBrush x:Key="Brush.Severity.Info" Color="{x:Static SystemColors.WindowTextColor}" />
+</ResourceDictionary>
