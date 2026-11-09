@@ -12,7 +12,6 @@
     <MajorUpgrade DowngradeErrorMessage="A newer version of PC Doctor is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/OmarAlnasser/Password" />
-    <Property Id="ARPNOMODIFY" Value="1" />
 
     <StandardDirectory Id="ProgramFiles6432Folder">
       <Directory Id="INSTALLFOLDER" Name="PC Doctor" />
