@@ -54,6 +54,8 @@ public enum ElevatedData
     VolumeDirty,
     /// <summary>Diagnostics-Performance event 100 boots with Kernel-Boot 27 boot types.</summary>
     BootHistory,
+    /// <summary>LibreHardwareMonitor sensor readings (PawnIO when installed).</summary>
+    Sensors,
 }
 
 public sealed record ReadElevatedRequest(ElevatedData Data) : BrokerRequest;

@@ -875,6 +875,55 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="tweak.security.memoryIntegrityOff.title" xml:space="preserve"><value>Turn off Memory integrity (for gaming performance)</value></data>
   <data name="tweak.security.memoryIntegrityOff.why" xml:space="preserve"><value>Memory integrity costs about 5% on average in games on some CPUs (more on older ones without MBEC/GMET). Measure it on the Performance page before and after.</value></data>
   <data name="tweak.security.memoryIntegrityOff.warning" xml:space="preserve"><value>Microsoft: with memory integrity off "your device may be vulnerable to threats". To turn it back on, undo this from the Changes page. If Windows ever fails to start, open the Windows Recovery Environment, then Command Prompt, and set HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled back to 1.</value></data>
+  <data name="m8.name" xml:space="preserve"><value>Temperatures and fans</value></data>
+  <data name="m8.check.pawnio" xml:space="preserve"><value>Low-level sensor driver (PawnIO)</value></data>
+  <data name="m8.pawnio.yes" xml:space="preserve"><value>PawnIO is installed, so CPU temperatures can be read.</value></data>
+  <data name="m8.pawnio.no" xml:space="preserve"><value>PawnIO is not installed. GPU, disk and battery sensors still work; most CPU temperatures need it.</value></data>
+  <data name="m8.check.sensors" xml:space="preserve"><value>Hardware sensors</value></data>
+  <data name="m8.sensors.none" xml:space="preserve"><value>No sensors reported values on this PC.</value></data>
+  <data name="m8.sensors.detail" xml:space="preserve"><value>{0} sensor readings. Thresholds are rules of thumb, not a verdict about your hardware.</value></data>
+  <data name="m8.cpuHot.title" xml:space="preserve"><value>CPU is within {0} °C of its throttle point</value></data>
+  <data name="m8.cpuHot.why" xml:space="preserve"><value>When a CPU reaches its maximum temperature it slows itself down to stay safe. Under a heavy load that can be normal for a short time; at idle it usually means cooling is not keeping up.</value></data>
+  <data name="m8.cpuHot.action" xml:space="preserve"><value>Check that vents are not blocked and fans spin. On laptops, use a hard flat surface. If it happens at idle, the cooler or thermal paste may need service.</value></data>
+  <data name="m8.gpuHot.title" xml:space="preserve"><value>GPU hot spot reached {0} °C</value></data>
+  <data name="m8.gpuHot.why" xml:space="preserve"><value>Hot spot is the warmest point on the graphics chip. Most GPUs start slowing down around 105–110 °C; sustained readings near that while gaming can cause stutter.</value></data>
+  <data name="m8.gpuHot.action" xml:space="preserve"><value>Remove dust from the card and case fans and improve case airflow. A fan curve in the GPU vendor's own tool can also help.</value></data>
+  <data name="m8.check.cpuTemp" xml:space="preserve"><value>CPU temperature</value></data>
+  <data name="m8.cpuTemp.needsPawnIo" xml:space="preserve"><value>Not available without PawnIO.</value></data>
+  <data name="page.sensors.title" xml:space="preserve"><value>Sensors</value></data>
+  <data name="page.sensors.eyebrow" xml:space="preserve"><value>Live hardware</value></data>
+  <data name="page.sensors.subtitle" xml:space="preserve"><value>Temperatures, fan speeds, clocks and power, read every two seconds while this page is open. Nothing is changed.</value></data>
+  <data name="sensors.pawnio.title" xml:space="preserve"><value>More sensors with PawnIO</value></data>
+  <data name="sensors.pawnio.body" xml:space="preserve"><value>Most CPU temperatures need a small signed driver called PawnIO. PC Doctor does not install it for you and never uses the old WinRing0 driver. You can install PawnIO yourself from its official site.</value></data>
+  <data name="sensors.pawnio.consent" xml:space="preserve"><value>This opens the PawnIO website in your browser. Installing a driver is your choice; review it before you install.</value></data>
+  <data name="sensors.pawnio.open" xml:space="preserve"><value>Open PawnIO website</value></data>
+  <data name="sensors.start" xml:space="preserve"><value>Start live view</value></data>
+  <data name="sensors.stop" xml:space="preserve"><value>Pause</value></data>
+  <data name="sensors.updated" xml:space="preserve"><value>Updated {0}</value></data>
+  <data name="sensors.max" xml:space="preserve"><value>max {0}</value></data>
+  <data name="sensors.heuristic" xml:space="preserve"><value>Warnings here are rules of thumb. Hardware is designed to run warm under load.</value></data>
+  <data name="page.history.title" xml:space="preserve"><value>History</value></data>
+  <data name="page.history.eyebrow" xml:space="preserve"><value>Compare scans</value></data>
+  <data name="page.history.subtitle" xml:space="preserve"><value>See what changed between two scans, and schedule a quiet read-only Health Check.</value></data>
+  <data name="history.schedule.title" xml:space="preserve"><value>Scheduled Health Check</value></data>
+  <data name="history.schedule.body" xml:space="preserve"><value>Runs read-only on AC power. It only shows a small note when something new and important appears.</value></data>
+  <data name="history.schedule.off" xml:space="preserve"><value>Off</value></data>
+  <data name="history.schedule.daily" xml:space="preserve"><value>Daily</value></data>
+  <data name="history.schedule.weekly" xml:space="preserve"><value>Weekly</value></data>
+  <data name="history.schedule.saved" xml:space="preserve"><value>Schedule saved.</value></data>
+  <data name="history.schedule.removed" xml:space="preserve"><value>Scheduled check removed.</value></data>
+  <data name="history.compare" xml:space="preserve"><value>Compare two scans</value></data>
+  <data name="history.older" xml:space="preserve"><value>Older scan</value></data>
+  <data name="history.newer" xml:space="preserve"><value>Newer scan</value></data>
+  <data name="history.new" xml:space="preserve"><value>New</value></data>
+  <data name="history.resolved" xml:space="preserve"><value>No longer found</value></data>
+  <data name="history.persisting" xml:space="preserve"><value>Still there</value></data>
+  <data name="history.needTwo" xml:space="preserve"><value>Run at least two scans to compare them.</value></data>
+  <data name="history.pick" xml:space="preserve"><value>Pick two different scans.</value></data>
+  <data name="history.summary" xml:space="preserve"><value>{0} new, {1} no longer found, {2} still there. Checks completed: {3} before, {4} now. "No longer found" can also mean a check did not run.</value></data>
+  <data name="notify.title" xml:space="preserve"><value>PC Doctor found {0} new important items</value></data>
+  <data name="action.dismiss" xml:space="preserve"><value>Dismiss</value></data>
+  <data name="action.open" xml:space="preserve"><value>Open PC Doctor</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

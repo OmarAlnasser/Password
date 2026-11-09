@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 0.9.6+ uses the signed PawnIO driver, never WinRing0 (MPL-2.0). -->
+    <PackageReference Include="LibreHardwareMonitorLib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
+  </ItemGroup>
+</Project>

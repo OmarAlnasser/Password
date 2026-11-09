@@ -9,6 +9,7 @@ using PcDoctor.Modules.Integrity;
 using PcDoctor.Modules.Malware;
 using PcDoctor.Modules.Network;
 using PcDoctor.Modules.Security;
+using PcDoctor.Modules.Sensors;
 
 namespace PcDoctor.App.Services;
 
@@ -31,6 +32,7 @@ public static class AppModules
         IntegrityModule.ForWindows(new WindowsEventSource()),
         DriversModule.ForWindows(),
         new BatteryModule(),
+        new SensorModule(),
     ];
 
     private static readonly System.Net.Http.HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(30) };

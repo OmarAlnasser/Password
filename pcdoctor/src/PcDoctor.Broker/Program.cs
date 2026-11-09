@@ -139,6 +139,7 @@ internal static partial class Program
         ElevatedData.CrashDumpsWithSymbols => DumpReader.Read(allowSymbolDownload: true, CancellationToken.None),
         ElevatedData.VolumeDirty => PcDoctor.Modules.Integrity.RepairRunner.IsSystemVolumeDirty(),
         ElevatedData.BootHistory => PcDoctor.Bench.WindowsBench.BootHistory(new WindowsEventSource()),
+        ElevatedData.Sensors => PcDoctor.Modules.Sensors.SensorReader.Read(),
         _ => null,
     };
 

@@ -875,6 +875,55 @@
   <data name="tweak.security.memoryIntegrityOff.title" xml:space="preserve"><value>إيقاف سلامة الذاكرة (لأداء الألعاب)</value></data>
   <data name="tweak.security.memoryIntegrityOff.why" xml:space="preserve"><value>تكلّف سلامة الذاكرة نحو 5% في المتوسط في الألعاب على بعض المعالجات (وأكثر على المعالجات الأقدم دون MBEC/GMET). قِسها في صفحة الأداء قبل وبعد.</value></data>
   <data name="tweak.security.memoryIntegrityOff.warning" xml:space="preserve"><value>مايكروسوفت: مع إيقاف سلامة الذاكرة "قد يكون جهازك عرضة للتهديدات". لإعادة تشغيلها تراجع عن ذلك من صفحة التغييرات. وإن فشل ويندوز في البدء يوماً، فافتح بيئة استرداد ويندوز ثم موجه الأوامر، وأعد قيمة HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled إلى 1.</value></data>
+  <data name="m8.name" xml:space="preserve"><value>الحرارة والمراوح</value></data>
+  <data name="m8.check.pawnio" xml:space="preserve"><value>برنامج تشغيل المستشعرات منخفض المستوى (PawnIO)</value></data>
+  <data name="m8.pawnio.yes" xml:space="preserve"><value>PawnIO مثبّت، لذا يمكن قراءة حرارة المعالج.</value></data>
+  <data name="m8.pawnio.no" xml:space="preserve"><value>PawnIO غير مثبّت. مستشعرات بطاقة الرسوميات والأقراص والبطارية تعمل؛ ومعظم قراءات حرارة المعالج تحتاجه.</value></data>
+  <data name="m8.check.sensors" xml:space="preserve"><value>مستشعرات العتاد</value></data>
+  <data name="m8.sensors.none" xml:space="preserve"><value>لم يُبلغ أي مستشعر عن قيم على هذا الجهاز.</value></data>
+  <data name="m8.sensors.detail" xml:space="preserve"><value>{0} قراءة مستشعر. الحدود قواعد تقريبية وليست حكماً على عتادك.</value></data>
+  <data name="m8.cpuHot.title" xml:space="preserve"><value>المعالج على بعد {0} درجة من نقطة خفض الأداء</value></data>
+  <data name="m8.cpuHot.why" xml:space="preserve"><value>عندما يبلغ المعالج حرارته القصوى يخفض سرعته ليبقى آمناً. قد يكون ذلك طبيعياً لفترة قصيرة تحت حمل ثقيل؛ أما في وضع الخمول فيعني عادة أن التبريد لا يواكب.</value></data>
+  <data name="m8.cpuHot.action" xml:space="preserve"><value>تأكد من أن فتحات التهوية غير مسدودة وأن المراوح تدور. في الحواسيب المحمولة استخدم سطحاً صلباً مستوياً. إن حدث ذلك في وضع الخمول فقد يحتاج المبرد أو المعجون الحراري إلى صيانة.</value></data>
+  <data name="m8.gpuHot.title" xml:space="preserve"><value>النقطة الأسخن في بطاقة الرسوميات بلغت {0} درجة</value></data>
+  <data name="m8.gpuHot.why" xml:space="preserve"><value>النقطة الأسخن هي أدفأ نقطة في شريحة الرسوميات. تبدأ معظم البطاقات بخفض سرعتها عند نحو 105–110 درجة؛ والقراءات المستمرة القريبة من ذلك أثناء الألعاب قد تسبب تقطّعاً.</value></data>
+  <data name="m8.gpuHot.action" xml:space="preserve"><value>نظّف الغبار من مراوح البطاقة والصندوق وحسّن تدفق الهواء. يمكن أن يساعد أيضاً منحنى المراوح في أداة الشركة المصنّعة للبطاقة.</value></data>
+  <data name="m8.check.cpuTemp" xml:space="preserve"><value>حرارة المعالج</value></data>
+  <data name="m8.cpuTemp.needsPawnIo" xml:space="preserve"><value>غير متاحة بدون PawnIO.</value></data>
+  <data name="page.sensors.title" xml:space="preserve"><value>المستشعرات</value></data>
+  <data name="page.sensors.eyebrow" xml:space="preserve"><value>العتاد مباشرة</value></data>
+  <data name="page.sensors.subtitle" xml:space="preserve"><value>الحرارة وسرعة المراوح والترددات والطاقة، تُقرأ كل ثانيتين ما دامت هذه الصفحة مفتوحة. لا يتغير شيء.</value></data>
+  <data name="sensors.pawnio.title" xml:space="preserve"><value>مستشعرات أكثر مع PawnIO</value></data>
+  <data name="sensors.pawnio.body" xml:space="preserve"><value>تحتاج معظم قراءات حرارة المعالج إلى برنامج تشغيل صغير موقّع اسمه PawnIO. لا يثبّته طبيب الحاسوب نيابة عنك ولا يستخدم أبداً برنامج التشغيل القديم WinRing0. يمكنك تثبيت PawnIO بنفسك من موقعه الرسمي.</value></data>
+  <data name="sensors.pawnio.consent" xml:space="preserve"><value>سيفتح هذا موقع PawnIO في متصفحك. تثبيت برنامج التشغيل قرارك؛ راجعه قبل التثبيت.</value></data>
+  <data name="sensors.pawnio.open" xml:space="preserve"><value>فتح موقع PawnIO</value></data>
+  <data name="sensors.start" xml:space="preserve"><value>بدء العرض المباشر</value></data>
+  <data name="sensors.stop" xml:space="preserve"><value>إيقاف مؤقت</value></data>
+  <data name="sensors.updated" xml:space="preserve"><value>آخر تحديث {0}</value></data>
+  <data name="sensors.max" xml:space="preserve"><value>الأقصى {0}</value></data>
+  <data name="sensors.heuristic" xml:space="preserve"><value>التحذيرات هنا قواعد تقريبية. العتاد مصمَّم ليعمل دافئاً تحت الحمل.</value></data>
+  <data name="page.history.title" xml:space="preserve"><value>السجل</value></data>
+  <data name="page.history.eyebrow" xml:space="preserve"><value>مقارنة الفحوصات</value></data>
+  <data name="page.history.subtitle" xml:space="preserve"><value>اعرف ما تغيّر بين فحصين، وجدول فحصاً صحياً هادئاً للقراءة فقط.</value></data>
+  <data name="history.schedule.title" xml:space="preserve"><value>فحص صحي مجدول</value></data>
+  <data name="history.schedule.body" xml:space="preserve"><value>يعمل للقراءة فقط عند توصيل الكهرباء. لا يُظهر إلا ملاحظة صغيرة عند ظهور شيء جديد ومهم.</value></data>
+  <data name="history.schedule.off" xml:space="preserve"><value>متوقف</value></data>
+  <data name="history.schedule.daily" xml:space="preserve"><value>يومياً</value></data>
+  <data name="history.schedule.weekly" xml:space="preserve"><value>أسبوعياً</value></data>
+  <data name="history.schedule.saved" xml:space="preserve"><value>حُفظ الجدول.</value></data>
+  <data name="history.schedule.removed" xml:space="preserve"><value>أُزيل الفحص المجدول.</value></data>
+  <data name="history.compare" xml:space="preserve"><value>قارن بين فحصين</value></data>
+  <data name="history.older" xml:space="preserve"><value>الفحص الأقدم</value></data>
+  <data name="history.newer" xml:space="preserve"><value>الفحص الأحدث</value></data>
+  <data name="history.new" xml:space="preserve"><value>جديد</value></data>
+  <data name="history.resolved" xml:space="preserve"><value>لم يعد موجوداً</value></data>
+  <data name="history.persisting" xml:space="preserve"><value>ما زال موجوداً</value></data>
+  <data name="history.needTwo" xml:space="preserve"><value>شغّل فحصين على الأقل لمقارنتهما.</value></data>
+  <data name="history.pick" xml:space="preserve"><value>اختر فحصين مختلفين.</value></data>
+  <data name="history.summary" xml:space="preserve"><value>{0} جديد، {1} لم يعد موجوداً، {2} ما زال موجوداً. الفحوص المكتملة: {3} سابقاً، {4} الآن. «لم يعد موجوداً» قد يعني أيضاً أن الفحص لم يُجرَ.</value></data>
+  <data name="notify.title" xml:space="preserve"><value>وجد طبيب الحاسوب {0} عناصر مهمة جديدة</value></data>
+  <data name="action.dismiss" xml:space="preserve"><value>تجاهل</value></data>
+  <data name="action.open" xml:space="preserve"><value>فتح طبيب الحاسوب</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

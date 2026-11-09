@@ -22,6 +22,8 @@ public sealed record AppSettings
     /// <summary>Hash lookups on VirusTotal with the user's own key. Off by default; nothing is ever uploaded.</summary>
     public bool VirusTotalEnabled { get; init; }
 
+    public ScheduleFrequency ScheduledScan { get; init; } = ScheduleFrequency.Off;
+
     /// <summary>Shows expert tools such as Driver Verifier.</summary>
     public bool ExpertMode { get; init; }
 

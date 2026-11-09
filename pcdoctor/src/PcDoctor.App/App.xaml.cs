@@ -25,9 +25,31 @@ public partial class App : Application
         ThemeManager.Apply(settings.Theme);
 
         var services = new AppServices(settings);
+        if (e.Args.Contains("--scheduled-scan"))
+        {
+            _ = RunScheduledScan(services);
+            return;
+        }
         _shell = new ShellViewModel(services, CreatePages(services));
         MainWindow = new MainWindow { DataContext = _shell };
         MainWindow.Show();
+    }
+
+    /// <summary>Read-only Health Check from Task Scheduler. Silent unless there are new High or Critical findings.</summary>
+    private async Task RunScheduledScan(AppServices services)
+    {
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        var previous = History.Load().FirstOrDefault();
+        await services.RunScanAsync(Core.Scanning.ScanMode.HealthCheck);
+        var notify = services.Report is { } report ? Core.Reporting.ReportDiff.WorthNotifying(previous, report) : [];
+        if (notify.Count == 0)
+        {
+            Shutdown();
+            return;
+        }
+        var window = new QuietNotification(Loc.Format("notify.title", notify.Count), string.Join("\n", notify.Take(3).Select(f => Loc.Resolve(f.Title))));
+        window.Closed += (_, _) => Shutdown();
+        window.Show();
     }
 
     /// <summary>Every page in the navigation rail, in order.</summary>
@@ -41,7 +63,9 @@ public partial class App : Application
         new RepairsViewModel(services),
         new PerformanceViewModel(services),
         new OptimizeViewModel(services),
+        new SensorsViewModel(services),
         new FilesViewModel(services),
+        new HistoryViewModel(services),
         new ChangesViewModel(services),
         new SettingsViewModel(services),
     ];
