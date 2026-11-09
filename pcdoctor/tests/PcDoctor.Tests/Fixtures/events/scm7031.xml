@@ -1,0 +1,1 @@
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event"><System><Provider Name="Service Control Manager"/><EventID>7031</EventID><TimeCreated SystemTime="2026-10-24T12:00:00.0000000Z"/><Channel>System</Channel></System><EventData><Data Name="param1">Contoso Updater</Data><Data Name="param2">1</Data></EventData></Event>

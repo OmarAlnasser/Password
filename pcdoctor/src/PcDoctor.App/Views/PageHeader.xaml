@@ -1,0 +1,12 @@
+<UserControl x:Class="PcDoctor.App.Views.PageHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:PcDoctor.App.Controls">
+    <StackPanel Margin="0,0,0,22">
+        <TextBlock Text="{Binding Eyebrow}" Style="{StaticResource Text.Eyebrow}" c:Motion.Appear="True" c:Motion.Index="0" />
+        <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Headline}" Margin="0,4,0,6" c:Motion.Appear="True" c:Motion.Index="1"
+                   AutomationProperties.HeadingLevel="Level1" />
+        <TextBlock Text="{Binding Subtitle}" Style="{StaticResource Text.Body}" MaxWidth="760" HorizontalAlignment="Left"
+                   c:Motion.Appear="True" c:Motion.Index="2" />
+    </StackPanel>
+</UserControl>

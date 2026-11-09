@@ -1,0 +1,41 @@
+Loading Dump File [C:\Windows\Minidump\102026-12345-01.dmp]
+Mini Kernel Dump File: Only registers and stack trace are available
+
+*******************************************************************************
+*                                                                             *
+*                        Bugcheck Analysis                                    *
+*                                                                             *
+*******************************************************************************
+
+VIDEO_TDR_FAILURE (116)
+Attempt to reset the display driver and recover from timeout failed.
+
+KEY_VALUES_STRING: 1
+
+BUGCHECK_CODE:  116
+
+BUGCHECK_P1: ffffa50c1e2d3010
+
+BUGCHECK_P2: fffff80627ab1234
+
+BUGCHECK_P3: ffffffffc000009a
+
+BUGCHECK_P4: 4
+
+PROCESS_NAME:  System
+
+STACK_TEXT:  
+ffffd38a`2f1a7948 fffff806`2d5e3f2e     : 00000000`00000116 ffffa50c`1e2d3010 fffff806`27ab1234 ffffffff`c000009a : nt!KeBugCheckEx
+ffffd38a`2f1a7950 fffff806`2d5b1c8c     : fffff806`27ab1234 ffffa50c`1e2d3010 00000000`00000000 ffffa50c`1e2d3010 : dxgkrnl!TdrBugcheckOnTimeout+0xfe
+ffffd38a`2f1a7990 fffff806`2d5b2f6f     : ffffa50c`00000000 00000000`00000000 ffffa50c`1e2d3010 00000000`00000000 : dxgkrnl!ADAPTER_RENDER::Reset+0x15c
+
+SYMBOL_NAME:  nvlddmkm+a01234
+
+MODULE_NAME: nvlddmkm
+
+IMAGE_NAME:  nvlddmkm.sys
+
+FAILURE_BUCKET_ID:  0x116_IMAGE_nvlddmkm.sys
+
+Followup:     MachineOwner
+---------

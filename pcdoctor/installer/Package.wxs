@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Per-machine MSI. Installs the app and Broker into Program Files (admin-write only, which the
+  Broker's trust check relies on), adds a Start menu shortcut, nothing else: no service, no driver,
+  no startup entry, no scheduled task (the user opts into that in the app).
+  On a full uninstall (not an upgrade) with UI, the app runs with the uninstall-prompt switch first and offers
+  to undo every change still in the journal. The journal in ProgramData is left in place.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="PC Doctor" Manufacturer="PC Doctor" Version="$(ProductVersion)" Scope="perMachine"
+           UpgradeCode="6F1B2C4E-8D3A-4B7E-9C51-2E4A7D0B9F13" Language="1033">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of PC Doctor is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/OmarAlnasser/Password" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="PC Doctor" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder" />
+
+    <Feature Id="Main">
+      <Files Directory="INSTALLFOLDER" Include="$(PublishDir)**" />
+      <Component Id="StartMenuShortcut" Directory="ProgramMenuFolder" Guid="3B9E5C71-2A64-4F0D-8E1B-7C2D9A4F6E05">
+        <Shortcut Id="AppShortcut" Name="PC Doctor" Description="Honest Windows diagnostics" Target="[INSTALLFOLDER]PcDoctor.App.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKLM" Key="Software\PC Doctor" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </Feature>
+
+    <!-- Runs as the signed-in user (immediate, impersonated); the app raises UAC itself if the user chooses to undo. -->
+    <CustomAction Id="OfferUndoAll" Directory="INSTALLFOLDER" ExeCommand="&quot;[INSTALLFOLDER]PcDoctor.App.exe&quot; --uninstall-prompt"
+                  Execute="immediate" Return="ignore" Impersonate="yes" />
+    <InstallExecuteSequence>
+      <Custom Action="OfferUndoAll" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot; AND NOT UPGRADINGPRODUCTCODE AND UILevel &gt; 3" />
+    </InstallExecuteSequence>
+
+    <ui:WixUI Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+  </Package>
+</Wix>

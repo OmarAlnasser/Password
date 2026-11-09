@@ -1,0 +1,100 @@
+{
+  // Versioned tweak catalog. Every action is also its own detect probe. Undo comes from the change journal.
+  // Store IDs and some policy paths are marked VERIFY in docs; the catalog is validated by TweakEngine.Violations
+  // and by tests, and the Broker refuses a catalog with any violation.
+  "version": 1,
+  "tweaks": [
+    { "id": "ads.startSuggestions", "category": "ads", "tier": "Recommended",
+      "actions": [
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338388Enabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SystemPaneSuggestionsEnabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SilentInstalledAppsEnabled", "kind": "DWord", "value": "0" }
+      ], "references": ["https://learn.microsoft.com/windows/configuration/start/"] },
+    { "id": "ads.tips", "category": "ads", "tier": "Recommended",
+      "actions": [
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338389Enabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SoftLandingEnabled", "kind": "DWord", "value": "0" }
+      ] },
+    { "id": "ads.lockScreen", "category": "ads", "tier": "Recommended",
+      "actions": [
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "RotatingLockScreenOverlayEnabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338387Enabled", "kind": "DWord", "value": "0" }
+      ] },
+    { "id": "ads.settings", "category": "ads", "tier": "Recommended",
+      "actions": [
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-338393Enabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353694Enabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager", "name": "SubscribedContent-353696Enabled", "kind": "DWord", "value": "0" }
+      ] },
+    { "id": "search.webResults", "category": "search", "tier": "Recommended", "locksSetting": true,
+      "actions": [
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Policies\\Microsoft\\Windows\\Explorer", "name": "DisableSearchBoxSuggestions", "kind": "DWord", "value": "1" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Search", "name": "BingSearchEnabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\SearchSettings", "name": "IsDynamicSearchBoxEnabled", "kind": "DWord", "value": "0" }
+      ], "explorerRestart": true },
+    { "id": "widgets.off", "category": "taskbar", "tier": "Recommended", "locksSetting": true, "appliesTo": { "minBuild": 22000 },
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Dsh", "name": "AllowNewsAndInterests", "kind": "DWord", "value": "0" } ],
+      "explorerRestart": true },
+    { "id": "feeds.off", "category": "taskbar", "tier": "Recommended", "locksSetting": true, "appliesTo": { "maxBuild": 21999 },
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Feeds", "name": "EnableFeeds", "kind": "DWord", "value": "0" } ],
+      "explorerRestart": true },
+    { "id": "telemetry.minimum", "category": "privacy", "tier": "Recommended", "locksSetting": true, "hasWarning": true,
+      "appliesTo": { "editions": ["Core", "CoreSingleLanguage", "CoreCountrySpecific", "Professional", "ProfessionalWorkstation", "ProfessionalEducation"] },
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection", "name": "AllowTelemetry", "kind": "DWord", "value": "1" } ],
+      "references": ["https://learn.microsoft.com/windows/privacy/configure-windows-diagnostic-data-in-your-organization"] },
+    { "id": "telemetry.minimumEnterprise", "category": "privacy", "tier": "Recommended", "locksSetting": true, "hasWarning": true,
+      "appliesTo": { "editions": ["Enterprise", "EnterpriseS", "Education", "ServerStandard", "ServerDatacenter"] },
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection", "name": "AllowTelemetry", "kind": "DWord", "value": "0" } ] },
+    { "id": "edge.newTabFeed", "category": "edge", "tier": "Recommended", "locksSetting": true,
+      "actions": [
+        { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "NewTabPageContentEnabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Edge", "name": "ShowRecommendationsEnabled", "kind": "DWord", "value": "0" }
+      ], "references": ["https://learn.microsoft.com/deployedge/microsoft-edge-policies"] },
+    { "id": "explorer.fileExtensions", "category": "explorer", "tier": "Recommended", "explorerRestart": true,
+      "actions": [ { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced", "name": "HideFileExt", "kind": "DWord", "value": "0" } ] },
+    { "id": "taskbar.endTask", "category": "taskbar", "tier": "Recommended", "appliesTo": { "minBuild": 22631 },
+      "actions": [ { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\\TaskbarDeveloperSettings", "name": "TaskbarEndTask", "kind": "DWord", "value": "1" } ] },
+    { "id": "apps.bingNews", "category": "apps", "tier": "Recommended",
+      "actions": [ { "type": "appx", "packageFamilyPrefix": "Microsoft.BingNews", "storeId": "9WZDNCRFHVFW" } ] },
+    { "id": "apps.bingWeather", "category": "apps", "tier": "Recommended",
+      "actions": [ { "type": "appx", "packageFamilyPrefix": "Microsoft.BingWeather", "storeId": "9WZDNCRFJ3Q2" } ] },
+    { "id": "apps.solitaire", "category": "apps", "tier": "Recommended",
+      "actions": [ { "type": "appx", "packageFamilyPrefix": "Microsoft.MicrosoftSolitaireCollection", "storeId": "9WZDNCRFHWD2" } ] },
+    { "id": "apps.clipchamp", "category": "apps", "tier": "Recommended",
+      "actions": [ { "type": "appx", "packageFamilyPrefix": "Clipchamp.Clipchamp", "storeId": "9P1J8S7CCWWT" } ] },
+
+    { "id": "update.deferFeature", "category": "update", "tier": "Limited", "locksSetting": true, "hasWarning": true,
+      "actions": [
+        { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "name": "DeferFeatureUpdates", "kind": "DWord", "value": "1" },
+        { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate", "name": "DeferFeatureUpdatesPeriodInDays", "kind": "DWord", "value": "90" }
+      ], "references": ["https://learn.microsoft.com/windows/deployment/update/waas-configure-wufb"] },
+    { "id": "update.noAutoRestart", "category": "update", "tier": "Limited", "locksSetting": true,
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU", "name": "NoAutoRebootWithLoggedOnUsers", "kind": "DWord", "value": "1" } ] },
+    { "id": "update.deliveryOptimization", "category": "update", "tier": "Limited", "locksSetting": true,
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization", "name": "DODownloadMode", "kind": "DWord", "value": "0" } ] },
+    { "id": "gaming.gameBar", "category": "gaming", "tier": "Limited",
+      "actions": [
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Microsoft\\Windows\\CurrentVersion\\GameDVR", "name": "AppCaptureEnabled", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "System\\GameConfigStore", "name": "GameDVR_Enabled", "kind": "DWord", "value": "0" }
+      ] },
+    { "id": "power.fastStartupOff", "category": "power", "tier": "Limited", "hasWarning": true,
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Power", "name": "HiberbootEnabled", "kind": "DWord", "value": "0" } ] },
+
+    { "id": "ai.recallOff", "category": "ai", "tier": "Advanced", "locksSetting": true, "hasWarning": true, "appliesTo": { "minBuild": 26100 },
+      "actions": [
+        { "type": "registry", "hive": "HKLM", "key": "SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsAI", "name": "AllowRecallEnablement", "kind": "DWord", "value": "0" },
+        { "type": "registry", "hive": "HKCU", "key": "Software\\Policies\\Microsoft\\Windows\\WindowsAI", "name": "DisableAIDataAnalysis", "kind": "DWord", "value": "1" }
+      ], "requiresRestart": true, "references": ["https://learn.microsoft.com/windows/client-management/manage-recall"] },
+    { "id": "ai.copilotApp", "category": "ai", "tier": "Advanced", "hasWarning": true,
+      "actions": [ { "type": "appx", "packageFamilyPrefix": "Microsoft.Copilot", "storeId": "9NHT9RB2F4HD" } ] },
+    { "id": "service.searchIndexing", "category": "services", "tier": "Advanced", "hasWarning": true,
+      "actions": [ { "type": "service", "service": "WSearch", "startType": "Disabled" } ], "requiresRestart": true },
+    { "id": "service.printSpooler", "category": "services", "tier": "Advanced", "hasWarning": true,
+      "actions": [ { "type": "service", "service": "Spooler", "startType": "Disabled" } ], "requiresRestart": true },
+    { "id": "service.sysMain", "category": "services", "tier": "Advanced", "hasWarning": true,
+      "actions": [ { "type": "service", "service": "SysMain", "startType": "Disabled" } ], "requiresRestart": true },
+    { "id": "security.memoryIntegrityOff", "category": "security", "tier": "Advanced", "hasWarning": true,
+      "actions": [ { "type": "registry", "hive": "HKLM", "key": "SYSTEM\\CurrentControlSet\\Control\\DeviceGuard\\Scenarios\\HypervisorEnforcedCodeIntegrity", "name": "Enabled", "kind": "DWord", "value": "0" } ],
+      "requiresRestart": true, "references": ["https://learn.microsoft.com/windows/security/hardware-security/enable-virtualization-based-protection-of-code-integrity"] }
+  ]
+}

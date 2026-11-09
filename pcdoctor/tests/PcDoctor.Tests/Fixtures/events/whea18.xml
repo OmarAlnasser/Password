@@ -1,0 +1,1 @@
+<Event xmlns="http://schemas.microsoft.com/win/2004/08/events/event"><System><Provider Name="Microsoft-Windows-WHEA-Logger"/><EventID>18</EventID><TimeCreated SystemTime="2026-10-23T10:00:00.0000000Z"/><Channel>System</Channel></System><EventData><Data Name="ErrorSource">3</Data><Data Name="ApicId">4</Data></EventData></Event>

@@ -1,0 +1,78 @@
+<UserControl x:Class="PcDoctor.App.Views.OptimizeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:PcDoctor.App.Localization"
+             xmlns:c="clr-namespace:PcDoctor.App.Controls"
+             xmlns:v="clr-namespace:PcDoctor.App.Views">
+    <UserControl.Resources>
+        <v:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+        <v:ResourceKeyToBrushConverter x:Key="KeyToBrush" />
+    </UserControl.Resources>
+    <StackPanel>
+        <v:PageHeader />
+
+        <!-- Drift: Windows Update reset some settings -->
+        <c:Card IsInteractive="False" Margin="0,0,0,14" Visibility="{Binding HasDrift, Converter={StaticResource BoolToVisibility}}" c:Motion.Appear="True">
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Primary}" Command="{Binding ReapplyCommand}" Content="{loc:Loc tweak.reapply}" Margin="12,0,0,0"
+                        VerticalAlignment="Center" />
+                <TextBlock Text="{Binding Drift}" Style="{StaticResource Text.Body}" Foreground="{DynamicResource Warn}" VerticalAlignment="Center" />
+            </DockPanel>
+        </c:Card>
+
+        <c:Card IsFeatured="True" IsInteractive="False" Padding="26,22" c:Motion.Appear="True" c:Motion.Index="3">
+            <StackPanel>
+                <TextBlock Text="{loc:Loc tweak.presets.title}" Style="{StaticResource Text.Title}" />
+                <TextBlock Text="{loc:Loc tweak.presets.body}" Style="{StaticResource Text.Body}" Margin="0,6,0,16" MaxWidth="760" HorizontalAlignment="Left" />
+                <WrapPanel>
+                    <Button Style="{StaticResource Btn.Primary}" Command="{Binding RecommendedCommand}" Content="{loc:Loc tweak.preset.recommended}" />
+                    <Button Style="{StaticResource Btn.Ghost}" Command="{Binding LimitedCommand}" Content="{loc:Loc tweak.preset.limited}" />
+                    <Button Style="{StaticResource Btn.Ghost}" Command="{Binding ApplySelectedCommand}" Content="{loc:Loc tweak.preset.custom}" />
+                    <Button Style="{StaticResource Btn.Text}" Command="{Binding ClearCommand}" Content="{loc:Loc tweak.preset.clear}" />
+                </WrapPanel>
+                <Button Style="{StaticResource Btn.Text}" Command="{Binding MeasureFirstCommand}" Content="{loc:Loc tweak.measureFirst}" HorizontalAlignment="Left"
+                        Margin="0,10,0,0" Padding="0,6" />
+                <TextBlock Text="{Binding Status}" Style="{StaticResource Text.Caption}" Margin="0,6,0,0" AutomationProperties.LiveSetting="Polite" />
+            </StackPanel>
+        </c:Card>
+
+        <ItemsControl ItemsSource="{Binding View}" Margin="0,8,0,0" Focusable="False">
+            <ItemsControl.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate><TextBlock Text="{Binding Name}" Style="{StaticResource SectionHeader}" Margin="2,18,0,8" /></DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ItemsControl.GroupStyle>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="c:Motion.Appear" Value="True" />
+                    <Setter Property="Margin" Value="0,0,0,8" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <c:Card Padding="16,12" IsSelected="{Binding IsSelected}">
+                        <DockPanel>
+                            <CheckBox DockPanel.Dock="Left" Style="{StaticResource Switch}" IsChecked="{Binding IsSelected}" IsEnabled="{Binding Applicable}"
+                                      VerticalAlignment="Top" Margin="0,2,4,0" AutomationProperties.Name="{Binding Title}" />
+                            <Border DockPanel.Dock="Right" CornerRadius="999" Padding="10,3" VerticalAlignment="Top" BorderThickness="1"
+                                    BorderBrush="{Binding StateKey, Converter={StaticResource KeyToBrush}}">
+                                <TextBlock Text="{Binding StateText}" FontSize="12" Foreground="{Binding StateKey, Converter={StaticResource KeyToBrush}}" />
+                            </Border>
+                            <StackPanel Margin="0,0,12,0">
+                                <TextBlock Text="{Binding Title}" Style="{StaticResource Text.TitleMedium}" FontSize="15" />
+                                <TextBlock Text="{Binding Why}" Style="{StaticResource Text.Body}" Margin="0,2,0,0" />
+                                <TextBlock Text="{Binding Warning}" Style="{StaticResource Text.Caption}" Foreground="{DynamicResource Warn}" Margin="0,4,0,0"
+                                           Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}" />
+                                <TextBlock Text="{Binding Notes}" Style="{StaticResource Text.Caption}" Margin="0,4,0,0" />
+                                <TextBlock Text="{loc:Loc tweak.managed}" Style="{StaticResource Text.Caption}" Foreground="{DynamicResource Accent2}" Margin="0,4,0,0"
+                                           Visibility="{Binding IsManaged, Converter={StaticResource BoolToVisibility}}" />
+                            </StackPanel>
+                        </DockPanel>
+                    </c:Card>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>
