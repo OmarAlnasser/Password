@@ -7,6 +7,8 @@
     <DefineConstants>PublishDir=$(PublishDir);ProductVersion=$(ProductVersion)</DefineConstants>
     <ProductVersion Condition="'$(ProductVersion)' == ''">0.7.0</ProductVersion>
     <SuppressValidation>false</SuppressValidation>
+    <!-- WiX extensions are versioned here, not in Directory.Packages.props. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
