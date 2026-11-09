@@ -8,4 +8,13 @@ public partial class SettingsView : UserControl
     {
         InitializeComponent();
     }
+
+    private void OnSaveVtKey(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (DataContext is Pages.SettingsViewModel vm)
+        {
+            vm.SaveVirusTotalKey(VtKey.Password);
+            VtKey.Clear();
+        }
+    }
 }

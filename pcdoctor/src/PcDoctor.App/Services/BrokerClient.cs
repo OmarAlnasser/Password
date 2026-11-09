@@ -102,6 +102,34 @@ public sealed partial class BrokerClient : IElevatedReader, IAsyncDisposable
         return response.Ok ? response.PayloadAs<T>() : default;
     }
 
+    /// <summary>Starts a Broker job and polls it every 750 ms until it finishes; cancelling the token cancels the job.</summary>
+    public async Task<JobStatus> RunJobAsync(JobKind kind, string? target, Action<JobStatus> onProgress, CancellationToken ct)
+    {
+        var start = await SendAsync(new JobStartRequest(kind, target), CancellationToken.None).ConfigureAwait(false);
+        if (!start.Ok)
+        {
+            throw new InvalidOperationException(start.ErrorDetail ?? start.Error.ToString());
+        }
+        var id = start.PayloadAs<Guid>();
+        var cancelSent = false;
+        while (true)
+        {
+            if (ct.IsCancellationRequested && !cancelSent)
+            {
+                await SendAsync(new JobCancelRequest(id), CancellationToken.None).ConfigureAwait(false);
+                cancelSent = true;
+            }
+            var status = (await SendAsync(new JobStatusRequest(id), CancellationToken.None).ConfigureAwait(false)).PayloadAs<JobStatus>()
+                         ?? throw new InvalidOperationException("The job disappeared.");
+            onProgress(status);
+            if (status.State != JobState.Running)
+            {
+                return status;
+            }
+            await Task.Delay(750, CancellationToken.None).ConfigureAwait(false);
+        }
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_pipe is { IsConnected: true })

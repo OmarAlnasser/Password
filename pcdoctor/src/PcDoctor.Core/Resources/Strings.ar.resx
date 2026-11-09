@@ -419,6 +419,219 @@
   <data name="settings.network" xml:space="preserve"><value>ميزات الشبكة</value></data>
   <data name="settings.symbols" xml:space="preserve"><value>السماح لمصحح أخطاء ويندوز بتنزيل الرموز العامة من مايكروسوفت</value></data>
   <data name="settings.symbols.note" xml:space="preserve"><value>يجعل تحليل الانهيارات أدق. تُطلب فقط أسماء ملفات مكونات ويندوز من msdl.microsoft.com عبر HTTPS. متوقف افتراضياً.</value></data>
+  <data name="page.protection.title" xml:space="preserve"><value>الحماية</value></data>
+  <data name="page.protection.eyebrow" xml:space="preserve"><value>فحص البرمجيات الخبيثة</value></data>
+  <data name="page.protection.subtitle" xml:space="preserve"><value>لا يملك طبيب الحاسوب محرك مكافحة فيروسات خاصاً به. يشغّل Microsoft Defender، وإن طلبت ذلك أداة Microsoft Safety Scanner، ويعرض ما وجدتاه بالضبط.</value></data>
+  <data name="page.startup.title" xml:space="preserve"><value>بدء التشغيل والاستمرارية</value></data>
+  <data name="page.startup.eyebrow" xml:space="preserve"><value>ما يعمل تلقائياً</value></data>
+  <data name="page.startup.subtitle" xml:space="preserve"><value>كل ما يبدأ مع ويندوز أو عند تسجيل الدخول أو بجدول زمني أو عند حدث. تُفحص التواقيع كما يفحصها ويندوز، بما فيها تواقيع الكتالوج. تُعطَّل العناصر ولا تُحذف أبداً.</value></data>
+  <data name="page.files.title" xml:space="preserve"><value>كل ملف في الحسبان</value></data>
+  <data name="page.files.eyebrow" xml:space="preserve"><value>جرد الملفات</value></data>
+  <data name="page.files.subtitle" xml:space="preserve"><value>بعض الملفات لا يمكن لأي برنامج قراءتها: ملفات النظام المقفلة والمجلدات المحمية والملفات الموجودة في السحابة فقط. بدلاً من ادعاء فحص كل شيء، يعرض طبيب الحاسوب كل ملف كمحسوب أو متخطّى مع السبب.</value></data>
+  <data name="m2.name" xml:space="preserve"><value>الحماية من البرمجيات الخبيثة</value></data>
+  <data name="m2.check.engine" xml:space="preserve"><value>محرك مكافحة الفيروسات</value></data>
+  <data name="m2.engine.defender" xml:space="preserve"><value>برنامج Microsoft Defender لمكافحة الفيروسات نشط.</value></data>
+  <data name="m2.engine.thirdParty" xml:space="preserve"><value>برنامج مكافحة الفيروسات النشط لديك هو {0}. فحص Defender غير متاح. استخدم {0} للفحص.</value></data>
+  <data name="m2.engine.none" xml:space="preserve"><value>لم يُعثر على محرك مكافحة فيروسات نشط، لذا لا يستطيع طبيب الحاسوب تشغيل فحص للبرمجيات الخبيثة.</value></data>
+  <data name="m2.check.lastScan" xml:space="preserve"><value>آخر فحص من Defender</value></data>
+  <data name="m2.lastScan.detail" xml:space="preserve"><value>انتهى في {0}.</value></data>
+  <data name="m2.check.history" xml:space="preserve"><value>اكتشافات Defender خلال آخر 30 يوماً</value></data>
+  <data name="m2.history.detail" xml:space="preserve"><value>{0} اكتشافات سجّلها Defender.</value></data>
+  <data name="m2.detection.active.title" xml:space="preserve"><value>اكتشف Defender {0} ولم تتم معالجته</value></data>
+  <data name="m2.detection.active.why" xml:space="preserve"><value>سجل Defender نفسه يقول إن هذا التهديد اكتُشف وإن الإجراء ضده لم يكتمل.</value></data>
+  <data name="m2.detection.active.action" xml:space="preserve"><value>افتح أمن ويندوز &gt; الحماية من الفيروسات والمخاطر &gt; محفوظات الحماية واختر إجراءً، ثم شغّل فحصاً كاملاً.</value></data>
+  <data name="m2.detection.handled.title" xml:space="preserve"><value>اكتشف Defender {0} وعالجه</value></data>
+  <data name="m2.detection.handled.why" xml:space="preserve"><value>وضعه Defender في الحجر أو أزاله. يُعرض لتعرف أن ذلك حدث.</value></data>
+  <data name="m2.detection.handled.action" xml:space="preserve"><value>لا حاجة لإجراء ما لم تعتقد أنه اكتشاف خاطئ؛ عندها راجع الحجر في صفحة الحماية.</value></data>
+  <data name="m2.check.pua" xml:space="preserve"><value>حظر التطبيقات غير المرغوب فيها (PUA)</value></data>
+  <data name="m2.pua.on" xml:space="preserve"><value>مفعّل.</value></data>
+  <data name="m2.pua.audit" xml:space="preserve"><value>تدقيق فقط: يُكتشف ولا يُحظر.</value></data>
+  <data name="m2.pua.off" xml:space="preserve"><value>متوقف.</value></data>
+  <data name="m2.pua.title" xml:space="preserve"><value>لا يحظر Defender التطبيقات غير المرغوب فيها</value></data>
+  <data name="m2.pua.why" xml:space="preserve"><value>برامج الإعلانات المرفقة وخاطفات المتصفح و"محسّنات الحاسوب" المزيفة ليست برمجيات خبيثة غالباً، لذا يسمح بها Defender ما لم يكن حظر PUA مفعّلاً.</value></data>
+  <data name="m2.pua.action" xml:space="preserve"><value>فعّل حظر PUA. يستطيع طبيب الحاسوب فعل ذلك مع إمكانية التراجع.</value></data>
+  <data name="m2.pua.undo" xml:space="preserve"><value>تُسجَّل قيمة السياسة في سجل التغييرات ويمكن إزالتها من تبويب التغييرات.</value></data>
+  <data name="m2.check.scan" xml:space="preserve"><value>فحص البرمجيات الخبيثة</value></data>
+  <data name="m2.scan.onDemand" xml:space="preserve"><value>ليس جزءاً من فحص الصحة: ابدأ فحص Defender من صفحة الحماية.</value></data>
+  <data name="fix.pua.title" xml:space="preserve"><value>حظر التطبيقات غير المرغوب فيها</value></data>
+  <data name="fix.pua.explain" xml:space="preserve"><value>يضبط قيمة سياسة المجموعة الموثّقة التي تفعّل حظر PUA في Defender.</value></data>
+  <data name="protection.engine.checking" xml:space="preserve"><value>جارٍ التحقق من برنامج مكافحة الفيروسات النشط…</value></data>
+  <data name="protection.scan.title" xml:space="preserve"><value>افحص باستخدام Microsoft Defender</value></data>
+  <data name="protection.scan.body" xml:space="preserve"><value>يحدّث Defender تواقيعه أولاً. الفحص السريع يستغرق دقائق؛ أما الكامل فقد يستغرق ساعات ويبقى الجهاز قابلاً للاستخدام. يضع Defender ما يجده في الحجر كعادته؛ لا يُحذف شيء.</value></data>
+  <data name="protection.quick" xml:space="preserve"><value>فحص سريع</value></data>
+  <data name="protection.full" xml:space="preserve"><value>فحص كامل</value></data>
+  <data name="protection.custom" xml:space="preserve"><value>فحص مجلد (تقرير فقط)</value></data>
+  <data name="protection.custom.pick" xml:space="preserve"><value>اختر مجلداً للفحص</value></data>
+  <data name="protection.running" xml:space="preserve"><value>{0} قيد التشغيل منذ {1}</value></data>
+  <data name="protection.kind.DefenderQuickScan" xml:space="preserve"><value>فحص سريع</value></data>
+  <data name="protection.kind.DefenderFullScan" xml:space="preserve"><value>فحص كامل</value></data>
+  <data name="protection.kind.DefenderCustomScan" xml:space="preserve"><value>فحص مجلد</value></data>
+  <data name="protection.kind.DefenderCustomReportOnly" xml:space="preserve"><value>فحص مجلد (تقرير فقط)</value></data>
+  <data name="protection.kind.DefenderSignatureUpdate" xml:space="preserve"><value>تحديث التواقيع</value></data>
+  <data name="protection.kind.SafetyScannerQuick" xml:space="preserve"><value>Safety Scanner</value></data>
+  <data name="protection.kind.SafetyScannerFull" xml:space="preserve"><value>Safety Scanner (كامل)</value></data>
+  <data name="protection.result.none" xml:space="preserve"><value>لم يكتشف Defender أي تهديدات في هذا الفحص</value></data>
+  <data name="protection.result.handled" xml:space="preserve"><value>وجد Defender {0} تهديدات وعالجها</value></data>
+  <data name="protection.result.remaining" xml:space="preserve"><value>وجد Defender {0} تهديدات ما زالت تحتاج إجراءً</value></data>
+  <data name="protection.result.failed" xml:space="preserve"><value>لم يكتمل الفحص، لذا لا توجد نتيجة</value></data>
+  <data name="protection.result.cancelled" xml:space="preserve"><value>أُلغي الفحص</value></data>
+  <data name="protection.result.detail" xml:space="preserve"><value>{0}، انتهى {1} (رمز خروج MpCmdRun هو {2}).</value></data>
+  <data name="protection.result.signaturesFailed" xml:space="preserve"><value>فشل تحديث التواقيع، لذا استخدم هذا الفحص التواقيع الموجودة على الجهاز.</value></data>
+  <data name="protection.msert.title" xml:space="preserve"><value>رأي ثانٍ: Microsoft Safety Scanner</value></data>
+  <data name="protection.msert.body" xml:space="preserve"><value>ينزّل الماسح المستقل من مايكروسوفت (نحو 200 ميغابايت، تنتهي صلاحيته بعد نحو 10 أيام لذا تُستخدم نسخة جديدة دائماً)، ويتحقق من توقيعه ويشغّل فحصاً سريعاً.</value></data>
+  <data name="protection.msert.consent" xml:space="preserve"><value>سينزّل طبيب الحاسوب أداة Microsoft Safety Scanner من microsoft.com، ولن يشغّلها إلا إذا كانت موقّعة توقيعاً صالحاً من مايكروسوفت، ثم يحذفها بعد ذلك. قد تزيل الأداة ما تكتشفه.</value></data>
+  <data name="protection.msert.run" xml:space="preserve"><value>تشغيل Safety Scanner</value></data>
+  <data name="protection.msert.found" xml:space="preserve"><value>أبلغت Safety Scanner عن {0} ملفات مصابة</value></data>
+  <data name="protection.msert.none" xml:space="preserve"><value>لم تبلغ Safety Scanner عن أي ملفات مصابة</value></data>
+  <data name="protection.quarantine.title" xml:space="preserve"><value>حجر Defender</value></data>
+  <data name="protection.quarantine.load" xml:space="preserve"><value>عرض الحجر</value></data>
+  <data name="protection.quarantine.empty" xml:space="preserve"><value>حجر Defender فارغ.</value></data>
+  <data name="protection.restore.title" xml:space="preserve"><value>الاستعادة من الحجر</value></data>
+  <data name="protection.restore.consent" xml:space="preserve"><value>وضع Defender "{0}" في الحجر لأنه اعتبره تهديداً. الاستعادة تعيد هذه الملفات وتسمح بتشغيلها:
+
+{1}
+
+لا تفعل ذلك إلا إذا كنت متأكداً أنه اكتشاف خاطئ.</value></data>
+  <data name="protection.restore.button" xml:space="preserve"><value>استعادة</value></data>
+  <data name="protection.restore.done" xml:space="preserve"><value>استعاده Defender.</value></data>
+  <data name="m3.name" xml:space="preserve"><value>بدء التشغيل والاستمرارية</value></data>
+  <data name="m3.check.counts" xml:space="preserve"><value>{0} عنصراً، {1} موقّعة من مايكروسوفت، {2} غيرها.</value></data>
+  <data name="m3.check.vt" xml:space="preserve"><value>الاستعلام عن البصمات في VirusTotal</value></data>
+  <data name="m3.check.vt.off" xml:space="preserve"><value>متوقف. فعّله من الإعدادات بمفتاح VirusTotal الخاص بك لفحص الملفات غير الموقّعة عبر بصمتها.</value></data>
+  <data name="m3.unread.error" xml:space="preserve"><value>تعذّرت قراءته على هذا الجهاز.</value></data>
+  <data name="m3.cat.RunKey" xml:space="preserve"><value>مفاتيح Run</value></data>
+  <data name="m3.cat.StartupFolder" xml:space="preserve"><value>مجلدات بدء التشغيل</value></data>
+  <data name="m3.cat.Service" xml:space="preserve"><value>الخدمات</value></data>
+  <data name="m3.cat.Driver" xml:space="preserve"><value>التعريفات</value></data>
+  <data name="m3.cat.ScheduledTask" xml:space="preserve"><value>المهام المجدولة</value></data>
+  <data name="m3.cat.WmiSubscription" xml:space="preserve"><value>اشتراكات أحداث WMI</value></data>
+  <data name="m3.cat.Winlogon" xml:space="preserve"><value>Winlogon</value></data>
+  <data name="m3.cat.AppInit" xml:space="preserve"><value>مكتبات AppInit</value></data>
+  <data name="m3.cat.ImageFileExecution" xml:space="preserve"><value>خيارات تنفيذ ملفات الصور (IFEO)</value></data>
+  <data name="m3.cat.Accessibility" xml:space="preserve"><value>أدوات الوصول في شاشة تسجيل الدخول</value></data>
+  <data name="m3.cat.BootExecute" xml:space="preserve"><value>التنفيذ عند الإقلاع</value></data>
+  <data name="m3.cat.Lsa" xml:space="preserve"><value>حزم LSA</value></data>
+  <data name="m3.cat.PrintMonitor" xml:space="preserve"><value>مراقبات الطباعة</value></data>
+  <data name="m3.cat.WinsockProvider" xml:space="preserve"><value>موفّرو Winsock</value></data>
+  <data name="m3.cat.ComHijack" xml:space="preserve"><value>تجاوزات COM لكل مستخدم</value></data>
+  <data name="m3.cat.OfficeAddin" xml:space="preserve"><value>وظائف Office الإضافية</value></data>
+  <data name="m3.cat.BrowserExtension" xml:space="preserve"><value>إضافات المتصفح</value></data>
+  <data name="m3.cat.PowerShellProfile" xml:space="preserve"><value>ملفات تعريف PowerShell</value></data>
+  <data name="m3.cat.ScreenSaver" xml:space="preserve"><value>شاشة التوقف</value></data>
+  <data name="m3.sig.MicrosoftSigned" xml:space="preserve"><value>مايكروسوفت</value></data>
+  <data name="m3.sig.Signed" xml:space="preserve"><value>موقّع</value></data>
+  <data name="m3.sig.Invalid" xml:space="preserve"><value>توقيع غير صالح</value></data>
+  <data name="m3.sig.Unsigned" xml:space="preserve"><value>غير موقّع</value></data>
+  <data name="m3.sig.NotFound" xml:space="preserve"><value>الملف مفقود</value></data>
+  <data name="m3.sig.Error" xml:space="preserve"><value>تعذّر الفحص</value></data>
+  <data name="m3.sig.None" xml:space="preserve"><value>ليس برنامجاً</value></data>
+  <data name="m3.action.disable" xml:space="preserve"><value>عطّله من صفحة بدء التشغيل إن لم تتعرف عليه. ينقله طبيب الحاسوب جانباً بدلاً من حذفه، لتمكن إعادته.</value></data>
+  <data name="m3.undo.disable" xml:space="preserve"><value>التعطيل مسجّل في السجل: يمكن إعادة العنصر من تبويب التغييرات.</value></data>
+  <data name="m3.amsi.title" xml:space="preserve"><value>صنّف برنامج مكافحة الفيروسات عنصر بدء التشغيل "{0}" كبرمجية خبيثة</value></data>
+  <data name="m3.amsi.why" xml:space="preserve"><value>مرّر طبيب الحاسوب السكربت أو سطر الأوامر الخاص به إلى برنامج مكافحة الفيروسات المثبّت عبر AMSI، فصنّفه كبرمجية خبيثة.</value></data>
+  <data name="m3.amsi.action" xml:space="preserve"><value>شغّل فحص Defender كاملاً من صفحة الحماية.</value></data>
+  <data name="m3.vt.title" xml:space="preserve"><value>{2} من {3} محركات في VirusTotal تصنّف "{0}"</value></data>
+  <data name="m3.vt.why" xml:space="preserve"><value>هذا رأي ثانٍ من محركات شركات أخرى، استُعلم عنه عبر بصمة الملف فقط. محرك أو اثنان وحدهما كثيراً ما يكونان اكتشافاً خاطئاً.</value></data>
+  <data name="m3.vt.action" xml:space="preserve"><value>تحقق من مصدر الملف، وشغّل فحص Defender لمجلده.</value></data>
+  <data name="m3.accessibility.title" xml:space="preserve"><value>استُبدلت أداة من شاشة تسجيل الدخول ({0}) أو أعيد توجيهها</value></data>
+  <data name="m3.accessibility.why" xml:space="preserve"><value>استبدال مفاتيح الثبات أو سهولة الوصول ببرنامج آخر طريقة معروفة للحصول على موجه أوامر بصلاحيات المسؤول دون كلمة مرور.</value></data>
+  <data name="m3.accessibility.action" xml:space="preserve"><value>شغّل DISM وSFC (صفحة الإصلاحات) لاستعادة الملف الأصلي، وأزل قيمة المصحح في خيارات تنفيذ ملفات الصور.</value></data>
+  <data name="m3.ifeo.title" xml:space="preserve"><value>"{0}" مضبوط لتشغيل برنامج آخر بدلاً منه ({1})</value></data>
+  <data name="m3.ifeo.why" xml:space="preserve"><value>مصحح خيارات تنفيذ ملفات الصور يعمل كلما بدأ البرنامج المذكور. يستخدمه المطورون، وكذلك البرمجيات الخبيثة.</value></data>
+  <data name="m3.ifeo.action" xml:space="preserve"><value>إن لم تضبط ذلك بنفسك، فأزل قيمة Debugger (محرر السجل) وافحص باستخدام Defender.</value></data>
+  <data name="m3.wmi.title" xml:space="preserve"><value>اشتراك أحداث WMI يشغّل "{0}"</value></data>
+  <data name="m3.wmi.why" xml:space="preserve"><value>تشغّل اشتراكات WMI أوامر عند أحداث النظام دون أي ملف في مجلدات بدء التشغيل. قلة من البرامج الشرعية تستخدمها.</value></data>
+  <data name="m3.wmi.action" xml:space="preserve"><value>إن لم يكن لها تفسير من برنامج إدارة تستخدمه، فافحص باستخدام Defender وأزل الاشتراك.</value></data>
+  <data name="m3.appinit.title" xml:space="preserve"><value>مكتبة ({1}) تُحمَّل في كل برنامج</value></data>
+  <data name="m3.appinit.why" xml:space="preserve"><value>AppInit_DLLs يحقن مكتبة في كل عملية تحمّل user32.dll. لا تنصح بها مايكروسوفت؛ وما زالت البرمجيات الخبيثة تستخدمها.</value></data>
+  <data name="m3.appinit.action" xml:space="preserve"><value>اعرف البرنامج الذي ثبّتها. إن لم يوجد، فافحص باستخدام Defender.</value></data>
+  <data name="m3.winlogon.title" xml:space="preserve"><value>تسجيل الدخول إلى ويندوز يبدأ شيئاً غير معتاد ({0})</value></data>
+  <data name="m3.winlogon.why" xml:space="preserve"><value>قيمتا Shell وUserinit في Winlogon هما عادة explorer.exe وuserinit.exe. أي شيء آخر يعمل عند كل تسجيل دخول.</value></data>
+  <data name="m3.winlogon.action" xml:space="preserve"><value>ما لم تضبط ذلك أداة كشك أو أداة الشركة، فأعد القيم الافتراضية وافحص باستخدام Defender.</value></data>
+  <data name="m3.bootexecute.title" xml:space="preserve"><value>برنامج يعمل قبل بدء ويندوز ({1})</value></data>
+  <data name="m3.bootexecute.why" xml:space="preserve"><value>BootExecute يشغّل عادة autochk فقط. أدوات الأقراص وإلغاء التجزئة تضيف أحياناً عناصر هنا.</value></data>
+  <data name="m3.bootexecute.action" xml:space="preserve"><value>إن لم تتعرف عليه، فأزله لتصبح القيمة "autocheck autochk *".</value></data>
+  <data name="m3.lsa.title" xml:space="preserve"><value>حزمة غير معروفة يحمّلها نظام الأمان في ويندوز ({1})</value></data>
+  <data name="m3.lsa.why" xml:space="preserve"><value>ترى حزم LSA كلمات المرور عند تسجيل الدخول. حزمة من غير مايكروسوفت هنا يمكنها التقاطها.</value></data>
+  <data name="m3.lsa.action" xml:space="preserve"><value>ما لم يفسّرها برنامج أمان ثبّته، فافحص باستخدام Defender وأزل العنصر.</value></data>
+  <data name="m3.forcedExtension.title" xml:space="preserve"><value>إضافة متصفح مثبّتة بواسطة سياسة: {0}</value></data>
+  <data name="m3.forcedExtension.why" xml:space="preserve"><value>الإضافات المثبّتة بالسياسة لا يمكن إزالتها من المتصفح. تفعل ذلك الشركات، وكذلك برامج الإعلانات.</value></data>
+  <data name="m3.forcedExtension.action" xml:space="preserve"><value>إن لم يكن هذا الجهاز مداراً من مؤسسة، فأزل قيمة السياسة والإضافة.</value></data>
+  <data name="m3.comhijack.title" xml:space="preserve"><value>تجاوز COM لكل مستخدم يشير إلى {1}</value></data>
+  <data name="m3.comhijack.why" xml:space="preserve"><value>تسجيل فئة COM لكل مستخدم يتجاوز فئة النظام دون صلاحيات المسؤول، وهي طريقة معروفة لتشغيل شيفرة داخل برامج أخرى.</value></data>
+  <data name="m3.comhijack.action" xml:space="preserve"><value>تحقق من البرنامج الذي يتبع له؛ إن لم يوجد، فافحص باستخدام Defender وأزل المفتاح الخاص بالمستخدم.</value></data>
+  <data name="m3.unquoted.title" xml:space="preserve"><value>الخدمة "{0}" لها مسار غير محاط بعلامات اقتباس ويحتوي مسافات</value></data>
+  <data name="m3.unquoted.why" xml:space="preserve"><value>قد يجرّب ويندوز C:\Program.exe قبل الملف الحقيقي. إذا كان أي من تلك المجلدات قابلاً للكتابة فيمكن لأحد أن يزرع برنامجاً هناك.</value></data>
+  <data name="m3.unquoted.action" xml:space="preserve"><value>حدّث البرنامج الذي ثبّت الخدمة؛ ينبغي لصانعه إحاطة المسار بعلامات اقتباس.</value></data>
+  <data name="m3.writable.title" xml:space="preserve"><value>"{0}" يعمل بصلاحيات عالية من ملف يمكن لأي مستخدم تغييره ({1})</value></data>
+  <data name="m3.writable.why" xml:space="preserve"><value>استبدال ذلك الملف يمنح المستخدم العادي شيفرة تعمل بصلاحيات SYSTEM أو المسؤول.</value></data>
+  <data name="m3.writable.action" xml:space="preserve"><value>أعد تثبيت البرنامج أو حدّثه ليكون في Program Files، أو اطلب من صانعه إصلاح أذونات المجلد.</value></data>
+  <data name="m3.badsig.title" xml:space="preserve"><value>"{0}" له توقيع تالف أو غير موثوق ({2})</value></data>
+  <data name="m3.badsig.why" xml:space="preserve"><value>يدّعي الملف ناشراً لكن التوقيع لا يصح: إما عُدّل أو انتهت صلاحيته أو أُبطل أو وُقّع بشهادة غير موثوقة.</value></data>
+  <data name="m3.badsig.action" xml:space="preserve"><value>أعد تثبيته من صانعه، أو عطّله إن لم تتعرف عليه.</value></data>
+  <data name="m3.unsigned.title" xml:space="preserve"><value>"{0}" يبدأ تلقائياً وهو غير موقّع ({1})</value></data>
+  <data name="m3.unsigned.why" xml:space="preserve"><value>عدم التوقيع لا يعني أنه خبيث: كثير من الأدوات الصغيرة غير موقّعة. يعني فقط أن لا أحد يضمن الملف، لذا يستحق أن تتعرف عليه.</value></data>
+  <data name="m3.unsigned.action" xml:space="preserve"><value>إن تعرفت عليه فاتركه. وإلا فابحث عن اسم الملف وفكّر في تعطيله.</value></data>
+  <data name="m3.missing.title" xml:space="preserve"><value>"{0}" يشير إلى ملف لم يعد موجوداً</value></data>
+  <data name="m3.missing.why" xml:space="preserve"><value>يتبقى عادة من برنامج أُزيل. لا يفعل شيئاً لكنه قد يسبب رسائل خطأ أو تأخيراً عند بدء التشغيل.</value></data>
+  <data name="m3.missing.action" xml:space="preserve"><value>عطّله.</value></data>
+  <data name="startup.hideMicrosoft" xml:space="preserve"><value>إخفاء العناصر الموقّعة من مايكروسوفت</value></data>
+  <data name="startup.loading" xml:space="preserve"><value>جارٍ قراءة مواقع بدء التشغيل والتحقق من التواقيع…</value></data>
+  <data name="startup.counts" xml:space="preserve"><value>{0} عنصراً، {1} موقّعة من مايكروسوفت. تعذّرت قراءة {2} مواقع دون صلاحيات المسؤول.</value></data>
+  <data name="startup.disable.title" xml:space="preserve"><value>تعطيل عنصر بدء تشغيل</value></data>
+  <data name="startup.disable.consent" xml:space="preserve"><value>سيتوقف "{0}" عن البدء تلقائياً. لا يُحذف شيء.</value></data>
+  <data name="startup.disable.button" xml:space="preserve"><value>تعطيل</value></data>
+  <data name="m4.name" xml:space="preserve"><value>الشبكة والثقة</value></data>
+  <data name="m4.check.hosts" xml:space="preserve"><value>ملف hosts</value></data>
+  <data name="m4.hosts.detail" xml:space="preserve"><value>{0} عناصر غير localhost.</value></data>
+  <data name="m4.hostsSensitive.title" xml:space="preserve"><value>ملف hosts يعيد توجيه {0} عناوين للأمان أو التحديث أو البنوك</value></data>
+  <data name="m4.hostsSensitive.why" xml:space="preserve"><value>تعدّل البرمجيات الخبيثة ملف hosts لإيقاف تحديثات ويندوز ومكافحة الفيروسات، أو لإرسالك إلى مواقع مزيفة.</value></data>
+  <data name="m4.hostsSensitive.action" xml:space="preserve"><value>أزل تلك الأسطر ما لم تضفها بنفسك (مثل أداة حظر الإعلانات)، ثم افحص باستخدام Defender.</value></data>
+  <data name="m4.hostsCustom.title" xml:space="preserve"><value>ملف hosts فيه {0} عمليات إعادة توجيه مخصصة</value></data>
+  <data name="m4.hostsCustom.why" xml:space="preserve"><value>يضيف المطورون وبعض الأدوات عناصر عمداً. تُعرض لتتمكن من مراجعتها.</value></data>
+  <data name="m4.hostsCustom.action" xml:space="preserve"><value>أزل أي سطر لا تتعرف عليه.</value></data>
+  <data name="m4.hostsPath.title" xml:space="preserve"><value>يقرأ ويندوز ملف hosts من مجلد غير قياسي</value></data>
+  <data name="m4.hostsPath.why" xml:space="preserve"><value>تغيير DataBasePath يخفي ملف hosts خبيثاً عن أي شخص يفحص الملف المعتاد.</value></data>
+  <data name="m4.hostsPath.action" xml:space="preserve"><value>أعد DataBasePath إلى %SystemRoot%\System32\drivers\etc وافحص باستخدام Defender.</value></data>
+  <data name="m4.check.proxy" xml:space="preserve"><value>إعدادات الوكيل</value></data>
+  <data name="m4.proxy.none" xml:space="preserve"><value>لا يوجد وكيل مُعدّ.</value></data>
+  <data name="m4.proxy.set" xml:space="preserve"><value>تم ضبط وكيل أو سكربت إعداد تلقائي.</value></data>
+  <data name="m4.proxySet.title" xml:space="preserve"><value>حركة الويب تمر عبر وكيل</value></data>
+  <data name="m4.proxySet.why" xml:space="preserve"><value>تضبط الشركات وشبكات VPN وبعض أدوات الأمان وكلاء. وتضبطها برامج الإعلانات أيضاً لحقن الإعلانات أو قراءة الحركة.</value></data>
+  <data name="m4.proxySet.action" xml:space="preserve"><value>إن لم تكن تستخدم VPN أو شبكة شركة، فأوقف الوكيل من الإعدادات &gt; الشبكة والإنترنت &gt; الوكيل.</value></data>
+  <data name="m4.check.dns" xml:space="preserve"><value>خوادم DNS</value></data>
+  <data name="m4.dns.detail" xml:space="preserve"><value>{0} محوّلات لها خوادم DNS مضبوطة يدوياً.</value></data>
+  <data name="m4.dns.title" xml:space="preserve"><value>خوادم DNS غير معروفة مضبوطة يدوياً: {0}</value></data>
+  <data name="m4.dns.why" xml:space="preserve"><value>من يدير خادم DNS لديك يقرر إلى أين يقود كل عنوان ويب. تضبط البرمجيات الخبيثة خوادمها لإعادة توجيهك.</value></data>
+  <data name="m4.dns.action" xml:space="preserve"><value>إن لم تختر هذه الخوادم بنفسك، فأعد المحوّل إلى الوضع التلقائي (DHCP).</value></data>
+  <data name="m4.check.roots" xml:space="preserve"><value>شهادات الجذر الموثوقة</value></data>
+  <data name="m4.roots.detail" xml:space="preserve"><value>{0} شهادة جذر؛ {1} شهادات جذر ذاتية التوقيع أُضيفت مؤخراً أو بواسطة المستخدم.</value></data>
+  <data name="m4.root.title" xml:space="preserve"><value>أُضيفت شهادة جذر مؤخراً: {0}</value></data>
+  <data name="m4.root.why" xml:space="preserve"><value>تسمح شهادة الجذر الموثوقة لمالكها بانتحال أي موقع على هذا الجهاز. تضيفها برامج مكافحة الفيروسات وأدوات الشركات والمطورين بشكل مشروع.</value></data>
+  <data name="m4.root.action" xml:space="preserve"><value>إن لم تتعرف على الاسم، فأزلها من certmgr.msc (Trusted Root Certification Authorities).</value></data>
+  <data name="files.run.title" xml:space="preserve"><value>جرد الأقراص الثابتة</value></data>
+  <data name="files.run.body" xml:space="preserve"><value>يعرض كل مجلد دون فتح أي ملف، لذا لا تُنزَّل الملفات الموجودة في OneDrive فقط. التشغيل بصلاحيات المسؤول يعرض المجلدات المحمية أيضاً.</value></data>
+  <data name="files.run" xml:space="preserve"><value>ابدأ بصلاحياتي</value></data>
+  <data name="files.runElevated" xml:space="preserve"><value>ابدأ بصلاحيات المسؤول</value></data>
+  <data name="files.runElevated.tip" xml:space="preserve"><value>يستخدم صلاحية النسخ الاحتياطي لعرض المجلدات المحمية بالأذونات. لا يُقرأ أو يُغيَّر شيء.</value></data>
+  <data name="files.stat.inventoried" xml:space="preserve"><value>ملفات محسوبة</value></data>
+  <data name="files.stat.denied" xml:space="preserve"><value>الوصول مرفوض</value></data>
+  <data name="files.stat.cloud" xml:space="preserve"><value>في السحابة فقط، لم تُنزَّل</value></data>
+  <data name="files.stat.links" xml:space="preserve"><value>روابط لم تُتبع</value></data>
+  <data name="files.stat.folders" xml:space="preserve"><value>مجلدات تعذّر عرضها</value></data>
+  <data name="files.summary" xml:space="preserve"><value>جُرد {0} ملفاً، وتُخطّي {1} (الوصول مرفوض {2}، مقفل {3}، في السحابة فقط {4}، أخطاء مسار {5}، روابط {6}). تعذّر عرض {7} مجلدات، لذا لم تُحسب ملفاتها. حُسبت {8} روابط صلبة مرة واحدة.</value></data>
+  <data name="files.duration" xml:space="preserve"><value>استغرق {0} · {1}</value></data>
+  <data name="files.export" xml:space="preserve"><value>تصدير قائمة المتخطّى (CSV)</value></data>
+  <data name="files.sample" xml:space="preserve"><value>العناصر المتخطّاة (أول 200)</value></data>
+  <data name="files.col.reason" xml:space="preserve"><value>السبب</value></data>
+  <data name="files.col.path" xml:space="preserve"><value>المسار</value></data>
+  <data name="settings.vt" xml:space="preserve"><value>فحص برامج بدء التشغيل غير الموقّعة في VirusTotal (البصمة فقط)</value></data>
+  <data name="settings.vt.note" xml:space="preserve"><value>يحتاج مفتاح VirusTotal المجاني الخاص بك. تُرسل بصمات SHA-256 فقط، ولا تُرسل الملفات أبداً. بحد أقصى 4 استعلامات في الدقيقة و500 في اليوم.</value></data>
+  <data name="settings.vt.key" xml:space="preserve"><value>مفتاح VirusTotal API</value></data>
+  <data name="settings.vt.save" xml:space="preserve"><value>حفظ المفتاح</value></data>
+  <data name="settings.vt.consent.title" xml:space="preserve"><value>إرسال بصمات الملفات إلى VirusTotal؟</value></data>
+  <data name="settings.vt.consent" xml:space="preserve"><value>عند التفعيل يرسل طبيب الحاسوب بصمة SHA-256 لبرامج بدء التشغيل غير الموقّعة إلى virustotal.com بمفتاحك. البصمات تعرّف الملفات لكنها لا تحتويها. واجهة VirusTotal المجانية للاستخدام الشخصي فقط.</value></data>
+  <data name="settings.vt.consent.ok" xml:space="preserve"><value>تفعيل</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

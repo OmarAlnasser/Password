@@ -11,5 +11,8 @@
     <ProjectReference Include="..\PcDoctor.Modules.Crash\PcDoctor.Modules.Crash.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Malware\PcDoctor.Modules.Malware.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Persistence\PcDoctor.Modules.Persistence.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj" />
   </ItemGroup>
 </Project>

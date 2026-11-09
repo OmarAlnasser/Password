@@ -213,6 +213,12 @@ public sealed partial class FindingsViewModel : PageViewModel
     [RelayCommand]
     private async Task ApplyFix(FindingItemViewModel? item)
     {
+        if (item?.Finding.FixId is { } autorun && autorun.StartsWith("autorun:", StringComparison.Ordinal))
+        {
+            // Startup entries are disabled from the Startup page, which shows the exact plan.
+            Services.Navigate("startup");
+            return;
+        }
         if (item?.Finding.FixId is not { } fixId || FixCatalog.Find(fixId) is not { } fix)
         {
             return;

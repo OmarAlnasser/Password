@@ -207,7 +207,8 @@ public sealed class StaticSafetyTests
     [Fact]
     public void No_encoded_powershell_iex_or_downloaded_scripts()
     {
-        var banned = new Regex(@"(?i)-EncodedCommand|\biex\b|Invoke-Expression|DownloadString|powershell(\.exe)?""");
+        // Launching PowerShell at all (the profile audit only reads profile files by path).
+        var banned = new Regex(@"(?i)-EncodedCommand|\biex\b|Invoke-Expression|DownloadString|powershell\.exe|pwsh\.exe");
         foreach (var file in SourceFiles().Where(f => f.EndsWith(".cs")))
         {
             Assert.False(banned.IsMatch(File.ReadAllText(file)), file);
@@ -233,7 +234,8 @@ public sealed class StaticSafetyTests
     [Fact]
     public void Fix_catalog_never_touches_forbidden_areas()
     {
-        var forbidden = new Regex(@"(?i)Windows Defender|WinDefend|wuauserv|BITS|PagingFiles|FeatureSettingsOverride|TdrDelay|Exclusions|TamperProtection");
+        // Defender may only be made stricter (PUA blocking); nothing that disables it, its exclusions or tamper protection.
+        var forbidden = new Regex(@"(?i)Disable(AntiSpyware|AntiVirus|RealtimeMonitoring|BehaviorMonitoring|IOAVProtection|OnAccessProtection)|WinDefend|\Sense\|wuauserv|\BITS\|PagingFiles|FeatureSettingsOverride|TdrDelay|Exclusions|TamperProtection");
         foreach (var fix in PcDoctor.Core.Fixes.FixCatalog.All)
         {
             foreach (var change in fix.Changes)

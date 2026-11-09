@@ -19,6 +19,8 @@ public sealed partial class SettingsViewModel : PageViewModel
         _redactExports = s.RedactExports;
         _reduceMotion = s.ReduceMotion;
         _allowSymbolDownload = s.AllowSymbolDownload;
+        _virusTotalEnabled = s.VirusTotalEnabled;
+        _hasVirusTotalKey = !string.IsNullOrEmpty(s.VirusTotalKeyProtected);
     }
 
     public override string Key => "settings";
@@ -36,6 +38,8 @@ public sealed partial class SettingsViewModel : PageViewModel
     [ObservableProperty] private bool _redactExports;
     [ObservableProperty] private bool _reduceMotion;
     [ObservableProperty] private bool _allowSymbolDownload;
+    [ObservableProperty] private bool _virusTotalEnabled;
+    [ObservableProperty] private bool _hasVirusTotalKey;
 
     public string Version => typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? "0.0.0";
 
@@ -59,6 +63,23 @@ public sealed partial class SettingsViewModel : PageViewModel
         ThemeManager.Apply(value.Value);
         Services.UpdateSettings(s => s with { Theme = value.Value });
         Services.RaiseTextsChanged();
+    }
+
+    partial void OnVirusTotalEnabledChanged(bool value)
+    {
+        if (value && !Views.ConsentDialog.Ask(Loc.Get("settings.vt.consent.title"), Loc.Get("settings.vt.consent"), Loc.Get("settings.vt.consent.ok")))
+        {
+            VirusTotalEnabled = false;
+            return;
+        }
+        Services.UpdateSettings(s => s with { VirusTotalEnabled = value });
+    }
+
+    /// <summary>Called from the view with the password box content; the key is encrypted with DPAPI and never shown again.</summary>
+    public void SaveVirusTotalKey(string key)
+    {
+        Services.UpdateSettings(s => s with { VirusTotalKeyProtected = string.IsNullOrWhiteSpace(key) ? null : AppSettings.ProtectKey(key) });
+        HasVirusTotalKey = !string.IsNullOrWhiteSpace(key);
     }
 
     partial void OnAllowSymbolDownloadChanged(bool value) => Services.UpdateSettings(s => s with { AllowSymbolDownload = value });

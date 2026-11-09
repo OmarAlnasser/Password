@@ -19,6 +19,33 @@ public sealed record AppSettings
     /// <summary>Lets the debugger download public symbols from msdl.microsoft.com (off until the user turns it on).</summary>
     public bool AllowSymbolDownload { get; init; }
 
+    /// <summary>Hash lookups on VirusTotal with the user's own key. Off by default; nothing is ever uploaded.</summary>
+    public bool VirusTotalEnabled { get; init; }
+
+    /// <summary>The user's VirusTotal key, encrypted with DPAPI for this Windows user (never stored in clear).</summary>
+    public string? VirusTotalKeyProtected { get; init; }
+
+    public string? ReadVirusTotalKey()
+    {
+        if (string.IsNullOrEmpty(VirusTotalKeyProtected))
+        {
+            return null;
+        }
+        try
+        {
+            var bytes = System.Security.Cryptography.ProtectedData.Unprotect(Convert.FromBase64String(VirusTotalKeyProtected), null,
+                System.Security.Cryptography.DataProtectionScope.CurrentUser);
+            return System.Text.Encoding.UTF8.GetString(bytes);
+        }
+        catch (Exception ex) when (ex is System.Security.Cryptography.CryptographicException or FormatException)
+        {
+            return null;
+        }
+    }
+
+    public static string ProtectKey(string key) => Convert.ToBase64String(System.Security.Cryptography.ProtectedData.Protect(
+        System.Text.Encoding.UTF8.GetBytes(key.Trim()), null, System.Security.Cryptography.DataProtectionScope.CurrentUser));
+
     public static string Folder => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "PCDoctor");
     private static string FilePath => Path.Combine(Folder, "settings.json");
 

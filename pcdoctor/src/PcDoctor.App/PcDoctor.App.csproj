@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
@@ -23,6 +24,10 @@
     <ProjectReference Include="..\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Drivers\PcDoctor.Modules.Drivers.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Malware\PcDoctor.Modules.Malware.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Persistence\PcDoctor.Modules.Persistence.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Network\PcDoctor.Modules.Network.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj" />
     <!-- The Broker ships next to the app; the app checks for it there and nowhere else. -->
     <ProjectReference Include="..\PcDoctor.Broker\PcDoctor.Broker.csproj" />
   </ItemGroup>

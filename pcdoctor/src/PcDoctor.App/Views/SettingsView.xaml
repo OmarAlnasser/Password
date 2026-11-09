@@ -41,6 +41,13 @@
                 <TextBlock Text="{loc:Loc settings.network}" Style="{StaticResource Text.TitleMedium}" Margin="0,0,0,8" />
                 <CheckBox Style="{StaticResource Switch}" Content="{loc:Loc settings.symbols}" IsChecked="{Binding AllowSymbolDownload}" />
                 <TextBlock Text="{loc:Loc settings.symbols.note}" Style="{StaticResource Text.Caption}" Margin="56,0,0,0" />
+                <CheckBox Style="{StaticResource Switch}" Content="{loc:Loc settings.vt}" IsChecked="{Binding VirusTotalEnabled}" Margin="0,14,0,0" />
+                <TextBlock Text="{loc:Loc settings.vt.note}" Style="{StaticResource Text.Caption}" Margin="56,0,0,8" />
+                <DockPanel Margin="56,0,0,0">
+                    <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Ghost}" Content="{loc:Loc settings.vt.save}" Click="OnSaveVtKey" Margin="10,0,0,0" />
+                    <PasswordBox x:Name="VtKey" MinHeight="40" Padding="12,8" Background="{DynamicResource Surface2}" Foreground="{DynamicResource Ink}"
+                                 BorderBrush="{DynamicResource OutlineBrush}" FlowDirection="LeftToRight" AutomationProperties.Name="{loc:Loc settings.vt.key}" />
+                </DockPanel>
             </StackPanel>
         </c:Card>
 

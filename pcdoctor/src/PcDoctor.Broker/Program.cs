@@ -8,6 +8,9 @@ using PcDoctor.Core.Journal;
 using PcDoctor.Core.Platform;
 using PcDoctor.Modules.Crash;
 using PcDoctor.Modules.Disk;
+using PcDoctor.Modules.Inventory;
+using PcDoctor.Modules.Malware;
+using PcDoctor.Modules.Persistence;
 using PcDoctor.Modules.Security;
 
 namespace PcDoctor.Broker;
@@ -39,10 +42,21 @@ internal static partial class Program
         var journal = new ChangeJournal(JournalPath());
         var registry = new WindowsRegistryAccess();
         var executor = new ChangeExecutor(journal,
+        [
             new RegistryApplier(registry, hive => ResolveHive(hive, clientSid)),
-            new ServiceApplier(new WindowsServiceConfigAccess()));
+            new ServiceApplier(new WindowsServiceConfigAccess()),
+            new TaskApplier(new WindowsTaskSchedulerAccess()),
+            new FileMoveApplier(),
+        ]);
         var handler = new BrokerRequestHandler(executor, journal,
-            new RestorePointGuard(new WindowsRestorePointApi()), ReadElevated);
+            new RestorePointGuard(new WindowsRestorePointApi()), ReadElevated, new BrokerCapabilities
+            {
+                Jobs = new JobRunner(RunJob),
+                ListQuarantine = () => DefenderWindows.ListQuarantine(),
+                RestoreQuarantine = DefenderWindows.Restore,
+                ResolveAutorunDisable = ResolveAutorunDisable,
+                ResolveTweaks = BrokerTweaks.Resolve,
+            });
 
         await using var pipe = NamedPipeServerStreamAcl.Create(pipeName, PipeDirection.InOut, 1,
             PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 0, 0, PipeAcl(clientSid));
@@ -65,7 +79,11 @@ internal static partial class Program
             while (true)
             {
                 using var idle = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
-                idle.CancelAfter(IdleTimeout);
+                // Stay up while a scan or repair runs; the app polls it.
+                if (!handler.HasRunningJobs)
+                {
+                    idle.CancelAfter(IdleTimeout);
+                }
                 if (!await handler.ServeOneAsync(pipe, idle.Token))
                 {
                     break;
@@ -80,6 +98,31 @@ internal static partial class Program
             // Client went away.
         }
         return 0;
+    }
+
+    private static string DataFolder(string name)
+    {
+        var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "PCDoctor", name);
+        Directory.CreateDirectory(dir);
+        return dir;
+    }
+
+    private static Task<object?> RunJob(JobKind kind, string? target, IJobProgress progress, CancellationToken ct) => kind switch
+    {
+        JobKind.DefenderSignatureUpdate or JobKind.DefenderQuickScan or JobKind.DefenderFullScan
+            or JobKind.DefenderCustomScan or JobKind.DefenderCustomReportOnly => DefenderWindows.RunScanJob(kind, target, progress, ct),
+        JobKind.SafetyScannerQuick => DefenderWindows.RunSafetyScanner(false, progress, ct),
+        JobKind.SafetyScannerFull => DefenderWindows.RunSafetyScanner(true, progress, ct),
+        JobKind.Inventory or JobKind.InventoryWithBackupPrivilege => Task.Run<object?>(() =>
+            InventoryWalker.Run(kind == JobKind.InventoryWithBackupPrivilege, progress, ct, DataFolder("inventory")), ct),
+        _ => BrokerRepairs.Run(kind, progress, ct),
+    };
+
+    /// <summary>Finds the entry again in the Broker's own enumeration; an ID that is not there disables nothing.</summary>
+    private static IReadOnlyList<PlannedChange>? ResolveAutorunDisable(string entryId)
+    {
+        var entry = PersistenceReader.Read(verifySignatures: false).Entries.FirstOrDefault(e => e.Id == entryId);
+        return entry is null ? null : DisablePlanner.Plan(entry, DataFolder("DisabledAutoruns"));
     }
 
     private static object? ReadElevated(ElevatedData data) => data switch

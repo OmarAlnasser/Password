@@ -16,6 +16,10 @@
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Disk\PcDoctor.Modules.Disk.csproj" />
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Drivers\PcDoctor.Modules.Drivers.csproj" />
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Security\PcDoctor.Modules.Security.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Malware\PcDoctor.Modules.Malware.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Persistence\PcDoctor.Modules.Persistence.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Network\PcDoctor.Modules.Network.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />

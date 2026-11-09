@@ -419,6 +419,219 @@
   <data name="settings.network" xml:space="preserve"><value>Network features</value></data>
   <data name="settings.symbols" xml:space="preserve"><value>Let the Windows debugger download Microsoft's public symbols</value></data>
   <data name="settings.symbols.note" xml:space="preserve"><value>Makes crash analysis more precise. Only file names of Windows components are requested from msdl.microsoft.com, over HTTPS. Off by default.</value></data>
+  <data name="page.protection.title" xml:space="preserve"><value>Protection</value></data>
+  <data name="page.protection.eyebrow" xml:space="preserve"><value>Malware scan</value></data>
+  <data name="page.protection.subtitle" xml:space="preserve"><value>PC Doctor has no antivirus engine of its own. It runs Microsoft Defender and, if you ask, Microsoft's Safety Scanner, and reports exactly what they found.</value></data>
+  <data name="page.startup.title" xml:space="preserve"><value>Startup and persistence</value></data>
+  <data name="page.startup.eyebrow" xml:space="preserve"><value>What runs on its own</value></data>
+  <data name="page.startup.subtitle" xml:space="preserve"><value>Everything that starts with Windows, a sign-in, a schedule or an event. Signatures are checked the way Windows checks them, including catalog signatures. Entries are disabled, never deleted.</value></data>
+  <data name="page.files.title" xml:space="preserve"><value>Every file, accounted for</value></data>
+  <data name="page.files.eyebrow" xml:space="preserve"><value>File inventory</value></data>
+  <data name="page.files.subtitle" xml:space="preserve"><value>Some files can never be read by any program: locked system files, protected folders, files that live only in the cloud. Instead of claiming to scan everything, PC Doctor lists every file as counted or skipped, with the reason.</value></data>
+  <data name="m2.name" xml:space="preserve"><value>Malware protection</value></data>
+  <data name="m2.check.engine" xml:space="preserve"><value>Antivirus engine</value></data>
+  <data name="m2.engine.defender" xml:space="preserve"><value>Microsoft Defender Antivirus is active.</value></data>
+  <data name="m2.engine.thirdParty" xml:space="preserve"><value>Your active antivirus is {0}. A Defender scan is not available. Use {0} to scan.</value></data>
+  <data name="m2.engine.none" xml:space="preserve"><value>No active antivirus engine was found, so PC Doctor cannot run a malware scan.</value></data>
+  <data name="m2.check.lastScan" xml:space="preserve"><value>Last Defender scan</value></data>
+  <data name="m2.lastScan.detail" xml:space="preserve"><value>Finished {0}.</value></data>
+  <data name="m2.check.history" xml:space="preserve"><value>Defender detections in the last 30 days</value></data>
+  <data name="m2.history.detail" xml:space="preserve"><value>{0} detections recorded by Defender.</value></data>
+  <data name="m2.detection.active.title" xml:space="preserve"><value>Defender detected {0} and it is not resolved</value></data>
+  <data name="m2.detection.active.why" xml:space="preserve"><value>Defender's own record says this threat was found and the action against it did not complete.</value></data>
+  <data name="m2.detection.active.action" xml:space="preserve"><value>Open Windows Security &gt; Virus &amp; threat protection &gt; Protection history and choose an action, then run a full scan.</value></data>
+  <data name="m2.detection.handled.title" xml:space="preserve"><value>Defender detected and handled {0}</value></data>
+  <data name="m2.detection.handled.why" xml:space="preserve"><value>Defender quarantined or removed it. It is listed so you know it happened.</value></data>
+  <data name="m2.detection.handled.action" xml:space="preserve"><value>No action needed unless you believe it was a false positive; then check the quarantine on the Protection page.</value></data>
+  <data name="m2.check.pua" xml:space="preserve"><value>Blocking of potentially unwanted apps (PUA)</value></data>
+  <data name="m2.pua.on" xml:space="preserve"><value>On.</value></data>
+  <data name="m2.pua.audit" xml:space="preserve"><value>Audit only: detected but not blocked.</value></data>
+  <data name="m2.pua.off" xml:space="preserve"><value>Off.</value></data>
+  <data name="m2.pua.title" xml:space="preserve"><value>Defender does not block potentially unwanted apps</value></data>
+  <data name="m2.pua.why" xml:space="preserve"><value>Bundled adware, browser hijackers and fake "PC optimizers" are often not malware, so Defender lets them in unless PUA blocking is on.</value></data>
+  <data name="m2.pua.action" xml:space="preserve"><value>Turn PUA blocking on. PC Doctor can do it for you, with undo.</value></data>
+  <data name="m2.pua.undo" xml:space="preserve"><value>The policy value is recorded in the change journal and can be removed from the Changes tab.</value></data>
+  <data name="m2.check.scan" xml:space="preserve"><value>Malware scan</value></data>
+  <data name="m2.scan.onDemand" xml:space="preserve"><value>Not part of the Health Check: start a Defender scan from the Protection page.</value></data>
+  <data name="fix.pua.title" xml:space="preserve"><value>Block potentially unwanted apps</value></data>
+  <data name="fix.pua.explain" xml:space="preserve"><value>Sets the documented Group Policy value that turns on Defender's PUA blocking.</value></data>
+  <data name="protection.engine.checking" xml:space="preserve"><value>Checking which antivirus is active…</value></data>
+  <data name="protection.scan.title" xml:space="preserve"><value>Scan with Microsoft Defender</value></data>
+  <data name="protection.scan.body" xml:space="preserve"><value>Defender updates its signatures first. A quick scan takes minutes; a full scan can take hours and the PC stays usable. Defender quarantines what it finds, as it normally does; nothing is deleted.</value></data>
+  <data name="protection.quick" xml:space="preserve"><value>Quick scan</value></data>
+  <data name="protection.full" xml:space="preserve"><value>Full scan</value></data>
+  <data name="protection.custom" xml:space="preserve"><value>Scan a folder (report only)</value></data>
+  <data name="protection.custom.pick" xml:space="preserve"><value>Choose a folder to scan</value></data>
+  <data name="protection.running" xml:space="preserve"><value>{0} running for {1}</value></data>
+  <data name="protection.kind.DefenderQuickScan" xml:space="preserve"><value>Quick scan</value></data>
+  <data name="protection.kind.DefenderFullScan" xml:space="preserve"><value>Full scan</value></data>
+  <data name="protection.kind.DefenderCustomScan" xml:space="preserve"><value>Folder scan</value></data>
+  <data name="protection.kind.DefenderCustomReportOnly" xml:space="preserve"><value>Folder scan (report only)</value></data>
+  <data name="protection.kind.DefenderSignatureUpdate" xml:space="preserve"><value>Signature update</value></data>
+  <data name="protection.kind.SafetyScannerQuick" xml:space="preserve"><value>Safety Scanner</value></data>
+  <data name="protection.kind.SafetyScannerFull" xml:space="preserve"><value>Safety Scanner (full)</value></data>
+  <data name="protection.result.none" xml:space="preserve"><value>Defender detected no threats in this scan</value></data>
+  <data name="protection.result.handled" xml:space="preserve"><value>Defender found {0} threats and handled them</value></data>
+  <data name="protection.result.remaining" xml:space="preserve"><value>Defender found {0} threats that still need action</value></data>
+  <data name="protection.result.failed" xml:space="preserve"><value>The scan did not complete, so there is no result</value></data>
+  <data name="protection.result.cancelled" xml:space="preserve"><value>The scan was cancelled</value></data>
+  <data name="protection.result.detail" xml:space="preserve"><value>{0}, finished {1} (MpCmdRun exit code {2}).</value></data>
+  <data name="protection.result.signaturesFailed" xml:space="preserve"><value>The signature update failed, so this scan used the signatures already on the PC.</value></data>
+  <data name="protection.msert.title" xml:space="preserve"><value>Second opinion: Microsoft Safety Scanner</value></data>
+  <data name="protection.msert.body" xml:space="preserve"><value>Downloads Microsoft's standalone scanner (about 200 MB, it expires after about 10 days so a fresh copy is always used), checks its signature and runs a quick scan.</value></data>
+  <data name="protection.msert.consent" xml:space="preserve"><value>PC Doctor will download the Microsoft Safety Scanner from microsoft.com, run it only if it is validly signed by Microsoft, and delete it afterwards. It may remove what it detects.</value></data>
+  <data name="protection.msert.run" xml:space="preserve"><value>Run Safety Scanner</value></data>
+  <data name="protection.msert.found" xml:space="preserve"><value>The Safety Scanner reported {0} infected files</value></data>
+  <data name="protection.msert.none" xml:space="preserve"><value>The Safety Scanner reported no infected files</value></data>
+  <data name="protection.quarantine.title" xml:space="preserve"><value>Defender quarantine</value></data>
+  <data name="protection.quarantine.load" xml:space="preserve"><value>Show quarantine</value></data>
+  <data name="protection.quarantine.empty" xml:space="preserve"><value>Defender's quarantine is empty.</value></data>
+  <data name="protection.restore.title" xml:space="preserve"><value>Restore from quarantine</value></data>
+  <data name="protection.restore.consent" xml:space="preserve"><value>Defender quarantined "{0}" because it considered it a threat. Restoring puts these files back and lets them run:
+
+{1}
+
+Only do this if you are sure it is a false positive.</value></data>
+  <data name="protection.restore.button" xml:space="preserve"><value>Restore</value></data>
+  <data name="protection.restore.done" xml:space="preserve"><value>Restored by Defender.</value></data>
+  <data name="m3.name" xml:space="preserve"><value>Startup and persistence</value></data>
+  <data name="m3.check.counts" xml:space="preserve"><value>{0} entries, {1} signed by Microsoft, {2} others.</value></data>
+  <data name="m3.check.vt" xml:space="preserve"><value>VirusTotal hash lookups</value></data>
+  <data name="m3.check.vt.off" xml:space="preserve"><value>Off. Turn it on in Settings with your own VirusTotal key to check unsigned binaries by hash.</value></data>
+  <data name="m3.unread.error" xml:space="preserve"><value>Could not be read on this PC.</value></data>
+  <data name="m3.cat.RunKey" xml:space="preserve"><value>Run keys</value></data>
+  <data name="m3.cat.StartupFolder" xml:space="preserve"><value>Startup folders</value></data>
+  <data name="m3.cat.Service" xml:space="preserve"><value>Services</value></data>
+  <data name="m3.cat.Driver" xml:space="preserve"><value>Drivers</value></data>
+  <data name="m3.cat.ScheduledTask" xml:space="preserve"><value>Scheduled tasks</value></data>
+  <data name="m3.cat.WmiSubscription" xml:space="preserve"><value>WMI event subscriptions</value></data>
+  <data name="m3.cat.Winlogon" xml:space="preserve"><value>Winlogon</value></data>
+  <data name="m3.cat.AppInit" xml:space="preserve"><value>AppInit DLLs</value></data>
+  <data name="m3.cat.ImageFileExecution" xml:space="preserve"><value>Image File Execution Options</value></data>
+  <data name="m3.cat.Accessibility" xml:space="preserve"><value>Sign-in screen accessibility tools</value></data>
+  <data name="m3.cat.BootExecute" xml:space="preserve"><value>Boot execute</value></data>
+  <data name="m3.cat.Lsa" xml:space="preserve"><value>LSA packages</value></data>
+  <data name="m3.cat.PrintMonitor" xml:space="preserve"><value>Print monitors</value></data>
+  <data name="m3.cat.WinsockProvider" xml:space="preserve"><value>Winsock providers</value></data>
+  <data name="m3.cat.ComHijack" xml:space="preserve"><value>Per-user COM overrides</value></data>
+  <data name="m3.cat.OfficeAddin" xml:space="preserve"><value>Office add-ins</value></data>
+  <data name="m3.cat.BrowserExtension" xml:space="preserve"><value>Browser extensions</value></data>
+  <data name="m3.cat.PowerShellProfile" xml:space="preserve"><value>PowerShell profiles</value></data>
+  <data name="m3.cat.ScreenSaver" xml:space="preserve"><value>Screen saver</value></data>
+  <data name="m3.sig.MicrosoftSigned" xml:space="preserve"><value>Microsoft</value></data>
+  <data name="m3.sig.Signed" xml:space="preserve"><value>Signed</value></data>
+  <data name="m3.sig.Invalid" xml:space="preserve"><value>Invalid signature</value></data>
+  <data name="m3.sig.Unsigned" xml:space="preserve"><value>Unsigned</value></data>
+  <data name="m3.sig.NotFound" xml:space="preserve"><value>File missing</value></data>
+  <data name="m3.sig.Error" xml:space="preserve"><value>Could not check</value></data>
+  <data name="m3.sig.None" xml:space="preserve"><value>Not a program</value></data>
+  <data name="m3.action.disable" xml:space="preserve"><value>Disable it from the Startup page if you do not recognise it. PC Doctor moves it aside instead of deleting it, so it can be put back.</value></data>
+  <data name="m3.undo.disable" xml:space="preserve"><value>Disabling is journaled: the entry can be put back from the Changes tab.</value></data>
+  <data name="m3.amsi.title" xml:space="preserve"><value>The antivirus flagged the startup entry "{0}" as malware</value></data>
+  <data name="m3.amsi.why" xml:space="preserve"><value>PC Doctor passed its script or command line to the installed antivirus through AMSI, and the antivirus called it malicious.</value></data>
+  <data name="m3.amsi.action" xml:space="preserve"><value>Run a full Defender scan from the Protection page.</value></data>
+  <data name="m3.vt.title" xml:space="preserve"><value>{2} of {3} VirusTotal engines flag "{0}"</value></data>
+  <data name="m3.vt.why" xml:space="preserve"><value>This is a second opinion from other vendors' engines, looked up by file hash only. One or two engines alone are often false positives.</value></data>
+  <data name="m3.vt.action" xml:space="preserve"><value>Check where the file came from, and run a Defender scan of its folder.</value></data>
+  <data name="m3.accessibility.title" xml:space="preserve"><value>A sign-in screen tool ({0}) has been replaced or redirected</value></data>
+  <data name="m3.accessibility.why" xml:space="preserve"><value>Replacing Sticky Keys or Ease of Access with another program is a classic way to get an administrator command prompt without a password.</value></data>
+  <data name="m3.accessibility.action" xml:space="preserve"><value>Run DISM and SFC (Repairs page) to restore the original file, and remove the Image File Execution Options debugger value.</value></data>
+  <data name="m3.ifeo.title" xml:space="preserve"><value>"{0}" is set to launch another program instead ({1})</value></data>
+  <data name="m3.ifeo.why" xml:space="preserve"><value>An Image File Execution Options debugger runs whenever the named program starts. Developers use it; so does malware.</value></data>
+  <data name="m3.ifeo.action" xml:space="preserve"><value>If you did not set this up, remove the Debugger value (Registry Editor) and scan with Defender.</value></data>
+  <data name="m3.wmi.title" xml:space="preserve"><value>A WMI event subscription runs "{0}"</value></data>
+  <data name="m3.wmi.why" xml:space="preserve"><value>WMI subscriptions run commands on system events without any file in a startup folder. Few legitimate programs use them.</value></data>
+  <data name="m3.wmi.action" xml:space="preserve"><value>If no management software you use explains it, scan with Defender and remove the subscription.</value></data>
+  <data name="m3.appinit.title" xml:space="preserve"><value>A DLL ({1}) is loaded into every program</value></data>
+  <data name="m3.appinit.why" xml:space="preserve"><value>AppInit_DLLs injects a DLL into every process that loads user32.dll. Microsoft discourages it; malware still uses it.</value></data>
+  <data name="m3.appinit.action" xml:space="preserve"><value>Find which program installed it. If none, scan with Defender.</value></data>
+  <data name="m3.winlogon.title" xml:space="preserve"><value>The Windows sign-in starts something unusual ({0})</value></data>
+  <data name="m3.winlogon.why" xml:space="preserve"><value>Winlogon's Shell and Userinit values are normally explorer.exe and userinit.exe. Anything else runs at every sign-in.</value></data>
+  <data name="m3.winlogon.action" xml:space="preserve"><value>Unless a kiosk or company tool set this, restore the default values and scan with Defender.</value></data>
+  <data name="m3.bootexecute.title" xml:space="preserve"><value>A program runs before Windows starts ({1})</value></data>
+  <data name="m3.bootexecute.why" xml:space="preserve"><value>BootExecute normally only runs autochk. Disk and defragmentation tools sometimes add entries here.</value></data>
+  <data name="m3.bootexecute.action" xml:space="preserve"><value>If you do not recognise it, remove it so the value is "autocheck autochk *".</value></data>
+  <data name="m3.lsa.title" xml:space="preserve"><value>An unknown package is loaded by the Windows security system ({1})</value></data>
+  <data name="m3.lsa.why" xml:space="preserve"><value>LSA packages see passwords at sign-in. A non-Microsoft package here can capture them.</value></data>
+  <data name="m3.lsa.action" xml:space="preserve"><value>Unless security software you installed explains it, scan with Defender and remove the entry.</value></data>
+  <data name="m3.forcedExtension.title" xml:space="preserve"><value>A browser extension is installed by policy: {0}</value></data>
+  <data name="m3.forcedExtension.why" xml:space="preserve"><value>Extensions installed by policy cannot be removed in the browser. Companies do this; so does adware.</value></data>
+  <data name="m3.forcedExtension.action" xml:space="preserve"><value>If this PC is not managed by an organisation, remove the policy value and the extension.</value></data>
+  <data name="m3.comhijack.title" xml:space="preserve"><value>A per-user COM override points to {1}</value></data>
+  <data name="m3.comhijack.why" xml:space="preserve"><value>Registering a COM class per user overrides the system one without administrator rights, a known way to run code in other programs.</value></data>
+  <data name="m3.comhijack.action" xml:space="preserve"><value>Check which program it belongs to; if none, scan with Defender and remove the per-user key.</value></data>
+  <data name="m3.unquoted.title" xml:space="preserve"><value>Service "{0}" has an unquoted path with spaces</value></data>
+  <data name="m3.unquoted.why" xml:space="preserve"><value>Windows may try C:\Program.exe before the real file. If any of those folders is writable, someone can plant a program there.</value></data>
+  <data name="m3.unquoted.action" xml:space="preserve"><value>Update the software that installed the service; its maker should quote the path.</value></data>
+  <data name="m3.writable.title" xml:space="preserve"><value>"{0}" runs with high rights from a file any user can change ({1})</value></data>
+  <data name="m3.writable.why" xml:space="preserve"><value>Replacing that file gives a standard user code that runs as SYSTEM or administrator.</value></data>
+  <data name="m3.writable.action" xml:space="preserve"><value>Reinstall or update the program so it lives in Program Files, or ask its maker to fix the folder permissions.</value></data>
+  <data name="m3.badsig.title" xml:space="preserve"><value>"{0}" has a broken or untrusted signature ({2})</value></data>
+  <data name="m3.badsig.why" xml:space="preserve"><value>The file claims a publisher but the signature does not check out: it was altered, expired, revoked or signed by an untrusted certificate.</value></data>
+  <data name="m3.badsig.action" xml:space="preserve"><value>Reinstall it from its maker, or disable it if you do not recognise it.</value></data>
+  <data name="m3.unsigned.title" xml:space="preserve"><value>"{0}" starts automatically and is not signed ({1})</value></data>
+  <data name="m3.unsigned.why" xml:space="preserve"><value>Unsigned is not malicious: many small tools are unsigned. It only means nobody vouches for the file, so it is worth recognising.</value></data>
+  <data name="m3.unsigned.action" xml:space="preserve"><value>If you recognise it, leave it. If not, look up the file name and consider disabling it.</value></data>
+  <data name="m3.missing.title" xml:space="preserve"><value>"{0}" points to a file that no longer exists</value></data>
+  <data name="m3.missing.why" xml:space="preserve"><value>Usually left behind by an uninstalled program. It does nothing but can cause error messages or delays at startup.</value></data>
+  <data name="m3.missing.action" xml:space="preserve"><value>Disable it.</value></data>
+  <data name="startup.hideMicrosoft" xml:space="preserve"><value>Hide Microsoft-signed entries</value></data>
+  <data name="startup.loading" xml:space="preserve"><value>Reading startup locations and checking signatures…</value></data>
+  <data name="startup.counts" xml:space="preserve"><value>{0} entries, {1} signed by Microsoft. {2} locations could not be read without administrator rights.</value></data>
+  <data name="startup.disable.title" xml:space="preserve"><value>Disable a startup entry</value></data>
+  <data name="startup.disable.consent" xml:space="preserve"><value>"{0}" will stop starting automatically. Nothing is deleted.</value></data>
+  <data name="startup.disable.button" xml:space="preserve"><value>Disable</value></data>
+  <data name="m4.name" xml:space="preserve"><value>Network and trust</value></data>
+  <data name="m4.check.hosts" xml:space="preserve"><value>hosts file</value></data>
+  <data name="m4.hosts.detail" xml:space="preserve"><value>{0} entries besides localhost.</value></data>
+  <data name="m4.hostsSensitive.title" xml:space="preserve"><value>The hosts file redirects {0} security, update or banking addresses</value></data>
+  <data name="m4.hostsSensitive.why" xml:space="preserve"><value>Malware edits hosts to stop Windows Update and antivirus updates, or to send you to fake sites.</value></data>
+  <data name="m4.hostsSensitive.action" xml:space="preserve"><value>Remove those lines unless you added them yourself (for example an ad blocker), then scan with Defender.</value></data>
+  <data name="m4.hostsCustom.title" xml:space="preserve"><value>The hosts file has {0} custom redirections</value></data>
+  <data name="m4.hostsCustom.why" xml:space="preserve"><value>Developers and some tools add entries on purpose. Listed so you can check them.</value></data>
+  <data name="m4.hostsCustom.action" xml:space="preserve"><value>Remove any line you do not recognise.</value></data>
+  <data name="m4.hostsPath.title" xml:space="preserve"><value>Windows reads its hosts file from a non-standard folder</value></data>
+  <data name="m4.hostsPath.why" xml:space="preserve"><value>Changing DataBasePath hides a malicious hosts file from anyone who checks the usual one.</value></data>
+  <data name="m4.hostsPath.action" xml:space="preserve"><value>Set DataBasePath back to %SystemRoot%\System32\drivers\etc and scan with Defender.</value></data>
+  <data name="m4.check.proxy" xml:space="preserve"><value>Proxy settings</value></data>
+  <data name="m4.proxy.none" xml:space="preserve"><value>No proxy configured.</value></data>
+  <data name="m4.proxy.set" xml:space="preserve"><value>A proxy or auto-configuration script is set.</value></data>
+  <data name="m4.proxySet.title" xml:space="preserve"><value>Web traffic goes through a proxy</value></data>
+  <data name="m4.proxySet.why" xml:space="preserve"><value>Companies, VPNs and some security tools set proxies. Adware sets them too, to inject ads or read traffic.</value></data>
+  <data name="m4.proxySet.action" xml:space="preserve"><value>If you do not use a VPN or company network, turn the proxy off in Settings &gt; Network &amp; internet &gt; Proxy.</value></data>
+  <data name="m4.check.dns" xml:space="preserve"><value>DNS servers</value></data>
+  <data name="m4.dns.detail" xml:space="preserve"><value>{0} adapters have DNS servers set by hand.</value></data>
+  <data name="m4.dns.title" xml:space="preserve"><value>Unrecognised DNS servers are set by hand: {0}</value></data>
+  <data name="m4.dns.why" xml:space="preserve"><value>Whoever runs your DNS server decides where every web address leads. Malware sets its own to redirect you.</value></data>
+  <data name="m4.dns.action" xml:space="preserve"><value>If you did not choose these servers, set the adapter back to automatic (DHCP).</value></data>
+  <data name="m4.check.roots" xml:space="preserve"><value>Trusted root certificates</value></data>
+  <data name="m4.roots.detail" xml:space="preserve"><value>{0} roots; {1} self-signed roots added recently or by the user.</value></data>
+  <data name="m4.root.title" xml:space="preserve"><value>A root certificate was added recently: {0}</value></data>
+  <data name="m4.root.why" xml:space="preserve"><value>A trusted root lets its owner impersonate any website to this PC. Antivirus, company and developer tools add them legitimately.</value></data>
+  <data name="m4.root.action" xml:space="preserve"><value>If you do not recognise the name, remove it in certmgr.msc (Trusted Root Certification Authorities).</value></data>
+  <data name="files.run.title" xml:space="preserve"><value>Inventory the fixed drives</value></data>
+  <data name="files.run.body" xml:space="preserve"><value>Lists every folder without opening any file, so files that live only in OneDrive are not downloaded. Running with administrator rights also lists protected folders.</value></data>
+  <data name="files.run" xml:space="preserve"><value>Start as me</value></data>
+  <data name="files.runElevated" xml:space="preserve"><value>Start with administrator rights</value></data>
+  <data name="files.runElevated.tip" xml:space="preserve"><value>Uses the backup privilege to list folders protected by permissions. Nothing is read or changed.</value></data>
+  <data name="files.stat.inventoried" xml:space="preserve"><value>Files counted</value></data>
+  <data name="files.stat.denied" xml:space="preserve"><value>Access denied</value></data>
+  <data name="files.stat.cloud" xml:space="preserve"><value>Cloud-only, not downloaded</value></data>
+  <data name="files.stat.links" xml:space="preserve"><value>Links not followed</value></data>
+  <data name="files.stat.folders" xml:space="preserve"><value>Folders that could not be listed</value></data>
+  <data name="files.summary" xml:space="preserve"><value>{0} files inventoried, {1} skipped (access denied {2}, locked {3}, cloud-only {4}, path errors {5}, links {6}). {7} folders could not be listed, so their files are not counted. {8} hard links were counted once.</value></data>
+  <data name="files.duration" xml:space="preserve"><value>Took {0} · {1}</value></data>
+  <data name="files.export" xml:space="preserve"><value>Export the skipped list (CSV)</value></data>
+  <data name="files.sample" xml:space="preserve"><value>Skipped items (first 200)</value></data>
+  <data name="files.col.reason" xml:space="preserve"><value>Reason</value></data>
+  <data name="files.col.path" xml:space="preserve"><value>Path</value></data>
+  <data name="settings.vt" xml:space="preserve"><value>Check unsigned startup programs on VirusTotal (hash only)</value></data>
+  <data name="settings.vt.note" xml:space="preserve"><value>Needs your own free VirusTotal key. Only SHA-256 hashes are sent, never files. Limited to 4 lookups a minute and 500 a day.</value></data>
+  <data name="settings.vt.key" xml:space="preserve"><value>VirusTotal API key</value></data>
+  <data name="settings.vt.save" xml:space="preserve"><value>Save key</value></data>
+  <data name="settings.vt.consent.title" xml:space="preserve"><value>Send file hashes to VirusTotal?</value></data>
+  <data name="settings.vt.consent" xml:space="preserve"><value>When on, PC Doctor sends the SHA-256 hash of unsigned startup programs to virustotal.com with your key. Hashes identify files but do not contain them. VirusTotal's free API is for personal use only.</value></data>
+  <data name="settings.vt.consent.ok" xml:space="preserve"><value>Turn on</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

@@ -28,6 +28,13 @@ public static class FixCatalog
             new Text("fix.dumpsAutomatic.explain"),
             [new PlannedRegistrySet("HKLM", CrashControl, "CrashDumpEnabled", new RegistryData("DWord", "7"))],
             RequiresRestart: true),
+        new FixDefinition(
+            "defender.pua.enable",
+            new Text("fix.pua.title"),
+            new Text("fix.pua.explain"),
+            // The documented Group Policy value "Configure detection for potentially unwanted applications".
+            [new PlannedRegistrySet("HKLM", @"SOFTWARE\Policies\Microsoft\Windows Defender", "PUAProtection", new RegistryData("DWord", "1"))],
+            RequiresRestart: false),
     ];
 
     public static FixDefinition? Find(string id) => All.FirstOrDefault(f => f.Id == id);

@@ -46,6 +46,24 @@ public static class ProcessRunner
         return RunPathAsync(full, args, timeout, ct, null, environment);
     }
 
+    /// <summary>
+    /// Like <see cref="RunProgramFilesToolAsync"/>, also allowing %ProgramData%\Microsoft\Windows Defender
+    /// (where Defender's platform updates install MpCmdRun) and PC Doctor's own admin-only ProgramData folder.
+    /// </summary>
+    public static Task<ProcessResult> RunProgramFilesOrDataToolAsync(string exePath, IReadOnlyList<string> args, TimeSpan? timeout, CancellationToken ct)
+    {
+        var data = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        var full = Path.GetFullPath(exePath);
+        var defender = Path.Combine(data, "Microsoft", "Windows Defender") + Path.DirectorySeparatorChar;
+        return full.StartsWith(defender, StringComparison.OrdinalIgnoreCase)
+            ? RunPathAsync(full, args, timeout, ct, null, null)
+            : RunProgramFilesToolAsync(full, args, timeout, ct);
+    }
+
+    /// <summary>For a binary whose Authenticode signature the caller has just verified (the Safety Scanner).</summary>
+    public static Task<ProcessResult> RunTrustedPathAsync(string exePath, IReadOnlyList<string> args, TimeSpan? timeout, CancellationToken ct) =>
+        RunPathAsync(Path.GetFullPath(exePath), args, timeout, ct, null, null);
+
     public static Task<ProcessResult> RunAsync(
         Tool tool,
         IReadOnlyList<string> args,
