@@ -54,3 +54,6 @@ app.*.map.json
 *.jks
 *.keystore
 key.properties
+
+# Serena MCP cache
+.serena/
