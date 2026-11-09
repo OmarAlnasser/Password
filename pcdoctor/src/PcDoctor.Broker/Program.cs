@@ -47,6 +47,7 @@ internal static partial class Program
             new ServiceApplier(new WindowsServiceConfigAccess()),
             new TaskApplier(new WindowsTaskSchedulerAccess()),
             new FileMoveApplier(),
+            new PcDoctor.Platform.Appx.AppxApplier(),
         ]);
         var handler = new BrokerRequestHandler(executor, journal,
             new RestorePointGuard(new WindowsRestorePointApi()), ReadElevated, new BrokerCapabilities
@@ -55,7 +56,8 @@ internal static partial class Program
                 ListQuarantine = () => DefenderWindows.ListQuarantine(),
                 RestoreQuarantine = DefenderWindows.Restore,
                 ResolveAutorunDisable = ResolveAutorunDisable,
-                ResolveTweaks = BrokerTweaks.Resolve,
+                ResolveTweaks = BrokerTweaks.Resolver(clientSid),
+                TweaksApplied = BrokerTweaks.RecordApplied,
             });
 
         await using var pipe = NamedPipeServerStreamAcl.Create(pipeName, PipeDirection.InOut, 1,

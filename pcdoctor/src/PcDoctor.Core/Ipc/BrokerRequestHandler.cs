@@ -18,6 +18,8 @@ public sealed record BrokerCapabilities
     public Func<string, IReadOnlyList<PlannedChange>?>? ResolveAutorunDisable { get; init; }
     /// <summary>Returns the changes for catalog tweak IDs, or null if any ID is unknown or does not apply.</summary>
     public Func<IReadOnlyList<string>, IReadOnlyList<PlannedChange>?>? ResolveTweaks { get; init; }
+    /// <summary>Called after tweaks were applied successfully (records them for drift detection).</summary>
+    public Action<IReadOnlyList<string>>? TweaksApplied { get; init; }
 }
 
 public sealed class BrokerRequestHandler(
@@ -56,9 +58,7 @@ public sealed class BrokerRequestHandler(
                 AutorunDisableRequest r when _caps.ResolveAutorunDisable is { } resolve => resolve(r.EntryId) is { } changes
                     ? ApplyPlanned(r.RequestId, "autorun.disable:" + r.EntryId, changes)
                     : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, r.EntryId),
-                TweakApplyRequest r when _caps.ResolveTweaks is { } tweaks => tweaks(r.TweakIds) is { } changes
-                    ? ApplyPlanned(r.RequestId, "tweaks:" + string.Join(",", r.TweakIds), changes)
-                    : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, string.Join(",", r.TweakIds)),
+                TweakApplyRequest r when _caps.ResolveTweaks is { } tweaks => ApplyTweaks(r, tweaks),
                 _ => BrokerResponse.Failure(request.RequestId, BrokerErrorCode.UnsupportedOperation),
             };
         }
@@ -89,6 +89,26 @@ public sealed class BrokerRequestHandler(
         return batch.Succeeded
             ? BrokerResponse.Success(requestId, new ApplyFixResult(rp, batch))
             : BrokerResponse.Failure(requestId, BrokerErrorCode.ChangeFailed, batch.Error) with { Payload = payload };
+    }
+
+    private BrokerResponse ApplyTweaks(TweakApplyRequest r, Func<IReadOnlyList<string>, IReadOnlyList<PlannedChange>?> resolve)
+    {
+        if (resolve(r.TweakIds) is not { } changes)
+        {
+            return BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, string.Join(",", r.TweakIds));
+        }
+        if (changes.Count == 0)
+        {
+            // Everything is already in place: no restore point, nothing journaled.
+            _caps.TweaksApplied?.Invoke(r.TweakIds);
+            return BrokerResponse.Success(r.RequestId);
+        }
+        var response = ApplyPlanned(r.RequestId, "tweaks:" + string.Join(",", r.TweakIds), changes);
+        if (response.Ok)
+        {
+            _caps.TweaksApplied?.Invoke(r.TweakIds);
+        }
+        return response;
     }
 
     private BrokerResponse Undo(UndoRequest r)

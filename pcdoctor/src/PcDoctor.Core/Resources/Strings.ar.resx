@@ -773,6 +773,108 @@
   <data name="metric.net.gateway" xml:space="preserve"><value>زمن الوصول إلى الموجّه</value></data>
   <data name="metric.net.public" xml:space="preserve"><value>زمن الوصول إلى الإنترنت</value></data>
   <data name="metric.net.dns" xml:space="preserve"><value>استعلام DNS</value></data>
+  <data name="page.optimize.title" xml:space="preserve"><value>تحسين قابل للتراجع</value></data>
+  <data name="page.optimize.eyebrow" xml:space="preserve"><value>إزالة الزوائد</value></data>
+  <data name="page.optimize.subtitle" xml:space="preserve"><value>أوقف الإعلانات والاقتراحات والإضافات المثبتة مسبقاً. يُكتشف كل شيء أولاً، ويُعرض بدقة قبل التطبيق، ويُسجَّل، ويمكن التراجع عنه. مكاسب السرعة المقيسة من إزالة الزوائد تقع عادة ضمن تذبذب القياس؛ يمكن لصفحة الأداء التحقق من ذلك على جهازك.</value></data>
+  <data name="tweak.presets.title" xml:space="preserve"><value>الإعدادات المسبقة</value></data>
+  <data name="tweak.presets.body" xml:space="preserve"><value>الموصى به آمن لمعظم الناس. المحدود يضيف تغييرات في سلوك التحديث والطاقة. عناصر المتقدم ليست جزءاً من أي إعداد مسبق: فعّل كل واحد بنفسك واقرأ مقايضته. تُنشأ نقطة استعادة قبل أي تغيير.</value></data>
+  <data name="tweak.preset.recommended" xml:space="preserve"><value>تطبيق الموصى به</value></data>
+  <data name="tweak.preset.limited" xml:space="preserve"><value>تطبيق الموصى به + المحدود</value></data>
+  <data name="tweak.preset.custom" xml:space="preserve"><value>تطبيق المحدد</value></data>
+  <data name="tweak.preset.clear" xml:space="preserve"><value>التراجع عن كل التعديلات</value></data>
+  <data name="tweak.measureFirst" xml:space="preserve"><value>سجّل قياس أداء مرجعياً أولاً</value></data>
+  <data name="tweak.tier.Recommended" xml:space="preserve"><value>موصى به</value></data>
+  <data name="tweak.tier.Limited" xml:space="preserve"><value>محدود</value></data>
+  <data name="tweak.tier.Advanced" xml:space="preserve"><value>متقدم: اقرأ كل مقايضة</value></data>
+  <data name="tweak.state.Applied" xml:space="preserve"><value>مضبوط مسبقاً</value></data>
+  <data name="tweak.state.NotApplied" xml:space="preserve"><value>غير مضبوط</value></data>
+  <data name="tweak.state.Partial" xml:space="preserve"><value>مضبوط جزئياً</value></data>
+  <data name="tweak.state.NotApplicable" xml:space="preserve"><value>لا ينطبق على هذا الجهاز</value></data>
+  <data name="tweak.state.Unknown" xml:space="preserve"><value>تعذّر الفحص</value></data>
+  <data name="tweak.note.restart" xml:space="preserve"><value>يحتاج إعادة تشغيل</value></data>
+  <data name="tweak.note.signOut" xml:space="preserve"><value>يحتاج تسجيل خروج</value></data>
+  <data name="tweak.note.explorer" xml:space="preserve"><value>يُعاد تشغيل المستكشف</value></data>
+  <data name="tweak.note.policy" xml:space="preserve"><value>يُضبط كسياسة (تظهر في الإعدادات باهتة)</value></data>
+  <data name="tweak.managed" xml:space="preserve"><value>يديره طبيب الحاسوب: تراجع عنه من صفحة التغييرات.</value></data>
+  <data name="tweak.detecting" xml:space="preserve"><value>جارٍ فحص الإعدادات الحالية…</value></data>
+  <data name="tweak.detected" xml:space="preserve"><value>{0} من {1} إعدادات منطبقة مضبوطة مسبقاً.</value></data>
+  <data name="tweak.drift" xml:space="preserve"><value>أُعيد ضبط {0} إعدادات طبّقها طبيب الحاسوب، على الأرجح بسبب تحديث ميزات لويندوز.</value></data>
+  <data name="tweak.reapply" xml:space="preserve"><value>إعادة التطبيق</value></data>
+  <data name="tweak.nothing" xml:space="preserve"><value>لا شيء محدد، أو كل شيء مضبوط مسبقاً.</value></data>
+  <data name="tweak.refused" xml:space="preserve"><value>هذه التعديلات لا تنطبق على هذا الجهاز، أو فشل الكتالوج في فحص الأمان.</value></data>
+  <data name="tweak.applied" xml:space="preserve"><value>طُبّق وسُجّل. تراجع عن أي جزء منه من صفحة التغييرات.</value></data>
+  <data name="tweak.advanced.include" xml:space="preserve"><value>تضمينه</value></data>
+  <data name="tweak.preview.title" xml:space="preserve"><value>تطبيق هذه الإعدادات؟</value></data>
+  <data name="tweak.preview.intro" xml:space="preserve"><value>سيتغيّر {0} إعدادات:</value></data>
+  <data name="tweak.preview.apps" xml:space="preserve"><value>تُزال التطبيقات لكل المستخدمين ولن تعود مع التحديثات. لا يستطيع طبيب الحاسوب إعادة تثبيتها نيابة عنك؛ ويظهر لكل منها معرّفه في Microsoft Store في صفحة التغييرات.</value></data>
+  <data name="tweak.clear.title" xml:space="preserve"><value>التراجع عن كل التعديلات</value></data>
+  <data name="tweak.clear.consent" xml:space="preserve"><value>يعود كل إعداد غيّرته تعديلات طبيب الحاسوب إلى قيمته القديمة. أما التطبيقات المُزالة فيجب إعادة تثبيتها من Microsoft Store.</value></data>
+  <data name="tweak.clear.button" xml:space="preserve"><value>التراجع عن الكل</value></data>
+  <data name="tweak.clear.apps" xml:space="preserve"><value>لا يُعاد تثبيت التطبيقات المُزالة تلقائياً: راجع معرّفاتها في المتجر في صفحة التغييرات.</value></data>
+  <data name="tweak.ads.startSuggestions.title" xml:space="preserve"><value>لا اقتراحات تطبيقات ولا تثبيت صامت في قائمة ابدأ</value></data>
+  <data name="tweak.ads.startSuggestions.why" xml:space="preserve"><value>يوقف ويندوز عن الترويج لتطبيقات مموّلة وتثبيتها بصمت.</value></data>
+  <data name="tweak.ads.tips.title" xml:space="preserve"><value>لا نصائح ولا مطالبات "احصل على المزيد من ويندوز"</value></data>
+  <data name="tweak.ads.tips.why" xml:space="preserve"><value>يزيل النصائح على هيئة إشعارات ومطالبة الإعداد بعد التحديثات.</value></data>
+  <data name="tweak.ads.lockScreen.title" xml:space="preserve"><value>لا نصائح ولا عروض على شاشة القفل</value></data>
+  <data name="tweak.ads.lockScreen.why" xml:space="preserve"><value>يُبقي صورة شاشة القفل دون حقائق طريفة أو عروض فوقها.</value></data>
+  <data name="tweak.ads.settings.title" xml:space="preserve"><value>لا محتوى مقترح في الإعدادات</value></data>
+  <data name="tweak.ads.settings.why" xml:space="preserve"><value>يزيل العروض والاقتراحات المعروضة داخل تطبيق الإعدادات.</value></data>
+  <data name="tweak.search.webResults.title" xml:space="preserve"><value>البحث في هذا الجهاز فقط (دون نتائج Bing أو Copilot من الويب)</value></data>
+  <data name="tweak.search.webResults.why" xml:space="preserve"><value>يتوقف البحث في ابدأ وشريط المهام عن إرسال ما تكتبه إلى Bing ويعرض النتائج المحلية فقط.</value></data>
+  <data name="tweak.widgets.off.title" xml:space="preserve"><value>إيقاف الأدوات (Widgets)</value></data>
+  <data name="tweak.widgets.off.why" xml:space="preserve"><value>يزيل لوحة الأخبار والطقس من شريط المهام.</value></data>
+  <data name="tweak.feeds.off.title" xml:space="preserve"><value>إيقاف الأخبار والاهتمامات</value></data>
+  <data name="tweak.feeds.off.why" xml:space="preserve"><value>يزيل زر الطقس والأخبار من شريط مهام ويندوز 10.</value></data>
+  <data name="tweak.telemetry.minimum.title" xml:space="preserve"><value>إرسال بيانات التشخيص المطلوبة فقط</value></data>
+  <data name="tweak.telemetry.minimum.why" xml:space="preserve"><value>يضبط بيانات التشخيص على أدنى مستوى يسمح به هذا الإصدار من ويندوز (المطلوبة).</value></data>
+  <data name="tweak.telemetry.minimum.warning" xml:space="preserve"><value>إصدارات Windows Insider تحتاج بيانات التشخيص الاختيارية وتتوقف عن التحديث مع هذا الإعداد.</value></data>
+  <data name="tweak.telemetry.minimumEnterprise.title" xml:space="preserve"><value>إيقاف بيانات التشخيص (Enterprise وEducation)</value></data>
+  <data name="tweak.telemetry.minimumEnterprise.why" xml:space="preserve"><value>تسمح هذه الإصدارات بمستوى الأمان الذي لا يرسل شيئاً تقريباً.</value></data>
+  <data name="tweak.telemetry.minimumEnterprise.warning" xml:space="preserve"><value>بعض ميزات Windows Update والدعم تعتمد على بيانات التشخيص؛ قد يضبط قسم تقنية المعلومات ذلك بشكل مختلف.</value></data>
+  <data name="tweak.edge.newTabFeed.title" xml:space="preserve"><value>لا موجز أخبار ولا توصيات في Edge</value></data>
+  <data name="tweak.edge.newTabFeed.why" xml:space="preserve"><value>تعرض علامة التبويب الجديدة في Edge روابطك دون موجز الأخبار ومطالبات التسوق.</value></data>
+  <data name="tweak.explorer.fileExtensions.title" xml:space="preserve"><value>إظهار امتدادات الملفات</value></data>
+  <data name="tweak.explorer.fileExtensions.why" xml:space="preserve"><value>يجعل "invoice.pdf.exe" يظهر على حقيقته. مكسب أمني صغير لكنه حقيقي.</value></data>
+  <data name="tweak.taskbar.endTask.title" xml:space="preserve"><value>إضافة "إنهاء المهمة" إلى قوائم شريط المهام</value></data>
+  <data name="tweak.taskbar.endTask.why" xml:space="preserve"><value>انقر بزر الماوس الأيمن على تطبيق متجمّد في شريط المهام لإغلاقه دون مدير المهام.</value></data>
+  <data name="tweak.apps.bingNews.title" xml:space="preserve"><value>إزالة Microsoft News</value></data>
+  <data name="tweak.apps.bingNews.why" xml:space="preserve"><value>يُزال لكل المستخدمين ويُلغى توفيره كي لا تعيده التحديثات.</value></data>
+  <data name="tweak.apps.bingWeather.title" xml:space="preserve"><value>إزالة MSN Weather</value></data>
+  <data name="tweak.apps.bingWeather.why" xml:space="preserve"><value>يُزال لكل المستخدمين ويُلغى توفيره كي لا تعيده التحديثات.</value></data>
+  <data name="tweak.apps.solitaire.title" xml:space="preserve"><value>إزالة Microsoft Solitaire Collection</value></data>
+  <data name="tweak.apps.solitaire.why" xml:space="preserve"><value>يُزال لكل المستخدمين ويُلغى توفيره كي لا تعيده التحديثات.</value></data>
+  <data name="tweak.apps.clipchamp.title" xml:space="preserve"><value>إزالة Clipchamp</value></data>
+  <data name="tweak.apps.clipchamp.why" xml:space="preserve"><value>يُزال لكل المستخدمين ويُلغى توفيره كي لا تعيده التحديثات.</value></data>
+  <data name="tweak.update.deferFeature.title" xml:space="preserve"><value>تأجيل تحديثات الميزات 90 يوماً (تحديثات الأمان تستمر في التثبيت)</value></data>
+  <data name="tweak.update.deferFeature.why" xml:space="preserve"><value>يمنح الآخرين وقتاً لاكتشاف المشكلات في ترقية ويندوز الكبيرة قبل أن تصلك.</value></data>
+  <data name="tweak.update.deferFeature.warning" xml:space="preserve"><value>لا يُوقف Windows Update أبداً. تنتظر فقط ترقية الميزات السنوية؛ ولا تتأثر تحديثات الأمان الشهرية.</value></data>
+  <data name="tweak.update.noAutoRestart.title" xml:space="preserve"><value>عدم إعادة التشغيل تلقائياً أثناء تسجيل دخول أحد</value></data>
+  <data name="tweak.update.noAutoRestart.why" xml:space="preserve"><value>تنتظر التحديثات أن تعيد التشغيل بنفسك بدلاً من إغلاق عملك المفتوح.</value></data>
+  <data name="tweak.update.deliveryOptimization.title" xml:space="preserve"><value>عدم مشاركة التحديثات مع أجهزة أخرى</value></data>
+  <data name="tweak.update.deliveryOptimization.why" xml:space="preserve"><value>تُنزَّل التحديثات من مايكروسوفت فقط، لا إلى أجهزة أخرى أو منها.</value></data>
+  <data name="tweak.gaming.gameBar.title" xml:space="preserve"><value>إيقاف تسجيل Xbox Game Bar</value></data>
+  <data name="tweak.gaming.gameBar.why" xml:space="preserve"><value>يوقف تسجيل الألعاب في الخلفية؛ ولن يفتحه اختصار Game Bar بعد الآن.</value></data>
+  <data name="tweak.power.fastStartupOff.title" xml:space="preserve"><value>إيقاف بدء التشغيل السريع</value></data>
+  <data name="tweak.power.fastStartupOff.why" xml:space="preserve"><value>يصبح إيقاف التشغيل إيقافاً حقيقياً، فتُحمَّل التعريفات والتحديثات من جديد. يحل بعض مشكلات الاستيقاظ وتعدد أنظمة الإقلاع.</value></data>
+  <data name="tweak.power.fastStartupOff.warning" xml:space="preserve"><value>يستغرق البدء من جهاز مطفأ بضع ثوانٍ أطول.</value></data>
+  <data name="tweak.ai.recallOff.title" xml:space="preserve"><value>إيقاف Recall (عبر السياسة)</value></data>
+  <data name="tweak.ai.recallOff.why" xml:space="preserve"><value>يحفظ Recall لقطات من شاشتك للبحث فيها لاحقاً. يوقفه هذا عبر سياسات مايكروسوفت الموثّقة.</value></data>
+  <data name="tweak.ai.recallOff.warning" xml:space="preserve"><value>يهم فقط على أجهزة Copilot+ التي فيها Recall. لا يحذف هذا اللقطات الموجودة؛ احذفها من الإعدادات &gt; الخصوصية والأمان &gt; Recall.</value></data>
+  <data name="tweak.ai.copilotApp.title" xml:space="preserve"><value>إزالة تطبيق Copilot</value></data>
+  <data name="tweak.ai.copilotApp.why" xml:space="preserve"><value>يزيل تطبيق Copilot لكل المستخدمين. أما Copilot في Edge وOffice فمنفصل.</value></data>
+  <data name="tweak.ai.copilotApp.warning" xml:space="preserve"><value>لن يفعل مفتاح Copilot في لوحات المفاتيح الحديثة شيئاً حتى تعيد تثبيته.</value></data>
+  <data name="tweak.service.searchIndexing.title" xml:space="preserve"><value>إيقاف فهرسة البحث</value></data>
+  <data name="tweak.service.searchIndexing.why" xml:space="preserve"><value>يوقف المفهرس في الخلفية. يصبح البحث في الملفات وبريد Outlook أبطأ كثيراً.</value></data>
+  <data name="tweak.service.searchIndexing.warning" xml:space="preserve"><value>نادراً ما يستحق ذلك على قرص SSD: الفهرسة خفيفة، والبحث بدونها يفحص كل مجلد.</value></data>
+  <data name="tweak.service.printSpooler.title" xml:space="preserve"><value>إيقاف Print Spooler</value></data>
+  <data name="tweak.service.printSpooler.why" xml:space="preserve"><value>يغلق خدمة ذات تاريخ من المشكلات الأمنية، إن كنت لا تطبع أبداً.</value></data>
+  <data name="tweak.service.printSpooler.warning" xml:space="preserve"><value>فقط إن كنت لا تطبع أبداً ولا تحفظ بصيغة PDF عبر "Microsoft Print to PDF": تتوقف الطباعة تماماً.</value></data>
+  <data name="tweak.service.sysMain.title" xml:space="preserve"><value>إيقاف SysMain (Superfetch)</value></data>
+  <data name="tweak.service.sysMain.why" xml:space="preserve"><value>يوقف الخدمة التي تحمّل التطبيقات المستخدمة كثيراً إلى الذاكرة مسبقاً.</value></data>
+  <data name="tweak.service.sysMain.warning" xml:space="preserve"><value>"SysMain يبطئ أقراص SSD" خرافة: عادة يجعل التطبيقات تبدأ أسرع. أوقفه فقط لاختبار مشكلة محددة.</value></data>
+  <data name="tweak.security.memoryIntegrityOff.title" xml:space="preserve"><value>إيقاف سلامة الذاكرة (لأداء الألعاب)</value></data>
+  <data name="tweak.security.memoryIntegrityOff.why" xml:space="preserve"><value>تكلّف سلامة الذاكرة نحو 5% في المتوسط في الألعاب على بعض المعالجات (وأكثر على المعالجات الأقدم دون MBEC/GMET). قِسها في صفحة الأداء قبل وبعد.</value></data>
+  <data name="tweak.security.memoryIntegrityOff.warning" xml:space="preserve"><value>مايكروسوفت: مع إيقاف سلامة الذاكرة "قد يكون جهازك عرضة للتهديدات". لإعادة تشغيلها تراجع عن ذلك من صفحة التغييرات. وإن فشل ويندوز في البدء يوماً، فافتح بيئة استرداد ويندوز ثم موجه الأوامر، وأعد قيمة HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled إلى 1.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

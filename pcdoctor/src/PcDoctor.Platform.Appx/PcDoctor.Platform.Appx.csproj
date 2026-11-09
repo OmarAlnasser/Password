@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- WinRT PackageManager for removing and deprovisioning Store apps; Windows 10 2004 or later. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
+    <ProjectReference Include="..\PcDoctor.Tweaks\PcDoctor.Tweaks.csproj" />
+  </ItemGroup>
+</Project>

@@ -12,6 +12,7 @@ namespace PcDoctor.Core.Journal;
 [JsonDerivedType(typeof(PlannedServiceStart), "serviceStart")]
 [JsonDerivedType(typeof(PlannedTaskEnabled), "taskEnabled")]
 [JsonDerivedType(typeof(PlannedFileMove), "fileMove")]
+[JsonDerivedType(typeof(PlannedAppxRemove), "appxRemove")]
 public abstract record PlannedChange
 {
     /// <summary>The exact target, for the consent preview (left-to-right, untranslated).</summary>
@@ -45,4 +46,10 @@ public sealed record PlannedTaskEnabled(string TaskPath, bool Enabled) : Planned
 public sealed record PlannedFileMove(string From, string To) : PlannedChange
 {
     public override string Describe() => $"Move {From} → {To}";
+}
+
+/// <summary>Removes an app for all users and deprovisions it. Not reversible by PC Doctor; the Store ID makes it reinstallable.</summary>
+public sealed record PlannedAppxRemove(string PackageFamilyPrefix, string StoreId) : PlannedChange
+{
+    public override string Describe() => $"Remove and deprovision {PackageFamilyPrefix} (reinstall: winget install --id {StoreId} -s msstore)";
 }

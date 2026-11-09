@@ -773,6 +773,108 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="metric.net.gateway" xml:space="preserve"><value>Ping to router</value></data>
   <data name="metric.net.public" xml:space="preserve"><value>Ping to the internet</value></data>
   <data name="metric.net.dns" xml:space="preserve"><value>DNS lookup</value></data>
+  <data name="page.optimize.title" xml:space="preserve"><value>Optimize, reversibly</value></data>
+  <data name="page.optimize.eyebrow" xml:space="preserve"><value>Debloat</value></data>
+  <data name="page.optimize.subtitle" xml:space="preserve"><value>Turn off ads, suggestions and preinstalled extras. Everything is detected first, previewed exactly, journaled, and undoable. Measured speed gains from debloating are usually within noise; the Performance page can check yours.</value></data>
+  <data name="tweak.presets.title" xml:space="preserve"><value>Presets</value></data>
+  <data name="tweak.presets.body" xml:space="preserve"><value>Recommended is safe for most people. Limited adds update and power behaviour changes. Advanced items are never part of a preset: tick each one yourself and read its tradeoff. A restore point is created before any change.</value></data>
+  <data name="tweak.preset.recommended" xml:space="preserve"><value>Apply Recommended</value></data>
+  <data name="tweak.preset.limited" xml:space="preserve"><value>Apply Recommended + Limited</value></data>
+  <data name="tweak.preset.custom" xml:space="preserve"><value>Apply selected</value></data>
+  <data name="tweak.preset.clear" xml:space="preserve"><value>Undo all tweaks</value></data>
+  <data name="tweak.measureFirst" xml:space="preserve"><value>Record a benchmark baseline first</value></data>
+  <data name="tweak.tier.Recommended" xml:space="preserve"><value>Recommended</value></data>
+  <data name="tweak.tier.Limited" xml:space="preserve"><value>Limited</value></data>
+  <data name="tweak.tier.Advanced" xml:space="preserve"><value>Advanced: read each tradeoff</value></data>
+  <data name="tweak.state.Applied" xml:space="preserve"><value>Already set</value></data>
+  <data name="tweak.state.NotApplied" xml:space="preserve"><value>Not set</value></data>
+  <data name="tweak.state.Partial" xml:space="preserve"><value>Partly set</value></data>
+  <data name="tweak.state.NotApplicable" xml:space="preserve"><value>Not for this PC</value></data>
+  <data name="tweak.state.Unknown" xml:space="preserve"><value>Could not check</value></data>
+  <data name="tweak.note.restart" xml:space="preserve"><value>needs a restart</value></data>
+  <data name="tweak.note.signOut" xml:space="preserve"><value>needs a sign-out</value></data>
+  <data name="tweak.note.explorer" xml:space="preserve"><value>Explorer restarts</value></data>
+  <data name="tweak.note.policy" xml:space="preserve"><value>set as a policy (Settings shows it greyed out)</value></data>
+  <data name="tweak.managed" xml:space="preserve"><value>Managed by PC Doctor: undo it from the Changes page.</value></data>
+  <data name="tweak.detecting" xml:space="preserve"><value>Checking current settings…</value></data>
+  <data name="tweak.detected" xml:space="preserve"><value>{0} of {1} applicable settings are already in place.</value></data>
+  <data name="tweak.drift" xml:space="preserve"><value>{0} settings PC Doctor applied were reset, probably by a Windows feature update.</value></data>
+  <data name="tweak.reapply" xml:space="preserve"><value>Reapply</value></data>
+  <data name="tweak.nothing" xml:space="preserve"><value>Nothing selected, or everything is already in place.</value></data>
+  <data name="tweak.refused" xml:space="preserve"><value>These tweaks do not apply to this PC, or the catalog failed its safety check.</value></data>
+  <data name="tweak.applied" xml:space="preserve"><value>Applied and journaled. Undo any of it from the Changes page.</value></data>
+  <data name="tweak.advanced.include" xml:space="preserve"><value>Include it</value></data>
+  <data name="tweak.preview.title" xml:space="preserve"><value>Apply these settings?</value></data>
+  <data name="tweak.preview.intro" xml:space="preserve"><value>{0} settings will be changed:</value></data>
+  <data name="tweak.preview.apps" xml:space="preserve"><value>Removed apps are taken off for every user and will not come back with updates. PC Doctor cannot reinstall them for you; each one shows its Microsoft Store ID in the Changes page.</value></data>
+  <data name="tweak.clear.title" xml:space="preserve"><value>Undo all tweaks</value></data>
+  <data name="tweak.clear.consent" xml:space="preserve"><value>Every setting PC Doctor's tweaks changed goes back to its old value. Removed apps have to be reinstalled from the Microsoft Store.</value></data>
+  <data name="tweak.clear.button" xml:space="preserve"><value>Undo all</value></data>
+  <data name="tweak.clear.apps" xml:space="preserve"><value>Removed apps are not reinstalled automatically: see their Store IDs in the Changes page.</value></data>
+  <data name="tweak.ads.startSuggestions.title" xml:space="preserve"><value>No app suggestions or silent app installs in Start</value></data>
+  <data name="tweak.ads.startSuggestions.why" xml:space="preserve"><value>Stops Windows from promoting and quietly installing sponsored apps.</value></data>
+  <data name="tweak.ads.tips.title" xml:space="preserve"><value>No tips and "get even more out of Windows" prompts</value></data>
+  <data name="tweak.ads.tips.why" xml:space="preserve"><value>Removes the notification-style tips and the setup nag after updates.</value></data>
+  <data name="tweak.ads.lockScreen.title" xml:space="preserve"><value>No tips and promotions on the lock screen</value></data>
+  <data name="tweak.ads.lockScreen.why" xml:space="preserve"><value>Keeps your lock-screen picture without fun facts and offers on top.</value></data>
+  <data name="tweak.ads.settings.title" xml:space="preserve"><value>No suggested content in Settings</value></data>
+  <data name="tweak.ads.settings.why" xml:space="preserve"><value>Removes promotions and suggestions shown inside the Settings app.</value></data>
+  <data name="tweak.search.webResults.title" xml:space="preserve"><value>Search only this PC (no Bing or Copilot web results)</value></data>
+  <data name="tweak.search.webResults.why" xml:space="preserve"><value>Start and taskbar search stop sending what you type to Bing and show local results only.</value></data>
+  <data name="tweak.widgets.off.title" xml:space="preserve"><value>Turn off Widgets</value></data>
+  <data name="tweak.widgets.off.why" xml:space="preserve"><value>Removes the news and weather board from the taskbar.</value></data>
+  <data name="tweak.feeds.off.title" xml:space="preserve"><value>Turn off News and Interests</value></data>
+  <data name="tweak.feeds.off.why" xml:space="preserve"><value>Removes the weather and news button from the Windows 10 taskbar.</value></data>
+  <data name="tweak.telemetry.minimum.title" xml:space="preserve"><value>Send only required diagnostic data</value></data>
+  <data name="tweak.telemetry.minimum.why" xml:space="preserve"><value>Sets diagnostic data to the lowest level this edition of Windows allows (Required).</value></data>
+  <data name="tweak.telemetry.minimum.warning" xml:space="preserve"><value>Windows Insider builds need optional diagnostic data and stop updating with this set.</value></data>
+  <data name="tweak.telemetry.minimumEnterprise.title" xml:space="preserve"><value>Turn diagnostic data off (Enterprise and Education)</value></data>
+  <data name="tweak.telemetry.minimumEnterprise.why" xml:space="preserve"><value>These editions allow the Security level, which sends almost nothing.</value></data>
+  <data name="tweak.telemetry.minimumEnterprise.warning" xml:space="preserve"><value>Some Windows Update and support features depend on diagnostic data; your IT department may set this differently.</value></data>
+  <data name="tweak.edge.newTabFeed.title" xml:space="preserve"><value>No news feed and recommendations in Edge</value></data>
+  <data name="tweak.edge.newTabFeed.why" xml:space="preserve"><value>Edge's new tab shows your links without the news feed and shopping prompts.</value></data>
+  <data name="tweak.explorer.fileExtensions.title" xml:space="preserve"><value>Show file extensions</value></data>
+  <data name="tweak.explorer.fileExtensions.why" xml:space="preserve"><value>Makes "invoice.pdf.exe" visible as what it is. A small but real security win.</value></data>
+  <data name="tweak.taskbar.endTask.title" xml:space="preserve"><value>Add "End task" to taskbar menus</value></data>
+  <data name="tweak.taskbar.endTask.why" xml:space="preserve"><value>Right-click a frozen app on the taskbar to close it without Task Manager.</value></data>
+  <data name="tweak.apps.bingNews.title" xml:space="preserve"><value>Remove Microsoft News</value></data>
+  <data name="tweak.apps.bingNews.why" xml:space="preserve"><value>Removed for every user and deprovisioned so updates do not bring it back.</value></data>
+  <data name="tweak.apps.bingWeather.title" xml:space="preserve"><value>Remove MSN Weather</value></data>
+  <data name="tweak.apps.bingWeather.why" xml:space="preserve"><value>Removed for every user and deprovisioned so updates do not bring it back.</value></data>
+  <data name="tweak.apps.solitaire.title" xml:space="preserve"><value>Remove Microsoft Solitaire Collection</value></data>
+  <data name="tweak.apps.solitaire.why" xml:space="preserve"><value>Removed for every user and deprovisioned so updates do not bring it back.</value></data>
+  <data name="tweak.apps.clipchamp.title" xml:space="preserve"><value>Remove Clipchamp</value></data>
+  <data name="tweak.apps.clipchamp.why" xml:space="preserve"><value>Removed for every user and deprovisioned so updates do not bring it back.</value></data>
+  <data name="tweak.update.deferFeature.title" xml:space="preserve"><value>Delay feature updates by 90 days (security updates still install)</value></data>
+  <data name="tweak.update.deferFeature.why" xml:space="preserve"><value>Gives others time to find problems in a big Windows version upgrade before you get it.</value></data>
+  <data name="tweak.update.deferFeature.warning" xml:space="preserve"><value>Windows Update is never turned off. Only the yearly feature upgrade waits; monthly security updates are unaffected.</value></data>
+  <data name="tweak.update.noAutoRestart.title" xml:space="preserve"><value>Do not restart automatically while someone is signed in</value></data>
+  <data name="tweak.update.noAutoRestart.why" xml:space="preserve"><value>Updates wait for you to restart instead of closing your open work.</value></data>
+  <data name="tweak.update.deliveryOptimization.title" xml:space="preserve"><value>Do not share updates with other PCs</value></data>
+  <data name="tweak.update.deliveryOptimization.why" xml:space="preserve"><value>Updates download only from Microsoft, not to or from other PCs.</value></data>
+  <data name="tweak.gaming.gameBar.title" xml:space="preserve"><value>Turn off Xbox Game Bar recording</value></data>
+  <data name="tweak.gaming.gameBar.why" xml:space="preserve"><value>Stops background game recording; the Game Bar shortcut no longer opens it.</value></data>
+  <data name="tweak.power.fastStartupOff.title" xml:space="preserve"><value>Turn off Fast Startup</value></data>
+  <data name="tweak.power.fastStartupOff.why" xml:space="preserve"><value>Shutting down really shuts down, so drivers and updates load fresh. It fixes some wake and dual-boot problems.</value></data>
+  <data name="tweak.power.fastStartupOff.warning" xml:space="preserve"><value>Starting from a shut-down PC takes a few seconds longer.</value></data>
+  <data name="tweak.ai.recallOff.title" xml:space="preserve"><value>Turn off Recall (by policy)</value></data>
+  <data name="tweak.ai.recallOff.why" xml:space="preserve"><value>Recall saves snapshots of your screen to search later. This turns it off with Microsoft's documented policies.</value></data>
+  <data name="tweak.ai.recallOff.warning" xml:space="preserve"><value>Only matters on Copilot+ PCs that have Recall. Existing snapshots are not deleted by this; delete them in Settings &gt; Privacy &amp; security &gt; Recall.</value></data>
+  <data name="tweak.ai.copilotApp.title" xml:space="preserve"><value>Remove the Copilot app</value></data>
+  <data name="tweak.ai.copilotApp.why" xml:space="preserve"><value>Removes the Copilot app for every user. Copilot in Edge and Office is separate.</value></data>
+  <data name="tweak.ai.copilotApp.warning" xml:space="preserve"><value>The Copilot key on new keyboards will do nothing until you reinstall it.</value></data>
+  <data name="tweak.service.searchIndexing.title" xml:space="preserve"><value>Turn off search indexing</value></data>
+  <data name="tweak.service.searchIndexing.why" xml:space="preserve"><value>Stops the background indexer. Searching files and Outlook mail becomes much slower.</value></data>
+  <data name="tweak.service.searchIndexing.warning" xml:space="preserve"><value>Rarely worth it on an SSD: indexing is light, and searches without it scan every folder.</value></data>
+  <data name="tweak.service.printSpooler.title" xml:space="preserve"><value>Turn off the Print Spooler</value></data>
+  <data name="tweak.service.printSpooler.why" xml:space="preserve"><value>Closes a service with a history of security problems, if you never print.</value></data>
+  <data name="tweak.service.printSpooler.warning" xml:space="preserve"><value>Only if you never print or save to PDF through "Microsoft Print to PDF": printing stops working entirely.</value></data>
+  <data name="tweak.service.sysMain.title" xml:space="preserve"><value>Turn off SysMain (Superfetch)</value></data>
+  <data name="tweak.service.sysMain.why" xml:space="preserve"><value>Stops the service that preloads frequently used apps into memory.</value></data>
+  <data name="tweak.service.sysMain.warning" xml:space="preserve"><value>"SysMain slows down SSDs" is a myth: it usually makes apps start faster. Turn it off only to test a specific problem.</value></data>
+  <data name="tweak.security.memoryIntegrityOff.title" xml:space="preserve"><value>Turn off Memory integrity (for gaming performance)</value></data>
+  <data name="tweak.security.memoryIntegrityOff.why" xml:space="preserve"><value>Memory integrity costs about 5% on average in games on some CPUs (more on older ones without MBEC/GMET). Measure it on the Performance page before and after.</value></data>
+  <data name="tweak.security.memoryIntegrityOff.warning" xml:space="preserve"><value>Microsoft: with memory integrity off "your device may be vulnerable to threats". To turn it back on, undo this from the Changes page. If Windows ever fails to start, open the Windows Recovery Environment, then Command Prompt, and set HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled back to 1.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>
