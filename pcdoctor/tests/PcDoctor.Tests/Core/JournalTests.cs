@@ -188,3 +188,54 @@ public sealed class RestorePointTests
         Assert.Empty(api.FrequencyDuringCreate);
     }
 }
+
+public sealed class TaskAndFileApplierTests : IDisposable
+{
+    private readonly string _dir = Directory.CreateTempSubdirectory("pcdoctor-move-").FullName;
+
+    public void Dispose() => Directory.Delete(_dir, recursive: true);
+
+    private sealed class FakeTasks : PcDoctor.Core.Platform.ITaskSchedulerAccess
+    {
+        public readonly Dictionary<string, bool> Tasks = new();
+        public bool? IsEnabled(string taskPath) => Tasks.TryGetValue(taskPath, out var e) ? e : null;
+        public void SetEnabled(string taskPath, bool enabled) => Tasks[taskPath] = enabled;
+    }
+
+    [Fact]
+    public void Disabling_a_task_and_moving_a_shortcut_undo_exactly()
+    {
+        var tasks = new FakeTasks { Tasks = { [@"\Contoso\Updater"] = true } };
+        var lnk = Path.Combine(_dir, "Startup", "Contoso.lnk");
+        Directory.CreateDirectory(Path.GetDirectoryName(lnk)!);
+        File.WriteAllText(lnk, "shortcut");
+        var backup = Path.Combine(_dir, "Backup", "Contoso.lnk");
+        var journal = new ChangeJournal(Path.Combine(_dir, "j.jsonl"));
+        var executor = new ChangeExecutor(journal, [new TaskApplier(tasks), new FileMoveApplier()]);
+
+        var batch = executor.ApplyBatch("autorun.disable", [new PlannedTaskEnabled(@"\Contoso\Updater", false), new PlannedFileMove(lnk, backup)]);
+
+        Assert.True(batch.Succeeded, batch.Error);
+        Assert.False(tasks.Tasks[@"\Contoso\Updater"]);
+        Assert.False(File.Exists(lnk));
+        Assert.True(File.Exists(backup));
+
+        Assert.Equal(2, executor.UndoAll().Undone);
+        Assert.True(tasks.Tasks[@"\Contoso\Updater"]);
+        Assert.Equal("shortcut", File.ReadAllText(lnk));
+        Assert.False(File.Exists(backup));
+    }
+
+    [Fact]
+    public void A_move_never_overwrites_an_existing_file()
+    {
+        var a = Path.Combine(_dir, "a.lnk");
+        var b = Path.Combine(_dir, "b.lnk");
+        File.WriteAllText(a, "a");
+        File.WriteAllText(b, "b");
+        var executor = new ChangeExecutor(new ChangeJournal(Path.Combine(_dir, "j2.jsonl")), [new FileMoveApplier()]);
+        Assert.False(executor.ApplyBatch("x", [new PlannedFileMove(a, b)]).Succeeded);
+        Assert.Equal("b", File.ReadAllText(b));
+        Assert.True(File.Exists(a));
+    }
+}

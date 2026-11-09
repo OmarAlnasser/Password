@@ -15,6 +15,7 @@ public sealed record RegistryData(string Kind, string Encoded);
 [JsonDerivedType(typeof(ServiceChange), "service")]
 [JsonDerivedType(typeof(TaskChange), "task")]
 [JsonDerivedType(typeof(AppxChange), "appx")]
+[JsonDerivedType(typeof(FileMoveChange), "fileMove")]
 public abstract record JournalChange;
 
 /// <param name="Hive">HKLM or HKU\&lt;SID&gt;. HKCU is resolved to the signed-in user's SID before
@@ -37,6 +38,8 @@ public sealed record ServiceChange(
     bool NewDelayedAutostart) : JournalChange;
 
 public sealed record TaskChange(string TaskPath, bool OldEnabled, bool NewEnabled) : JournalChange;
+
+public sealed record FileMoveChange(string From, string To) : JournalChange;
 
 /// <summary>An app removal. Not automatically reversible; the reinstall ID is what makes it recoverable.</summary>
 public sealed record AppxChange(

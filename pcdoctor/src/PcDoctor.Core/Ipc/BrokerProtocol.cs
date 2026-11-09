@@ -16,6 +16,13 @@ namespace PcDoctor.Core.Ipc;
 [JsonDerivedType(typeof(ReadJournalRequest), "journal.read")]
 [JsonDerivedType(typeof(ReadElevatedRequest), "read.elevated")]
 [JsonDerivedType(typeof(ShutdownRequest), "shutdown")]
+[JsonDerivedType(typeof(JobStartRequest), "job.start")]
+[JsonDerivedType(typeof(JobStatusRequest), "job.status")]
+[JsonDerivedType(typeof(JobCancelRequest), "job.cancel")]
+[JsonDerivedType(typeof(QuarantineListRequest), "defender.quarantine.list")]
+[JsonDerivedType(typeof(QuarantineRestoreRequest), "defender.quarantine.restore")]
+[JsonDerivedType(typeof(AutorunDisableRequest), "autorun.disable")]
+[JsonDerivedType(typeof(TweakApplyRequest), "tweak.apply")]
 public abstract record BrokerRequest
 {
     public Guid RequestId { get; init; } = Guid.NewGuid();
@@ -48,6 +55,24 @@ public enum ElevatedData
 public sealed record ReadElevatedRequest(ElevatedData Data) : BrokerRequest;
 
 public sealed record ShutdownRequest : BrokerRequest;
+
+/// <param name="Target">Only for custom Defender scans: the file or folder to scan. Read-only for PC Doctor; Defender decides.</param>
+public sealed record JobStartRequest(JobKind Kind, string? Target) : BrokerRequest;
+
+public sealed record JobStatusRequest(Guid JobId) : BrokerRequest;
+
+public sealed record JobCancelRequest(Guid JobId) : BrokerRequest;
+
+public sealed record QuarantineListRequest : BrokerRequest;
+
+/// <param name="ThreatName">A name exactly as the quarantine list returned it; the Broker re-checks it against the list.</param>
+public sealed record QuarantineRestoreRequest(string ThreatName, string? FilePath) : BrokerRequest;
+
+/// <param name="EntryId">A persistence entry ID from the Broker's own enumeration; never a registry path.</param>
+public sealed record AutorunDisableRequest(string EntryId) : BrokerRequest;
+
+/// <param name="TweakIds">IDs from the signed tweak catalog compiled into the Broker.</param>
+public sealed record TweakApplyRequest(IReadOnlyList<string> TweakIds) : BrokerRequest;
 
 public enum BrokerErrorCode
 {

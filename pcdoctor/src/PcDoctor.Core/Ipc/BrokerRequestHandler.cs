@@ -7,12 +7,28 @@ namespace PcDoctor.Core.Ipc;
 /// The Broker's dispatch logic, kept free of Windows APIs so it can be tested. Every request type
 /// maps to one typed operation; there is no generic path.
 /// </summary>
+/// <summary>Optional Broker features, each one typed and fixed.</summary>
+public sealed record BrokerCapabilities
+{
+    public JobRunner? Jobs { get; init; }
+    public Func<object?>? ListQuarantine { get; init; }
+    /// <summary>Restores one quarantined item named exactly as the list returned it; throws if it is not in the list.</summary>
+    public Func<string, string?, object?>? RestoreQuarantine { get; init; }
+    /// <summary>Re-enumerates persistence entries in the Broker and returns the changes that disable one, or null if the ID is unknown.</summary>
+    public Func<string, IReadOnlyList<PlannedChange>?>? ResolveAutorunDisable { get; init; }
+    /// <summary>Returns the changes for catalog tweak IDs, or null if any ID is unknown or does not apply.</summary>
+    public Func<IReadOnlyList<string>, IReadOnlyList<PlannedChange>?>? ResolveTweaks { get; init; }
+}
+
 public sealed class BrokerRequestHandler(
     ChangeExecutor executor,
     ChangeJournal journal,
     RestorePointGuard restorePoints,
-    Func<ElevatedData, object?> readElevated)
+    Func<ElevatedData, object?> readElevated,
+    BrokerCapabilities? capabilities = null)
 {
+    private readonly BrokerCapabilities _caps = capabilities ?? new BrokerCapabilities();
+
     public bool ShutdownRequested { get; private set; }
 
     public BrokerResponse Handle(BrokerRequest request)
@@ -29,6 +45,20 @@ public sealed class BrokerRequestHandler(
                     ? BrokerResponse.Success(r.RequestId, data)
                     : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.NotAvailable),
                 ShutdownRequest => Shutdown(request),
+                JobStartRequest r when _caps.Jobs is { } jobs => BrokerResponse.Success(r.RequestId, jobs.Start(r.Kind, r.Target)),
+                JobStatusRequest r when _caps.Jobs is { } jobs => jobs.Status(r.JobId) is { } st
+                    ? BrokerResponse.Success(r.RequestId, st)
+                    : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.NotAvailable),
+                JobCancelRequest r when _caps.Jobs is { } jobs => BrokerResponse.Success(r.RequestId, jobs.Cancel(r.JobId)),
+                QuarantineListRequest r when _caps.ListQuarantine is { } list => BrokerResponse.Success(r.RequestId, list()),
+                QuarantineRestoreRequest r when _caps.RestoreQuarantine is { } restore =>
+                    BrokerResponse.Success(r.RequestId, restore(r.ThreatName, r.FilePath)),
+                AutorunDisableRequest r when _caps.ResolveAutorunDisable is { } resolve => resolve(r.EntryId) is { } changes
+                    ? ApplyPlanned(r.RequestId, "autorun.disable:" + r.EntryId, changes)
+                    : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, r.EntryId),
+                TweakApplyRequest r when _caps.ResolveTweaks is { } tweaks => tweaks(r.TweakIds) is { } changes
+                    ? ApplyPlanned(r.RequestId, "tweaks:" + string.Join(",", r.TweakIds), changes)
+                    : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, string.Join(",", r.TweakIds)),
                 _ => BrokerResponse.Failure(request.RequestId, BrokerErrorCode.UnsupportedOperation),
             };
         }
@@ -38,32 +68,27 @@ public sealed class BrokerRequestHandler(
         }
     }
 
-    private BrokerResponse ApplyFix(ApplyFixRequest r)
+    private BrokerResponse ApplyFix(ApplyFixRequest r) =>
+        FixCatalog.Find(r.FixId) is { } fix
+            ? ApplyPlanned(r.RequestId, fix.Id, fix.Changes)
+            : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, r.FixId);
+
+    /// <summary>Safety rule: no change batch without a restore point that provably exists, and every change journaled.</summary>
+    private BrokerResponse ApplyPlanned(Guid requestId, string sourceId, IReadOnlyList<PlannedChange> changes)
     {
-        if (FixCatalog.Find(r.FixId) is not { } fix)
-        {
-            return BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnknownFix, r.FixId);
-        }
-        // Safety rule: no change batch without a restore point that provably exists.
-        var rp = restorePoints.CreateVerified($"PC Doctor: {fix.Id}");
+        var rp = restorePoints.CreateVerified($"PC Doctor: {sourceId}");
         if (rp.Outcome != RestorePointOutcome.Created)
         {
-            return new BrokerResponse
+            return BrokerResponse.Failure(requestId, BrokerErrorCode.RestorePointFailed, rp.Outcome + (rp.Detail is null ? "" : ": " + rp.Detail)) with
             {
-                RequestId = r.RequestId,
-                Error = BrokerErrorCode.RestorePointFailed,
-                ErrorDetail = rp.Outcome + (rp.Detail is null ? "" : ": " + rp.Detail),
-                Payload = BrokerResponse.Success(r.RequestId, new ApplyFixResult(rp, null)).Payload,
+                Payload = BrokerResponse.Success(requestId, new ApplyFixResult(rp, null)).Payload,
             };
         }
-        var batch = executor.ApplyBatch(fix.Id, fix.Changes);
-        var payload = new ApplyFixResult(rp, batch);
+        var batch = executor.ApplyBatch(sourceId, changes);
+        var payload = BrokerResponse.Success(requestId, new ApplyFixResult(rp, batch)).Payload;
         return batch.Succeeded
-            ? BrokerResponse.Success(r.RequestId, payload)
-            : BrokerResponse.Failure(r.RequestId, BrokerErrorCode.ChangeFailed, batch.Error) with
-            {
-                Payload = BrokerResponse.Success(r.RequestId, payload).Payload,
-            };
+            ? BrokerResponse.Success(requestId, new ApplyFixResult(rp, batch))
+            : BrokerResponse.Failure(requestId, BrokerErrorCode.ChangeFailed, batch.Error) with { Payload = payload };
     }
 
     private BrokerResponse Undo(UndoRequest r)
@@ -101,4 +126,7 @@ public sealed class BrokerRequestHandler(
         await PipeFraming.WriteAsync(pipe, response, ct).ConfigureAwait(false);
         return !ShutdownRequested;
     }
+
+    /// <summary>The Broker stays up while a job runs even if the idle timer fires.</summary>
+    public bool HasRunningJobs => _caps.Jobs?.AnyRunning == true;
 }

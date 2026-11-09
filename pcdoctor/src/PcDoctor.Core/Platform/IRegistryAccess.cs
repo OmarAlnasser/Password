@@ -19,3 +19,10 @@ public interface IServiceConfigAccess
     (string StartType, bool Delayed)? Read(string service);
     void Write(string service, string startType, bool delayed);
 }
+
+public interface ITaskSchedulerAccess
+{
+    /// <summary>Null if the task does not exist.</summary>
+    bool? IsEnabled(string taskPath);
+    void SetEnabled(string taskPath, bool enabled);
+}

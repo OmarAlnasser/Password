@@ -8,16 +8,16 @@ public sealed record UndoResult(int Undone, int Conflicts, int Failed, IReadOnly
 /// Applies planned changes with a write-ahead journal and reverts them. Never applies a change kind
 /// it cannot also undo: every planned change is captured before the first one is applied.
 /// </summary>
-public sealed class ChangeExecutor(
-    ChangeJournal journal,
-    RegistryApplier? registry,
-    ServiceApplier? services,
-    TimeProvider? clock = null)
+public sealed class ChangeExecutor(ChangeJournal journal, IReadOnlyList<IChangeApplier> appliers, TimeProvider? clock = null)
 {
     private readonly TimeProvider _clock = clock ?? TimeProvider.System;
 
-    private IEnumerable<IChangeApplier> Appliers =>
-        new IChangeApplier?[] { registry, services }.OfType<IChangeApplier>();
+    public ChangeExecutor(ChangeJournal journal, RegistryApplier? registry, ServiceApplier? services, TimeProvider? clock = null)
+        : this(journal, new IChangeApplier?[] { registry, services }.OfType<IChangeApplier>().ToList(), clock)
+    {
+    }
+
+    private IEnumerable<IChangeApplier> Appliers => appliers;
 
     public BatchResult ApplyBatch(string sourceId, IReadOnlyList<PlannedChange> planned)
     {
@@ -27,12 +27,8 @@ public sealed class ChangeExecutor(
         {
             foreach (var p in planned)
             {
-                captured.Add(p switch
-                {
-                    PlannedRegistrySet or PlannedRegistryDelete when registry is not null => registry.Capture(p),
-                    PlannedServiceStart s when services is not null => services.Capture(s),
-                    _ => throw new NotSupportedException($"No reversible applier for {p.GetType().Name}."),
-                });
+                captured.Add(appliers.Select(a => a.TryCapture(p)).FirstOrDefault(c => c is not null)
+                             ?? throw new NotSupportedException($"No reversible applier for {p.GetType().Name}."));
             }
         }
         catch (Exception ex)

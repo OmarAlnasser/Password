@@ -5,6 +5,9 @@ public interface IChangeApplier
 {
     bool CanHandle(JournalChange change);
 
+    /// <summary>Reads the current state for a planned change this applier handles; null for any other kind.</summary>
+    JournalChange? TryCapture(PlannedChange planned);
+
     /// <summary>Applies the change. The change carries the old values captured by <see cref="Capture"/>.</summary>
     void Apply(JournalChange change);
 

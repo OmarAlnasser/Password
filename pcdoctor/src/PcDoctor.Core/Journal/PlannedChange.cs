@@ -10,6 +10,8 @@ namespace PcDoctor.Core.Journal;
 [JsonDerivedType(typeof(PlannedRegistrySet), "registrySet")]
 [JsonDerivedType(typeof(PlannedRegistryDelete), "registryDelete")]
 [JsonDerivedType(typeof(PlannedServiceStart), "serviceStart")]
+[JsonDerivedType(typeof(PlannedTaskEnabled), "taskEnabled")]
+[JsonDerivedType(typeof(PlannedFileMove), "fileMove")]
 public abstract record PlannedChange
 {
     /// <summary>The exact target, for the consent preview (left-to-right, untranslated).</summary>
@@ -32,4 +34,15 @@ public sealed record PlannedServiceStart(string Service, string StartType, bool 
 {
     public override string Describe() =>
         $"Service {Service}: start = {StartType}{(DelayedAutostart ? " (delayed)" : "")}";
+}
+
+public sealed record PlannedTaskEnabled(string TaskPath, bool Enabled) : PlannedChange
+{
+    public override string Describe() => $"Scheduled task {TaskPath}: {(Enabled ? "enable" : "disable")}";
+}
+
+/// <summary>Moves a file aside (a startup shortcut into PC Doctor's backup folder) instead of deleting it.</summary>
+public sealed record PlannedFileMove(string From, string To) : PlannedChange
+{
+    public override string Describe() => $"Move {From} → {To}";
 }

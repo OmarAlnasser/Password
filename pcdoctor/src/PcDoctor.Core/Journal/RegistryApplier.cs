@@ -30,6 +30,9 @@ public sealed class RegistryApplier(IRegistryAccess registry, Func<string, strin
 
     public bool CanHandle(JournalChange change) => change is RegistryChange;
 
+    public JournalChange? TryCapture(PlannedChange planned) =>
+        planned is PlannedRegistrySet or PlannedRegistryDelete ? Capture(planned) : null;
+
     public void Apply(JournalChange change)
     {
         var c = (RegistryChange)change;
@@ -89,6 +92,8 @@ public sealed class ServiceApplier(IServiceConfigAccess services) : IChangeAppli
 
     public bool CanHandle(JournalChange change) => change is ServiceChange;
 
+    public JournalChange? TryCapture(PlannedChange planned) => planned is PlannedServiceStart s ? Capture(s) : null;
+
     public void Apply(JournalChange change)
     {
         var c = (ServiceChange)change;
@@ -105,5 +110,76 @@ public sealed class ServiceApplier(IServiceConfigAccess services) : IChangeAppli
     {
         var c = (ServiceChange)change;
         services.Write(c.Service, c.OldStartType, c.OldDelayedAutostart);
+    }
+}
+
+public sealed class TaskApplier(ITaskSchedulerAccess tasks) : IChangeApplier
+{
+    public bool CanHandle(JournalChange change) => change is TaskChange;
+
+    public JournalChange? TryCapture(PlannedChange planned)
+    {
+        if (planned is not PlannedTaskEnabled t)
+        {
+            return null;
+        }
+        var current = tasks.IsEnabled(t.TaskPath) ?? throw new InvalidOperationException($"Task {t.TaskPath} does not exist.");
+        return new TaskChange(t.TaskPath, current, t.Enabled);
+    }
+
+    public void Apply(JournalChange change)
+    {
+        var c = (TaskChange)change;
+        tasks.SetEnabled(c.TaskPath, c.NewEnabled);
+    }
+
+    public bool IsStillApplied(JournalChange change)
+    {
+        var c = (TaskChange)change;
+        return tasks.IsEnabled(c.TaskPath) == c.NewEnabled;
+    }
+
+    public void Revert(JournalChange change)
+    {
+        var c = (TaskChange)change;
+        tasks.SetEnabled(c.TaskPath, c.OldEnabled);
+    }
+}
+
+/// <summary>Moves files aside and back. Never overwrites: an occupied destination fails the change.</summary>
+public sealed class FileMoveApplier : IChangeApplier
+{
+    public bool CanHandle(JournalChange change) => change is FileMoveChange;
+
+    public JournalChange? TryCapture(PlannedChange planned)
+    {
+        if (planned is not PlannedFileMove m)
+        {
+            return null;
+        }
+        if (!File.Exists(m.From))
+        {
+            throw new FileNotFoundException("Nothing to move.", m.From);
+        }
+        return new FileMoveChange(m.From, m.To);
+    }
+
+    public void Apply(JournalChange change)
+    {
+        var c = (FileMoveChange)change;
+        Directory.CreateDirectory(Path.GetDirectoryName(c.To)!);
+        File.Move(c.From, c.To, overwrite: false);
+    }
+
+    public bool IsStillApplied(JournalChange change)
+    {
+        var c = (FileMoveChange)change;
+        return File.Exists(c.To) && !File.Exists(c.From);
+    }
+
+    public void Revert(JournalChange change)
+    {
+        var c = (FileMoveChange)change;
+        File.Move(c.To, c.From, overwrite: false);
     }
 }
