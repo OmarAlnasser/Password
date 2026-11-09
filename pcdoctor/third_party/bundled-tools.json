@@ -1,0 +1,11 @@
+{
+  "_comment": "Redistributable tools shipped in the app's tools folder. CI downloads exactly these files and fails if a hash differs; the app checks the hash again before running one. Both are MIT licensed (licenses/).",
+  "tools": [
+    { "name": "diskspd.exe", "arch": "X64", "url": "https://github.com/microsoft/diskspd/releases/download/v2.2/DiskSpd.ZIP", "zipEntry": "amd64/diskspd.exe",
+      "sha256": "8f3b2f0909549c54253edee26c9a8d239b8b6c817b076bcd7efb1bda6571aee9", "license": "DiskSpd-LICENSE.txt" },
+    { "name": "diskspd.exe", "arch": "Arm64", "url": "https://github.com/microsoft/diskspd/releases/download/v2.2/DiskSpd.ZIP", "zipEntry": "arm64/diskspd.exe",
+      "sha256": "229653c37b2c82480aae61d245b927624912bb2baddf9e5a1581c32085c0faff", "license": "DiskSpd-LICENSE.txt" },
+    { "name": "PresentMon.exe", "arch": "X64", "url": "https://github.com/GameTechDev/PresentMon/releases/download/v2.3.0/PresentMon-2.3.0-x64.exe", "zipEntry": null,
+      "sha256": "690533cf5c2591ef571a3037aa4c205c8e75860ef3f56927bf3a98acf7198485", "license": "PresentMon-LICENSE.txt" }
+  ]
+}

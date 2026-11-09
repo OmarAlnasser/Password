@@ -712,6 +712,67 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="repairs.exit" xml:space="preserve"><value>Finished with exit code {0}.</value></data>
   <data name="repairs.log" xml:space="preserve"><value>Results</value></data>
   <data name="settings.expert" xml:space="preserve"><value>Show expert tools (Driver Verifier)</value></data>
+  <data name="page.performance.title" xml:space="preserve"><value>Did it actually help?</value></data>
+  <data name="page.performance.eyebrow" xml:space="preserve"><value>Benchmarks</value></data>
+  <data name="page.performance.subtitle" xml:space="preserve"><value>Measure before and after a change. PC Doctor only says "improved" when the difference is both statistically clear and big enough to matter; most tweaks land within measurement noise, and it says so.</value></data>
+  <data name="bench.measure.title" xml:space="preserve"><value>Record a measurement</value></data>
+  <data name="bench.measure.body" xml:space="preserve"><value>Close other apps and keep the PC plugged in. Each test is repeated until results are stable (at most 10 runs), after two discarded warm-up runs.</value></data>
+  <data name="bench.set.cpu" xml:space="preserve"><value>Processor</value></data>
+  <data name="bench.set.background" xml:space="preserve"><value>Background load</value></data>
+  <data name="bench.set.disk" xml:space="preserve"><value>Disk (DiskSpd)</value></data>
+  <data name="bench.set.boot" xml:space="preserve"><value>Boot time (last full boots)</value></data>
+  <data name="bench.set.network" xml:space="preserve"><value>Network (depends on your connection)</value></data>
+  <data name="bench.set.game" xml:space="preserve"><value>Game process (optional, e.g. game.exe)</value></data>
+  <data name="bench.recordBefore" xml:space="preserve"><value>Record "before"</value></data>
+  <data name="bench.recordAfter" xml:space="preserve"><value>Record "after"</value></data>
+  <data name="bench.status.settling" xml:space="preserve"><value>Checking conditions…</value></data>
+  <data name="bench.status.run" xml:space="preserve"><value>{0}: run {1} {2} {3}</value></data>
+  <data name="bench.status.game" xml:space="preserve"><value>Frame capture {0} of 4 in {1}: play the same scene for 60 seconds.</value></data>
+  <data name="bench.status.saved" xml:space="preserve"><value>Measurement saved.</value></data>
+  <data name="bench.warn.battery" xml:space="preserve"><value>Running on battery: results will not be comparable with a plugged-in run.</value></data>
+  <data name="bench.warn.justBooted" xml:space="preserve"><value>Windows started less than 5 minutes ago and is still busy with startup work.</value></data>
+  <data name="bench.warn.busy" xml:space="preserve"><value>The processor is not idle (more than 5% in use). Close other apps first.</value></data>
+  <data name="bench.warn.reboot" xml:space="preserve"><value>A restart is pending. Restart first so both measurements use the same state.</value></data>
+  <data name="bench.warn.noDiskspd" xml:space="preserve"><value>DiskSpd is not included in this build, so the disk test is not available.</value></data>
+  <data name="bench.compare" xml:space="preserve"><value>Compare two measurements</value></data>
+  <data name="bench.before" xml:space="preserve"><value>Before</value></data>
+  <data name="bench.after" xml:space="preserve"><value>After</value></data>
+  <data name="bench.verdict.Improved" xml:space="preserve"><value>Improved</value></data>
+  <data name="bench.verdict.Regressed" xml:space="preserve"><value>Worse</value></data>
+  <data name="bench.verdict.NoSignificantChange" xml:space="preserve"><value>No significant change (within measurement noise)</value></data>
+  <data name="bench.verdict.InsufficientData" xml:space="preserve"><value>Not enough runs to compare</value></data>
+  <data name="bench.detail" xml:space="preserve"><value>{0} vs {1} runs · p = {2} · needs at least {3}% to count</value></data>
+  <data name="bench.environment" xml:space="preserve"><value>Depends on the network, not only this PC.</value></data>
+  <data name="bench.conditionsDiffer" xml:space="preserve"><value>Conditions differed: {0}.</value></data>
+  <data name="bench.diff.build" xml:space="preserve"><value>Windows build</value></data>
+  <data name="bench.diff.power" xml:space="preserve"><value>power source</value></data>
+  <data name="bench.diff.plan" xml:space="preserve"><value>power plan</value></data>
+  <data name="bench.diff.idle" xml:space="preserve"><value>background activity</value></data>
+  <data name="bench.diff.reboot" xml:space="preserve"><value>pending restart</value></data>
+  <data name="bench.latency.title" xml:space="preserve"><value>Driver latency (DPC and ISR)</value></data>
+  <data name="bench.latency.run" xml:space="preserve"><value>Trace for 10 seconds</value></data>
+  <data name="bench.latency.running" xml:space="preserve"><value>Tracing drivers…</value></data>
+  <data name="bench.latency.driver" xml:space="preserve"><value>Driver</value></data>
+  <data name="bench.latency.dpc" xml:space="preserve"><value>DPC max / p99</value></data>
+  <data name="bench.latency.isr" xml:space="preserve"><value>ISR max / p99</value></data>
+  <data name="bench.latency.ok" xml:space="preserve"><value>No driver exceeded Microsoft's guidance (DPC 100 µs, ISR 25 µs) during the trace.</value></data>
+  <data name="bench.latency.over" xml:space="preserve"><value>Drivers at the top of the list exceeded Microsoft's guidance (DPC 100 µs, ISR 25 µs). That can cause audio crackles and stutter.</value></data>
+  <data name="bench.latency.busy" xml:space="preserve"><value>Another tool (LatencyMon or Windows Performance Recorder) is using the kernel trace. Close it and try again.</value></data>
+  <data name="metric.cpu.single" xml:space="preserve"><value>Processor, one thread</value></data>
+  <data name="metric.cpu.multi" xml:space="preserve"><value>Processor, all threads</value></data>
+  <data name="metric.boot.mainPath" xml:space="preserve"><value>Boot to desktop</value></data>
+  <data name="metric.boot.postBoot" xml:space="preserve"><value>Settling after sign-in</value></data>
+  <data name="metric.bg.commit" xml:space="preserve"><value>Memory committed</value></data>
+  <data name="metric.bg.processes" xml:space="preserve"><value>Running processes</value></data>
+  <data name="metric.bg.dpc" xml:space="preserve"><value>Time spent in DPCs</value></data>
+  <data name="metric.disk.seqRead" xml:space="preserve"><value>Disk sequential read</value></data>
+  <data name="metric.disk.randRead" xml:space="preserve"><value>Disk random read</value></data>
+  <data name="metric.disk.randLatency" xml:space="preserve"><value>Disk random read latency</value></data>
+  <data name="metric.game.fps" xml:space="preserve"><value>Average frame rate</value></data>
+  <data name="metric.game.low1" xml:space="preserve"><value>1% low frame rate</value></data>
+  <data name="metric.net.gateway" xml:space="preserve"><value>Ping to router</value></data>
+  <data name="metric.net.public" xml:space="preserve"><value>Ping to the internet</value></data>
+  <data name="metric.net.dns" xml:space="preserve"><value>DNS lookup</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

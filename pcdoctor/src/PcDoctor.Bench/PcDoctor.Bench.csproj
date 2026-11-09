@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\third_party\bundled-tools.json" LogicalName="PcDoctor.Bench.bundled-tools.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PcDoctor.Core\PcDoctor.Core.csproj" />
+  </ItemGroup>
+</Project>

@@ -29,6 +29,7 @@
     <ProjectReference Include="..\PcDoctor.Modules.Network\PcDoctor.Modules.Network.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Integrity\PcDoctor.Modules.Integrity.csproj" />
+    <ProjectReference Include="..\PcDoctor.Bench\PcDoctor.Bench.csproj" />
     <!-- The Broker ships next to the app; the app checks for it there and nowhere else. -->
     <ProjectReference Include="..\PcDoctor.Broker\PcDoctor.Broker.csproj" />
   </ItemGroup>

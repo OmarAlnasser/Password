@@ -115,6 +115,7 @@ internal static partial class Program
         JobKind.SafetyScannerFull => DefenderWindows.RunSafetyScanner(true, progress, ct),
         JobKind.Inventory or JobKind.InventoryWithBackupPrivilege => Task.Run<object?>(() =>
             InventoryWalker.Run(kind == JobKind.InventoryWithBackupPrivilege, progress, ct, DataFolder("inventory")), ct),
+        JobKind.LatencyTrace => Task.Run<object?>(() => PcDoctor.Bench.LatencyTracer.Run(TimeSpan.FromSeconds(10), ct), ct),
         _ => BrokerRepairs.Run(kind, target, progress, ct),
     };
 
@@ -135,6 +136,7 @@ internal static partial class Program
         ElevatedData.CrashDumps => DumpReader.Read(allowSymbolDownload: false, CancellationToken.None),
         ElevatedData.CrashDumpsWithSymbols => DumpReader.Read(allowSymbolDownload: true, CancellationToken.None),
         ElevatedData.VolumeDirty => PcDoctor.Modules.Integrity.RepairRunner.IsSystemVolumeDirty(),
+        ElevatedData.BootHistory => PcDoctor.Bench.WindowsBench.BootHistory(new WindowsEventSource()),
         _ => null,
     };
 

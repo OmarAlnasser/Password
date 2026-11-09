@@ -712,6 +712,67 @@
   <data name="repairs.exit" xml:space="preserve"><value>انتهى برمز الخروج {0}.</value></data>
   <data name="repairs.log" xml:space="preserve"><value>النتائج</value></data>
   <data name="settings.expert" xml:space="preserve"><value>إظهار أدوات الخبراء (Driver Verifier)</value></data>
+  <data name="page.performance.title" xml:space="preserve"><value>هل ساعد ذلك فعلاً؟</value></data>
+  <data name="page.performance.eyebrow" xml:space="preserve"><value>قياس الأداء</value></data>
+  <data name="page.performance.subtitle" xml:space="preserve"><value>قِس قبل التغيير وبعده. لا يقول طبيب الحاسوب "تحسّن" إلا عندما يكون الفرق واضحاً إحصائياً وكبيراً بما يكفي ليكون مهماً؛ معظم التعديلات تقع ضمن تذبذب القياس، ويقول ذلك.</value></data>
+  <data name="bench.measure.title" xml:space="preserve"><value>سجّل قياساً</value></data>
+  <data name="bench.measure.body" xml:space="preserve"><value>أغلق التطبيقات الأخرى وأبقِ الجهاز موصولاً بالكهرباء. يُكرَّر كل اختبار حتى تستقر النتائج (10 مرات كحد أقصى)، بعد جولتي إحماء لا تُحتسبان.</value></data>
+  <data name="bench.set.cpu" xml:space="preserve"><value>المعالج</value></data>
+  <data name="bench.set.background" xml:space="preserve"><value>الحمل في الخلفية</value></data>
+  <data name="bench.set.disk" xml:space="preserve"><value>القرص (DiskSpd)</value></data>
+  <data name="bench.set.boot" xml:space="preserve"><value>وقت الإقلاع (آخر عمليات إقلاع كاملة)</value></data>
+  <data name="bench.set.network" xml:space="preserve"><value>الشبكة (تعتمد على اتصالك)</value></data>
+  <data name="bench.set.game" xml:space="preserve"><value>عملية اللعبة (اختياري، مثل game.exe)</value></data>
+  <data name="bench.recordBefore" xml:space="preserve"><value>تسجيل "قبل"</value></data>
+  <data name="bench.recordAfter" xml:space="preserve"><value>تسجيل "بعد"</value></data>
+  <data name="bench.status.settling" xml:space="preserve"><value>جارٍ التحقق من الظروف…</value></data>
+  <data name="bench.status.run" xml:space="preserve"><value>{0}: الجولة {1} {2} {3}</value></data>
+  <data name="bench.status.game" xml:space="preserve"><value>التقاط الإطارات {0} من 4 في {1}: العب المشهد نفسه لمدة 60 ثانية.</value></data>
+  <data name="bench.status.saved" xml:space="preserve"><value>حُفظ القياس.</value></data>
+  <data name="bench.warn.battery" xml:space="preserve"><value>يعمل على البطارية: لن تكون النتائج قابلة للمقارنة مع قياس موصول بالكهرباء.</value></data>
+  <data name="bench.warn.justBooted" xml:space="preserve"><value>بدأ ويندوز منذ أقل من 5 دقائق وما زال مشغولاً بمهام بدء التشغيل.</value></data>
+  <data name="bench.warn.busy" xml:space="preserve"><value>المعالج ليس خاملاً (أكثر من 5% قيد الاستخدام). أغلق التطبيقات الأخرى أولاً.</value></data>
+  <data name="bench.warn.reboot" xml:space="preserve"><value>توجد إعادة تشغيل معلّقة. أعد التشغيل أولاً ليكون القياسان في الحالة نفسها.</value></data>
+  <data name="bench.warn.noDiskspd" xml:space="preserve"><value>DiskSpd غير مضمّن في هذا الإصدار، لذا اختبار القرص غير متاح.</value></data>
+  <data name="bench.compare" xml:space="preserve"><value>قارن بين قياسين</value></data>
+  <data name="bench.before" xml:space="preserve"><value>قبل</value></data>
+  <data name="bench.after" xml:space="preserve"><value>بعد</value></data>
+  <data name="bench.verdict.Improved" xml:space="preserve"><value>تحسّن</value></data>
+  <data name="bench.verdict.Regressed" xml:space="preserve"><value>أسوأ</value></data>
+  <data name="bench.verdict.NoSignificantChange" xml:space="preserve"><value>لا تغيير ملحوظ (ضمن تذبذب القياس)</value></data>
+  <data name="bench.verdict.InsufficientData" xml:space="preserve"><value>جولات غير كافية للمقارنة</value></data>
+  <data name="bench.detail" xml:space="preserve"><value>{0} مقابل {1} جولات · p = {2} · يحتاج {3}% على الأقل ليُحتسب</value></data>
+  <data name="bench.environment" xml:space="preserve"><value>يعتمد على الشبكة، لا على هذا الجهاز وحده.</value></data>
+  <data name="bench.conditionsDiffer" xml:space="preserve"><value>اختلفت الظروف: {0}.</value></data>
+  <data name="bench.diff.build" xml:space="preserve"><value>إصدار ويندوز</value></data>
+  <data name="bench.diff.power" xml:space="preserve"><value>مصدر الطاقة</value></data>
+  <data name="bench.diff.plan" xml:space="preserve"><value>خطة الطاقة</value></data>
+  <data name="bench.diff.idle" xml:space="preserve"><value>النشاط في الخلفية</value></data>
+  <data name="bench.diff.reboot" xml:space="preserve"><value>إعادة التشغيل المعلّقة</value></data>
+  <data name="bench.latency.title" xml:space="preserve"><value>زمن استجابة التعريفات (DPC وISR)</value></data>
+  <data name="bench.latency.run" xml:space="preserve"><value>تتبّع لمدة 10 ثوانٍ</value></data>
+  <data name="bench.latency.running" xml:space="preserve"><value>جارٍ تتبّع التعريفات…</value></data>
+  <data name="bench.latency.driver" xml:space="preserve"><value>التعريف</value></data>
+  <data name="bench.latency.dpc" xml:space="preserve"><value>DPC الأقصى / p99</value></data>
+  <data name="bench.latency.isr" xml:space="preserve"><value>ISR الأقصى / p99</value></data>
+  <data name="bench.latency.ok" xml:space="preserve"><value>لم يتجاوز أي تعريف توصيات مايكروسوفت (DPC ‏100 ميكروثانية، ISR ‏25 ميكروثانية) أثناء التتبع.</value></data>
+  <data name="bench.latency.over" xml:space="preserve"><value>تجاوزت التعريفات في أعلى القائمة توصيات مايكروسوفت (DPC ‏100 ميكروثانية، ISR ‏25 ميكروثانية). قد يسبب ذلك طقطقة في الصوت وتقطّعاً.</value></data>
+  <data name="bench.latency.busy" xml:space="preserve"><value>أداة أخرى (LatencyMon أو Windows Performance Recorder) تستخدم تتبّع النواة. أغلقها وحاول مجدداً.</value></data>
+  <data name="metric.cpu.single" xml:space="preserve"><value>المعالج، خيط واحد</value></data>
+  <data name="metric.cpu.multi" xml:space="preserve"><value>المعالج، كل الخيوط</value></data>
+  <data name="metric.boot.mainPath" xml:space="preserve"><value>الإقلاع حتى سطح المكتب</value></data>
+  <data name="metric.boot.postBoot" xml:space="preserve"><value>الاستقرار بعد تسجيل الدخول</value></data>
+  <data name="metric.bg.commit" xml:space="preserve"><value>الذاكرة المحجوزة</value></data>
+  <data name="metric.bg.processes" xml:space="preserve"><value>العمليات قيد التشغيل</value></data>
+  <data name="metric.bg.dpc" xml:space="preserve"><value>الوقت المستهلك في DPC</value></data>
+  <data name="metric.disk.seqRead" xml:space="preserve"><value>قراءة القرص المتسلسلة</value></data>
+  <data name="metric.disk.randRead" xml:space="preserve"><value>قراءة القرص العشوائية</value></data>
+  <data name="metric.disk.randLatency" xml:space="preserve"><value>زمن استجابة القراءة العشوائية</value></data>
+  <data name="metric.game.fps" xml:space="preserve"><value>متوسط معدل الإطارات</value></data>
+  <data name="metric.game.low1" xml:space="preserve"><value>أدنى 1% من معدل الإطارات</value></data>
+  <data name="metric.net.gateway" xml:space="preserve"><value>زمن الوصول إلى الموجّه</value></data>
+  <data name="metric.net.public" xml:space="preserve"><value>زمن الوصول إلى الإنترنت</value></data>
+  <data name="metric.net.dns" xml:space="preserve"><value>استعلام DNS</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

@@ -8,7 +8,10 @@ $winring0 = $files | Where-Object { $_.Name -like 'WinRing0*' }
 if ($winring0) { throw "WinRing0 must never ship: $($winring0.FullName -join ', ')" }
 
 $bad = @()
-foreach ($f in $files) {
+# Bundled third-party tools keep their publishers' binaries byte for byte (the app checks their SHA-256
+# against third_party/bundled-tools.json), so they are not re-signed and not held to -RequireSigned.
+$toolsDir = Join-Path (Resolve-Path $Path) 'tools'
+foreach ($f in $files | Where-Object { -not $_.FullName.StartsWith($toolsDir, [StringComparison]::OrdinalIgnoreCase) }) {
     $sig = Get-AuthenticodeSignature -FilePath $f.FullName
     if ($sig.Status -ne 'Valid') { $bad += "$($f.Name): $($sig.Status)" }
 }

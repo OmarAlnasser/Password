@@ -52,6 +52,8 @@ public enum ElevatedData
     CrashDumpsWithSymbols,
     /// <summary>FSCTL_IS_VOLUME_DIRTY for the system volume.</summary>
     VolumeDirty,
+    /// <summary>Diagnostics-Performance event 100 boots with Kernel-Boot 27 boot types.</summary>
+    BootHistory,
 }
 
 public sealed record ReadElevatedRequest(ElevatedData Data) : BrokerRequest;

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Network\PcDoctor.Modules.Network.csproj" />
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj" />
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Integrity\PcDoctor.Modules.Integrity.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Bench\PcDoctor.Bench.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />

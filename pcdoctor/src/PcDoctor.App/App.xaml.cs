@@ -39,6 +39,7 @@ public partial class App : Application
         new ProtectionViewModel(services),
         new StartupViewModel(services),
         new RepairsViewModel(services),
+        new PerformanceViewModel(services),
         new FilesViewModel(services),
         new ChangesViewModel(services),
         new SettingsViewModel(services),

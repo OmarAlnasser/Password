@@ -57,6 +57,9 @@ jobs:
           & $signtool.FullName sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /f $pfx /p $env:SIGNING_CERT_PASSWORD $files
           if ($LASTEXITCODE -ne 0) { throw "signtool failed" }
           Remove-Item $pfx
+      - name: Add the pinned bundled tools (DiskSpd, PresentMon), hash-checked
+        shell: bash
+        run: python -I tools/fetch_bundled_tools.py ${{ matrix.rid == 'win-arm64' && 'Arm64' || 'X64' }} out/${{ matrix.rid }}
       - name: Verify signatures and package contents
         shell: pwsh
         run: |

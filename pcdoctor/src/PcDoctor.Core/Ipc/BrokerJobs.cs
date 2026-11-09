@@ -30,6 +30,8 @@ public enum JobKind
     VerifierEnable,
     VerifierReset,
     MemoryDiagnostic,
+    /// <summary>10-second kernel trace of DPC and ISR durations per driver.</summary>
+    LatencyTrace,
 }
 
 public enum JobState { Running, Succeeded, Failed, Cancelled }

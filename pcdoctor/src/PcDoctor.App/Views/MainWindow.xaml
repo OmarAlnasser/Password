@@ -23,6 +23,7 @@
         <DataTemplate DataType="{x:Type p:StartupViewModel}"><v:StartupView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:FilesViewModel}"><v:FilesView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:RepairsViewModel}"><v:RepairsView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:PerformanceViewModel}"><v:PerformanceView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:ChangesViewModel}"><v:ChangesView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:SettingsViewModel}"><v:SettingsView /></DataTemplate>
     </Window.Resources>
