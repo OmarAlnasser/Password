@@ -48,4 +48,8 @@ S = [
 ("notify.title", "PC Doctor found {0} new important items", "وجد طبيب الحاسوب {0} عناصر مهمة جديدة"),
 ("action.dismiss", "Dismiss", "تجاهل"),
 ("action.open", "Open PC Doctor", "فتح طبيب الحاسوب"),
+("uninstall.title", "Before PC Doctor is removed", "قبل إزالة طبيب الحاسوب"),
+("uninstall.body", "PC Doctor made {0} changes on this PC that are still in place. Undo them all now? If you skip this, the changes stay and the journal stays in ProgramData so you can still review them.", "أجرى طبيب الحاسوب {0} تغييرات على هذا الجهاز ما زالت قائمة. هل تريد التراجع عنها كلها الآن؟ إن تخطيت ذلك تبقى التغييرات ويبقى السجل في ProgramData لتتمكن من مراجعتها."),
+("uninstall.continue", "Continue uninstalling", "متابعة الإزالة"),
+("shell.shortcuts", "Ctrl+1 to Ctrl+9 open pages · Ctrl+F searches findings", "Ctrl+1 إلى Ctrl+9 لفتح الصفحات · Ctrl+F للبحث في النتائج"),
 ]

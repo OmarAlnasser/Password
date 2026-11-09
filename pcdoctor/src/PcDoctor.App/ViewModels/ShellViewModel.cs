@@ -31,6 +31,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 
     public string AppTitle => Loc.Get("app.title");
     public string Privacy => Loc.Get("shell.privacy");
+    public string Shortcuts => Loc.Get("shell.shortcuts");
 
     partial void OnSelectedPageChanged(PageViewModel value) => value.OnShown();
 

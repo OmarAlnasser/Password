@@ -38,7 +38,7 @@
                 <CheckBox DockPanel.Dock="Right" Style="{StaticResource Switch}" Content="{loc:Loc filter.showHidden}" IsChecked="{Binding ShowHidden}"
                           Margin="16,0,0,0" />
                 <Grid>
-                    <TextBox Style="{StaticResource Input}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Padding="42,10,14,10"
+                    <TextBox Tag="search" Style="{StaticResource Input}" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Padding="42,10,14,10"
                              AutomationProperties.Name="{loc:Loc filter.search}" />
                     <TextBlock Text="&#xE721;" Style="{StaticResource Text.Icon}" FontSize="15" Margin="16,0,0,0" HorizontalAlignment="Left"
                                Foreground="{DynamicResource Muted}" IsHitTestVisible="False" />

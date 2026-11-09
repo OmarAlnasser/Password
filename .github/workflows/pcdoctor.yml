@@ -65,7 +65,27 @@ jobs:
         run: |
           $require = [bool]$env:SIGNING_CERT_PFX_BASE64
           ./tools/verify-signatures.ps1 -Path out/${{ matrix.rid }} -RequireSigned:$require
+      - name: Build the MSI
+        shell: pwsh
+        run: |
+          Copy-Item THIRD_PARTY_NOTICES.md out/${{ matrix.rid }}/
+          $platform = '${{ matrix.rid }}'.Replace('win-', '')
+          dotnet build installer/PcDoctor.Installer.wixproj -c Release -p:InstallerPlatform=$platform -p:Platform=$platform "-p:PublishDir=$PWD\out\${{ matrix.rid }}\" -o msi/${{ matrix.rid }}
+      - name: Sign the MSI (when a signing identity is configured)
+        if: env.SIGNING_CERT_PFX_BASE64 != ''
+        shell: pwsh
+        run: |
+          $pfx = Join-Path $env:RUNNER_TEMP 'pcdoctor.pfx'
+          [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:SIGNING_CERT_PFX_BASE64))
+          $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName | Select-Object -Last 1
+          & $signtool.FullName sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /f $pfx /p $env:SIGNING_CERT_PASSWORD (Get-ChildItem msi/${{ matrix.rid }}/*.msi).FullName
+          if ($LASTEXITCODE -ne 0) { throw "signtool failed" }
+          Remove-Item $pfx
       - uses: actions/upload-artifact@v4
         with:
           name: pcdoctor-${{ matrix.rid }}
           path: pcdoctor/out/${{ matrix.rid }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pcdoctor-msi-${{ matrix.rid }}
+          path: pcdoctor/msi/${{ matrix.rid }}/*.msi

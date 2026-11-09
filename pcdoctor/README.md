@@ -10,34 +10,48 @@ ever says the PC is "clean".
 
 ## Status
 
+All phases P0–P7 are implemented and tested on Linux CI fixtures plus a Windows CI job that renders
+every page. **Nothing has been run on real hardware yet**, so this is a developer preview, not a
+release. See "Not yet verified on hardware" below.
+
 | Phase | Scope | State |
 |---|---|---|
-| P0 | Solution, MVVM shell, EN/AR + RTL, elevated Broker + named-pipe IPC, Finding model, change journal + undo, verified restore points, report export, CI with signing gate | **Done** |
-| P1 | Read-only health: M11 security posture, M9 drivers/devices, M7 disk health, M10 battery, M5 event correlation + dump config | **Done** (see "Not yet verified on hardware") |
-| P2 | Crash engine: cdb/dbgeng `!analyze`, offline minidump fallback, crash timeline UI | Not started. The bug check knowledge base is already in place (`src/PcDoctor.Modules.Crash/bugchecks.json`) |
-| P3 | Defender orchestration + AMSI, persistence audit + WinVerifyTrust/catalog, network/trust, file inventory | Not started |
-| P4 | DISM/SFC/chkdsk/mdsched with consent and reboot flows | Not started |
-| P5 | Benchmarks with statistical verdicts | Not started |
-| P6 | Debloat catalog, detect/apply/undo, presets, drift detection | Not started |
-| P7 | Sensors (PawnIO), scheduling, history, installer, accessibility polish | Not started |
+| P0 | Solution, MVVM shell, EN/AR + RTL, elevated Broker + named-pipe IPC, Finding model, change journal + undo, verified restore points, report export, CI with signing gate | Done |
+| P1 | Read-only health: M11 security posture, M9 drivers, M7 disk, M10 battery, M5 event correlation | Done |
+| P2 | Crash engine: cdb `!analyze` when Debugging Tools are installed, offline minidump header parser, WER reports, crash timeline | Done |
+| P3 | M2 Defender orchestration (+AMSI, Safety Scanner, optional VirusTotal hash lookups), M3 persistence audit with WinVerifyTrust + catalog, M4 network/trust, M1 file inventory | Done |
+| P4 | M6 integrity: DISM, SFC, chkdsk, Memory Diagnostic, Driver Verifier (expert), with consent and reboot flows | Done |
+| P5 | Benchmarks (DiskSpd, PresentMon, boot/latency traces) with Mann-Whitney + bootstrap verdicts | Done |
+| P6 | Debloat catalog (28 tweaks), detect/apply/undo, presets, drift detection | Done |
+| P7 | M8 sensors (LibreHardwareMonitor; PawnIO detected, never installed), scan history compare, quiet scheduled Health Check, MSI installer with undo-all on uninstall, keyboard shortcuts | Done |
 
-Inside the app, each part of a later phase shows up under "What was checked" as *Not checked: this
-version does not include it yet (planned for phase Pn)*. Nothing is silently left out.
+UI: Khazna's design language (`docs/DESIGN.md` in the repo root): dark-first tokens with Light and
+High Contrast themes, Outfit / IBM Plex Sans Arabic / JetBrains Mono, staggered entrance motion,
+hover lift, page transitions, count-up numbers and live indicators. All motion turns off when
+Windows animations are off or "Reduce motion" is set in the app.
+
+Keyboard: Ctrl+1…Ctrl+9 open pages, Ctrl+F focuses the findings search. Every control has an
+automation name in both languages.
 
 ## Layout
 
 ```
 src/
-  PcDoctor.App               WPF UI (asInvoker; never elevated), MVVM with CommunityToolkit.Mvvm
-  PcDoctor.Broker            Elevated helper (requireAdministrator), started via UAC on demand
-  PcDoctor.Core              Finding model, localization, journal/undo, restore points, IPC, reports, scan runner
-  PcDoctor.Modules.Security  M11
-  PcDoctor.Modules.Crash     M5 (+ bugchecks.json knowledge base)
-  PcDoctor.Modules.Disk      M7 (MSFT_PhysicalDisk, reliability counters, NVMe log 0x02, SATA SMART)
-  PcDoctor.Modules.Drivers   M9 (+ WinRing0 detection)
-  PcDoctor.Modules.Battery   M10
-tests/PcDoctor.Tests         xUnit, with fixtures (event XML, battery report)
-tools/                       String tables (strings_*.py) → .resx generator, CI signature check
+  PcDoctor.App                 WPF UI (asInvoker; never elevated), MVVM with CommunityToolkit.Mvvm
+  PcDoctor.Broker              Elevated helper (requireAdministrator), started via UAC on demand
+  PcDoctor.Core                Findings, localization, journal/undo, restore points, IPC, reports, diff, scan runner
+  PcDoctor.Modules.Inventory   M1   PcDoctor.Modules.Malware    M2   PcDoctor.Modules.Persistence M3
+  PcDoctor.Modules.Network     M4   PcDoctor.Modules.Crash      M5   PcDoctor.Modules.Integrity   M6
+  PcDoctor.Modules.Disk        M7   PcDoctor.Modules.Sensors    M8   PcDoctor.Modules.Drivers     M9
+  PcDoctor.Modules.Battery     M10  PcDoctor.Modules.Security   M11
+  PcDoctor.Bench               Benchmark runner + statistics
+  PcDoctor.Tweaks              Tweak engine + versioned tweaks.json
+  PcDoctor.Platform.Appx       Store app removal (WinRT PackageManager)
+installer/                     WiX v5 per-machine MSI (built in CI on Windows)
+tests/PcDoctor.Tests           xUnit with fixtures; runs on any OS
+tests/PcDoctor.App.Tests       Windows only: renders every page in both themes, languages and at 100%/150%
+tools/                         String tables (strings_*.py) → .resx, bundled tool fetcher, signature check
+third_party/                   Pinned DiskSpd / PresentMon hashes and their licenses
 ```
 
 Each module is split into a **snapshot** (raw data), a pure **analyzer** (snapshot → checks + findings)
@@ -48,7 +62,7 @@ against recorded fixtures.
 
 - **The Broker cannot be used as a general-purpose admin tool.** The UI sends a fix *ID* from
   `FixCatalog`, which is compiled into the signed Broker. It never sends a registry path or a command
-  line. The protocol has six typed operations (`IpcTests.Protocol_has_no_generic_command_or_path_operation`).
+  line. The protocol has a fixed list of typed operations (`IpcTests.Protocol_has_no_generic_command_or_path_operation`).
   The pipe name is random, its ACL admits only the launching user's SID, and both ends check the
   other's process ID. The Broker also checks that its client is `PcDoctor.App.exe` from its own folder.
 - **HKCU is resolved to `HKU\<user SID>`** before anything is recorded. Under over-the-shoulder
@@ -85,18 +99,34 @@ win-arm64. If the repository secrets `PCDOCTOR_SIGNING_PFX_BASE64` / `PCDOCTOR_S
 are set, every PE file is signed and verified, and an unsigned file fails the build. Without them the
 build is marked "unsigned, not for distribution".
 
-## Acceptance tests covered so far
+## Acceptance tests
 
-| # | Test | Where |
-|---|---|---|
-| 1 | Honesty: no banned phrase in either language's strings, the knowledge base, or generated HTML/JSON/CSV | `HonestyAndLocalizationTests` |
-| 8 (partial) | Apply → journal entry per change → undo all → registry byte-identical; Defender/WU/pagefile never in the fix catalog; verified restore point | `JournalTests`, `IpcTests`, `StaticSafetyTests` |
-| 11 (partial) | Every string translated, EN/AR key and placeholder parity, every key used in code/XAML exists, evidence rendered LTR | `HonestyAndLocalizationTests` |
-| 12 (partial) | UI manifest is `asInvoker`; Broker is `requireAdministrator`; elevated reads go through the Broker | `StaticSafetyTests` |
-| 13 (partial) | No WinRing0 in the source tree; CI verifies signatures and rejects WinRing0 in the package | `StaticSafetyTests`, `tools/verify-signatures.ps1` |
+"Fixture" means the logic is tested against recorded data on every CI run. "VM" means the brief's
+end-to-end check still has to be done by hand on a Windows 11 and a Windows 10 22H2 VM.
 
-Still to do: tests 2–7, 9–10 and 14, which belong to later phases. The RTL clipping screenshot test
-at 100% / 150% (test 11) and the real-UAC test (test 12) need a Windows VM.
+| # | Test | Automated coverage | Still needs a VM |
+|---|---|---|---|
+| 1 | Honesty phrases | `No_ui_string_in_either_language_makes_a_banned_claim`, `Generated_reports_contain_no_banned_phrase_and_always_carry_the_disclaimer` | – |
+| 2 | Inventory coverage | `Inventoried_plus_skipped_accounts_for_every_entry`, `Cloud_placeholders_are_recognised_by_attribute`, `Unreadable_locations_are_listed_as_not_checked` | ACL folder, locked file, junction loop, 300-char path, OneDrive file stays cloud-only |
+| 3 | Defender / EICAR / third-party AV | `Eicar_detection_is_reported_from_defender_with_its_path`, `Quarantine_list_is_parsed`, `Third_party_av_means_no_defender_scan` | Real EICAR detect → quarantine → restore |
+| 4 | Exit code 2 = scan failed | `Exit_code_2_from_scan_errors_is_scan_failed_not_threat_found` | – |
+| 5 | Persistence | `Ifeo_accessibility_wmi_and_amsi_are_reported_…`, `Signature_tiers_map_to_severities_…`, `Disable_plan_moves_run_values_to_backup_…`, `Disabling_a_task_and_moving_a_shortcut_undo_exactly` | Planted entries, catalog-signed System32 file, reboot |
+| 6 | Crash | `Kernel_power_41_bugcheck_code_is_decimal`, `Offline_header_parser_reads_code_parameters_and_module_names`, `Analyze_output_fields_are_parsed` | NotMyFault dumps |
+| 7 | Integrity | `Cbs_log_separates_repaired_from_unrepairable_since_the_run_started` | Deliberately corrupted file |
+| 8 | Debloat undo | `Recommended_applied_through_the_journal_undoes_to_an_identical_registry_and_services`, `Presets_never_include_advanced_items_or_protected_components`, `Fix_is_not_applied_without_a_verified_restore_point` | Diff export on a VM |
+| 9 | Drift | `A_setting_reset_by_a_feature_update_is_detected_as_drift` | – |
+| 10 | Benchmarks | `Two_runs_with_no_change_are_almost_never_called_a_change` (false-positive rate < 1% over 1,000 pairs), `Injected_cpu_load_is_detected_as_worse` | Real runs |
+| 11 | RTL / translation | `Arabic_strings_are_actually_translated`, `English_and_arabic_have_the_same_keys_and_placeholders`, `Every_literal_key_in_source_and_xaml_exists`, `Arabic_html_is_rtl_and_evidence_is_isolated_ltr`, Windows `ViewSmokeTests` | Visual check for clipping |
+| 12 | Non-admin | `Ui_never_runs_elevated_and_broker_always_does`, `Protocol_has_no_generic_command_or_path_operation` | Real UAC prompt |
+| 13 | Signing, no WinRing0 | `WinRing0_is_never_shipped`, `tools/verify-signatures.ps1` in CI | Signing secrets must be set |
+| 14 | VirusTotal | `Limiter_never_allows_more_than_4_a_minute_or_500_a_day`, `No_upload_code_exists_anywhere`; off by default in `Settings` | – |
+
+## Installer
+
+`installer/` builds a per-machine MSI into Program Files with a Start menu shortcut. It adds no
+service, driver, startup entry or scheduled task. On a full uninstall it runs the app with
+`--uninstall-prompt`, which offers to undo every change still in the journal before the files go.
+The journal in `%ProgramData%\PCDoctor` is kept so changes stay reviewable.
 
 ## Not yet verified on hardware (`// VERIFY` in code)
 
@@ -114,3 +144,6 @@ Windows machine yet:
 - `Win32_QuickFixEngineering.InstalledOn` parsing on non-US locales.
 - Battery report XML element names.
 - System Protection detection (the restore-point verification catches a miss either way).
+- LibreHardwareMonitor sensor names ("Distance to TjMax", "GPU Hot Spot") on current hardware.
+- The WiX MSI and its uninstall prompt (built in CI, not yet installed on a VM).
+- Task Scheduler registration of the scheduled Health Check.

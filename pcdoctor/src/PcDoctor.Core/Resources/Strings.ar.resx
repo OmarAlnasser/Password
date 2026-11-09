@@ -924,6 +924,10 @@
   <data name="notify.title" xml:space="preserve"><value>وجد طبيب الحاسوب {0} عناصر مهمة جديدة</value></data>
   <data name="action.dismiss" xml:space="preserve"><value>تجاهل</value></data>
   <data name="action.open" xml:space="preserve"><value>فتح طبيب الحاسوب</value></data>
+  <data name="uninstall.title" xml:space="preserve"><value>قبل إزالة طبيب الحاسوب</value></data>
+  <data name="uninstall.body" xml:space="preserve"><value>أجرى طبيب الحاسوب {0} تغييرات على هذا الجهاز ما زالت قائمة. هل تريد التراجع عنها كلها الآن؟ إن تخطيت ذلك تبقى التغييرات ويبقى السجل في ProgramData لتتمكن من مراجعتها.</value></data>
+  <data name="uninstall.continue" xml:space="preserve"><value>متابعة الإزالة</value></data>
+  <data name="shell.shortcuts" xml:space="preserve"><value>Ctrl+1 إلى Ctrl+9 لفتح الصفحات · Ctrl+F للبحث في النتائج</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

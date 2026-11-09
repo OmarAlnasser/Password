@@ -25,6 +25,11 @@ public partial class App : Application
         ThemeManager.Apply(settings.Theme);
 
         var services = new AppServices(settings);
+        if (e.Args.Contains("--uninstall-prompt"))
+        {
+            _ = RunUninstallPrompt(services);
+            return;
+        }
         if (e.Args.Contains("--scheduled-scan"))
         {
             _ = RunScheduledScan(services);
@@ -33,6 +38,42 @@ public partial class App : Application
         _shell = new ShellViewModel(services, CreatePages(services));
         MainWindow = new MainWindow { DataContext = _shell };
         MainWindow.Show();
+    }
+
+    /// <summary>
+    /// Called by the installer before files are removed: offers to put back everything still in the
+    /// journal. Declining leaves the changes (and the journal in %ProgramData%) in place.
+    /// </summary>
+    private async Task RunUninstallPrompt(AppServices services)
+    {
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        int pending;
+        try
+        {
+            pending = new Core.Journal.ChangeJournal(AppModules.JournalPath).ReadCurrent().Count();
+        }
+        catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException)
+        {
+            pending = 0;
+        }
+        if (pending > 0 && ConsentDialog.Ask(Loc.Get("uninstall.title"), Loc.Format("uninstall.body", pending), Loc.Get("journal.undoAll.button")))
+        {
+            string message;
+            if (await services.Broker.EnsureStartedAsync(CancellationToken.None))
+            {
+                var response = await services.Broker.SendAsync(new Core.Ipc.UndoRequest(Core.Ipc.UndoScope.Everything, null, Force: false), CancellationToken.None);
+                message = response.PayloadAs<Core.Journal.UndoResult>() is { } r
+                    ? Loc.Format("status.undone", r.Undone, r.Conflicts, r.Failed)
+                    : Loc.Format("status.fixFailed", response.Error, response.ErrorDetail ?? "");
+            }
+            else
+            {
+                message = Loc.Get("status.brokerDeclined");
+            }
+            ConsentDialog.Ask(Loc.Get("uninstall.title"), message, Loc.Get("uninstall.continue"));
+        }
+        await services.DisposeAsync();
+        Shutdown();
     }
 
     /// <summary>Read-only Health Check from Task Scheduler. Silent unless there are new High or Critical findings.</summary>
