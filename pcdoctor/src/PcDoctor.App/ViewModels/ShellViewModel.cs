@@ -35,5 +35,7 @@ public sealed partial class ShellViewModel : ObservableObject, IAsyncDisposable
 
     partial void OnSelectedPageChanged(PageViewModel value) => value.OnShown();
 
+    partial void OnSelectedPageChanged(PageViewModel? oldValue, PageViewModel newValue) => oldValue?.OnHidden();
+
     public ValueTask DisposeAsync() => Services.DisposeAsync();
 }

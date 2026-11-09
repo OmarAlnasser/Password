@@ -71,8 +71,25 @@ public sealed class SecurityAnalyzer
         }
         else if (s.OsBuild >= 22000)
         {
-            _checks.Add(new CheckResult("M11.win10", new Text("m11.win10.check"), CheckStatus.Pass,
-                new Text("m11.win11.detail", s.OsBuild), FindingSource.Registry));
+            // LTSC/IoT editions follow their own lifecycle; the table only covers the general-availability channel.
+            var ltsc = s.OsEdition.EndsWith("S", StringComparison.Ordinal) && s.OsEdition.Contains("Enterprise", StringComparison.OrdinalIgnoreCase);
+            var release = support.Windows11.FirstOrDefault(r => r.Build == s.OsBuild);
+            var enterprise = s.OsEdition.StartsWith("Enterprise", StringComparison.OrdinalIgnoreCase) || s.OsEdition.StartsWith("Education", StringComparison.OrdinalIgnoreCase)
+                             || s.OsEdition.StartsWith("IoTEnterprise", StringComparison.OrdinalIgnoreCase);
+            var ends = release is null ? (DateOnly?)null : enterprise ? release.EnterpriseEducation : release.HomePro;
+            if (!ltsc && ends is { } end && end < DateOnly.FromDateTime(now.UtcDateTime))
+            {
+                Add("M11.win10", "m11.win11eos", CheckStatus.Fail, FindingSource.Registry, new Text("m11.win11.detail", s.OsBuild), Severity.High,
+                    [new Evidence("Version", $"{release!.Version} (build {s.OsBuild}, {s.OsEdition})"),
+                     new Evidence("Servicing ended", end.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                     new Evidence("Dates as of", support.AsOf.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))],
+                    titleArgs: [release.Version, end.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)]);
+            }
+            else
+            {
+                _checks.Add(new CheckResult("M11.win10", new Text("m11.win10.check"), CheckStatus.Pass,
+                    new Text("m11.win11.detail", s.OsBuild), FindingSource.Registry));
+            }
         }
     }
 

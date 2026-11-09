@@ -104,7 +104,7 @@ public sealed class SecurityTests
 
     private static SecuritySnapshot Healthy11 => new()
     {
-        OsBuild = 26100,
+        OsBuild = 26200,
         Defender = new DefenderStatus("Normal", true, true, true, 0),
         AvProducts = [new AvProduct("Windows Defender", 0x61100)],
         Firewall = [new FirewallProfile("Domain", true), new FirewallProfile("Private", true), new FirewallProfile("Public", true)],
@@ -168,6 +168,21 @@ public sealed class SecurityTests
         Assert.Equal(Severity.High, f.Severity);
         Assert.Contains(f.Evidence, e => e.Value.Contains("(unverified)", StringComparison.Ordinal));
         Assert.Equal("2025-10-14", f.Title.Args[0]);
+        TextAssert.AllResolve(result);
+    }
+
+    [Theory]
+    [InlineData(22631, "Professional", true)]   // 23H2 Home/Pro ended 2025-11-11
+    [InlineData(26100, "Core", true)]           // 24H2 Home/Pro ended 2026-10-13
+    [InlineData(22631, "Enterprise", false)]    // 23H2 Enterprise runs to 2026-11-10
+    [InlineData(26100, "Education", false)]
+    [InlineData(26100, "EnterpriseS", false)]   // LTSC has its own lifecycle
+    [InlineData(26200, "Professional", false)]
+    [InlineData(29999, "Professional", false)]  // newer than the table: not claimed either way
+    public void Windows_11_versions_past_servicing_are_flagged_by_edition(int build, string edition, bool flagged)
+    {
+        var result = SecurityAnalyzer.Analyze(Healthy11 with { OsBuild = build, OsEdition = edition }, Support, Now);
+        Assert.Equal(flagged, result.Findings.Any(f => f.Id == "M11.win10"));
         TextAssert.AllResolve(result);
     }
 

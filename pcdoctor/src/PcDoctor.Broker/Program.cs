@@ -39,6 +39,7 @@ internal static partial class Program
             return 3;
         }
 
+        SecureDataRoot();
         var journal = new ChangeJournal(JournalPath());
         var registry = new WindowsRegistryAccess();
         var executor = new ChangeExecutor(journal,
@@ -49,6 +50,7 @@ internal static partial class Program
             new FileMoveApplier(),
             new PcDoctor.Platform.Appx.AppxApplier(),
         ]);
+        executor.RecoverInterrupted();
         var handler = new BrokerRequestHandler(executor, journal,
             new RestorePointGuard(new WindowsRestorePointApi()), ReadElevated, new BrokerCapabilities
             {
@@ -58,6 +60,7 @@ internal static partial class Program
                 ResolveAutorunDisable = ResolveAutorunDisable,
                 ResolveTweaks = BrokerTweaks.Resolver(clientSid),
                 TweaksApplied = BrokerTweaks.RecordApplied,
+                AfterUndo = () => BrokerTweaks.Prune(journal),
             });
 
         await using var pipe = NamedPipeServerStreamAcl.Create(pipeName, PipeDirection.InOut, 1,
@@ -100,6 +103,51 @@ internal static partial class Program
             // Client went away.
         }
         return 0;
+    }
+
+    private static string DataRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "PCDoctor");
+
+    /// <summary>
+    /// %ProgramData% lets standard users create folders, and whoever creates a folder owns it (and can always
+    /// change its ACL). Every Broker-written path (journal, backups, manifest) lives under PCDoctor, so that
+    /// folder must be owned by Administrators or SYSTEM, contain nothing owned by anyone else and no reparse
+    /// points, and carry a protected ACL that only lets Users read. Anything else is moved aside, never trusted.
+    /// </summary>
+    private static void SecureDataRoot()
+    {
+        var root = DataRoot;
+        if (Directory.Exists(root) && !IsTrustedTree(root))
+        {
+            Directory.Move(root, $"{root}.untrusted-{DateTime.UtcNow:yyyyMMddHHmmss}");
+        }
+        var info = Directory.CreateDirectory(root);
+        var admins = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+        var acl = new DirectorySecurity();
+        acl.SetOwner(admins);
+        acl.SetAccessRuleProtection(isProtected: true, preserveInheritance: false);
+        const InheritanceFlags inherit = InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
+        acl.AddAccessRule(new FileSystemAccessRule(admins, FileSystemRights.FullControl, inherit, PropagationFlags.None, AccessControlType.Allow));
+        acl.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null),
+            FileSystemRights.FullControl, inherit, PropagationFlags.None, AccessControlType.Allow));
+        acl.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null),
+            FileSystemRights.ReadAndExecute, inherit, PropagationFlags.None, AccessControlType.Allow));
+        info.SetAccessControl(acl);
+    }
+
+    private static bool IsTrustedTree(string root)
+    {
+        static bool Trusted(FileSystemInfo item)
+        {
+            if (item.Attributes.HasFlag(FileAttributes.ReparsePoint))
+            {
+                return false;
+            }
+            var owner = (item is DirectoryInfo d ? (FileSystemSecurity)d.GetAccessControl() : ((FileInfo)item).GetAccessControl())
+                .GetOwner(typeof(SecurityIdentifier)) as SecurityIdentifier;
+            return owner is not null && (owner.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid) || owner.IsWellKnown(WellKnownSidType.LocalSystemSid));
+        }
+        var dir = new DirectoryInfo(root);
+        return Trusted(dir) && dir.EnumerateFileSystemInfos("*", new EnumerationOptions { RecurseSubdirectories = true, AttributesToSkip = 0 }).All(Trusted);
     }
 
     private static string DataFolder(string name)

@@ -20,6 +20,8 @@ public sealed record BrokerCapabilities
     public Func<IReadOnlyList<string>, IReadOnlyList<PlannedChange>?>? ResolveTweaks { get; init; }
     /// <summary>Called after tweaks were applied successfully (records them for drift detection).</summary>
     public Action<IReadOnlyList<string>>? TweaksApplied { get; init; }
+    /// <summary>Called after any undo, so records derived from the journal (the drift manifest) can be pruned.</summary>
+    public Action? AfterUndo { get; init; }
 }
 
 public sealed class BrokerRequestHandler(
@@ -120,9 +122,12 @@ public sealed class BrokerRequestHandler(
             UndoScope.Everything => executor.UndoAll(r.Force),
             _ => null,
         };
-        return result is null
-            ? BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnsupportedOperation, "Undo needs an ID for this scope.")
-            : BrokerResponse.Success(r.RequestId, result);
+        if (result is null)
+        {
+            return BrokerResponse.Failure(r.RequestId, BrokerErrorCode.UnsupportedOperation, "Undo needs an ID for this scope.");
+        }
+        _caps.AfterUndo?.Invoke();
+        return BrokerResponse.Success(r.RequestId, result);
     }
 
     private BrokerResponse Shutdown(BrokerRequest r)
@@ -143,7 +148,15 @@ public sealed class BrokerRequestHandler(
         var response = request is null
             ? BrokerResponse.Failure(id, BrokerErrorCode.UnsupportedOperation)
             : Handle(request);
-        await PipeFraming.WriteAsync(pipe, response, ct).ConfigureAwait(false);
+        try
+        {
+            await PipeFraming.WriteAsync(pipe, response, ct).ConfigureAwait(false);
+        }
+        catch (InvalidDataException)
+        {
+            // Too large to send. The size check runs before anything is written, so the stream is still in sync.
+            await PipeFraming.WriteAsync(pipe, BrokerResponse.Failure(response.RequestId, BrokerErrorCode.Internal, "Response too large."), ct).ConfigureAwait(false);
+        }
         return !ShutdownRequested;
     }
 

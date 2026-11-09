@@ -928,6 +928,10 @@
   <data name="uninstall.body" xml:space="preserve"><value>أجرى طبيب الحاسوب {0} تغييرات على هذا الجهاز ما زالت قائمة. هل تريد التراجع عنها كلها الآن؟ إن تخطيت ذلك تبقى التغييرات ويبقى السجل في ProgramData لتتمكن من مراجعتها.</value></data>
   <data name="uninstall.continue" xml:space="preserve"><value>متابعة الإزالة</value></data>
   <data name="shell.shortcuts" xml:space="preserve"><value>Ctrl+1 إلى Ctrl+9 لفتح الصفحات · Ctrl+F للبحث في النتائج</value></data>
+  <data name="m11.win11eos.check" xml:space="preserve"><value>دعم إصدار ويندوز</value></data>
+  <data name="m11.win11eos.title" xml:space="preserve"><value>توقف ويندوز 11 {0} عن تلقي تحديثات الأمان في {1}</value></data>
+  <data name="m11.win11eos.why" xml:space="preserve"><value>يتلقى كل إصدار من ويندوز 11 تحديثات الأمان لفترة محددة. بعدها تبقى الثغرات المكتشفة حديثاً مفتوحة على هذا الجهاز.</value></data>
+  <data name="m11.win11eos.action" xml:space="preserve"><value>ثبّت أحدث إصدار من ويندوز 11 من الإعدادات &gt; Windows Update. إن لم يُعرض فقد يكون الجهاز محجوزاً لسبب توافق يوضحه Windows Update.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

@@ -36,6 +36,37 @@ public sealed class JournalTests : IDisposable
     }
 
     [Fact]
+    public void Reading_the_journal_never_creates_its_folder()
+    {
+        var path = Path.Combine(_dir, "not-yet", "journal.jsonl");
+        var journal = new ChangeJournal(path);
+        Assert.Empty(journal.ReadCurrent());
+        Assert.False(Directory.Exists(Path.GetDirectoryName(path)));
+    }
+
+    [Fact]
+    public void Entries_left_planned_by_a_crash_are_recovered_and_can_be_undone()
+    {
+        Seed();
+        var before = _registry.Export();
+        var (executor, journal) = Create();
+        Assert.True(executor.ApplyBatch("test.batch", Batch).Succeeded);
+        // Simulate a power cut after the change but before "Applied" was written: the latest line is Planned again.
+        var crashed = journal.ReadCurrent()[0];
+        journal.Append(crashed with { State = EntryState.Planned });
+        // And one planned change that never happened.
+        var neverApplied = crashed with { Id = Guid.NewGuid(), State = EntryState.Planned,
+            Change = new RegistryChange("HKLM", @"SOFTWARE\Contoso", "Never", Existed: false, KeyExisted: true, OldData: null, NewData: new RegistryData("DWord", "1")) };
+        journal.Append(neverApplied);
+
+        Assert.Equal(2, executor.RecoverInterrupted());
+        Assert.Equal(EntryState.Applied, journal.ReadCurrent().Single(e => e.Id == crashed.Id).State);
+        Assert.Equal(EntryState.Failed, journal.ReadCurrent().Single(e => e.Id == neverApplied.Id).State);
+        Assert.Equal(4, executor.UndoAll().Undone);
+        Assert.Equal(before, _registry.Export());
+    }
+
+    [Fact]
     public void Apply_then_undo_all_restores_exact_state()
     {
         Seed();
