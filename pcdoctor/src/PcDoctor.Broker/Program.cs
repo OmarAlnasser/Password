@@ -115,7 +115,7 @@ internal static partial class Program
         JobKind.SafetyScannerFull => DefenderWindows.RunSafetyScanner(true, progress, ct),
         JobKind.Inventory or JobKind.InventoryWithBackupPrivilege => Task.Run<object?>(() =>
             InventoryWalker.Run(kind == JobKind.InventoryWithBackupPrivilege, progress, ct, DataFolder("inventory")), ct),
-        _ => BrokerRepairs.Run(kind, progress, ct),
+        _ => BrokerRepairs.Run(kind, target, progress, ct),
     };
 
     /// <summary>Finds the entry again in the Broker's own enumeration; an ID that is not there disables nothing.</summary>
@@ -134,6 +134,7 @@ internal static partial class Program
         ElevatedData.BitLocker => SecurityReader.ReadBitLocker(),
         ElevatedData.CrashDumps => DumpReader.Read(allowSymbolDownload: false, CancellationToken.None),
         ElevatedData.CrashDumpsWithSymbols => DumpReader.Read(allowSymbolDownload: true, CancellationToken.None),
+        ElevatedData.VolumeDirty => PcDoctor.Modules.Integrity.RepairRunner.IsSystemVolumeDirty(),
         _ => null,
     };
 

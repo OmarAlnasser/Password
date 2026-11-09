@@ -14,5 +14,6 @@
     <ProjectReference Include="..\PcDoctor.Modules.Malware\PcDoctor.Modules.Malware.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Persistence\PcDoctor.Modules.Persistence.csproj" />
     <ProjectReference Include="..\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Integrity\PcDoctor.Modules.Integrity.csproj" />
   </ItemGroup>
 </Project>

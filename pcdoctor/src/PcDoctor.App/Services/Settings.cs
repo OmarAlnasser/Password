@@ -22,6 +22,9 @@ public sealed record AppSettings
     /// <summary>Hash lookups on VirusTotal with the user's own key. Off by default; nothing is ever uploaded.</summary>
     public bool VirusTotalEnabled { get; init; }
 
+    /// <summary>Shows expert tools such as Driver Verifier.</summary>
+    public bool ExpertMode { get; init; }
+
     /// <summary>The user's VirusTotal key, encrypted with DPAPI for this Windows user (never stored in clear).</summary>
     public string? VirusTotalKeyProtected { get; init; }
 

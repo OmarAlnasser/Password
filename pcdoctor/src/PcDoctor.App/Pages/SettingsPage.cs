@@ -20,6 +20,7 @@ public sealed partial class SettingsViewModel : PageViewModel
         _reduceMotion = s.ReduceMotion;
         _allowSymbolDownload = s.AllowSymbolDownload;
         _virusTotalEnabled = s.VirusTotalEnabled;
+        _expertMode = s.ExpertMode;
         _hasVirusTotalKey = !string.IsNullOrEmpty(s.VirusTotalKeyProtected);
     }
 
@@ -39,6 +40,7 @@ public sealed partial class SettingsViewModel : PageViewModel
     [ObservableProperty] private bool _reduceMotion;
     [ObservableProperty] private bool _allowSymbolDownload;
     [ObservableProperty] private bool _virusTotalEnabled;
+    [ObservableProperty] private bool _expertMode;
     [ObservableProperty] private bool _hasVirusTotalKey;
 
     public string Version => typeof(SettingsViewModel).Assembly.GetName().Version?.ToString(3) ?? "0.0.0";
@@ -62,6 +64,12 @@ public sealed partial class SettingsViewModel : PageViewModel
     {
         ThemeManager.Apply(value.Value);
         Services.UpdateSettings(s => s with { Theme = value.Value });
+        Services.RaiseTextsChanged();
+    }
+
+    partial void OnExpertModeChanged(bool value)
+    {
+        Services.UpdateSettings(s => s with { ExpertMode = value });
         Services.RaiseTextsChanged();
     }
 

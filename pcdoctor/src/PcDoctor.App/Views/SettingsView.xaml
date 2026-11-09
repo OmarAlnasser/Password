@@ -26,6 +26,7 @@
                     <ListBox.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ListBox.ItemsPanel>
                 </ListBox>
                 <CheckBox Style="{StaticResource Switch}" Content="{loc:Loc settings.reduceMotion}" IsChecked="{Binding ReduceMotion}" Margin="0,12,0,0" />
+                <CheckBox Style="{StaticResource Switch}" Content="{loc:Loc settings.expert}" IsChecked="{Binding ExpertMode}" Margin="0,4,0,0" />
             </StackPanel>
         </c:Card>
 

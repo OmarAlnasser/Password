@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcDoctor.Modules.Network", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcDoctor.Modules.Inventory", "src\PcDoctor.Modules.Inventory\PcDoctor.Modules.Inventory.csproj", "{998A2108-91F2-41FC-834E-96BA53C915AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcDoctor.Modules.Integrity", "src\PcDoctor.Modules.Integrity\PcDoctor.Modules.Integrity.csproj", "{9DB2F75C-9AD4-4446-B570-5B8A182B7D98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,10 @@ Global
 		{998A2108-91F2-41FC-834E-96BA53C915AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{998A2108-91F2-41FC-834E-96BA53C915AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{998A2108-91F2-41FC-834E-96BA53C915AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DB2F75C-9AD4-4446-B570-5B8A182B7D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DB2F75C-9AD4-4446-B570-5B8A182B7D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DB2F75C-9AD4-4446-B570-5B8A182B7D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DB2F75C-9AD4-4446-B570-5B8A182B7D98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F31CE573-EA4F-4D61-84B2-3174F44E4D99} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
@@ -116,5 +122,6 @@ Global
 		{54E35B47-A6B7-42E3-9BC9-F0F7DC205943} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
 		{79D2B109-696B-4C94-8164-C8BFBCBFC94B} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
 		{998A2108-91F2-41FC-834E-96BA53C915AD} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
+		{9DB2F75C-9AD4-4446-B570-5B8A182B7D98} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
 	EndGlobalSection
 EndGlobal

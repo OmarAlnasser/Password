@@ -50,6 +50,8 @@ public enum ElevatedData
     CrashDumps,
     /// <summary>Same, allowing the debugger to download public symbols from msdl.microsoft.com (user setting).</summary>
     CrashDumpsWithSymbols,
+    /// <summary>FSCTL_IS_VOLUME_DIRTY for the system volume.</summary>
+    VolumeDirty,
 }
 
 public sealed record ReadElevatedRequest(ElevatedData Data) : BrokerRequest;

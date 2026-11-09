@@ -4,7 +4,7 @@ using System.Text;
 namespace PcDoctor.Core.Platform;
 
 /// <summary>Microsoft tools PC Doctor may start. Resolved to System32 by full path, never through PATH.</summary>
-public enum Tool { Powercfg, Pnputil, Driverquery }
+public enum Tool { Powercfg, Pnputil, Driverquery, Sfc, Chkdsk, Fsutil, Verifier, Mdsched, Shutdown }
 
 public sealed record ProcessResult(int ExitCode, string StdOut, string StdErr, string CommandLine, bool TimedOut);
 
@@ -21,6 +21,12 @@ public static class ProcessRunner
             Tool.Powercfg => "powercfg.exe",
             Tool.Pnputil => "pnputil.exe",
             Tool.Driverquery => "driverquery.exe",
+            Tool.Sfc => "sfc.exe",
+            Tool.Chkdsk => "chkdsk.exe",
+            Tool.Fsutil => "fsutil.exe",
+            Tool.Verifier => "verifier.exe",
+            Tool.Mdsched => "mdsched.exe",
+            Tool.Shutdown => "shutdown.exe",
             _ => throw new ArgumentOutOfRangeException(nameof(tool)),
         });
     }

@@ -632,6 +632,86 @@
   <data name="settings.vt.consent.title" xml:space="preserve"><value>إرسال بصمات الملفات إلى VirusTotal؟</value></data>
   <data name="settings.vt.consent" xml:space="preserve"><value>عند التفعيل يرسل طبيب الحاسوب بصمة SHA-256 لبرامج بدء التشغيل غير الموقّعة إلى virustotal.com بمفتاحك. البصمات تعرّف الملفات لكنها لا تحتويها. واجهة VirusTotal المجانية للاستخدام الشخصي فقط.</value></data>
   <data name="settings.vt.consent.ok" xml:space="preserve"><value>تفعيل</value></data>
+  <data name="page.repairs.title" xml:space="preserve"><value>الإصلاحات</value></data>
+  <data name="page.repairs.eyebrow" xml:space="preserve"><value>سلامة النظام</value></data>
+  <data name="page.repairs.subtitle" xml:space="preserve"><value>أدوات الإصلاح الخاصة بمايكروسوفت، تعمل واحدة تلو الأخرى مع شرح نتائجها. كل ما يحتاج إعادة تشغيل يسأل أولاً ويوضح طريقة الاسترداد.</value></data>
+  <data name="m6.name" xml:space="preserve"><value>سلامة النظام</value></data>
+  <data name="m6.check.dirty" xml:space="preserve"><value>قرص النظام يحتاج فحص القرص</value></data>
+  <data name="m6.dirty.no" xml:space="preserve"><value>نظام الملفات غير معلَّم بأنه يحتاج إصلاحاً.</value></data>
+  <data name="m6.dirty.yes" xml:space="preserve"><value>علّم ويندوز نظام الملفات بأنه يحتاج إصلاحاً.</value></data>
+  <data name="m6.dirtyFinding.title" xml:space="preserve"><value>سيفحص ويندوز قرص النظام عند إعادة التشغيل القادمة</value></data>
+  <data name="m6.dirtyFinding.why" xml:space="preserve"><value>المجلد معلَّم بأنه متّسخ: رأى ويندوز مشكلة في نظام الملفات أو إيقافاً غير سليم وسيشغّل autochk قبل أن يبدأ.</value></data>
+  <data name="m6.dirtyFinding.action" xml:space="preserve"><value>انسخ الملفات المهمة احتياطياً، ثم أعد التشغيل ودع الفحص ينتهي. قد يستغرق وقتاً على الأقراص الكبيرة.</value></data>
+  <data name="m6.check.memory" xml:space="preserve"><value>تشخيص الذاكرة في ويندوز</value></data>
+  <data name="m6.memory.never" xml:space="preserve"><value>لا توجد نتائج لتشخيص الذاكرة على هذا الجهاز.</value></data>
+  <data name="m6.memory.detail" xml:space="preserve"><value>آخر نتيجة {0} (الحدث {1}).</value></data>
+  <data name="m6.memoryErrors.title" xml:space="preserve"><value>وجد تشخيص الذاكرة في ويندوز أخطاء في ذاكرة RAM</value></data>
+  <data name="m6.memoryErrors.why" xml:space="preserve"><value>الذاكرة المعيبة أو غير المستقرة تسبب انهيارات عشوائية وقد تُتلف الملفات أثناء حفظها.</value></data>
+  <data name="m6.memoryErrors.action" xml:space="preserve"><value>أعد إعدادات رفع تردد الذاكرة (XMP/EXPO) واختبر مجدداً. إن بقيت الأخطاء فاختبر وحدة واحدة في كل مرة واستبدل المعيبة.</value></data>
+  <data name="m6.check.repairs" xml:space="preserve"><value>DISM وSFC وفحص القرص</value></data>
+  <data name="m6.repairs.onDemand" xml:space="preserve"><value>ليست جزءاً من الفحص: شغّلها من صفحة الإصلاحات.</value></data>
+  <data name="repairs.recommended.title" xml:space="preserve"><value>افحص ملفات ويندوز وأصلحها</value></data>
+  <data name="repairs.recommended.body" xml:space="preserve"><value>يشغّل DISM لفحص مخزن المكونات، ويسأل قبل إصلاحه من Windows Update، ثم يشغّل SFC لإصلاح ملفات النظام منه. يستغرق من 10 إلى 40 دقيقة؛ ويبقى الجهاز قابلاً للاستخدام.</value></data>
+  <data name="repairs.recommended.button" xml:space="preserve"><value>تشغيل التسلسل الموصى به</value></data>
+  <data name="repairs.kind.DismCheckHealth" xml:space="preserve"><value>فحص DISM السريع</value></data>
+  <data name="repairs.kind.DismScanHealth" xml:space="preserve"><value>فحص DISM الكامل</value></data>
+  <data name="repairs.kind.DismRestoreHealth" xml:space="preserve"><value>إصلاح DISM</value></data>
+  <data name="repairs.kind.Sfc" xml:space="preserve"><value>مدقق ملفات النظام</value></data>
+  <data name="repairs.kind.ChkdskScan" xml:space="preserve"><value>فحص القرص أثناء التشغيل</value></data>
+  <data name="repairs.kind.ChkdskScheduleFix" xml:space="preserve"><value>إصلاح القرص عند إعادة التشغيل</value></data>
+  <data name="repairs.kind.DefenderOfflineScan" xml:space="preserve"><value>فحص Defender دون اتصال</value></data>
+  <data name="repairs.kind.VerifierEnable" xml:space="preserve"><value>Driver Verifier</value></data>
+  <data name="repairs.kind.VerifierReset" xml:space="preserve"><value>إيقاف Driver Verifier</value></data>
+  <data name="repairs.kind.MemoryDiagnostic" xml:space="preserve"><value>تشخيص الذاكرة</value></data>
+  <data name="repairs.dism.title" xml:space="preserve"><value>مخزن المكونات (DISM)</value></data>
+  <data name="repairs.dism.body" xml:space="preserve"><value>المخزن الذي يصلح ويندوز نفسه منه. الفحص السريع فوري، والكامل يستغرق دقائق، والإصلاح ينزّل نسخاً سليمة من Windows Update.</value></data>
+  <data name="repairs.dism.Healthy" xml:space="preserve"><value>لم يُكتشف تلف في مخزن المكونات.</value></data>
+  <data name="repairs.dism.Repairable" xml:space="preserve"><value>مخزن المكونات تالف ويمكن إصلاحه.</value></data>
+  <data name="repairs.dism.NonRepairable" xml:space="preserve"><value>مخزن المكونات تالف ولا يستطيع DISM إصلاحه. تثبيت إصلاح ويندوز (الترقية الموضعية) يحتفظ بملفاتك وتطبيقاتك.</value></data>
+  <data name="repairs.dism.Repaired" xml:space="preserve"><value>أُصلح مخزن المكونات.</value></data>
+  <data name="repairs.dism.Failed" xml:space="preserve"><value>لم يكتمل DISM ({0}).</value></data>
+  <data name="repairs.restore.title" xml:space="preserve"><value>إصلاح مخزن المكونات</value></data>
+  <data name="repairs.restore.consent" xml:space="preserve"><value>سينزّل DISM ملفات بديلة من Windows Update ويصلح مخزن المكونات. لا يمس ملفاتك أو تطبيقاتك ولا يمكن التراجع عنه، لكنه يستبدل فقط ملفات ويندوز التالفة بالنسخ الأصلية من مايكروسوفت.</value></data>
+  <data name="repairs.restore.button" xml:space="preserve"><value>إصلاح</value></data>
+  <data name="repairs.sfc.title" xml:space="preserve"><value>ملفات النظام (SFC)</value></data>
+  <data name="repairs.sfc.body" xml:space="preserve"><value>يفحص كل ملف محمي في ويندوز مقابل مخزن المكونات ويستبدل التالفة.</value></data>
+  <data name="repairs.sfc.none" xml:space="preserve"><value>لم يجد SFC ملفات نظام تالفة.</value></data>
+  <data name="repairs.sfc.repaired" xml:space="preserve"><value>أصلح SFC {0} ملفات: {1}</value></data>
+  <data name="repairs.sfc.unrepairable" xml:space="preserve"><value>لم يستطع SFC إصلاح {0} ملفات: {1}. شغّل إصلاح DISM أولاً، ثم SFC مرة أخرى.</value></data>
+  <data name="repairs.sfc.noLog" xml:space="preserve"><value>انتهى SFC (رمز الخروج {0}) لكن تعذّرت قراءة سجله، لذا النتيجة غير معروفة.</value></data>
+  <data name="repairs.chkdsk.title" xml:space="preserve"><value>فحص القرص</value></data>
+  <data name="repairs.chkdsk.body" xml:space="preserve"><value>الفحص أثناء التشغيل يقرأ نظام الملفات دون فصل القرص. أما الإصلاح الكامل فيعمل قبل بدء ويندوز.</value></data>
+  <data name="repairs.chkdsk.none" xml:space="preserve"><value>لم يُعثر على مشكلات في نظام الملفات على {0}.</value></data>
+  <data name="repairs.chkdsk.fixed" xml:space="preserve"><value>عُثر على مشكلات في {0} وأُصلحت.</value></data>
+  <data name="repairs.chkdsk.cleanup" xml:space="preserve"><value>أُجريت عمليات تنظيم على {0}؛ لم تكن هناك أخطاء تحتاج إصلاحاً.</value></data>
+  <data name="repairs.chkdsk.errors" xml:space="preserve"><value>عُثر على مشكلات في {0} تحتاج إصلاحاً عند إعادة التشغيل.</value></data>
+  <data name="repairs.chkdsk.unknown" xml:space="preserve"><value>انتهى chkdsk على {0} بنتيجة غير معروفة.</value></data>
+  <data name="repairs.chkdskFix.title" xml:space="preserve"><value>إصلاح قرص النظام عند إعادة التشغيل</value></data>
+  <data name="repairs.chkdskFix.consent" xml:space="preserve"><value>سيفحص ويندوز قرص النظام ويصلحه قبل أن يبدأ في المرة القادمة. قد يستغرق ذلك من دقائق إلى ساعات ويجب ألا يُقاطع. انسخ الملفات المهمة احتياطياً أولاً. لا يمكن التراجع عن ذلك بعد تشغيله.</value></data>
+  <data name="repairs.chkdskFix.button" xml:space="preserve"><value>إصلاح عند إعادة التشغيل</value></data>
+  <data name="repairs.reboot.title" xml:space="preserve"><value>اختبارات تحتاج إعادة تشغيل</value></data>
+  <data name="repairs.reboot.body" xml:space="preserve"><value>يختبر تشخيص الذاكرة ذاكرة RAM قبل بدء ويندوز. ويبحث Defender دون اتصال عن البرمجيات الخبيثة التي تختبئ أثناء عمل ويندوز.</value></data>
+  <data name="repairs.memory.title" xml:space="preserve"><value>تشخيص الذاكرة في ويندوز</value></data>
+  <data name="repairs.memory.consent" xml:space="preserve"><value>سيعرض ويندوز إعادة التشغيل الآن أو عند البدء التالي. يستغرق الاختبار من 10 إلى 20 دقيقة؛ وتظهر النتيجة في فحص الصحة التالي.</value></data>
+  <data name="repairs.memory.button" xml:space="preserve"><value>اختبار الذاكرة</value></data>
+  <data name="repairs.memory.started" xml:space="preserve"><value>فُتح تشخيص الذاكرة في ويندوز.</value></data>
+  <data name="repairs.offline.title" xml:space="preserve"><value>فحص Microsoft Defender دون اتصال</value></data>
+  <data name="repairs.offline.consent" xml:space="preserve"><value>يُعاد تشغيل الجهاز خلال دقيقة إلى فحص خارج ويندوز (نحو 15 دقيقة)، ثم يبدأ ويندوز مجدداً. احفظ عملك أولاً. إن كان BitLocker مفعّلاً فاحتفظ بمفتاح الاسترداد في متناولك تحسباً لطلبه.</value></data>
+  <data name="repairs.offline.button" xml:space="preserve"><value>فحص دون اتصال</value></data>
+  <data name="repairs.verifier.kicker" xml:space="preserve"><value>للخبراء</value></data>
+  <data name="repairs.verifier.title" xml:space="preserve"><value>Driver Verifier</value></data>
+  <data name="repairs.verifier.body" xml:space="preserve"><value>يجعل ويندوز يجهد التعريفات المذكورة بحيث ينهار المعيب برمز إيقاف واضح (0xC4) بدلاً من إفساد الذاكرة بصمت. فقط للتعريفات التي يشتبه بها تحليل الانهيارات بالفعل.</value></data>
+  <data name="repairs.verifier.button" xml:space="preserve"><value>تفعيل لهذه التعريفات</value></data>
+  <data name="repairs.verifier.reset" xml:space="preserve"><value>إيقاف Driver Verifier</value></data>
+  <data name="repairs.verifier.invalid" xml:space="preserve"><value>اذكر من واحد إلى ثمانية ملفات تعريفات من جهات خارجية مثل nvlddmkm.sys، مفصولة بمسافات. تعريفات ويندوز الأساسية غير مسموحة.</value></data>
+  <data name="repairs.verifier.consent" xml:space="preserve"><value>سيفحص Driver Verifier التعريفات {0} بعد إعادة التشغيل. قد ينهار الجهاز عمداً عندما يسيء تعريف التصرف؛ وملف التفريغ يذكره. إن لم يتمكن ويندوز من البدء طبيعياً، يوقف Verifier نفسه عند الإقلاع التالي. وإن لم يحدث ذلك، فابدأ في الوضع الآمن وشغّل: verifier /reset</value></data>
+  <data name="repairs.restart.title" xml:space="preserve"><value>إعادة التشغيل مطلوبة</value></data>
+  <data name="repairs.restart.body" xml:space="preserve"><value>يسري التغيير بعد إعادة التشغيل. احفظ عملك. هل تريد إعادة التشغيل خلال 30 ثانية؟</value></data>
+  <data name="repairs.restart.now" xml:space="preserve"><value>إعادة التشغيل</value></data>
+  <data name="repairs.done" xml:space="preserve"><value>اكتمل (رمز الخروج {0}).</value></data>
+  <data name="repairs.exit" xml:space="preserve"><value>انتهى برمز الخروج {0}.</value></data>
+  <data name="repairs.log" xml:space="preserve"><value>النتائج</value></data>
+  <data name="settings.expert" xml:space="preserve"><value>إظهار أدوات الخبراء (Driver Verifier)</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

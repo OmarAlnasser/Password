@@ -22,6 +22,14 @@ public enum JobKind
     DismRestoreHealth,
     Sfc,
     ChkdskScan,
+    /// <summary>Marks the system volume dirty so autochk repairs it at the next restart (chkdsk /f equivalent).</summary>
+    ChkdskScheduleFix,
+    /// <summary>Microsoft Defender Offline: restarts the PC into a scan outside Windows.</summary>
+    DefenderOfflineScan,
+    /// <summary>Expert: Driver Verifier standard checks on the named drivers (Target: space-separated .sys names).</summary>
+    VerifierEnable,
+    VerifierReset,
+    MemoryDiagnostic,
 }
 
 public enum JobState { Running, Succeeded, Failed, Cancelled }

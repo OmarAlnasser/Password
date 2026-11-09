@@ -632,6 +632,86 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="settings.vt.consent.title" xml:space="preserve"><value>Send file hashes to VirusTotal?</value></data>
   <data name="settings.vt.consent" xml:space="preserve"><value>When on, PC Doctor sends the SHA-256 hash of unsigned startup programs to virustotal.com with your key. Hashes identify files but do not contain them. VirusTotal's free API is for personal use only.</value></data>
   <data name="settings.vt.consent.ok" xml:space="preserve"><value>Turn on</value></data>
+  <data name="page.repairs.title" xml:space="preserve"><value>Repairs</value></data>
+  <data name="page.repairs.eyebrow" xml:space="preserve"><value>System integrity</value></data>
+  <data name="page.repairs.subtitle" xml:space="preserve"><value>Microsoft's own repair tools, run one at a time with their results explained. Anything that needs a restart asks first and says how to recover.</value></data>
+  <data name="m6.name" xml:space="preserve"><value>System integrity</value></data>
+  <data name="m6.check.dirty" xml:space="preserve"><value>System drive needs a disk check</value></data>
+  <data name="m6.dirty.no" xml:space="preserve"><value>The file system is not marked as needing repair.</value></data>
+  <data name="m6.dirty.yes" xml:space="preserve"><value>Windows has marked the file system as needing repair.</value></data>
+  <data name="m6.dirtyFinding.title" xml:space="preserve"><value>Windows will check the system drive at the next restart</value></data>
+  <data name="m6.dirtyFinding.why" xml:space="preserve"><value>The volume is marked dirty: Windows saw a file system problem or an unclean shutdown and will run autochk before it starts.</value></data>
+  <data name="m6.dirtyFinding.action" xml:space="preserve"><value>Back up important files, then restart and let the check finish. It can take a while on large drives.</value></data>
+  <data name="m6.check.memory" xml:space="preserve"><value>Windows Memory Diagnostic</value></data>
+  <data name="m6.memory.never" xml:space="preserve"><value>No Memory Diagnostic results on this PC.</value></data>
+  <data name="m6.memory.detail" xml:space="preserve"><value>Last result {0} (event {1}).</value></data>
+  <data name="m6.memoryErrors.title" xml:space="preserve"><value>The Windows Memory Diagnostic found errors in the RAM</value></data>
+  <data name="m6.memoryErrors.why" xml:space="preserve"><value>Faulty or unstable memory causes random crashes and can corrupt files as they are saved.</value></data>
+  <data name="m6.memoryErrors.action" xml:space="preserve"><value>Reset memory overclocks (XMP/EXPO) and test again. If errors remain, test one module at a time and replace the faulty one.</value></data>
+  <data name="m6.check.repairs" xml:space="preserve"><value>DISM, SFC and disk check</value></data>
+  <data name="m6.repairs.onDemand" xml:space="preserve"><value>Not part of the scan: run them from the Repairs page.</value></data>
+  <data name="repairs.recommended.title" xml:space="preserve"><value>Check and repair Windows files</value></data>
+  <data name="repairs.recommended.body" xml:space="preserve"><value>Runs DISM to check the component store, asks before repairing it from Windows Update, then runs SFC to repair system files from it. Takes 10 to 40 minutes; the PC stays usable.</value></data>
+  <data name="repairs.recommended.button" xml:space="preserve"><value>Run the recommended sequence</value></data>
+  <data name="repairs.kind.DismCheckHealth" xml:space="preserve"><value>DISM check</value></data>
+  <data name="repairs.kind.DismScanHealth" xml:space="preserve"><value>DISM scan</value></data>
+  <data name="repairs.kind.DismRestoreHealth" xml:space="preserve"><value>DISM repair</value></data>
+  <data name="repairs.kind.Sfc" xml:space="preserve"><value>System File Checker</value></data>
+  <data name="repairs.kind.ChkdskScan" xml:space="preserve"><value>Online disk check</value></data>
+  <data name="repairs.kind.ChkdskScheduleFix" xml:space="preserve"><value>Disk repair at restart</value></data>
+  <data name="repairs.kind.DefenderOfflineScan" xml:space="preserve"><value>Defender Offline scan</value></data>
+  <data name="repairs.kind.VerifierEnable" xml:space="preserve"><value>Driver Verifier</value></data>
+  <data name="repairs.kind.VerifierReset" xml:space="preserve"><value>Driver Verifier off</value></data>
+  <data name="repairs.kind.MemoryDiagnostic" xml:space="preserve"><value>Memory Diagnostic</value></data>
+  <data name="repairs.dism.title" xml:space="preserve"><value>Component store (DISM)</value></data>
+  <data name="repairs.dism.body" xml:space="preserve"><value>The store Windows repairs itself from. Check is instant, scan takes minutes, repair downloads fresh copies from Windows Update.</value></data>
+  <data name="repairs.dism.Healthy" xml:space="preserve"><value>No component store corruption detected.</value></data>
+  <data name="repairs.dism.Repairable" xml:space="preserve"><value>The component store is damaged and can be repaired.</value></data>
+  <data name="repairs.dism.NonRepairable" xml:space="preserve"><value>The component store is damaged and DISM cannot repair it. A Windows repair install (in-place upgrade) keeps your files and apps.</value></data>
+  <data name="repairs.dism.Repaired" xml:space="preserve"><value>The component store was repaired.</value></data>
+  <data name="repairs.dism.Failed" xml:space="preserve"><value>DISM did not finish ({0}).</value></data>
+  <data name="repairs.restore.title" xml:space="preserve"><value>Repair the component store</value></data>
+  <data name="repairs.restore.consent" xml:space="preserve"><value>DISM will download replacement files from Windows Update and repair the component store. It does not touch your files or apps and cannot be undone, but it only replaces damaged Windows files with Microsoft's originals.</value></data>
+  <data name="repairs.restore.button" xml:space="preserve"><value>Repair</value></data>
+  <data name="repairs.sfc.title" xml:space="preserve"><value>System files (SFC)</value></data>
+  <data name="repairs.sfc.body" xml:space="preserve"><value>Checks every protected Windows file against the component store and replaces damaged ones.</value></data>
+  <data name="repairs.sfc.none" xml:space="preserve"><value>SFC found no damaged system files.</value></data>
+  <data name="repairs.sfc.repaired" xml:space="preserve"><value>SFC repaired {0} files: {1}</value></data>
+  <data name="repairs.sfc.unrepairable" xml:space="preserve"><value>SFC could not repair {0} files: {1}. Run the DISM repair first, then SFC again.</value></data>
+  <data name="repairs.sfc.noLog" xml:space="preserve"><value>SFC finished (exit code {0}) but its log could not be read, so the result is unknown.</value></data>
+  <data name="repairs.chkdsk.title" xml:space="preserve"><value>Disk check</value></data>
+  <data name="repairs.chkdsk.body" xml:space="preserve"><value>The online check reads the file system without taking the drive offline. A full repair runs before Windows starts.</value></data>
+  <data name="repairs.chkdsk.none" xml:space="preserve"><value>No file system problems found on {0}.</value></data>
+  <data name="repairs.chkdsk.fixed" xml:space="preserve"><value>Problems on {0} were found and fixed.</value></data>
+  <data name="repairs.chkdsk.cleanup" xml:space="preserve"><value>Housekeeping was done on {0}; no errors needed fixing.</value></data>
+  <data name="repairs.chkdsk.errors" xml:space="preserve"><value>Problems were found on {0} that need a repair at restart.</value></data>
+  <data name="repairs.chkdsk.unknown" xml:space="preserve"><value>chkdsk finished on {0} with an unknown result.</value></data>
+  <data name="repairs.chkdskFix.title" xml:space="preserve"><value>Repair the system drive at restart</value></data>
+  <data name="repairs.chkdskFix.consent" xml:space="preserve"><value>Windows will check and repair the system drive before it starts next time. That can take from minutes to hours and must not be interrupted. Back up important files first. This cannot be undone once it runs.</value></data>
+  <data name="repairs.chkdskFix.button" xml:space="preserve"><value>Repair at restart</value></data>
+  <data name="repairs.reboot.title" xml:space="preserve"><value>Tests that need a restart</value></data>
+  <data name="repairs.reboot.body" xml:space="preserve"><value>Memory Diagnostic tests the RAM before Windows starts. Defender Offline scans for malware that hides while Windows runs.</value></data>
+  <data name="repairs.memory.title" xml:space="preserve"><value>Windows Memory Diagnostic</value></data>
+  <data name="repairs.memory.consent" xml:space="preserve"><value>Windows will offer to restart now or at the next start. The test takes 10 to 20 minutes; the result appears in the next Health Check.</value></data>
+  <data name="repairs.memory.button" xml:space="preserve"><value>Test memory</value></data>
+  <data name="repairs.memory.started" xml:space="preserve"><value>Windows Memory Diagnostic opened.</value></data>
+  <data name="repairs.offline.title" xml:space="preserve"><value>Microsoft Defender Offline scan</value></data>
+  <data name="repairs.offline.consent" xml:space="preserve"><value>The PC restarts within a minute into a scan outside Windows (about 15 minutes), then starts Windows again. Save your work first. If BitLocker is on, keep your recovery key at hand in case it is asked for.</value></data>
+  <data name="repairs.offline.button" xml:space="preserve"><value>Scan offline</value></data>
+  <data name="repairs.verifier.kicker" xml:space="preserve"><value>Expert</value></data>
+  <data name="repairs.verifier.title" xml:space="preserve"><value>Driver Verifier</value></data>
+  <data name="repairs.verifier.body" xml:space="preserve"><value>Makes Windows stress the named drivers so a faulty one crashes with a clear stop code (0xC4) instead of corrupting memory silently. Only for drivers crash analysis already suspects.</value></data>
+  <data name="repairs.verifier.button" xml:space="preserve"><value>Turn on for these drivers</value></data>
+  <data name="repairs.verifier.reset" xml:space="preserve"><value>Turn Driver Verifier off</value></data>
+  <data name="repairs.verifier.invalid" xml:space="preserve"><value>Name one to eight third-party driver files such as nvlddmkm.sys, separated by spaces. Windows' own core drivers are not allowed.</value></data>
+  <data name="repairs.verifier.consent" xml:space="preserve"><value>Driver Verifier will check {0} after a restart. The PC may then crash on purpose when a driver misbehaves; that dump names it. If Windows cannot start normally, Verifier turns itself off at the next boot. If it does not, start in Safe Mode and run: verifier /reset</value></data>
+  <data name="repairs.restart.title" xml:space="preserve"><value>Restart needed</value></data>
+  <data name="repairs.restart.body" xml:space="preserve"><value>The change takes effect after a restart. Save your work. Restart in 30 seconds?</value></data>
+  <data name="repairs.restart.now" xml:space="preserve"><value>Restart</value></data>
+  <data name="repairs.done" xml:space="preserve"><value>Done (exit code {0}).</value></data>
+  <data name="repairs.exit" xml:space="preserve"><value>Finished with exit code {0}.</value></data>
+  <data name="repairs.log" xml:space="preserve"><value>Results</value></data>
+  <data name="settings.expert" xml:space="preserve"><value>Show expert tools (Driver Verifier)</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

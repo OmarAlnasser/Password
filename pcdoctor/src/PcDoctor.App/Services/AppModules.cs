@@ -5,6 +5,7 @@ using PcDoctor.Modules.Battery;
 using PcDoctor.Modules.Crash;
 using PcDoctor.Modules.Disk;
 using PcDoctor.Modules.Drivers;
+using PcDoctor.Modules.Integrity;
 using PcDoctor.Modules.Malware;
 using PcDoctor.Modules.Network;
 using PcDoctor.Modules.Security;
@@ -27,6 +28,7 @@ public static class AppModules
         NetworkModule.ForWindows(),
         CrashModule.ForWindows(new WindowsEventSource(), () => services.Settings.AllowSymbolDownload),
         DiskModule.ForWindows(),
+        IntegrityModule.ForWindows(new WindowsEventSource()),
         DriversModule.ForWindows(),
         new BatteryModule(),
     ];
