@@ -54,7 +54,7 @@ public sealed partial class OverviewViewModel : PageViewModel
     public double Progress => Services.Progress;
     public string Status => Services.Status;
     public string LastScan => Services.Report is { } r
-        ? Loc.Format("overview.lastScan", r.FinishedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"), Loc.Get("scanMode." + r.Conditions.Mode))
+        ? Loc.Format("overview.lastScan", r.FinishedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture), Loc.Get("scanMode." + r.Conditions.Mode))
         : Loc.Get("overview.neverScanned");
 
     private void OnServicesChanged(object? sender, PropertyChangedEventArgs e)

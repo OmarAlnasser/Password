@@ -97,7 +97,7 @@ public static partial class InventoryWalker
         if (csvFolder is not null && acc.AllSkipped.Count > 0)
         {
             Directory.CreateDirectory(csvFolder);
-            csv = Path.Combine(csvFolder, $"skipped-{DateTime.UtcNow:yyyyMMdd-HHmmss}.csv");
+            csv = Path.Combine(csvFolder, $"skipped-{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}.csv");
             File.WriteAllText(csv, InventoryAccumulator.ToCsv(acc.AllSkipped), new System.Text.UTF8Encoding(true));
         }
         return acc.ToResult(volumes, watch.Elapsed, backup, csv);

@@ -86,6 +86,12 @@ public sealed class ServiceApplier(IServiceConfigAccess services) : IChangeAppli
         }
         var current = services.Read(planned.Service)
             ?? throw new InvalidOperationException($"Service {planned.Service} does not exist.");
+        // Undo writes the old start type back. Boot and System (drivers) are never written, so a change
+        // from one of them could not be undone: refuse it before anything is touched.
+        if (!Allowed.Contains(current.StartType))
+        {
+            throw new InvalidOperationException($"Service {planned.Service} starts as {current.StartType}; PC Doctor does not change it.");
+        }
         return new ServiceChange(planned.Service, current.StartType, current.Delayed,
             planned.StartType, planned.DelayedAutostart);
     }

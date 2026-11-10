@@ -160,7 +160,7 @@ public static class PersistenceAnalyzer
         }
         if (e.VirusTotal is { } vt)
         {
-            list.Add(new Evidence("VirusTotal", $"malicious={vt.Malicious} suspicious={vt.Suspicious} undetected={vt.Undetected} harmless={vt.Harmless} ({vt.CheckedUtc:yyyy-MM-dd})"));
+            list.Add(new Evidence("VirusTotal", $"malicious={vt.Malicious} suspicious={vt.Suspicious} undetected={vt.Undetected} harmless={vt.Harmless} ({vt.CheckedUtc.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)})"));
         }
         if (e.AmsiResult is { } amsi)
         {

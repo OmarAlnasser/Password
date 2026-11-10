@@ -196,7 +196,7 @@ public static class NetworkAnalyzer
                     new Evidence("Store", r.Store),
                     new Evidence("Subject", r.Subject),
                     new Evidence("Thumbprint", r.Thumbprint),
-                    new Evidence("Added", r.AddedUtc?.ToString("yyyy-MM-dd") ?? "?"),
+                    new Evidence("Added", r.AddedUtc?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture) ?? "?"),
                 ]));
             }
         }

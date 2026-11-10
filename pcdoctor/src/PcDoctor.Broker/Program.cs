@@ -102,6 +102,11 @@ internal static partial class Program
         {
             // Client went away.
         }
+        finally
+        {
+            // The client is gone or idle: stop scans and repair tools instead of orphaning them.
+            handler.CancelJobs(TimeSpan.FromSeconds(10));
+        }
         return 0;
     }
 
@@ -118,7 +123,7 @@ internal static partial class Program
         var root = DataRoot;
         if (Directory.Exists(root) && !IsTrustedTree(root))
         {
-            Directory.Move(root, $"{root}.untrusted-{DateTime.UtcNow:yyyyMMddHHmmss}");
+            Directory.Move(root, $"{root}.untrusted-{DateTime.UtcNow.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture)}");
         }
         var info = Directory.CreateDirectory(root);
         var admins = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);

@@ -16,7 +16,7 @@ namespace PcDoctor.App.Pages;
 
 public sealed record RepairLogItem(DateTimeOffset Time, Severity Severity, string Step, string Outcome)
 {
-    public string When => Time.ToLocalTime().ToString("HH:mm");
+    public string When => Time.ToLocalTime().ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture);
 }
 
 /// <summary>M6 repairs on demand: DISM → SFC → chkdsk, Memory Diagnostic, Defender Offline, and (expert) Driver Verifier.</summary>

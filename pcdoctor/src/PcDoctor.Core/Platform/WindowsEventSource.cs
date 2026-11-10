@@ -22,16 +22,17 @@ public sealed class WindowsEventSource : IEventSource
                     {
                         result.Add(EventXmlParser.Parse(record.ToXml()));
                     }
-                    catch (System.Xml.XmlException)
+                    catch (Exception ex) when (ex is System.Xml.XmlException or FormatException or OverflowException or EventLogException)
                     {
                         // A record with malformed XML is skipped; the module reports its count as read.
                     }
                 }
             }
         }
-        catch (EventLogNotFoundException)
+        catch (Exception ex) when (ex is EventLogException or UnauthorizedAccessException)
         {
-            // Channel absent on this edition: no events, reported as not available by the caller.
+            // Channel absent on this edition, access denied, or the log is damaged: the caller gets what was
+            // read so far and reports the rest as not available. One bad log must not fail a whole module.
         }
         return result;
     }

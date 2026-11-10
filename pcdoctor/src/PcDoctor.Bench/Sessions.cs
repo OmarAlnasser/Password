@@ -66,7 +66,7 @@ public sealed class SessionStore(string folder)
     public void Save(BenchSession s)
     {
         Directory.CreateDirectory(folder);
-        File.WriteAllText(Path.Combine(folder, $"{s.StartedUtc:yyyyMMdd-HHmmss}-{s.Id:N}.json"), JsonSerializer.Serialize(s, Json));
+        File.WriteAllText(Path.Combine(folder, $"{s.StartedUtc.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}-{s.Id:N}.json"), JsonSerializer.Serialize(s, Json));
     }
 
     public IReadOnlyList<BenchSession> Load() =>

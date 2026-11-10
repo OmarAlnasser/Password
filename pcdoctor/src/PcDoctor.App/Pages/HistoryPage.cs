@@ -10,7 +10,7 @@ namespace PcDoctor.App.Pages;
 
 public sealed record HistoryEntry(ScanReport Report)
 {
-    public string Label => $"{Report.FinishedUtc.ToLocalTime():yyyy-MM-dd HH:mm} · {Loc.Get("scanMode." + Report.Conditions.Mode)} · {Report.AllFindings.Count(f => !f.HiddenByDefault)}";
+    public string Label => $"{Report.FinishedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture)} · {Loc.Get("scanMode." + Report.Conditions.Mode)} · {Report.AllFindings.Count(f => !f.HiddenByDefault)}";
 }
 
 /// <summary>Compare any two past scans: what is new, what is gone, what is still there; and schedule quiet scans.</summary>

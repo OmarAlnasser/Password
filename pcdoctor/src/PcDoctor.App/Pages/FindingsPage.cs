@@ -191,7 +191,7 @@ public sealed partial class FindingsViewModel : PageViewModel
         }
         var dialog = new SaveFileDialog
         {
-            FileName = $"pcdoctor-{report.StartedUtc:yyyyMMdd-HHmm}",
+            FileName = $"pcdoctor-{report.StartedUtc.ToString("yyyyMMdd-HHmm", System.Globalization.CultureInfo.InvariantCulture)}",
             Filter = "HTML (*.html)|*.html|JSON (*.json)|*.json|CSV (*.csv)|*.csv",
         };
         if (dialog.ShowDialog() != true)

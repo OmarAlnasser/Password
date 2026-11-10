@@ -162,4 +162,7 @@ public sealed class BrokerRequestHandler(
 
     /// <summary>The Broker stays up while a job runs even if the idle timer fires.</summary>
     public bool HasRunningJobs => _caps.Jobs?.AnyRunning == true;
+
+    /// <summary>Stops running jobs before the Broker exits.</summary>
+    public void CancelJobs(TimeSpan wait) => _caps.Jobs?.CancelAll(wait);
 }

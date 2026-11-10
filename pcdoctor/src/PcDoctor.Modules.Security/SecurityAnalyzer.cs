@@ -63,7 +63,7 @@ public sealed class SecurityAnalyzer
             Add("M11.win10", "m11.win10", CheckStatus.Fail, FindingSource.Registry,
                 new Text("m11.win10.detail", support.Windows10EndOfSupport), Severity.High,
                 support.Esu.Select(e => new Evidence(e.Program,
-                        $"ends {e.Ends:yyyy-MM-dd}{(e.Verify ? " (unverified)" : "")}{(e.Note is null ? "" : " — " + e.Note)}"))
+                        $"ends {e.Ends.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)}{(e.Verify ? " (unverified)" : "")}{(e.Note is null ? "" : " — " + e.Note)}"))
                     .Append(new Evidence("Dates as of", support.AsOf.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)))
                     .Append(new Evidence("Guidance", support.GuidanceUrl))
                     .ToList(),

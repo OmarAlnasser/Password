@@ -7,7 +7,7 @@ public static class ScheduleXml
 {
     public static string Build(bool daily, TimeSpan at, string exePath)
     {
-        var start = DateTime.Today.Add(at).ToString("yyyy-MM-ddTHH:mm:ss");
+        var start = DateTime.Today.Add(at).ToString("yyyy-MM-ddTHH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
         var schedule = daily
             ? "<ScheduleByDay><DaysInterval>1</DaysInterval></ScheduleByDay>"
             : "<ScheduleByWeek><WeeksInterval>1</WeeksInterval><DaysOfWeek><Sunday /></DaysOfWeek></ScheduleByWeek>";

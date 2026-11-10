@@ -19,7 +19,7 @@ public sealed class DetectionItem(DefenderDetection d)
     public string Name => d.ThreatName;
     public string Severity => d.SeverityName;
     public string Paths => string.Join("\n", d.Paths.Take(5));
-    public string When => d.DetectedUtc?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "";
+    public string When => d.DetectedUtc?.ToLocalTime().ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture) ?? "";
 }
 
 /// <summary>M2 on demand: Defender scans, the Safety Scanner second opinion, and Defender's quarantine.</summary>
@@ -137,7 +137,7 @@ public sealed partial class ProtectionViewModel(AppServices services) : PageView
             _ => "protection.result.failed",
         };
         ShowResult(r.Outcome is ScanOutcome.ThreatsRemaining or ScanOutcome.ScanFailed, Loc.Format(key, r.Detections.Count),
-            Loc.Format("protection.result.detail", Loc.Get("protection.kind." + r.ScanType), r.FinishedUtc.ToLocalTime().ToString("HH:mm"),
+            Loc.Format("protection.result.detail", Loc.Get("protection.kind." + r.ScanType), r.FinishedUtc.ToLocalTime().ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture),
                 r.ExitCode.ToString(System.Globalization.CultureInfo.InvariantCulture)) +
             (r.SignatureUpdateOk ? "" : "\n" + Loc.Get("protection.result.signaturesFailed")));
     }

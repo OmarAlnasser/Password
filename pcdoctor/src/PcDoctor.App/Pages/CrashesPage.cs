@@ -15,8 +15,8 @@ public sealed class TimelineItem(TimelineEntry entry)
     public TimelineEntry Entry { get; } = entry;
     public Severity Severity => Entry.Severity;
     public string Tag => Entry.Tag ?? "";
-    public string Day => Entry.Time.ToLocalTime().ToString("yyyy-MM-dd");
-    public string Time => Entry.Time.ToLocalTime().ToString("HH:mm");
+    public string Day => Entry.Time.ToLocalTime().ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+    public string Time => Entry.Time.ToLocalTime().ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture);
     public string Title => Loc.Resolve(Entry.Title);
     public string Detail => Entry.Detail is null ? "" : Loc.Resolve(Entry.Detail);
     public bool HasDetail => Entry.Detail is not null;

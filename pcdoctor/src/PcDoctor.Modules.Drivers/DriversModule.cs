@@ -121,7 +121,7 @@ public static class DriversAnalyzer
                     Title = new Text("m9.old.title", old.Count, 8),
                     WhyItMatters = new Text("m9.old.why"),
                     Evidence = old.Select(d => new Evidence(d.DeviceName,
-                        $"{d.Provider} {d.Version} {d.Date:yyyy-MM-dd} {d.InfName}")).ToList(),
+                        $"{d.Provider} {d.Version} {d.Date?.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)} {d.InfName}")).ToList(),
                     SuggestedAction = new Text("m9.old.action"),
                     Undo = UndoInfo.NothingChanged,
                 });
