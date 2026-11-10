@@ -26,7 +26,8 @@ public sealed partial class HistoryViewModel(AppServices services) : PageViewMod
     public ObservableCollection<FindingItemViewModel> Persisting { get; } = [];
 
     public IReadOnlyList<Choice<ScheduleFrequency>> Frequencies { get; } =
-        [new(ScheduleFrequency.Off, "history.schedule.off"), new(ScheduleFrequency.Daily, "history.schedule.daily"), new(ScheduleFrequency.Weekly, "history.schedule.weekly")];
+        [new(ScheduleFrequency.Off, "history.schedule.off"), new(ScheduleFrequency.Daily, "history.schedule.daily"), new(ScheduleFrequency.Weekly, "history.schedule.weekly"),
+         new(ScheduleFrequency.AtSignIn, "history.schedule.signIn")];
 
     [ObservableProperty] private HistoryEntry? _older;
     [ObservableProperty] private HistoryEntry? _newer;
@@ -45,7 +46,7 @@ public sealed partial class HistoryViewModel(AppServices services) : PageViewMod
         }
         // Creating or removing the scheduled task is a change to this PC: say what it does and ask first.
         var turningOn = value.Value != ScheduleFrequency.Off;
-        if (!ConsentDialog.Ask(Loc.Get("history.schedule.consent.title"), Loc.Get(turningOn ? "history.schedule.consent.on" : "history.schedule.consent.off"),
+        if (!ConsentDialog.Ask(Loc.Get("history.schedule.consent.title"), Loc.Get(value.Value == ScheduleFrequency.AtSignIn ? "history.schedule.consent.signIn" : turningOn ? "history.schedule.consent.on" : "history.schedule.consent.off"),
                 Loc.Get("history.schedule.consent.button")))
         {
             Frequency = Frequencies.First(f => f.Value == Services.Settings.ScheduledScan);

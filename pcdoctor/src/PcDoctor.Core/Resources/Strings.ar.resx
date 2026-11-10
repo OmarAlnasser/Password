@@ -1030,6 +1030,27 @@
   <data name="m11.win11eos.title" xml:space="preserve"><value>توقف ويندوز 11 {0} عن تلقي تحديثات الأمان في {1}</value></data>
   <data name="m11.win11eos.why" xml:space="preserve"><value>يتلقى كل إصدار من ويندوز 11 تحديثات الأمان لفترة محددة. بعدها تبقى الثغرات المكتشفة حديثاً مفتوحة على هذا الجهاز.</value></data>
   <data name="m11.win11eos.action" xml:space="preserve"><value>ثبّت أحدث إصدار من ويندوز 11 من الإعدادات &gt; Windows Update. إن لم يُعرض فقد يكون الجهاز محجوزاً لسبب توافق يوضحه Windows Update.</value></data>
+  <data name="m14.name" xml:space="preserve"><value>ما الذي يستخدم هذا الجهاز الآن</value></data>
+  <data name="m14.check.cpu" xml:space="preserve"><value>استخدام المعالج</value></data>
+  <data name="m14.cpu.detail" xml:space="preserve"><value>مشغول بنسبة {0}% خلال عيّنة مدتها {1} ثوانٍ. الأكثر نشاطاً: {2}</value></data>
+  <data name="m14.check.memory" xml:space="preserve"><value>استخدام الذاكرة</value></data>
+  <data name="m14.memory.detail" xml:space="preserve"><value>{0}% من {1} غ.ب مستخدمة. الأكبر: {2}</value></data>
+  <data name="m14.check.unreadable" xml:space="preserve"><value>عمليات محمية</value></data>
+  <data name="m14.unreadable.detail" xml:space="preserve"><value>تعذّرت قراءة {0} عمليات بلا صلاحيات المسؤول. لم تُحتسب أعلاه.</value></data>
+  <data name="m14.cpuHog.title" xml:space="preserve"><value>كان {0} يستخدم {1}% من المعالج خلال عيّنة مدتها {2} ثوانٍ</value></data>
+  <data name="m14.cpuHog.why" xml:space="preserve"><value>البرنامج الذي يُبقي المعالج مشغولاً بهذا القدر يُبطئ كل شيء آخر ويرفع صوت المراوح. هذه عيّنة قصيرة واحدة: ربما كان يؤدي عملاً حقيقياً في تلك اللحظة، كتحديث أو فحص.</value></data>
+  <data name="m14.cpuHog.action" xml:space="preserve"><value>أعد الفحص بعد بضع دقائق. إن بقي البرنامج نفسه مشغولاً هكذا وأنت لا تستخدمه فأغلقه أو أعد تشغيله، وابحث عنه إن لم تتعرف عليه.</value></data>
+  <data name="m14.memLow.title" xml:space="preserve"><value>{0}% فقط من الذاكرة متاحة</value></data>
+  <data name="m14.memLow.why" xml:space="preserve"><value>عند نفاد الذاكرة ينقل Windows البيانات إلى القرص، فتتأخر استجابة البرامج. تسرد الأدلة البرامج الأكثر استخداماً.</value></data>
+  <data name="m14.memLow.action" xml:space="preserve"><value>أغلق البرامج أو علامات تبويب المتصفح التي لا تستخدمها. إن تكرر ذلك مع برامجك المعتادة فزيادة الذاكرة ستفيد.</value></data>
+  <data name="m14.handles.title" xml:space="preserve"><value>{0} يحتفظ بـ{1} مؤشراً، وهذا يدل غالباً على تسرّب</value></data>
+  <data name="m14.handles.why" xml:space="preserve"><value>المؤشرات هي الطريقة التي يُبقي بها البرنامج الملفات والنوافذ وغيرها مفتوحة. عدد بهذا الارتفاع يعني غالباً أن البرنامج يفتح أشياء ولا يتركها، فيستهلك الذاكرة ببطء حتى يُعاد تشغيله. بعض البرامج تحتفظ بالكثير بشكل مشروع.</value></data>
+  <data name="m14.handles.action" xml:space="preserve"><value>أعد تشغيل ذلك البرنامج. إن ارتفع العدد مجدداً خلال يوم أو يومين فحدّثه أو أبلغ صانعه.</value></data>
+  <data name="m14.memHeavy.title" xml:space="preserve"><value>{0} يستخدم {1} غ.ب من الذاكرة</value></data>
+  <data name="m14.memHeavy.why" xml:space="preserve"><value>برنامج واحد يستخدم حصة كبيرة من ذاكرة هذا الجهاز. هذا طبيعي للألعاب والمحررات والمتصفحات كثيرة التبويبات. يكون مشكلة فقط إذا استمر المقدار في الازدياد والبرنامج خامل، وهذا شكل تسرّب الذاكرة.</value></data>
+  <data name="m14.memHeavy.action" xml:space="preserve"><value>إن لم تتوقع ذلك فأعد تشغيل البرنامج وقارن الرقم في الفحص التالي.</value></data>
+  <data name="history.schedule.signIn" xml:space="preserve"><value>في كل مرة أسجّل الدخول</value></data>
+  <data name="history.schedule.consent.signIn" xml:space="preserve"><value>سيضيف طبيب الحاسوب مهمة واحدة إلى «مجدول المهام» في Windows، في المجلد «PC Doctor». بعد دقيقتين من تسجيل دخولك تُجري فحصاً صحياً للقراءة فقط، يشمل ما يستخدم المعالج والذاكرة. تنظر فقط ولا تغيّر شيئاً، وتُغلق نفسها عند الانتهاء، وتخبرك بهدوء إن ظهر جديد مهم. لا تبقى تعمل في الخلفية. يمكنك إيقافها من هنا في أي وقت.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>

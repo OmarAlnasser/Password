@@ -4,7 +4,7 @@ using System.Security;
 
 namespace PcDoctor.App.Services;
 
-public enum ScheduleFrequency { Off, Daily, Weekly }
+public enum ScheduleFrequency { Off, Daily, Weekly, AtSignIn }
 
 /// <summary>
 /// A per-user scheduled Health Check through the Task Scheduler COM API (no schtasks.exe). It runs
@@ -41,7 +41,9 @@ public static class Scheduler
         }
         var exe = Environment.ProcessPath ?? Path.Combine(AppContext.BaseDirectory, "PcDoctor.App.exe");
         // TASK_CREATE_OR_UPDATE = 6, TASK_LOGON_INTERACTIVE_TOKEN = 3: runs as this user, never elevated.
-        folder.RegisterTask(TaskName, PcDoctor.Core.Reporting.ScheduleXml.Build(frequency == ScheduleFrequency.Daily, at, exe), 6, Type.Missing, Type.Missing, 3, Type.Missing);
+        folder.RegisterTask(TaskName, frequency == ScheduleFrequency.AtSignIn
+            ? PcDoctor.Core.Reporting.ScheduleXml.BuildAtSignIn(exe)
+            : PcDoctor.Core.Reporting.ScheduleXml.Build(frequency == ScheduleFrequency.Daily, at, exe), 6, Type.Missing, Type.Missing, 3, Type.Missing);
     }
 
     private static dynamic Connect()

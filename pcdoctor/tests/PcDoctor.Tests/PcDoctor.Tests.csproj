@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\src\PcDoctor.Bench\PcDoctor.Bench.csproj" />
     <ProjectReference Include="..\..\src\PcDoctor.Tweaks\PcDoctor.Tweaks.csproj" />
     <ProjectReference Include="..\..\src\PcDoctor.Modules.Sensors\PcDoctor.Modules.Sensors.csproj" />
+    <ProjectReference Include="..\..\src\PcDoctor.Modules.Activity\PcDoctor.Modules.Activity.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fixtures\**\*" CopyToOutputDirectory="PreserveNewest" />

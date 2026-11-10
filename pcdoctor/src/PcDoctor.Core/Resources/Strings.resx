@@ -1030,6 +1030,27 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="m11.win11eos.title" xml:space="preserve"><value>Windows 11 {0} stopped getting security updates on {1}</value></data>
   <data name="m11.win11eos.why" xml:space="preserve"><value>Each Windows 11 version gets security updates for a fixed time. After that, newly found vulnerabilities stay open on this PC.</value></data>
   <data name="m11.win11eos.action" xml:space="preserve"><value>Install the latest Windows 11 version from Settings &gt; Windows Update. If it is not offered, the PC may be held back for a compatibility reason that Windows Update explains.</value></data>
+  <data name="m14.name" xml:space="preserve"><value>What is using this PC right now</value></data>
+  <data name="m14.check.cpu" xml:space="preserve"><value>Processor use</value></data>
+  <data name="m14.cpu.detail" xml:space="preserve"><value>{0}% busy during a {1}-second sample. Most active: {2}</value></data>
+  <data name="m14.check.memory" xml:space="preserve"><value>Memory use</value></data>
+  <data name="m14.memory.detail" xml:space="preserve"><value>{0}% of {1} GB in use. Largest: {2}</value></data>
+  <data name="m14.check.unreadable" xml:space="preserve"><value>Protected processes</value></data>
+  <data name="m14.unreadable.detail" xml:space="preserve"><value>{0} processes could not be read without administrator rights. They are not counted above.</value></data>
+  <data name="m14.cpuHog.title" xml:space="preserve"><value>{0} was using {1}% of the processor during a {2}-second sample</value></data>
+  <data name="m14.cpuHog.why" xml:space="preserve"><value>A program that keeps the processor this busy makes everything else slow and the fans loud. This is one short sample: it may have been doing real work at that moment, such as an update or a scan.</value></data>
+  <data name="m14.cpuHog.action" xml:space="preserve"><value>Run the check again in a few minutes. If the same program is still this busy while you are not using it, close it or restart it, and look it up if you do not recognise it.</value></data>
+  <data name="m14.memLow.title" xml:space="preserve"><value>Only {0}% of memory is free</value></data>
+  <data name="m14.memLow.why" xml:space="preserve"><value>When memory runs out, Windows moves data to the disk, which makes programs slow to respond. The evidence lists the programs using the most.</value></data>
+  <data name="m14.memLow.action" xml:space="preserve"><value>Close programs or browser tabs you are not using. If this happens often with your normal programs open, more memory would help.</value></data>
+  <data name="m14.handles.title" xml:space="preserve"><value>{0} is holding {1} handles, which often means a leak</value></data>
+  <data name="m14.handles.why" xml:space="preserve"><value>Handles are how a program keeps files, windows and other things open. A count this high usually means the program opens things and never lets go, which slowly uses up memory until it is restarted. Some programs legitimately hold many.</value></data>
+  <data name="m14.handles.action" xml:space="preserve"><value>Restart that program. If the count climbs again over a day or two, update it or report it to its maker.</value></data>
+  <data name="m14.memHeavy.title" xml:space="preserve"><value>{0} is using {1} GB of memory</value></data>
+  <data name="m14.memHeavy.why" xml:space="preserve"><value>One program is using a large share of this PC's memory. That is normal for games, editors and browsers with many tabs. It is a problem only if the amount keeps growing while the program sits idle, which is what a memory leak looks like.</value></data>
+  <data name="m14.memHeavy.action" xml:space="preserve"><value>If you did not expect this, restart the program and compare the number in the next check.</value></data>
+  <data name="history.schedule.signIn" xml:space="preserve"><value>Every time I sign in</value></data>
+  <data name="history.schedule.consent.signIn" xml:space="preserve"><value>PC Doctor will add one task to Windows Task Scheduler, in the folder "PC Doctor". Two minutes after you sign in it runs a read-only Health Check, including what is using the processor and memory. It only looks, changes nothing, closes itself when done, and tells you quietly if something new and important turns up. It does not stay running in the background. You can turn it off here at any time.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

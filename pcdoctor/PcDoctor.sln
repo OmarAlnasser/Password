@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcDoctor.Platform.Appx", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcDoctor.Modules.Sensors", "src\PcDoctor.Modules.Sensors\PcDoctor.Modules.Sensors.csproj", "{19568061-48B0-46FD-8348-AE79B52F3921}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PcDoctor.Modules.Activity", "src\PcDoctor.Modules.Activity\PcDoctor.Modules.Activity.csproj", "{6CF5779B-B3E5-4444-B10A-0DDC161823F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +132,10 @@ Global
 		{19568061-48B0-46FD-8348-AE79B52F3921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19568061-48B0-46FD-8348-AE79B52F3921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19568061-48B0-46FD-8348-AE79B52F3921}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CF5779B-B3E5-4444-B10A-0DDC161823F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CF5779B-B3E5-4444-B10A-0DDC161823F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CF5779B-B3E5-4444-B10A-0DDC161823F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CF5779B-B3E5-4444-B10A-0DDC161823F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F31CE573-EA4F-4D61-84B2-3174F44E4D99} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
@@ -151,5 +157,6 @@ Global
 		{3888C569-9FE9-4B51-9FFB-C72F47EEF2C7} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
 		{B5D0AB95-DED0-44E1-81F9-16740293DFDA} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
 		{19568061-48B0-46FD-8348-AE79B52F3921} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
+		{6CF5779B-B3E5-4444-B10A-0DDC161823F6} = {2ED51E33-C040-416D-BEFC-27043E2CED0E}
 	EndGlobalSection
 EndGlobal
