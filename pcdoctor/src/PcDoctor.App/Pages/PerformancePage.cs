@@ -170,7 +170,11 @@ public sealed partial class PerformanceViewModel : PageViewModel
                 }
                 foreach (var id in new[] { MetricInfo.DiskSeqRead.Id, MetricInfo.DiskRandRead.Id, MetricInfo.DiskRandLatency.Id })
                 {
-                    metrics[id] = runs.Where(r => r.ContainsKey(id)).Select(r => r[id]).ToList();
+                    // Empty when the disk test was skipped (too little free space): leave the metric out rather than record nothing.
+                    if (runs.Where(r => r.ContainsKey(id)).Select(r => r[id]).ToList() is { Count: > 0 } values)
+                    {
+                        metrics[id] = values;
+                    }
                 }
             }
             if (MeasureNetwork)
@@ -237,6 +241,7 @@ public sealed partial class PerformanceViewModel : PageViewModel
         }
         finally
         {
+            CpuWorkload.Release();
             IsRunning = false;
         }
     }

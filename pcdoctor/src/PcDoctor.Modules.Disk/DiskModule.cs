@@ -86,7 +86,8 @@ public static partial class DiskReader
             {
                 continue;
             }
-            using var handle = CreateFileW($@"\\.\PhysicalDrive{n}", GENERIC_READ | GENERIC_WRITE,
+            // Access 0: enough to ask the drive for its health log, and it cannot write to the disk even by mistake.
+            using var handle = CreateFileW($@"\\.\PhysicalDrive{n}", 0,
                 FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, 0, IntPtr.Zero);
             if (handle.IsInvalid)
             {
@@ -125,8 +126,6 @@ public static partial class DiskReader
         return NvmeQuery.ExtractPayload(output, length);
     }
 
-    private const uint GENERIC_READ = 0x80000000;
-    private const uint GENERIC_WRITE = 0x40000000;
     private const uint FILE_SHARE_READ = 1;
     private const uint FILE_SHARE_WRITE = 2;
     private const uint OPEN_EXISTING = 3;

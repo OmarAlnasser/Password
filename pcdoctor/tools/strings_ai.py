@@ -64,6 +64,10 @@ S = [
 ("history.schedule.consent.on", "PC Doctor will add one task to Windows Task Scheduler, in the folder \"PC Doctor\". It runs a read-only Health Check at that time, only looks, changes nothing, and tells you quietly if something new turns up. You can turn it off here at any time.", "سيضيف طبيب الحاسوب مهمة واحدة إلى «مجدول المهام» في Windows، في المجلد «PC Doctor». تُجري فحصاً صحياً للقراءة فقط في ذلك الوقت، تنظر فقط ولا تغيّر شيئاً، وتخبرك بهدوء إن ظهر جديد. يمكنك إيقافها من هنا في أي وقت."),
 ("history.schedule.consent.off", "PC Doctor will remove its task from Windows Task Scheduler. No more automatic checks will run.", "سيزيل طبيب الحاسوب مهمته من «مجدول المهام» في Windows. لن تُجرى فحوص تلقائية بعد الآن."),
 ("history.schedule.consent.button", "OK, do it", "موافق، نفّذ"),
+("status.copyFailed", "Could not copy: another program is using the clipboard. Try again.", "تعذّر النسخ: برنامج آخر يستخدم الحافظة. حاول مجدداً."),
+("status.exportFailed", "Could not save the file: {0}", "تعذّر حفظ الملف: {0}"),
+("app.error.title", "Something went wrong", "حدث خطأ ما"),
+("app.error.body", "PC Doctor hit an unexpected error and stopped that one action. Nothing else was affected and the app is still running.\n\n{0}\n\nDetails were saved on this PC only, in:\n{1}", "واجه طبيب الحاسوب خطأً غير متوقع وأوقف ذلك الإجراء فقط. لم يتأثر شيء آخر والتطبيق ما زال يعمل.\n\n{0}\n\nحُفظت التفاصيل على هذا الجهاز فقط، في:\n{1}"),
 ]
 S += _app("tips", "Tips", "«تلميحات»")
 S += _app("feedbackHub", "Feedback Hub", "«مركز الملاحظات»")

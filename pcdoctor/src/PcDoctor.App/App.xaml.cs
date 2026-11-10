@@ -18,6 +18,22 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        // Last line of defence: a bug in one page must show a message and keep the app (and any running repair) alive.
+        DispatcherUnhandledException += (_, a) =>
+        {
+            CrashLog.Write(a.Exception);
+            a.Handled = true;
+            if (MainWindow is { IsLoaded: true })
+            {
+                MessageBox.Show(MainWindow, Loc.Format("app.error.body", a.Exception.Message, CrashLog.FilePath), Loc.Get("app.error.title"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        };
+        TaskScheduler.UnobservedTaskException += (_, a) =>
+        {
+            CrashLog.Write(a.Exception);
+            a.SetObserved();
+        };
+        AppDomain.CurrentDomain.UnhandledException += (_, a) => CrashLog.Write(a.ExceptionObject as Exception);
         var settings = AppSettings.Load();
         Loc.Digits = settings.Digits;
         Motion.UserReducedMotion = settings.ReduceMotion;

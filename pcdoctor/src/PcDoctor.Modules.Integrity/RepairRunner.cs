@@ -66,6 +66,12 @@ public static partial class RepairRunner
                 var r1 = await ProcessRunner.RunAsync(Tool.Verifier, VerifierArgs.Enable(drivers), TimeSpan.FromMinutes(2), ct);
                 // If Windows does not start normally, Verifier switches itself off at the next boot.
                 var r2 = await ProcessRunner.RunAsync(Tool.Verifier, ["/bootmode", "resetonunusualshutdown"], TimeSpan.FromMinutes(2), ct);
+                if (r1.ExitCode == 0 && r2.ExitCode != 0)
+                {
+                    // Without the automatic switch-off a bad driver could leave Windows crashing at every start. Never leave Verifier on without it.
+                    var undo = await ProcessRunner.RunAsync(Tool.Verifier, ["/reset"], TimeSpan.FromMinutes(2), CancellationToken.None);
+                    return new SimpleJobResult(r2.ExitCode == 0 ? 1 : r2.ExitCode, Tail(r1.StdOut + r2.StdOut + undo.StdOut));
+                }
                 return new SimpleJobResult(r1.ExitCode == 0 ? r2.ExitCode : r1.ExitCode, Tail(r1.StdOut + r2.StdOut));
             }
             case JobKind.VerifierReset:

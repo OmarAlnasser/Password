@@ -21,12 +21,40 @@ public sealed partial class BrokerClient : IElevatedReader, IAsyncDisposable
     private NamedPipeClientStream? _pipe;
     private Process? _broker;
 
-    public bool IsConnected => _pipe is { IsConnected: true } && _broker is { HasExited: false };
+    private readonly SemaphoreSlim _startGate = new(1, 1);
+
+    public bool IsConnected => _pipe is { IsConnected: true } && BrokerAlive();
+
+    private bool BrokerAlive()
+    {
+        try
+        {
+            return _broker is { HasExited: false };
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
+        {
+            return false; // the process object has no handle any more
+        }
+    }
 
     public static string BrokerPath => Path.Combine(AppContext.BaseDirectory, "PcDoctor.Broker.exe");
 
     /// <summary>Returns false if the Broker is missing or the user declined the UAC prompt.</summary>
     public async Task<bool> EnsureStartedAsync(CancellationToken ct)
+    {
+        // One start at a time: two pages asking together must not show two UAC prompts or leave a second Broker behind.
+        await _startGate.WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            return await StartAsync(ct).ConfigureAwait(false);
+        }
+        finally
+        {
+            _startGate.Release();
+        }
+    }
+
+    private async Task<bool> StartAsync(CancellationToken ct)
     {
         if (IsConnected)
         {
@@ -63,9 +91,13 @@ public sealed partial class BrokerClient : IElevatedReader, IAsyncDisposable
         {
             await pipe.ConnectAsync(TimeSpan.FromSeconds(30), ct).ConfigureAwait(false);
         }
-        catch (TimeoutException)
+        catch (Exception ex) when (ex is TimeoutException or IOException or OperationCanceledException)
         {
             await pipe.DisposeAsync().ConfigureAwait(false);
+            if (ex is OperationCanceledException)
+            {
+                throw;
+            }
             return false;
         }
         if (!GetNamedPipeServerProcessId(pipe.SafePipeHandle.DangerousGetHandle(), out var serverPid) || serverPid != _broker.Id)
@@ -82,17 +114,47 @@ public sealed partial class BrokerClient : IElevatedReader, IAsyncDisposable
         await _gate.WaitAsync(ct).ConfigureAwait(false);
         try
         {
-            if (_pipe is null)
+            if (_pipe is not { IsConnected: true } pipe)
             {
-                throw new InvalidOperationException("Broker is not running.");
+                // A page asked without the Broker running (or it exited): a normal failure, never a crash.
+                return BrokerResponse.Failure(request.RequestId, BrokerErrorCode.NotAvailable, "The administrator helper is not running.");
             }
-            await PipeFraming.WriteAsync<BrokerRequest>(_pipe, request, ct).ConfigureAwait(false);
-            return await PipeFraming.ReadAsync<BrokerResponse>(_pipe, ct).ConfigureAwait(false)
-                   ?? throw new IOException("Broker closed the connection.");
+            try
+            {
+                await PipeFraming.WriteAsync<BrokerRequest>(pipe, request, ct).ConfigureAwait(false);
+                var response = await PipeFraming.ReadAsync<BrokerResponse>(pipe, ct).ConfigureAwait(false);
+                if (response is null || response.RequestId != request.RequestId)
+                {
+                    // Closed, or an answer to some other request: the stream can no longer be trusted, so drop it.
+                    await DropPipeAsync().ConfigureAwait(false);
+                    return BrokerResponse.Failure(request.RequestId, BrokerErrorCode.NotAvailable, "The administrator helper closed the connection.");
+                }
+                return response;
+            }
+            catch (Exception ex) when (ex is IOException or ObjectDisposedException or InvalidDataException or System.Text.Json.JsonException)
+            {
+                await DropPipeAsync().ConfigureAwait(false);
+                return BrokerResponse.Failure(request.RequestId, BrokerErrorCode.NotAvailable, ex.Message);
+            }
+            catch (OperationCanceledException)
+            {
+                // A half-written or half-read frame leaves the stream out of step with the Broker.
+                await DropPipeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
         finally
         {
             _gate.Release();
+        }
+    }
+
+    private async Task DropPipeAsync()
+    {
+        if (_pipe is { } p)
+        {
+            _pipe = null;
+            await p.DisposeAsync().ConfigureAwait(false);
         }
     }
 
@@ -120,7 +182,7 @@ public sealed partial class BrokerClient : IElevatedReader, IAsyncDisposable
                 cancelSent = true;
             }
             var status = (await SendAsync(new JobStatusRequest(id), CancellationToken.None).ConfigureAwait(false)).PayloadAs<JobStatus>()
-                         ?? throw new InvalidOperationException("The job disappeared.");
+                         ?? new JobStatus(id, kind, JobState.Failed, null, "The administrator helper stopped.", DateTimeOffset.UtcNow, DateTimeOffset.UtcNow, null);
             onProgress(status);
             if (status.State != JobState.Running)
             {

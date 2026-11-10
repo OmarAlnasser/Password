@@ -133,7 +133,9 @@ public static partial class InventoryWalker
 [SupportedOSPlatform("windows")]
 internal static partial class Privileges
 {
-    [StructLayout(LayoutKind.Sequential)]
+    // Pack = 4 matches the Windows layout (count, then the LUID right after it). With default packing the LUID
+    // lands 4 bytes too late and the privilege is never actually enabled.
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
     private struct TOKEN_PRIVILEGES
     {
         public uint Count;

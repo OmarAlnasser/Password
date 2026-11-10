@@ -54,6 +54,15 @@
   <data name="history.schedule.consent.on" xml:space="preserve"><value>سيضيف طبيب الحاسوب مهمة واحدة إلى «مجدول المهام» في Windows، في المجلد «PC Doctor». تُجري فحصاً صحياً للقراءة فقط في ذلك الوقت، تنظر فقط ولا تغيّر شيئاً، وتخبرك بهدوء إن ظهر جديد. يمكنك إيقافها من هنا في أي وقت.</value></data>
   <data name="history.schedule.consent.off" xml:space="preserve"><value>سيزيل طبيب الحاسوب مهمته من «مجدول المهام» في Windows. لن تُجرى فحوص تلقائية بعد الآن.</value></data>
   <data name="history.schedule.consent.button" xml:space="preserve"><value>موافق، نفّذ</value></data>
+  <data name="status.copyFailed" xml:space="preserve"><value>تعذّر النسخ: برنامج آخر يستخدم الحافظة. حاول مجدداً.</value></data>
+  <data name="status.exportFailed" xml:space="preserve"><value>تعذّر حفظ الملف: {0}</value></data>
+  <data name="app.error.title" xml:space="preserve"><value>حدث خطأ ما</value></data>
+  <data name="app.error.body" xml:space="preserve"><value>واجه طبيب الحاسوب خطأً غير متوقع وأوقف ذلك الإجراء فقط. لم يتأثر شيء آخر والتطبيق ما زال يعمل.
+
+{0}
+
+حُفظت التفاصيل على هذا الجهاز فقط، في:
+{1}</value></data>
   <data name="tweak.apps.tips.title" xml:space="preserve"><value>إزالة «تلميحات»</value></data>
   <data name="tweak.apps.tips.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
   <data name="tweak.apps.feedbackHub.title" xml:space="preserve"><value>إزالة «مركز الملاحظات»</value></data>

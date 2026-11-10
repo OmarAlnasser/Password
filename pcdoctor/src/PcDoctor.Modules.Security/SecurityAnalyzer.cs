@@ -114,6 +114,12 @@ public sealed class SecurityAnalyzer
                     new Text("m11.av.thirdParty", string.Join(", ", thirdParty.Select(p => p.DisplayName)), d?.AMRunningMode ?? "?"),
                     FindingSource.Wmi));
             }
+            else if (d is null || s.AvProducts is null)
+            {
+                // Half the picture is missing (Defender or the Security Center list could not be read). Saying
+                // "no antivirus" from that would be a guess, so it is reported as not checked.
+                _checks.Add(Checks.NotAvailable("M11.av", new Text("m11.av.check")));
+            }
             else
             {
                 Add("M11.av", "m11.noAv", CheckStatus.Fail, FindingSource.Wmi, null, Severity.Critical,

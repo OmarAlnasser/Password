@@ -290,15 +290,30 @@ public static partial class NetworkReader
         var roots = new List<RootCert>();
         foreach (var location in new[] { StoreLocation.LocalMachine, StoreLocation.CurrentUser })
         {
-            using var store = new X509Store(StoreName.Root, location);
-            store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-            var regRoot = location == StoreLocation.LocalMachine ? Registry.LocalMachine : Registry.CurrentUser;
-            foreach (var c in store.Certificates)
+            try
             {
-                using var key = regRoot.OpenSubKey($@"SOFTWARE\Microsoft\SystemCertificates\ROOT\Certificates\{c.Thumbprint}");
-                roots.Add(new RootCert(location.ToString(), c.Subject, c.Issuer, c.Thumbprint, c.NotBefore.ToUniversalTime(),
-                    key is null ? null : LastWrite(key)));
-                c.Dispose();
+                using var store = new X509Store(StoreName.Root, location);
+                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+                var regRoot = location == StoreLocation.LocalMachine ? Registry.LocalMachine : Registry.CurrentUser;
+                foreach (var c in store.Certificates)
+                {
+                    using (c)
+                    {
+                        using var key = regRoot.OpenSubKey($@"SOFTWARE\Microsoft\SystemCertificates\ROOT\Certificates\{c.Thumbprint}");
+                        // The user's view of the store also shows every machine-wide root. Only a root that is really
+                        // stored in the user's own registry counts as "added for this user"; the rest are the normal ones.
+                        if (location == StoreLocation.CurrentUser && key is null)
+                        {
+                            continue;
+                        }
+                        roots.Add(new RootCert(location.ToString(), c.Subject, c.Issuer, c.Thumbprint, c.NotBefore.ToUniversalTime(),
+                            key is null ? null : LastWrite(key)));
+                    }
+                }
+            }
+            catch (Exception ex) when (ex is System.Security.Cryptography.CryptographicException or System.Security.SecurityException or UnauthorizedAccessException)
+            {
+                // A store that cannot be opened is skipped; the rest of the network check still runs.
             }
         }
         return new NetworkSnapshot
