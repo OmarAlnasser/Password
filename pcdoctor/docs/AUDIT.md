@@ -51,6 +51,16 @@ test suite and the Windows CI job.
 - Windows 11 end-of-servicing by version and edition (dates from memory: verify against Microsoft's lifecycle page).
 - Exports: dates are culture-independent, redaction covers paths and HTML.
 
+### Added after the audit (activity, sign-in run, driver advisor)
+
+- Activity check (M14): two process lists three seconds apart; every process object is disposed, and a
+  test reads five times and fails if memory grows. One short sample is labelled as such, never as proof.
+- Sign-in run: a Task Scheduler logon trigger with a two-minute delay, least privilege, behind the same
+  consent dialog as the other schedules. It is the existing read-only scan; no resident process.
+- Driver advisor: official-only by default. AI mode needs the user's own key and a yes to the exact text
+  sent (device, maker, version, date, Windows build). The AI call is released after each answer and is
+  cancelled when the page is left. Not tested against the live API from this environment (no key here).
+
 ## Still open
 
 These were found and are not fixed yet.

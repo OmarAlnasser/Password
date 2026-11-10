@@ -28,6 +28,7 @@
         <DataTemplate DataType="{x:Type p:SensorsViewModel}"><v:SensorsView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:HistoryViewModel}"><v:HistoryView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:ChangesViewModel}"><v:ChangesView /></DataTemplate>
+        <DataTemplate DataType="{x:Type p:DriversViewModel}"><v:DriversView /></DataTemplate>
         <DataTemplate DataType="{x:Type p:SettingsViewModel}"><v:SettingsView /></DataTemplate>
     </Window.Resources>
 

@@ -1051,6 +1051,46 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="m14.memHeavy.action" xml:space="preserve"><value>If you did not expect this, restart the program and compare the number in the next check.</value></data>
   <data name="history.schedule.signIn" xml:space="preserve"><value>Every time I sign in</value></data>
   <data name="history.schedule.consent.signIn" xml:space="preserve"><value>PC Doctor will add one task to Windows Task Scheduler, in the folder "PC Doctor". Two minutes after you sign in it runs a read-only Health Check, including what is using the processor and memory. It only looks, changes nothing, closes itself when done, and tells you quietly if something new and important turns up. It does not stay running in the background. You can turn it off here at any time.</value></data>
+  <data name="page.drivers.title" xml:space="preserve"><value>Drivers</value></data>
+  <data name="page.drivers.eyebrow" xml:space="preserve"><value>Driver advisor</value></data>
+  <data name="page.drivers.subtitle" xml:space="preserve"><value>See your hardware drivers and where the official updates are. PC Doctor only advises: it never downloads or installs a driver.</value></data>
+  <data name="drivers.ask.title" xml:space="preserve"><value>Do you have an AI API key?</value></data>
+  <data name="drivers.ask.body" xml:space="preserve"><value>With your own Anthropic API key, PC Doctor can look up the newest official driver for each device on the makers' own websites. Without a key, skip this: PC Doctor sticks to official sources — Windows Update and each maker's own page — and contacts no AI service at all.</value></data>
+  <data name="drivers.ask.key" xml:space="preserve"><value>Your AI API key</value></data>
+  <data name="drivers.ask.useKey" xml:space="preserve"><value>Use my key</value></data>
+  <data name="drivers.ask.keyNote" xml:space="preserve"><value>The key is stored encrypted for your Windows account only and is never shown again. Usage is billed to your own account by the AI provider. Nothing is sent until you press the research button and agree.</value></data>
+  <data name="drivers.ask.skip" xml:space="preserve"><value>Skip — official sources only</value></data>
+  <data name="drivers.mode.official" xml:space="preserve"><value>Official sources only</value></data>
+  <data name="drivers.mode.ai" xml:space="preserve"><value>Official sources, plus AI research with your key</value></data>
+  <data name="drivers.rule" xml:space="preserve"><value>Windows Update is the safest place to get drivers. For a graphics card, or when Windows Update has nothing, use the maker's own page. Avoid driver-updater programs and download sites that are not the maker's. A driver that works does not need replacing just because it is old.</value></data>
+  <data name="drivers.openWu" xml:space="preserve"><value>Open Windows Update optional updates</value></data>
+  <data name="drivers.changeChoice" xml:space="preserve"><value>Change my choice</value></data>
+  <data name="drivers.key.remove" xml:space="preserve"><value>Remove my key</value></data>
+  <data name="drivers.key.empty" xml:space="preserve"><value>Type your key first, or choose Skip.</value></data>
+  <data name="drivers.key.saved" xml:space="preserve"><value>Key saved, encrypted. Nothing has been sent.</value></data>
+  <data name="drivers.key.removed" xml:space="preserve"><value>Key removed. Official sources only.</value></data>
+  <data name="drivers.skip.saved" xml:space="preserve"><value>Official sources only. No AI service will be contacted.</value></data>
+  <data name="drivers.list" xml:space="preserve"><value>Hardware drivers on this PC</value></data>
+  <data name="drivers.empty" xml:space="preserve"><value>No hardware makers' drivers could be read here.</value></data>
+  <data name="drivers.unreadable" xml:space="preserve"><value>Windows did not give the driver list. Nothing was changed.</value></data>
+  <data name="drivers.row.detail" xml:space="preserve"><value>{0} · version {1} · dated {2}</value></data>
+  <data name="drivers.row.age" xml:space="preserve"><value>About {0} years old</value></data>
+  <data name="drivers.row.official" xml:space="preserve"><value>Official page</value></data>
+  <data name="drivers.ai.ask" xml:space="preserve"><value>Research newer drivers with AI</value></data>
+  <data name="drivers.ai.consent.title" xml:space="preserve"><value>Send this list for AI research?</value></data>
+  <data name="drivers.ai.consent" xml:space="preserve"><value>PC Doctor will send only the list below to the Anthropic API, using your key, and ask it to search the makers' own websites and Microsoft. It does not send your name, your PC's name, serial numbers, files or addresses. Nothing is downloaded or installed. This uses your own API account and may cost a small amount.
+
+{0}</value></data>
+  <data name="drivers.ai.consent.ok" xml:space="preserve"><value>Send the list</value></data>
+  <data name="drivers.ai.working" xml:space="preserve"><value>Researching on official sites. This can take a minute or two.</value></data>
+  <data name="drivers.ai.done" xml:space="preserve"><value>Research finished. Check each suggestion on the official page before installing anything.</value></data>
+  <data name="drivers.ai.badKey" xml:space="preserve"><value>The AI service did not accept this key. Check it, or remove it to stay with official sources.</value></data>
+  <data name="drivers.ai.busy" xml:space="preserve"><value>The AI service is limiting requests right now. Try again later.</value></data>
+  <data name="drivers.ai.declined" xml:space="preserve"><value>The AI service did not answer this request. Use the official pages below.</value></data>
+  <data name="drivers.ai.failed" xml:space="preserve"><value>The research could not be completed. Nothing was changed. Use the official pages below.</value></data>
+  <data name="drivers.ai.stopped" xml:space="preserve"><value>Research stopped.</value></data>
+  <data name="drivers.ai.title" xml:space="preserve"><value>AI research result</value></data>
+  <data name="drivers.ai.note" xml:space="preserve"><value>This is advice written by an AI and it can be wrong. PC Doctor installed nothing. Confirm the version on the maker's official page, and prefer Windows Update when it offers the same driver.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

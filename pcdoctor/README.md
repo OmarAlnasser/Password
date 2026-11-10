@@ -24,12 +24,22 @@ release. See "Not yet verified on hardware" below.
 | P5 | Benchmarks (DiskSpd, PresentMon, boot/latency traces) with Mann-Whitney + bootstrap verdicts | Done |
 | P6 | Debloat catalog (54 items), detect/apply/undo, presets, drift detection, and a "Windows AI and extras found on this PC" checklist (Copilot, Recall, Click to Do, AI in Paint/Notepad/Edge, preinstalled apps) | Done |
 | P7 | M8 sensors (LibreHardwareMonitor; PawnIO detected, never installed), scan history compare, quiet scheduled Health Check, MSI installer with undo-all on uninstall, keyboard shortcuts | Done |
+| P8 | M14 activity check (what is using the processor and memory, possible handle leaks), optional run at sign-in, driver advisor (official sources only, or AI research with the user's own key) | Done |
 
 **Tell first, then ask.** Every action that changes or loads the PC first shows what it will do and
 waits for a yes: tweaks and app removals (exact change list), fixes, undo, SFC/DISM/chkdsk, Driver
 Verifier, benchmarks, the latency trace and the scheduled check. A test fails the build if a page
 sends a change request without a consent dialog (`Every_change_request_in_the_app_is_preceded_by_a_consent_dialog`).
 The audit record is in `docs/AUDIT.md`.
+
+**Driver advisor.** The Drivers page asks once: "Do you have an AI API key?" With no key (Skip) it
+sticks to official sources: Windows Update optional updates and each maker's own page, and it contacts
+no AI service. With the user's own Anthropic API key (stored with DPAPI, never in clear) it can research
+newer drivers, limited to makers' sites and Microsoft, only after showing the exact list it will send
+and getting a yes. In both modes PC Doctor never downloads or installs a driver.
+
+**Run at sign-in.** History → schedule → "Every time I sign in" adds one least-privilege task that runs
+the read-only Health Check two minutes after sign-in and then exits. Nothing stays in the background.
 
 UI: Khazna's design language (`docs/DESIGN.md` in the repo root): dark-first tokens with Light and
 High Contrast themes, Outfit / IBM Plex Sans Arabic / JetBrains Mono, staggered entrance motion,
