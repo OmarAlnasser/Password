@@ -209,9 +209,19 @@ public sealed class StaticSafetyTests
     {
         // Launching PowerShell at all (the profile audit only reads profile files by path).
         var banned = new Regex(@"(?i)-EncodedCommand|\biex\b|Invoke-Expression|DownloadString|powershell\.exe|pwsh\.exe");
+        // The one exception is the detector that looks for these words in other programs' startup commands.
+        // It only matches text; it must never start a process itself.
+        const string detector = "SuspiciousCommand.cs";
         foreach (var file in SourceFiles().Where(f => f.EndsWith(".cs")))
         {
-            Assert.False(banned.IsMatch(File.ReadAllText(file)), file);
+            var text = File.ReadAllText(file);
+            if (Path.GetFileName(file) == detector)
+            {
+                Assert.DoesNotContain("Process", text);
+                Assert.DoesNotContain("ProcessRunner", text);
+                continue;
+            }
+            Assert.False(banned.IsMatch(text), file);
         }
     }
 

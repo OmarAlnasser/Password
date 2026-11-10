@@ -117,7 +117,7 @@ public static class History
         try
         {
             Directory.CreateDirectory(Folder);
-            File.WriteAllText(Path.Combine(Folder, $"{report.StartedUtc:yyyyMMdd-HHmmss}-{report.Id:N}.json"),
+            File.WriteAllText(Path.Combine(Folder, $"{report.StartedUtc.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}-{report.Id:N}.json"),
                 JsonSerializer.Serialize(report, Json));
             foreach (var old in Directory.GetFiles(Folder, "*.json").OrderByDescending(f => f).Skip(50))
             {

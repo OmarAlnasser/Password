@@ -101,8 +101,26 @@ public static class WindowsBench
     /// <summary>DiskSpd on a 1 GB temporary file (never a raw disk), deleted afterwards.</summary>
     public static async Task<Dictionary<string, double>> DiskAsync(string diskspd, CancellationToken ct)
     {
-        var file = Path.Combine(Path.GetTempPath(), $"pcdoctor-diskspd-{Guid.NewGuid():N}.dat");
+        var temp = Path.GetTempPath();
         var result = new Dictionary<string, double>();
+        // Test files left behind by a crash or power cut would otherwise eat 1 GB each, for ever.
+        try
+        {
+            foreach (var stale in Directory.EnumerateFiles(temp, "pcdoctor-diskspd-*.dat"))
+            {
+                TryDelete(stale);
+            }
+            // The test file is 1 GB. Never run a nearly full disk out of space: skip the disk test instead.
+            if (new DriveInfo(Path.GetPathRoot(Path.GetFullPath(temp))!).AvailableFreeSpace < MinFreeBytesForDiskTest)
+            {
+                return result;
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException)
+        {
+            return result;
+        }
+        var file = Path.Combine(temp, $"pcdoctor-diskspd-{Guid.NewGuid():N}.dat");
         try
         {
             foreach (var (name, args) in DiskSpdParser.Profiles(file))
@@ -119,9 +137,23 @@ public static class WindowsBench
         }
         finally
         {
-            File.Delete(file);
+            TryDelete(file);
         }
         return result;
+    }
+
+    /// <summary>Free space the disk test insists on: its 1 GB file plus room for Windows to keep working.</summary>
+    public const long MinFreeBytesForDiskTest = 8L * 1024 * 1024 * 1024;
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            File.Delete(path);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
     }
 
     /// <summary>One PresentMon capture of a running game (5 s delay, 60 s).</summary>
@@ -135,7 +167,7 @@ public static class WindowsBench
         }
         finally
         {
-            File.Delete(csv);
+            TryDelete(csv);
         }
     }
 }

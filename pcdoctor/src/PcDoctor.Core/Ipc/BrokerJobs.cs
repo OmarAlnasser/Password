@@ -72,10 +72,16 @@ public sealed class JobRunner(Func<JobKind, string?, IJobProgress, CancellationT
 
     public Guid Start(JobKind kind, string? target)
     {
+        Prune();
         // One servicing job at a time: DISM and SFC share the TrustedInstaller lock.
         if (IsServicing(kind) && _jobs.Values.Any(j => j.State == JobState.Running && IsServicing(j.Kind)))
         {
             throw new InvalidOperationException("Another repair is already running.");
+        }
+        // Two scans or two disk walks at once only slow each other and the PC down.
+        if (_jobs.Values.Any(j => j.State == JobState.Running && j.Kind == kind))
+        {
+            throw new InvalidOperationException("This job is already running.");
         }
         var id = Guid.NewGuid();
         var entry = new Entry(kind, _clock.GetUtcNow());
@@ -121,6 +127,39 @@ public sealed class JobRunner(Func<JobKind, string?, IJobProgress, CancellationT
     }
 
     public bool AnyRunning => _jobs.Values.Any(j => j.State == JobState.Running);
+
+    /// <summary>How long a finished job's result stays available to be read.</summary>
+    public static readonly TimeSpan KeepFinished = TimeSpan.FromMinutes(30);
+
+    /// <summary>Forgets finished jobs after <see cref="KeepFinished"/> so a long-lived Broker does not grow.</summary>
+    private void Prune()
+    {
+        var cutoff = _clock.GetUtcNow() - KeepFinished;
+        foreach (var (id, e) in _jobs)
+        {
+            if (e.State != JobState.Running && e.Finished is { } f && f < cutoff && _jobs.TryRemove(id, out var removed))
+            {
+                removed.Cts.Dispose();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cancels every running job and waits (up to <paramref name="wait"/>) for them to stop. Called when the
+    /// Broker exits so no scan or repair tool is left running without anyone watching it.
+    /// </summary>
+    public void CancelAll(TimeSpan wait)
+    {
+        foreach (var e in _jobs.Values.Where(j => j.State == JobState.Running))
+        {
+            e.Cts.Cancel();
+        }
+        var deadline = _clock.GetUtcNow() + wait;
+        while (AnyRunning && _clock.GetUtcNow() < deadline)
+        {
+            Thread.Sleep(50);
+        }
+    }
 
     private static bool IsServicing(JobKind kind) => kind is JobKind.DismCheckHealth or JobKind.DismScanHealth or JobKind.DismRestoreHealth or JobKind.Sfc;
 }

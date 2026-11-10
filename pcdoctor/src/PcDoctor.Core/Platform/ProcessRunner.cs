@@ -77,6 +77,31 @@ public static class ProcessRunner
         CancellationToken ct,
         Encoding? outputEncoding = null) => RunPathAsync(PathOf(tool), args, timeout, ct, outputEncoding, null);
 
+    /// <summary>Tools PC Doctor starts never compete with what the user is doing.</summary>
+    private static void LowerPriority(Process process)
+    {
+        try
+        {
+            process.PriorityClass = ProcessPriorityClass.BelowNormal;
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception or NotSupportedException)
+        {
+            // Already exited, or the platform refuses: the tool still runs at its default priority.
+        }
+    }
+
+    private static void Kill(Process process)
+    {
+        try
+        {
+            process.Kill(entireProcessTree: true);
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception or NotSupportedException)
+        {
+            // Already gone.
+        }
+    }
+
     private static async Task<ProcessResult> RunPathAsync(
         string exePath,
         IReadOnlyList<string> args,
@@ -106,8 +131,10 @@ public static class ProcessRunner
         CommandStarted?.Invoke(commandLine);
 
         using var process = Process.Start(psi) ?? throw new InvalidOperationException($"Could not start {exePath}.");
-        var stdout = process.StandardOutput.ReadToEndAsync(ct);
-        var stderr = process.StandardError.ReadToEndAsync(ct);
+        LowerPriority(process);
+        // Not tied to ct: after a kill the pipes close and these finish on their own.
+        var stdout = process.StandardOutput.ReadToEndAsync(CancellationToken.None);
+        var stderr = process.StandardError.ReadToEndAsync(CancellationToken.None);
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         if (timeout is { } t)
         {
@@ -118,10 +145,15 @@ public static class ProcessRunner
         {
             await process.WaitForExitAsync(cts.Token).ConfigureAwait(false);
         }
-        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        catch (OperationCanceledException)
         {
+            // Timeout or the caller cancelled: never leave the tool running behind us.
+            Kill(process);
+            if (ct.IsCancellationRequested)
+            {
+                throw;
+            }
             timedOut = true;
-            process.Kill(entireProcessTree: true);
         }
         return new ProcessResult(timedOut ? -1 : process.ExitCode, await stdout.ConfigureAwait(false),
             await stderr.ConfigureAwait(false), commandLine, timedOut);

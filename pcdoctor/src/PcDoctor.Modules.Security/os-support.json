@@ -12,5 +12,12 @@
         "note": "Paid commercial program, up to three years." }
     ],
     "guidanceUrl": "https://learn.microsoft.com/windows/whats-new/extended-security-updates"
-  }
+  },
+  "windows11": [
+    { "build": 22000, "version": "21H2", "homePro": "2023-10-10", "enterpriseEducation": "2024-10-08" },
+    { "build": 22621, "version": "22H2", "homePro": "2024-10-08", "enterpriseEducation": "2025-10-14" },
+    { "build": 22631, "version": "23H2", "homePro": "2025-11-11", "enterpriseEducation": "2026-11-10" },
+    { "build": 26100, "version": "24H2", "homePro": "2026-10-13", "enterpriseEducation": "2027-10-12" },
+    { "build": 26200, "version": "25H2", "homePro": "2027-10-12", "enterpriseEducation": "2028-10-10" }
+  ]
 }

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PcDoctor.App.Services;
 using PcDoctor.App.ViewModels;
+using PcDoctor.App.Views;
 using PcDoctor.Bench;
 using PcDoctor.Core.Ipc;
 using PcDoctor.Core.Localization;
@@ -122,6 +123,11 @@ public sealed partial class PerformanceViewModel : PageViewModel
 
     private async Task Record(string label)
     {
+        // A measurement loads the processor (and the disk, if chosen) on purpose, so it is explained and confirmed first.
+        if (!ConsentDialog.Ask(Loc.Get("bench.consent.title"), Loc.Get("bench.consent.body"), Loc.Get("bench.consent.button")))
+        {
+            return;
+        }
         IsRunning = true;
         _cts = new CancellationTokenSource();
         var ct = _cts.Token;
@@ -164,7 +170,11 @@ public sealed partial class PerformanceViewModel : PageViewModel
                 }
                 foreach (var id in new[] { MetricInfo.DiskSeqRead.Id, MetricInfo.DiskRandRead.Id, MetricInfo.DiskRandLatency.Id })
                 {
-                    metrics[id] = runs.Where(r => r.ContainsKey(id)).Select(r => r[id]).ToList();
+                    // Empty when the disk test was skipped (too little free space): leave the metric out rather than record nothing.
+                    if (runs.Where(r => r.ContainsKey(id)).Select(r => r[id]).ToList() is { Count: > 0 } values)
+                    {
+                        metrics[id] = values;
+                    }
                 }
             }
             if (MeasureNetwork)
@@ -231,6 +241,7 @@ public sealed partial class PerformanceViewModel : PageViewModel
         }
         finally
         {
+            CpuWorkload.Release();
             IsRunning = false;
         }
     }
@@ -238,6 +249,10 @@ public sealed partial class PerformanceViewModel : PageViewModel
     [RelayCommand(CanExecute = nameof(CanRun))]
     private async Task TraceLatency()
     {
+        if (!ConsentDialog.Ask(Loc.Get("bench.latency.consent.title"), Loc.Get("bench.latency.consent.body"), Loc.Get("bench.consent.button")))
+        {
+            return;
+        }
         if (!await Services.Broker.EnsureStartedAsync(CancellationToken.None))
         {
             Status = Loc.Get("status.brokerDeclined");

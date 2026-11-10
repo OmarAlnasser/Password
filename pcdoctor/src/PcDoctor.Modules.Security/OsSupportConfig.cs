@@ -4,8 +4,13 @@ namespace PcDoctor.Modules.Security;
 
 public sealed record EsuProgram(string Program, DateOnly Ends, bool Verify, string? Note);
 
+public sealed record Win11Release(int Build, string Version, DateOnly HomePro, DateOnly EnterpriseEducation);
+
 public sealed record OsSupportConfig(DateOnly AsOf, DateOnly Windows10EndOfSupport, IReadOnlyList<EsuProgram> Esu, string GuidanceUrl)
 {
+    /// <summary>Windows 11 feature updates and their end of servicing; empty when the file has none.</summary>
+    public IReadOnlyList<Win11Release> Windows11 { get; init; } = [];
+
     /// <summary>Loads the override file if it exists and parses, otherwise the copy shipped in the binary.</summary>
     public static OsSupportConfig Load(string? overridePath = null)
     {
@@ -37,6 +42,13 @@ public sealed record OsSupportConfig(DateOnly AsOf, DateOnly Windows10EndOfSuppo
                 DateOnly.Parse(e.GetProperty("ends").GetString()!, System.Globalization.CultureInfo.InvariantCulture),
                 e.TryGetProperty("verify", out var v) && v.GetBoolean(),
                 e.TryGetProperty("note", out var n) ? n.GetString() : null)).ToList(),
-            w10.GetProperty("guidanceUrl").GetString()!);
+            w10.GetProperty("guidanceUrl").GetString()!)
+        {
+            Windows11 = doc.RootElement.TryGetProperty("windows11", out var w11)
+                ? w11.EnumerateArray().Select(r => new Win11Release(r.GetProperty("build").GetInt32(), r.GetProperty("version").GetString()!,
+                    DateOnly.Parse(r.GetProperty("homePro").GetString()!, System.Globalization.CultureInfo.InvariantCulture),
+                    DateOnly.Parse(r.GetProperty("enterpriseEducation").GetString()!, System.Globalization.CultureInfo.InvariantCulture))).ToList()
+                : [],
+        };
     }
 }

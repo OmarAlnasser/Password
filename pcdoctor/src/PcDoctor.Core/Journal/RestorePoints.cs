@@ -23,8 +23,9 @@ public sealed record RestorePointResult(RestorePointOutcome Outcome, uint? Seque
 /// </summary>
 public sealed class RestorePointGuard(IRestorePointApi api)
 {
-    public RestorePointResult CreateVerified(string description, string systemDrive = "C:\\")
+    public RestorePointResult CreateVerified(string description, string? systemDrive = null)
     {
+        systemDrive ??= Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.Windows)) is { Length: > 0 } root ? root : "C:\\";
         if (!api.IsProtectionEnabled(systemDrive))
         {
             return new(RestorePointOutcome.ProtectionOff, null, systemDrive);

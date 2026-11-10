@@ -39,7 +39,7 @@ public sealed partial class CheckItemViewModel(CheckResult check, Text moduleNam
 public sealed partial class JournalItemViewModel(JournalEntry entry) : ObservableObject
 {
     public JournalEntry Entry { get; } = entry;
-    public string When => Entry.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
+    public string When => Entry.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture);
     public string Source => Entry.SourceId;
     public string StateText => Loc.Get("journal.state." + Entry.State);
     public bool CanUndo => Entry.State is EntryState.Applied or EntryState.UndoConflict;

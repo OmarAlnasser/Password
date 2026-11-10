@@ -23,8 +23,8 @@ public sealed class ChangeJournal
 
     public ChangeJournal(string path)
     {
+        // Creating the folder here would let the unelevated app own it; only Append (the Broker) creates it.
         _path = path;
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
     }
 
     public string FilePath => _path;
@@ -34,6 +34,7 @@ public sealed class ChangeJournal
         var line = JsonSerializer.Serialize(entry, JsonOptions) + "\n";
         lock (_gate)
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(_path))!);
             using var stream = new FileStream(_path, FileMode.Append, FileAccess.Write, FileShare.Read);
             var bytes = System.Text.Encoding.UTF8.GetBytes(line);
             stream.Write(bytes);

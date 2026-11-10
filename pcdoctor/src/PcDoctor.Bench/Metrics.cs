@@ -35,7 +35,12 @@ public sealed record MetricInfo(string Id, string Unit, Direction Direction, dou
 /// <summary>Deterministic CPU workload: SHA-256 over a fixed buffer, single thread and all threads (ms per round).</summary>
 public static class CpuWorkload
 {
-    private static readonly byte[] Buffer = CreateBuffer(32 * 1024 * 1024);
+    private static byte[]? _buffer;
+
+    // Created on first use and let go after a measurement: 32 MB must not stay in memory for the life of the app.
+    private static byte[] Buffer => _buffer ??= CreateBuffer(32 * 1024 * 1024);
+
+    public static void Release() => _buffer = null;
 
     private static byte[] CreateBuffer(int size)
     {
@@ -46,22 +51,24 @@ public static class CpuWorkload
 
     public static double SingleThreadMs(int rounds = 4)
     {
+        var buffer = Buffer;
         var sw = Stopwatch.StartNew();
         for (var i = 0; i < rounds; i++)
         {
-            SHA256.HashData(Buffer);
+            SHA256.HashData(buffer);
         }
         return sw.Elapsed.TotalMilliseconds;
     }
 
     public static double AllThreadsMs(int roundsPerThread = 2)
     {
+        var buffer = Buffer;
         var sw = Stopwatch.StartNew();
         Parallel.For(0, Environment.ProcessorCount, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, _ =>
         {
             for (var i = 0; i < roundsPerThread; i++)
             {
-                SHA256.HashData(Buffer);
+                SHA256.HashData(buffer);
             }
         });
         return sw.Elapsed.TotalMilliseconds;

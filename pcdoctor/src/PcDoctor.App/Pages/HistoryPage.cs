@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PcDoctor.App.Services;
 using PcDoctor.App.ViewModels;
+using PcDoctor.App.Views;
 using PcDoctor.Core.Localization;
 using PcDoctor.Core.Reporting;
 
@@ -10,7 +11,7 @@ namespace PcDoctor.App.Pages;
 
 public sealed record HistoryEntry(ScanReport Report)
 {
-    public string Label => $"{Report.FinishedUtc.ToLocalTime():yyyy-MM-dd HH:mm} · {Loc.Get("scanMode." + Report.Conditions.Mode)} · {Report.AllFindings.Count(f => !f.HiddenByDefault)}";
+    public string Label => $"{Report.FinishedUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm", System.Globalization.CultureInfo.InvariantCulture)} · {Loc.Get("scanMode." + Report.Conditions.Mode)} · {Report.AllFindings.Count(f => !f.HiddenByDefault)}";
 }
 
 /// <summary>Compare any two past scans: what is new, what is gone, what is still there; and schedule quiet scans.</summary>
@@ -40,6 +41,14 @@ public sealed partial class HistoryViewModel(AppServices services) : PageViewMod
     {
         if (value is null || value.Value == Services.Settings.ScheduledScan)
         {
+            return;
+        }
+        // Creating or removing the scheduled task is a change to this PC: say what it does and ask first.
+        var turningOn = value.Value != ScheduleFrequency.Off;
+        if (!ConsentDialog.Ask(Loc.Get("history.schedule.consent.title"), Loc.Get(turningOn ? "history.schedule.consent.on" : "history.schedule.consent.off"),
+                Loc.Get("history.schedule.consent.button")))
+        {
+            Frequency = Frequencies.First(f => f.Value == Services.Settings.ScheduledScan);
             return;
         }
         try

@@ -177,8 +177,16 @@ public sealed partial class FindingsViewModel : PageViewModel
     {
         if ((item ?? SelectedFinding) is { } f)
         {
-            Clipboard.SetText(ReportExporter.FindingToText(f.Finding, Loc.Culture));
-            Status = Loc.Get("status.copied");
+            try
+            {
+                // SetDataObject retries; SetText throws at once when another program holds the clipboard.
+                Clipboard.SetDataObject(ReportExporter.FindingToText(f.Finding, Loc.Culture), true);
+                Status = Loc.Get("status.copied");
+            }
+            catch (System.Runtime.InteropServices.ExternalException)
+            {
+                Status = Loc.Get("status.copyFailed");
+            }
         }
     }
 
@@ -191,7 +199,7 @@ public sealed partial class FindingsViewModel : PageViewModel
         }
         var dialog = new SaveFileDialog
         {
-            FileName = $"pcdoctor-{report.StartedUtc:yyyyMMdd-HHmm}",
+            FileName = $"pcdoctor-{report.StartedUtc.ToString("yyyyMMdd-HHmm", System.Globalization.CultureInfo.InvariantCulture)}",
             Filter = "HTML (*.html)|*.html|JSON (*.json)|*.json|CSV (*.csv)|*.csv",
         };
         if (dialog.ShowDialog() != true)
@@ -206,8 +214,15 @@ public sealed partial class FindingsViewModel : PageViewModel
             _ => ReportExporter.ToHtml(report, options),
         };
         // UTF-8 with BOM so Excel opens Arabic CSV correctly.
-        File.WriteAllText(dialog.FileName, text, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
-        Status = Loc.Format("status.exported", dialog.FileName);
+        try
+        {
+            File.WriteAllText(dialog.FileName, text, new UTF8Encoding(encoderShouldEmitUTF8Identifier: true));
+            Status = Loc.Format("status.exported", dialog.FileName);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException)
+        {
+            Status = Loc.Format("status.exportFailed", ex.Message);
+        }
     }
 
     [RelayCommand]

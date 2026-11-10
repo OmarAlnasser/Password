@@ -52,6 +52,9 @@ public sealed partial class SensorsViewModel : PageViewModel
 
     public override void OnShown() => OnPropertyChanged(nameof(PawnIoInstalled));
 
+    /// <summary>Live polling only while the page is visible, so the Broker can idle out.</summary>
+    public override void OnHidden() => Stop();
+
     [RelayCommand]
     private async Task Start()
     {

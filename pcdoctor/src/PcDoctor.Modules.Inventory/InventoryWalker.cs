@@ -97,7 +97,7 @@ public static partial class InventoryWalker
         if (csvFolder is not null && acc.AllSkipped.Count > 0)
         {
             Directory.CreateDirectory(csvFolder);
-            csv = Path.Combine(csvFolder, $"skipped-{DateTime.UtcNow:yyyyMMdd-HHmmss}.csv");
+            csv = Path.Combine(csvFolder, $"skipped-{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss", System.Globalization.CultureInfo.InvariantCulture)}.csv");
             File.WriteAllText(csv, InventoryAccumulator.ToCsv(acc.AllSkipped), new System.Text.UTF8Encoding(true));
         }
         return acc.ToResult(volumes, watch.Elapsed, backup, csv);
@@ -133,7 +133,9 @@ public static partial class InventoryWalker
 [SupportedOSPlatform("windows")]
 internal static partial class Privileges
 {
-    [StructLayout(LayoutKind.Sequential)]
+    // Pack = 4 matches the Windows layout (count, then the LUID right after it). With default packing the LUID
+    // lands 4 bytes too late and the privilege is never actually enabled.
+    [StructLayout(LayoutKind.Sequential, Pack = 4)]
     private struct TOKEN_PRIVILEGES
     {
         public uint Count;

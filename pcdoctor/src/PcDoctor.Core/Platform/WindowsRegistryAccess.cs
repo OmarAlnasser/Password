@@ -10,7 +10,8 @@ public sealed class WindowsRegistryAccess : IRegistryAccess
 {
     public RegistryData? Read(string hive, string key, string valueName)
     {
-        using var k = Root(hive).OpenSubKey(key, writable: false);
+        using var root = Root(hive);
+        using var k = root.OpenSubKey(key, writable: false);
         if (k is null || !k.GetValueNames().Contains(valueName, StringComparer.OrdinalIgnoreCase))
         {
             return null;
@@ -22,33 +23,37 @@ public sealed class WindowsRegistryAccess : IRegistryAccess
 
     public bool KeyExists(string hive, string key)
     {
-        using var k = Root(hive).OpenSubKey(key, writable: false);
+        using var root = Root(hive);
+        using var k = root.OpenSubKey(key, writable: false);
         return k is not null;
     }
 
     public void Write(string hive, string key, string valueName, RegistryData data)
     {
-        using var k = Root(hive).CreateSubKey(key, writable: true);
+        using var root = Root(hive);
+        using var k = root.CreateSubKey(key, writable: true);
         var (kind, value) = Decode(data);
         k.SetValue(valueName, value, kind);
     }
 
     public void DeleteValue(string hive, string key, string valueName)
     {
-        using var k = Root(hive).OpenSubKey(key, writable: true);
+        using var root = Root(hive);
+        using var k = root.OpenSubKey(key, writable: true);
         k?.DeleteValue(valueName, throwOnMissingValue: false);
     }
 
     public void DeleteKeyIfEmpty(string hive, string key)
     {
-        using (var k = Root(hive).OpenSubKey(key, writable: false))
+        using var root = Root(hive);
+        using (var k = root.OpenSubKey(key, writable: false))
         {
             if (k is null || k.ValueCount > 0 || k.SubKeyCount > 0)
             {
                 return;
             }
         }
-        Root(hive).DeleteSubKey(key, throwOnMissingSubKey: false);
+        root.DeleteSubKey(key, throwOnMissingSubKey: false);
     }
 
     public static RegistryData Encode(RegistryValueKind kind, object? value) => kind switch
@@ -73,6 +78,7 @@ public sealed class WindowsRegistryAccess : IRegistryAccess
         _ => throw new NotSupportedException($"Registry kind {data.Kind} is not supported for writing."),
     };
 
+    /// <summary>The caller disposes the returned key; nothing is left open between calls.</summary>
     private static RegistryKey Root(string hive)
     {
         if (hive.Equals("HKLM", StringComparison.OrdinalIgnoreCase))
@@ -81,7 +87,7 @@ public sealed class WindowsRegistryAccess : IRegistryAccess
         }
         if (hive.StartsWith(@"HKU\", StringComparison.OrdinalIgnoreCase))
         {
-            var users = RegistryKey.OpenBaseKey(RegistryHive.Users, RegistryView.Registry64);
+            using var users = RegistryKey.OpenBaseKey(RegistryHive.Users, RegistryView.Registry64);
             return users.OpenSubKey(hive[4..], writable: true)
                 ?? throw new InvalidOperationException($"User hive {hive} is not loaded.");
         }

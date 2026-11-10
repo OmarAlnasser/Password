@@ -18,6 +18,22 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        // Last line of defence: a bug in one page must show a message and keep the app (and any running repair) alive.
+        DispatcherUnhandledException += (_, a) =>
+        {
+            CrashLog.Write(a.Exception);
+            a.Handled = true;
+            if (MainWindow is { IsLoaded: true })
+            {
+                MessageBox.Show(MainWindow, Loc.Format("app.error.body", a.Exception.Message, CrashLog.FilePath), Loc.Get("app.error.title"), MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        };
+        TaskScheduler.UnobservedTaskException += (_, a) =>
+        {
+            CrashLog.Write(a.Exception);
+            a.SetObserved();
+        };
+        AppDomain.CurrentDomain.UnhandledException += (_, a) => CrashLog.Write(a.ExceptionObject as Exception);
         var settings = AppSettings.Load();
         Loc.Digits = settings.Digits;
         Motion.UserReducedMotion = settings.ReduceMotion;
@@ -50,7 +66,9 @@ public partial class App : Application
         int pending;
         try
         {
-            pending = new Core.Journal.ChangeJournal(AppModules.JournalPath).ReadCurrent().Count();
+            // Only changes still in place and that undo can put back (Store app removals cannot be).
+            pending = new Core.Journal.ChangeJournal(AppModules.JournalPath).ReadCurrent()
+                .Count(e => e.State is Core.Journal.EntryState.Applied or Core.Journal.EntryState.UndoConflict && e.Change is not Core.Journal.AppxChange);
         }
         catch (Exception ex) when (ex is System.IO.IOException or UnauthorizedAccessException)
         {
@@ -80,17 +98,24 @@ public partial class App : Application
     private async Task RunScheduledScan(AppServices services)
     {
         ShutdownMode = ShutdownMode.OnExplicitShutdown;
-        var previous = History.Load().FirstOrDefault();
-        await services.RunScanAsync(Core.Scanning.ScanMode.HealthCheck);
-        var notify = services.Report is { } report ? Core.Reporting.ReportDiff.WorthNotifying(previous, report) : [];
-        if (notify.Count == 0)
+        try
         {
-            Shutdown();
-            return;
+            var previous = History.Load().FirstOrDefault();
+            await services.RunScanAsync(Core.Scanning.ScanMode.HealthCheck);
+            var notify = services.Report is { } report ? Core.Reporting.ReportDiff.WorthNotifying(previous, report) : [];
+            if (notify.Count > 0)
+            {
+                var window = new QuietNotification(Loc.Format("notify.title", notify.Count), string.Join("\n", notify.Take(3).Select(f => Loc.Resolve(f.Title))));
+                window.Closed += (_, _) => Shutdown();
+                window.Show();
+                return;
+            }
         }
-        var window = new QuietNotification(Loc.Format("notify.title", notify.Count), string.Join("\n", notify.Take(3).Select(f => Loc.Resolve(f.Title))));
-        window.Closed += (_, _) => Shutdown();
-        window.Show();
+        catch (Exception)
+        {
+            // A background run must never linger invisibly; the next scheduled run tries again.
+        }
+        Shutdown();
     }
 
     /// <summary>Every page in the navigation rail, in order.</summary>

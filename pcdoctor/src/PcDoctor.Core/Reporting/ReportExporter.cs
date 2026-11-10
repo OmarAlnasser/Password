@@ -16,6 +16,8 @@ public static class ReportExporter
 {
     private static readonly JsonSerializerOptions Json = new(JsonSerializerDefaults.Web)
     {
+        // Arabic and other non-ASCII text stays readable (and redactable) instead of becoming \uXXXX escapes.
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         WriteIndented = true,
         Converters = { new JsonStringEnumConverter() },
     };
@@ -95,7 +97,7 @@ public static class ReportExporter
         Row("report.cond.uptime", cond.Uptime.ToString(@"d\.hh\:mm", CultureInfo.InvariantCulture));
         Row("report.cond.power", $"{cond.PowerSource} / {cond.PowerPlan}");
         Row("report.cond.mode", $"{cond.Mode}{(cond.Elevated ? " (elevated)" : "")}");
-        Row("report.cond.time", $"{report.StartedUtc:u} – {report.FinishedUtc:u}");
+        Row("report.cond.time", $"{report.StartedUtc.ToString("u", System.Globalization.CultureInfo.InvariantCulture)} – {report.FinishedUtc.ToString("u", System.Globalization.CultureInfo.InvariantCulture)}");
         sb.Append("</table>");
 
         foreach (var m in report.Modules)
@@ -126,7 +128,7 @@ public static class ReportExporter
             sb.Append("</table></details>");
         }
         sb.Append("</body></html>");
-        return Finish(sb.ToString(), report, options);
+        return Finish(sb.ToString(), report, options, html: true);
     }
 
     public static string UndoText(UndoInfo undo, CultureInfo culture) => undo.Kind switch
@@ -162,8 +164,8 @@ public static class ReportExporter
         Loc.Resolve(f.Title, c), Loc.Resolve(f.WhyItMatters, c), Loc.Resolve(f.SuggestedAction, c),
         UndoText(f.Undo, c), f.Evidence, f.FixId);
 
-    private static string Finish(string output, ScanReport report, ExportOptions options) =>
-        options.Redact ? Redactor.Redact(output, report.Conditions.UserName, report.Conditions.MachineName) : output;
+    private static string Finish(string output, ScanReport report, ExportOptions options, bool html = false) =>
+        options.Redact ? Redactor.Redact(output, report.Conditions.UserName, report.Conditions.MachineName, html) : output;
 
     private static string H(string s) => WebUtility.HtmlEncode(s);
 
@@ -180,17 +182,38 @@ public static class ReportExporter
 
 public static class Redactor
 {
-    public static string Redact(string text, string userName, string machineName)
+    /// <summary>
+    /// Account names that are also ordinary words. Replacing them everywhere would mangle the prose
+    /// ("the <user> must restart"), so they are only replaced where they are clearly the account: in paths.
+    /// </summary>
+    private static readonly HashSet<string> CommonWords = new(StringComparer.OrdinalIgnoreCase)
     {
-        foreach (var (value, placeholder) in new[] { (machineName, "<PC>"), (userName, "<user>") })
+        "user", "users", "admin", "administrator", "owner", "guest", "pc", "home", "test", "windows", "default", "public", "system", "desktop",
+    };
+
+    /// <param name="html">True for HTML output, where the placeholders must be entity-encoded to be visible.</param>
+    public static string Redact(string text, string userName, string machineName, bool html = false)
+    {
+        var pc = html ? "&lt;PC&gt;" : "<PC>";
+        var user = html ? "&lt;user&gt;" : "<user>";
+        if (!string.IsNullOrWhiteSpace(machineName))
         {
-            if (string.IsNullOrWhiteSpace(value))
+            text = ReplaceWord(text, machineName, pc);
+        }
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            // In a profile path the name is always the account, whatever the name is. JSON doubles the backslash.
+            text = Regex.Replace(text, $@"(?<=[\\/]Users(?:\\\\|[\\/])){Regex.Escape(userName)}(?=$|[\\/""'\s<&])", user,
+                RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            if (userName.Length >= 3 && !CommonWords.Contains(userName))
             {
-                continue;
+                text = ReplaceWord(text, userName, user);
             }
-            text = Regex.Replace(text, $@"(?<![\p{{L}}\p{{N}}_]){Regex.Escape(value)}(?![\p{{L}}\p{{N}}_])",
-                placeholder, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
         return text;
     }
+
+    private static string ReplaceWord(string text, string value, string placeholder) =>
+        Regex.Replace(text, $@"(?<![\p{{L}}\p{{N}}_]){Regex.Escape(value)}(?![\p{{L}}\p{{N}}_])",
+            placeholder, RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 }

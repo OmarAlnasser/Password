@@ -33,6 +33,12 @@ public sealed class ShimmerBar : Grid
         Children.Add(_fill);
         SizeChanged += (_, _) => Update();
         Loaded += (_, _) => Update();
+        // A Forever animation keeps the render thread working and keeps this control alive after its page is gone.
+        Unloaded += (_, _) =>
+        {
+            _sweep.BeginAnimation(TranslateTransform.XProperty, null);
+            _fill.BeginAnimation(WidthProperty, null);
+        };
         IsHitTestVisible = false;
     }
 
@@ -42,7 +48,7 @@ public sealed class ShimmerBar : Grid
     private void Update()
     {
         var w = ActualWidth;
-        if (w <= 0)
+        if (w <= 0 || !IsLoaded)
         {
             return;
         }

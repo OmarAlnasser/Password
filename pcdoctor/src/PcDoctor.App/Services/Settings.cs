@@ -70,7 +70,17 @@ public sealed record AppSettings
 
     public void Save()
     {
-        Directory.CreateDirectory(Folder);
-        File.WriteAllText(FilePath, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
+        // Written to a temp file and swapped in, so a crash or power cut cannot leave a half-written settings file.
+        // A failure to save (disk full, folder locked) must never take the app down: the setting still applies this session.
+        try
+        {
+            Directory.CreateDirectory(Folder);
+            var tmp = FilePath + ".tmp";
+            File.WriteAllText(tmp, JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true }));
+            File.Move(tmp, FilePath, overwrite: true);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+        }
     }
 }

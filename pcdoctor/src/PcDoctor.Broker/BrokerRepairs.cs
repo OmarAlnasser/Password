@@ -41,6 +41,28 @@ internal static class BrokerTweaks
         File.WriteAllText(ManifestPath, System.Text.Json.JsonSerializer.Serialize(manifest, PcDoctor.Tweaks.TweakCatalog.Json));
     }
 
+    /// <summary>
+    /// Drops tweak IDs whose journaled changes are no longer in place (undone by the user), so drift
+    /// detection does not offer to reapply something the user chose to undo.
+    /// </summary>
+    public static void Prune(PcDoctor.Core.Journal.ChangeJournal journal)
+    {
+        if (Load() is not { } manifest)
+        {
+            return;
+        }
+        var live = journal.ReadCurrent()
+            .Where(e => e.SourceId.StartsWith("tweaks:", StringComparison.Ordinal)
+                        && e.State is PcDoctor.Core.Journal.EntryState.Applied or PcDoctor.Core.Journal.EntryState.UndoConflict)
+            .SelectMany(e => e.SourceId["tweaks:".Length..].Split(','))
+            .ToHashSet(StringComparer.Ordinal);
+        var kept = manifest.TweakIds.Where(live.Contains).ToList();
+        if (kept.Count != manifest.TweakIds.Count)
+        {
+            File.WriteAllText(ManifestPath, System.Text.Json.JsonSerializer.Serialize(manifest with { TweakIds = kept }, PcDoctor.Tweaks.TweakCatalog.Json));
+        }
+    }
+
     private static PcDoctor.Tweaks.AppliedManifest? Load()
     {
         try

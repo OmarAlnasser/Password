@@ -73,6 +73,27 @@ public sealed class ChangeExecutor(ChangeJournal journal, IReadOnlyList<IChangeA
     public UndoResult UndoBatch(Guid batchId, bool force = false) =>
         Undo(journal.ReadCurrent().Where(e => e.BatchId == batchId).ToList(), force);
 
+    /// <summary>
+    /// After a crash or power loss, an entry can be left as Planned even though the change was made.
+    /// Each one is checked: if the new value is in place it becomes Applied (and can be undone), otherwise Failed.
+    /// </summary>
+    public int RecoverInterrupted()
+    {
+        var recovered = 0;
+        foreach (var entry in journal.ReadCurrent().Where(e => e.State == EntryState.Planned))
+        {
+            var applied = Appliers.FirstOrDefault(a => a.CanHandle(entry.Change))?.IsStillApplied(entry.Change) == true;
+            journal.Append(entry with
+            {
+                State = applied ? EntryState.Applied : EntryState.Failed,
+                TimestampUtc = _clock.GetUtcNow(),
+                Note = "Recovered after an interrupted batch.",
+            });
+            recovered++;
+        }
+        return recovered;
+    }
+
     /// <summary>"Undo everything PC Doctor ever did", newest first.</summary>
     public UndoResult UndoAll(bool force = false) => Undo(journal.ReadCurrent().ToList(), force);
 

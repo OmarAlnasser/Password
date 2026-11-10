@@ -63,7 +63,7 @@ public sealed class SecurityAnalyzer
             Add("M11.win10", "m11.win10", CheckStatus.Fail, FindingSource.Registry,
                 new Text("m11.win10.detail", support.Windows10EndOfSupport), Severity.High,
                 support.Esu.Select(e => new Evidence(e.Program,
-                        $"ends {e.Ends:yyyy-MM-dd}{(e.Verify ? " (unverified)" : "")}{(e.Note is null ? "" : " — " + e.Note)}"))
+                        $"ends {e.Ends.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture)}{(e.Verify ? " (unverified)" : "")}{(e.Note is null ? "" : " — " + e.Note)}"))
                     .Append(new Evidence("Dates as of", support.AsOf.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)))
                     .Append(new Evidence("Guidance", support.GuidanceUrl))
                     .ToList(),
@@ -71,8 +71,25 @@ public sealed class SecurityAnalyzer
         }
         else if (s.OsBuild >= 22000)
         {
-            _checks.Add(new CheckResult("M11.win10", new Text("m11.win10.check"), CheckStatus.Pass,
-                new Text("m11.win11.detail", s.OsBuild), FindingSource.Registry));
+            // LTSC/IoT editions follow their own lifecycle; the table only covers the general-availability channel.
+            var ltsc = s.OsEdition.EndsWith("S", StringComparison.Ordinal) && s.OsEdition.Contains("Enterprise", StringComparison.OrdinalIgnoreCase);
+            var release = support.Windows11.FirstOrDefault(r => r.Build == s.OsBuild);
+            var enterprise = s.OsEdition.StartsWith("Enterprise", StringComparison.OrdinalIgnoreCase) || s.OsEdition.StartsWith("Education", StringComparison.OrdinalIgnoreCase)
+                             || s.OsEdition.StartsWith("IoTEnterprise", StringComparison.OrdinalIgnoreCase);
+            var ends = release is null ? (DateOnly?)null : enterprise ? release.EnterpriseEducation : release.HomePro;
+            if (!ltsc && ends is { } end && end < DateOnly.FromDateTime(now.UtcDateTime))
+            {
+                Add("M11.win10", "m11.win11eos", CheckStatus.Fail, FindingSource.Registry, new Text("m11.win11.detail", s.OsBuild), Severity.High,
+                    [new Evidence("Version", $"{release!.Version} (build {s.OsBuild}, {s.OsEdition})"),
+                     new Evidence("Servicing ended", end.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                     new Evidence("Dates as of", support.AsOf.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))],
+                    titleArgs: [release.Version, end.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)]);
+            }
+            else
+            {
+                _checks.Add(new CheckResult("M11.win10", new Text("m11.win10.check"), CheckStatus.Pass,
+                    new Text("m11.win11.detail", s.OsBuild), FindingSource.Registry));
+            }
         }
     }
 
@@ -96,6 +113,12 @@ public sealed class SecurityAnalyzer
                 _checks.Add(new CheckResult("M11.av", new Text("m11.av.check"), CheckStatus.Info,
                     new Text("m11.av.thirdParty", string.Join(", ", thirdParty.Select(p => p.DisplayName)), d?.AMRunningMode ?? "?"),
                     FindingSource.Wmi));
+            }
+            else if (d is null || s.AvProducts is null)
+            {
+                // Half the picture is missing (Defender or the Security Center list could not be read). Saying
+                // "no antivirus" from that would be a guess, so it is reported as not checked.
+                _checks.Add(Checks.NotAvailable("M11.av", new Text("m11.av.check")));
             }
             else
             {

@@ -105,7 +105,10 @@ public sealed class BenchTests
             CpuWorkload.AllThreadsMs(1);
         }
         var before = Enumerable.Range(0, 6).Select(_ => CpuWorkload.AllThreadsMs(1)).ToList();
-        using var stop = new CancellationTokenSource();
+        // Normal priority: the load competes with the benchmark as an equal (roughly halving its share).
+        // AboveNormal spinners starve every Normal thread on the machine on Windows, including other test
+        // processes and the desktop, which hung CI. The deadline bounds the load even if the benchmark stalls.
+        using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(20));
         var hogs = Enumerable.Range(0, Environment.ProcessorCount).Select(_ => new Thread(() =>
         {
             var x = 0.0;
@@ -113,7 +116,7 @@ public sealed class BenchTests
             {
                 x += Math.Sqrt(x + 1);
             }
-        }) { IsBackground = true, Priority = ThreadPriority.AboveNormal }).ToList();
+        }) { IsBackground = true, Priority = ThreadPriority.Normal }).ToList();
         hogs.ForEach(t => t.Start());
         List<double> after;
         try

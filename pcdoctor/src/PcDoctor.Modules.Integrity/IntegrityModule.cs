@@ -49,11 +49,11 @@ public static class IntegrityAnalyzer
             var last = memory[0];
             var errors = last.EventId == 1202;
             checks.Add(new CheckResult("M6.memory", new Text("m6.check.memory"), errors ? CheckStatus.Fail : last.EventId == 1201 ? CheckStatus.Pass : CheckStatus.Info,
-                new Text("m6.memory.detail", last.TimeCreated.ToString("yyyy-MM-dd"), last.EventId), FindingSource.EventLog));
+                new Text("m6.memory.detail", last.TimeCreated.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture), last.EventId), FindingSource.EventLog));
             if (errors)
             {
                 findings.Add(Make("M6.memoryErrors", Severity.High, "m6.memoryErrors",
-                    [new Evidence(last.TimeCreated.ToString("yyyy-MM-dd HH:mm 'UTC'"), $"{last.Provider} {last.EventId}"), new Evidence("Event XML", last.Xml, EvidenceKind.EventXml)]));
+                    [new Evidence(last.TimeCreated.ToString("yyyy-MM-dd HH:mm 'UTC'", System.Globalization.CultureInfo.InvariantCulture), $"{last.Provider} {last.EventId}"), new Evidence("Event XML", last.Xml, EvidenceKind.EventXml)]));
             }
         }
 

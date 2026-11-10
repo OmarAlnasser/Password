@@ -34,6 +34,11 @@ public abstract partial class PageViewModel : ObservableObject
     {
     }
 
+    /// <summary>Called when another page replaces this one.</summary>
+    public virtual void OnHidden()
+    {
+    }
+
     /// <summary>Called before the page is shown by a link, with the part after "key:".</summary>
     public virtual void OnNavigated(string? argument)
     {

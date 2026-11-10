@@ -4,6 +4,15 @@ using PcDoctor.Tweaks;
 
 namespace PcDoctor.Platform.Appx;
 
+/// <summary>
+/// Exact package name only. A prefix match would also hit other apps ("Microsoft.Copilot" must never match
+/// "Microsoft.CopilotSomethingElse"), and removing the wrong app cannot be undone by PC Doctor.
+/// </summary>
+internal static class AppxMatch
+{
+    public static bool Is(Windows.ApplicationModel.PackageId id, string name) => string.Equals(id.Name, name, StringComparison.OrdinalIgnoreCase);
+}
+
 /// <summary>Is a package present for this user (no admin) or, from the Broker, for any user or provisioned?</summary>
 public sealed class WindowsAppxAccess(bool allUsers) : IAppxAccess
 {
@@ -11,7 +20,7 @@ public sealed class WindowsAppxAccess(bool allUsers) : IAppxAccess
     {
         var pm = new PackageManager();
         var installed = allUsers ? pm.FindPackages() : pm.FindPackagesForUser(string.Empty);
-        if (installed.Any(p => p.Id.FamilyName.StartsWith(packageFamilyPrefix, StringComparison.OrdinalIgnoreCase)))
+        if (installed.Any(p => AppxMatch.Is(p.Id, packageFamilyPrefix)))
         {
             return true;
         }
@@ -21,7 +30,7 @@ public sealed class WindowsAppxAccess(bool allUsers) : IAppxAccess
         }
         try
         {
-            return pm.FindProvisionedPackages().Any(p => p.Id.FamilyName.StartsWith(packageFamilyPrefix, StringComparison.OrdinalIgnoreCase));
+            return pm.FindProvisionedPackages().Any(p => AppxMatch.Is(p.Id, packageFamilyPrefix));
         }
         catch (Exception ex) when (ex is NotImplementedException or System.Runtime.InteropServices.COMException or UnauthorizedAccessException)
         {
@@ -45,11 +54,11 @@ public sealed class AppxApplier : IChangeApplier
             return null;
         }
         var pm = new PackageManager();
-        var pkg = pm.FindPackages().FirstOrDefault(p => p.Id.FamilyName.StartsWith(r.PackageFamilyPrefix, StringComparison.OrdinalIgnoreCase));
+        var pkg = pm.FindPackages().FirstOrDefault(p => AppxMatch.Is(p.Id, r.PackageFamilyPrefix));
         var provisioned = false;
         try
         {
-            provisioned = pm.FindProvisionedPackages().Any(p => p.Id.FamilyName.StartsWith(r.PackageFamilyPrefix, StringComparison.OrdinalIgnoreCase));
+            provisioned = pm.FindProvisionedPackages().Any(p => AppxMatch.Is(p.Id, r.PackageFamilyPrefix));
         }
         catch (Exception ex) when (ex is NotImplementedException or System.Runtime.InteropServices.COMException)
         {
@@ -61,7 +70,7 @@ public sealed class AppxApplier : IChangeApplier
     {
         var c = (AppxChange)change;
         var pm = new PackageManager();
-        foreach (var p in pm.FindPackages().Where(p => p.Id.FullName == c.PackageFullName || p.Id.FamilyName.StartsWith(Family(c), StringComparison.OrdinalIgnoreCase)).ToList())
+        foreach (var p in pm.FindPackages().Where(p => p.Id.FullName == c.PackageFullName || AppxMatch.Is(p.Id, Family(c))).ToList())
         {
             var result = pm.RemovePackageAsync(p.Id.FullName, RemovalOptions.RemoveForAllUsers).AsTask().GetAwaiter().GetResult();
             if (result.ExtendedErrorCode is not null)
@@ -71,7 +80,7 @@ public sealed class AppxApplier : IChangeApplier
         }
         if (c.WasProvisioned)
         {
-            var familyName = pm.FindProvisionedPackages().FirstOrDefault(p => p.Id.FamilyName.StartsWith(Family(c), StringComparison.OrdinalIgnoreCase))?.Id.FamilyName;
+            var familyName = pm.FindProvisionedPackages().FirstOrDefault(p => AppxMatch.Is(p.Id, Family(c)))?.Id.FamilyName;
             if (familyName is not null)
             {
                 pm.DeprovisionPackageForAllUsersAsync(familyName).AsTask().GetAwaiter().GetResult();

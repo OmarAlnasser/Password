@@ -36,7 +36,8 @@ public static class PersistenceReader
             {
                 read();
             }
-            catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException or ManagementException or COMException or IOException)
+            // One odd value, missing file or broken COM object must cost one category, never the whole scan.
+            catch (Exception ex) when (ex is not OutOfMemoryException)
             {
                 unread[cat] = ex is UnauthorizedAccessException or System.Security.SecurityException ||
                               ex is ManagementException { ErrorCode: ManagementStatus.AccessDenied }
@@ -81,15 +82,18 @@ public static class PersistenceReader
         return users.GetSubKeyNames().Where(n => n.StartsWith("S-1-5-21-", StringComparison.Ordinal) && !n.EndsWith("_Classes", StringComparison.Ordinal)).ToList();
     }
 
-    private static RegistryKey Lm => RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+    // One shared handle for the life of the process. Opening a new base key on every use leaked a handle each time
+    // (hundreds per scan: once per COM class, task and service looked up).
+    private static readonly RegistryKey Lm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
 
     private static IEnumerable<(string Location, RegistryKey Root, string Key)> HklmAndUsers(string key)
     {
+        // Each user root is closed as soon as the caller moves on: these loops run for every location and every user.
         yield return (@"HKLM\" + key, Lm, key);
         foreach (var sid in UserSids())
         {
             using var users = RegistryKey.OpenBaseKey(RegistryHive.Users, RegistryView.Registry64);
-            var root = users.OpenSubKey(sid);
+            using var root = users.OpenSubKey(sid);
             if (root is not null)
             {
                 yield return ($@"HKU\{sid}\{key}", root, key);
@@ -180,6 +184,7 @@ public static class PersistenceReader
                     {
                         Category = AutorunCategory.RunKey, Location = location, Name = name, Command = command,
                         Image = Resolve(command), Value = ValueOf(k, name),
+                        Enabled = StartupApproved.IsEnabled(root, key.Contains("WOW6432Node", StringComparison.OrdinalIgnoreCase) ? "Run32" : "Run", name),
                     });
                 }
             }
@@ -196,11 +201,14 @@ public static class PersistenceReader
             }
             foreach (var file in Directory.EnumerateFiles(folder).Where(f => !Path.GetFileName(f).Equals("desktop.ini", StringComparison.OrdinalIgnoreCase)))
             {
-                var target = file.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase) ? ShellLink.Target(file) : file;
+                var isLink = file.EndsWith(".lnk", StringComparison.OrdinalIgnoreCase);
+                var (target, arguments) = isLink ? ShellLink.Target(file) : (file, "");
+                // The arguments matter: a shortcut to a script host is harmless or not depending on what it is told to run.
+                var command = target is null ? file : arguments.Length > 0 ? $"\"{target}\" {arguments}" : target;
                 entries.Add(new AutorunEntry
                 {
                     Category = AutorunCategory.StartupFolder, Location = file, Name = Path.GetFileNameWithoutExtension(file),
-                    Command = target ?? file, Image = target ?? file,
+                    Command = command, Image = target ?? file,
                 });
             }
         }
@@ -543,7 +551,8 @@ public static class PersistenceReader
     private static void ReadBrowsers(List<AutorunEntry> entries)
     {
         var local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        foreach (var (browser, root) in new[] { ("Chrome", Path.Combine(local, "Google", "Chrome", "User Data")), ("Edge", Path.Combine(local, "Microsoft", "Edge", "User Data")) })
+        foreach (var (browser, root) in new[] { ("Chrome", Path.Combine(local, "Google", "Chrome", "User Data")), ("Edge", Path.Combine(local, "Microsoft", "Edge", "User Data")),
+                     ("Brave", Path.Combine(local, "BraveSoftware", "Brave-Browser", "User Data")), ("Vivaldi", Path.Combine(local, "Vivaldi", "User Data")) })
         {
             if (!Directory.Exists(root))
             {
@@ -694,22 +703,57 @@ internal static class ShellLink
         void Load([MarshalAs(UnmanagedType.LPWStr)] string pszFileName, uint dwMode);
     }
 
-    public static string? Target(string lnk)
+    /// <summary>The file a shortcut starts and the arguments it passes. Target is null when the shortcut cannot be read.</summary>
+    public static (string? Target, string Arguments) Target(string lnk)
+    {
+        object? link = null;
+        try
+        {
+            link = new CShellLink();
+            var shell = (IShellLinkW)link;
+            ((IPersistFile)link).Load(lnk, 0);
+            var sb = new StringBuilder(1024);
+            shell.GetPath(sb, sb.Capacity, IntPtr.Zero, 0x4 /* SLGP_RAWPATH */);
+            var args = new StringBuilder(2048);
+            shell.GetArguments(args, args.Capacity);
+            var target = Environment.ExpandEnvironmentVariables(sb.ToString());
+            return (target.Length == 0 ? null : target, args.ToString().Trim());
+        }
+        catch (Exception ex) when (ex is COMException or InvalidCastException or IOException or UnauthorizedAccessException)
+        {
+            return (null, "");
+        }
+        finally
+        {
+            if (link is not null)
+            {
+                Marshal.FinalReleaseComObject(link);
+            }
+        }
+    }
+}
+
+/// <summary>
+/// Task Manager's "Startup apps" switch. It does not delete the Run value: it writes a small binary value under
+/// Explorer\StartupApproved whose first byte is even for enabled and odd for disabled. Without reading it, an
+/// entry the user already switched off would still be reported as starting with Windows.
+/// </summary>
+[SupportedOSPlatform("windows")]
+internal static class StartupApproved
+{
+    public static bool IsEnabled(RegistryKey root, string list, string name)
     {
         try
         {
-            var link = (IShellLinkW)new CShellLink();
-            ((IPersistFile)link).Load(lnk, 0);
-            var sb = new StringBuilder(1024);
-            link.GetPath(sb, sb.Capacity, IntPtr.Zero, 0x4 /* SLGP_RAWPATH */);
-            var args = new StringBuilder(2048);
-            link.GetArguments(args, args.Capacity);
-            var target = Environment.ExpandEnvironmentVariables(sb.ToString());
-            return target.Length == 0 ? null : target;
+            using var k = root.OpenSubKey($@"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\{list}");
+            return IsEnabled(k?.GetValue(name) as byte[]);
         }
-        catch (COMException)
+        catch (Exception ex) when (ex is UnauthorizedAccessException or System.Security.SecurityException or IOException)
         {
-            return null;
+            return true;
         }
     }
+
+    /// <summary>No value means Windows never recorded a choice, so the entry runs.</summary>
+    public static bool IsEnabled(byte[]? value) => value is not { Length: > 0 } || (value[0] & 1) == 0;
 }

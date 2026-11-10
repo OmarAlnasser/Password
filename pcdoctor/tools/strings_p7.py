@@ -52,4 +52,8 @@ S = [
 ("uninstall.body", "PC Doctor made {0} changes on this PC that are still in place. Undo them all now? If you skip this, the changes stay and the journal stays in ProgramData so you can still review them.", "أجرى طبيب الحاسوب {0} تغييرات على هذا الجهاز ما زالت قائمة. هل تريد التراجع عنها كلها الآن؟ إن تخطيت ذلك تبقى التغييرات ويبقى السجل في ProgramData لتتمكن من مراجعتها."),
 ("uninstall.continue", "Continue uninstalling", "متابعة الإزالة"),
 ("shell.shortcuts", "Ctrl+1 to Ctrl+9 open pages · Ctrl+F searches findings", "Ctrl+1 إلى Ctrl+9 لفتح الصفحات · Ctrl+F للبحث في النتائج"),
+("m11.win11eos.check", "Windows version support", "دعم إصدار ويندوز"),
+("m11.win11eos.title", "Windows 11 {0} stopped getting security updates on {1}", "توقف ويندوز 11 {0} عن تلقي تحديثات الأمان في {1}"),
+("m11.win11eos.why", "Each Windows 11 version gets security updates for a fixed time. After that, newly found vulnerabilities stay open on this PC.", "يتلقى كل إصدار من ويندوز 11 تحديثات الأمان لفترة محددة. بعدها تبقى الثغرات المكتشفة حديثاً مفتوحة على هذا الجهاز."),
+("m11.win11eos.action", "Install the latest Windows 11 version from Settings > Windows Update. If it is not offered, the PC may be held back for a compatibility reason that Windows Update explains.", "ثبّت أحدث إصدار من ويندوز 11 من الإعدادات > Windows Update. إن لم يُعرض فقد يكون الجهاز محجوزاً لسبب توافق يوضحه Windows Update."),
 ]
