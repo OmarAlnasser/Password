@@ -81,7 +81,10 @@ public static class PersistenceAnalyzer
 
         switch (e.Category)
         {
-            case AutorunCategory.Accessibility when !e.IsMicrosoft || e.Command.Length > 0 && e.Detail == "debugger":
+            // Only when the file is known not to be Microsoft's. A signature that could not be checked (Error, NotFound)
+            // is not evidence of tampering, and must not raise a Critical alarm.
+            case AutorunCategory.Accessibility when e.Signature?.Status is SignatureStatus.Signed or SignatureStatus.Invalid or SignatureStatus.Unsigned ||
+                                                    e.Command.Length > 0 && e.Detail == "debugger":
                 yield return Make(e, "accessibility", Severity.Critical, Confidence.Probable, FindingSource.Registry, evidence, canDisable: false);
                 yield break;
             case AutorunCategory.ImageFileExecution:
@@ -113,6 +116,17 @@ public static class PersistenceAnalyzer
             case AutorunCategory.ComHijack when e.ImageUserWritable || e.Signature?.Status is SignatureStatus.Unsigned:
                 yield return Make(e, "comhijack", Severity.Medium, Confidence.Possible, FindingSource.Registry, evidence, canDisable: false);
                 yield break;
+        }
+
+        // A Microsoft-signed tool told to download, decode or run hidden code at startup. The signature tiers below
+        // would say "Microsoft, fine", so this is checked first and on its own.
+        if (e.Enabled && e.Category is AutorunCategory.RunKey or AutorunCategory.StartupFolder or AutorunCategory.ScheduledTask or AutorunCategory.Service
+                or AutorunCategory.ScreenSaver &&
+            SuspiciousCommand.Reasons(e.Command) is { Count: > 0 } reasons)
+        {
+            var strong = reasons.Any(r => r.Strong) || reasons.Count >= 3;
+            yield return Make(e, "lolbin", strong ? Severity.High : Severity.Medium, strong ? Confidence.Probable : Confidence.Possible, FindingSource.Heuristic,
+                [.. evidence, new Evidence("Why flagged", string.Join(", ", reasons.Select(r => r.Code)))], canDisable: true);
         }
 
         if (e.Category == AutorunCategory.Service && CommandLines.IsUnquotedWithSpaces(e.Command) && !e.IsMicrosoft)

@@ -63,6 +63,9 @@
 
 Details were saved on this PC only, in:
 {1}</value></data>
+  <data name="m3.lolbin.title" xml:space="preserve"><value>"{0}" starts a built-in Windows tool in a way malware often does ({1})</value></data>
+  <data name="m3.lolbin.why" xml:space="preserve"><value>The program itself is a normal part of Windows, so a signature check finds nothing wrong. What stands out is what it is told to do at every start: for example run hidden or encoded commands, or download and run something. Some legitimate software does this too, so this is a reason to look, not proof. The exact reasons are listed in the evidence.</value></data>
+  <data name="m3.lolbin.action" xml:space="preserve"><value>If you do not recognise what set this up, disable it (this can be undone) and run a full Microsoft Defender scan from the Protection page.</value></data>
   <data name="tweak.apps.tips.title" xml:space="preserve"><value>Remove Tips</value></data>
   <data name="tweak.apps.tips.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
   <data name="tweak.apps.feedbackHub.title" xml:space="preserve"><value>Remove Feedback Hub</value></data>

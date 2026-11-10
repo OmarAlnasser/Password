@@ -63,6 +63,9 @@
 
 حُفظت التفاصيل على هذا الجهاز فقط، في:
 {1}</value></data>
+  <data name="m3.lolbin.title" xml:space="preserve"><value>"{0}" يشغّل أداة مدمجة في Windows بطريقة تستخدمها البرمجيات الخبيثة كثيراً ({1})</value></data>
+  <data name="m3.lolbin.why" xml:space="preserve"><value>البرنامج نفسه جزء عادي من Windows، لذا لا يجد فحص التوقيع أي خطأ. اللافت هو ما يُطلب منه عند كل بدء: مثلاً تشغيل أوامر مخفية أو مرمّزة، أو تنزيل شيء وتشغيله. بعض البرامج المشروعة تفعل ذلك أيضاً، فهذا سبب للنظر وليس دليلاً. الأسباب بدقة مذكورة في الأدلة.</value></data>
+  <data name="m3.lolbin.action" xml:space="preserve"><value>إن لم تتعرف على ما أنشأ هذا فعطّله (يمكن التراجع) وشغّل فحصاً كاملاً بـMicrosoft Defender من صفحة الحماية.</value></data>
   <data name="tweak.apps.tips.title" xml:space="preserve"><value>إزالة «تلميحات»</value></data>
   <data name="tweak.apps.tips.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
   <data name="tweak.apps.feedbackHub.title" xml:space="preserve"><value>إزالة «مركز الملاحظات»</value></data>

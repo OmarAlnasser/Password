@@ -39,6 +39,17 @@ internal static partial class Program
             return 3;
         }
 
+        // The Broker does the heavy work (file inventory, hashing, repairs). Below normal priority keeps the PC usable
+        // while it runs; it only yields when something else wants the processor.
+        try
+        {
+            using var self = Process.GetCurrentProcess();
+            self.PriorityClass = ProcessPriorityClass.BelowNormal;
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+        }
+
         SecureDataRoot();
         var journal = new ChangeJournal(JournalPath());
         var registry = new WindowsRegistryAccess();

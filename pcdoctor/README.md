@@ -22,8 +22,14 @@ release. See "Not yet verified on hardware" below.
 | P3 | M2 Defender orchestration (+AMSI, Safety Scanner, optional VirusTotal hash lookups), M3 persistence audit with WinVerifyTrust + catalog, M4 network/trust, M1 file inventory | Done |
 | P4 | M6 integrity: DISM, SFC, chkdsk, Memory Diagnostic, Driver Verifier (expert), with consent and reboot flows | Done |
 | P5 | Benchmarks (DiskSpd, PresentMon, boot/latency traces) with Mann-Whitney + bootstrap verdicts | Done |
-| P6 | Debloat catalog (28 tweaks), detect/apply/undo, presets, drift detection | Done |
+| P6 | Debloat catalog (54 items), detect/apply/undo, presets, drift detection, and a "Windows AI and extras found on this PC" checklist (Copilot, Recall, Click to Do, AI in Paint/Notepad/Edge, preinstalled apps) | Done |
 | P7 | M8 sensors (LibreHardwareMonitor; PawnIO detected, never installed), scan history compare, quiet scheduled Health Check, MSI installer with undo-all on uninstall, keyboard shortcuts | Done |
+
+**Tell first, then ask.** Every action that changes or loads the PC first shows what it will do and
+waits for a yes: tweaks and app removals (exact change list), fixes, undo, SFC/DISM/chkdsk, Driver
+Verifier, benchmarks, the latency trace and the scheduled check. A test fails the build if a page
+sends a change request without a consent dialog (`Every_change_request_in_the_app_is_preceded_by_a_consent_dialog`).
+The audit record is in `docs/AUDIT.md`.
 
 UI: Khazna's design language (`docs/DESIGN.md` in the repo root): dark-first tokens with Light and
 High Contrast themes, Outfit / IBM Plex Sans Arabic / JetBrains Mono, staggered entrance motion,

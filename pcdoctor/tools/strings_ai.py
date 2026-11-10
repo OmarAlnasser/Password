@@ -68,6 +68,9 @@ S = [
 ("status.exportFailed", "Could not save the file: {0}", "تعذّر حفظ الملف: {0}"),
 ("app.error.title", "Something went wrong", "حدث خطأ ما"),
 ("app.error.body", "PC Doctor hit an unexpected error and stopped that one action. Nothing else was affected and the app is still running.\n\n{0}\n\nDetails were saved on this PC only, in:\n{1}", "واجه طبيب الحاسوب خطأً غير متوقع وأوقف ذلك الإجراء فقط. لم يتأثر شيء آخر والتطبيق ما زال يعمل.\n\n{0}\n\nحُفظت التفاصيل على هذا الجهاز فقط، في:\n{1}"),
+("m3.lolbin.title", "\"{0}\" starts a built-in Windows tool in a way malware often does ({1})", "\"{0}\" يشغّل أداة مدمجة في Windows بطريقة تستخدمها البرمجيات الخبيثة كثيراً ({1})"),
+("m3.lolbin.why", "The program itself is a normal part of Windows, so a signature check finds nothing wrong. What stands out is what it is told to do at every start: for example run hidden or encoded commands, or download and run something. Some legitimate software does this too, so this is a reason to look, not proof. The exact reasons are listed in the evidence.", "البرنامج نفسه جزء عادي من Windows، لذا لا يجد فحص التوقيع أي خطأ. اللافت هو ما يُطلب منه عند كل بدء: مثلاً تشغيل أوامر مخفية أو مرمّزة، أو تنزيل شيء وتشغيله. بعض البرامج المشروعة تفعل ذلك أيضاً، فهذا سبب للنظر وليس دليلاً. الأسباب بدقة مذكورة في الأدلة."),
+("m3.lolbin.action", "If you do not recognise what set this up, disable it (this can be undone) and run a full Microsoft Defender scan from the Protection page.", "إن لم تتعرف على ما أنشأ هذا فعطّله (يمكن التراجع) وشغّل فحصاً كاملاً بـMicrosoft Defender من صفحة الحماية."),
 ]
 S += _app("tips", "Tips", "«تلميحات»")
 S += _app("feedbackHub", "Feedback Hub", "«مركز الملاحظات»")
