@@ -30,6 +30,8 @@ public sealed partial class TweakItem(Tweak tweak, TweakState state, Action<Twea
     public string StateText => Loc.Get("tweak.state." + State);
     public string StateKey => State switch { TweakState.Applied => "Good", TweakState.Partial => "Warn", TweakState.NotApplicable => "Muted", _ => "Soft" };
     public bool Applicable => State != TweakState.NotApplicable;
+    /// <summary>A Windows AI feature or preinstalled extra that is still there (or still switched on) on this PC.</summary>
+    public bool IsFoundExtra => tweak.Category is "ai" or "apps" && State is TweakState.NotApplied or TweakState.Partial;
     public bool IsManaged => tweak.LocksSetting && State == TweakState.Applied;
     public string Notes => string.Join(" · ", new[]
     {
@@ -64,8 +66,13 @@ public sealed partial class OptimizeViewModel : PageViewModel
     public ObservableCollection<TweakItem> Items { get; } = [];
     public ICollectionView View { get; }
 
+    /// <summary>The checklist shown first: what was found. Listing never changes anything.</summary>
+    public ObservableCollection<TweakItem> Found { get; } = [];
+    [ObservableProperty] private bool _hasFound;
+    [ObservableProperty] private string _foundSummary = "";
+
     [ObservableProperty] [NotifyCanExecuteChangedFor(nameof(ApplySelectedCommand), nameof(RecommendedCommand), nameof(LimitedCommand), nameof(ClearCommand),
-        nameof(ReapplyCommand))]
+        nameof(ReapplyCommand), nameof(TickFoundCommand))]
     private bool _isBusy;
 
     [ObservableProperty] private string _status = "";
@@ -111,6 +118,13 @@ public sealed partial class OptimizeViewModel : PageViewModel
                 Items.Add(new TweakItem(t, s, OnToggle));
             }
             _suppressToggle = false;
+            Found.Clear();
+            foreach (var i in Items.Where(i => i.IsFoundExtra))
+            {
+                Found.Add(i);
+            }
+            HasFound = Found.Count > 0;
+            FoundSummary = HasFound ? Loc.Format("tweak.found.count", Found.Count) : Loc.Get("tweak.found.none");
             CheckDrift(states.ToDictionary(x => x.t.Id, x => x.Item2));
             Status = Loc.Format("tweak.detected", states.Count(s => s.Item2 == TweakState.Applied), states.Count(s => s.Item2 != TweakState.NotApplicable));
         }
@@ -185,6 +199,21 @@ public sealed partial class OptimizeViewModel : PageViewModel
 
     [RelayCommand(CanExecute = nameof(CanReapply))]
     private Task Reapply() => Apply(_drifted.ToList());
+
+    /// <summary>Ticks the found items. Ticking is only a selection: the preview and consent in Apply still come first.</summary>
+    [RelayCommand(CanExecute = nameof(CanAct))]
+    private void TickFound()
+    {
+        _suppressToggle = true;
+        foreach (var i in Found.Where(i => i.Tweak.Tier != Tier.Advanced))
+        {
+            i.IsSelected = true;
+        }
+        _suppressToggle = false;
+        OnPropertyChanged(nameof(SelectedCount));
+        ApplySelectedCommand.NotifyCanExecuteChanged();
+        Status = Loc.Format("tweak.found.ticked", Found.Count(i => i.Tweak.Tier != Tier.Advanced), Found.Count(i => i.Tweak.Tier == Tier.Advanced));
+    }
 
     [RelayCommand]
     private void MeasureFirst() => Services.Navigate("performance");
@@ -292,5 +321,6 @@ public sealed partial class OptimizeViewModel : PageViewModel
             i.Refresh();
         }
         View.Refresh();
+        FoundSummary = HasFound ? Loc.Format("tweak.found.count", Found.Count) : Loc.Get("tweak.found.none");
     }
 }

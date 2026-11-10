@@ -36,6 +36,36 @@
             </StackPanel>
         </c:Card>
 
+        <!-- Checklist first: what was found. Listing changes nothing; ticking only selects; Apply still previews and asks. -->
+        <c:Card IsInteractive="False" Padding="22,18" Margin="0,14,0,0" c:Motion.Appear="True" c:Motion.Index="4">
+            <StackPanel>
+                <DockPanel>
+                    <Border DockPanel.Dock="Right" CornerRadius="999" Padding="10,3" VerticalAlignment="Center" BorderThickness="1" BorderBrush="{DynamicResource Accent2}">
+                        <TextBlock Text="{Binding FoundSummary}" FontSize="12" Foreground="{DynamicResource Accent2}" />
+                    </Border>
+                    <TextBlock Text="{loc:Loc tweak.found.title}" Style="{StaticResource Text.Title}" />
+                </DockPanel>
+                <TextBlock Text="{loc:Loc tweak.found.body}" Style="{StaticResource Text.Body}" Margin="0,6,0,10" MaxWidth="760" HorizontalAlignment="Left" />
+                <ItemsControl ItemsSource="{Binding Found}" Focusable="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected}" Margin="0,3" AutomationProperties.Name="{Binding Title}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource Text.Body}" Foreground="{DynamicResource Ink}" />
+                                    <TextBlock Text="{Binding Why}" Style="{StaticResource Text.Caption}" />
+                                </StackPanel>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <WrapPanel Margin="0,10,0,0" Visibility="{Binding HasFound, Converter={StaticResource BoolToVisibility}}">
+                    <Button Style="{StaticResource Btn.Ghost}" Command="{Binding TickFoundCommand}" Content="{loc:Loc tweak.found.tick}" />
+                    <Button Style="{StaticResource Btn.Primary}" Command="{Binding ApplySelectedCommand}" Content="{loc:Loc tweak.preset.custom}" />
+                </WrapPanel>
+                <TextBlock Text="{loc:Loc tweak.found.never}" Style="{StaticResource Text.Caption}" Margin="0,10,0,0" />
+            </StackPanel>
+        </c:Card>
+
         <ItemsControl ItemsSource="{Binding View}" Margin="0,8,0,0" Focusable="False">
             <ItemsControl.GroupStyle>
                 <GroupStyle>

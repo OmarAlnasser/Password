@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PcDoctor.App.Services;
 using PcDoctor.App.ViewModels;
+using PcDoctor.App.Views;
 using PcDoctor.Core.Localization;
 using PcDoctor.Core.Reporting;
 
@@ -40,6 +41,14 @@ public sealed partial class HistoryViewModel(AppServices services) : PageViewMod
     {
         if (value is null || value.Value == Services.Settings.ScheduledScan)
         {
+            return;
+        }
+        // Creating or removing the scheduled task is a change to this PC: say what it does and ask first.
+        var turningOn = value.Value != ScheduleFrequency.Off;
+        if (!ConsentDialog.Ask(Loc.Get("history.schedule.consent.title"), Loc.Get(turningOn ? "history.schedule.consent.on" : "history.schedule.consent.off"),
+                Loc.Get("history.schedule.consent.button")))
+        {
+            Frequency = Frequencies.First(f => f.Value == Services.Settings.ScheduledScan);
             return;
         }
         try

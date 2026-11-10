@@ -4,6 +4,101 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="tweak.found.title" xml:space="preserve"><value>Windows AI and extras found on this PC</value></data>
+  <data name="tweak.found.body" xml:space="preserve"><value>This is only a list. Nothing has been changed. These are the AI features and preinstalled extras that are present, or not yet switched off, and that Windows does not depend on. Most use little while idle, so the gain is mostly less clutter, less background activity and less data sharing; measure on the Performance page if you want numbers. Tick what you want gone, then press Apply selected: you will see every exact change and must confirm before anything happens.</value></data>
+  <data name="tweak.found.none" xml:space="preserve"><value>No Windows AI features or removable extras from the list were found on this PC.</value></data>
+  <data name="tweak.found.count" xml:space="preserve"><value>{0} found</value></data>
+  <data name="tweak.found.tick" xml:space="preserve"><value>Tick everything in this list</value></data>
+  <data name="tweak.found.ticked" xml:space="preserve"><value>{0} ticked. Nothing has changed yet: press Apply selected to review and confirm. {1} Advanced items were left out; tick those one by one after reading their tradeoff.</value></data>
+  <data name="tweak.found.never" xml:space="preserve"><value>Never on this list: Windows Update, Microsoft Defender, the Microsoft Store, Edge, WebView2 and anything Windows needs to run.</value></data>
+  <data name="tweak.ai.copilotButton.title" xml:space="preserve"><value>Hide the Copilot button on the taskbar</value></data>
+  <data name="tweak.ai.copilotButton.why" xml:space="preserve"><value>Removes the Copilot button from the taskbar for your account. Same as the switch in Settings &gt; Personalization &gt; Taskbar.</value></data>
+  <data name="tweak.ai.copilotPolicy.title" xml:space="preserve"><value>Turn off Windows Copilot (by policy)</value></data>
+  <data name="tweak.ai.copilotPolicy.why" xml:space="preserve"><value>Sets Microsoft's "Turn off Windows Copilot" policy for your account.</value></data>
+  <data name="tweak.ai.copilotPolicy.warning" xml:space="preserve"><value>Microsoft says this policy covers the older built-in Copilot panel. On newer versions Copilot is an app: remove the Copilot app as well.</value></data>
+  <data name="tweak.ai.copilotApp.title" xml:space="preserve"><value>Remove the Copilot app</value></data>
+  <data name="tweak.ai.copilotApp.why" xml:space="preserve"><value>Removes the Copilot app for every user. Copilot in Edge and Office is separate.</value></data>
+  <data name="tweak.ai.copilotApp.warning" xml:space="preserve"><value>The Copilot key on new keyboards will do nothing until you reinstall it.</value></data>
+  <data name="tweak.ai.recallOff.title" xml:space="preserve"><value>Turn off Recall (by policy)</value></data>
+  <data name="tweak.ai.recallOff.why" xml:space="preserve"><value>Recall saves snapshots of your screen to search later, which uses the processor, memory and disk. This turns it off with Microsoft's documented policies; Microsoft says Windows then removes the Recall component after a restart.</value></data>
+  <data name="tweak.ai.recallOff.warning" xml:space="preserve"><value>Only matters on Copilot+ PCs that have Recall. Check afterwards that old snapshots are gone in Settings &gt; Privacy &amp; security &gt; Recall &amp; snapshots.</value></data>
+  <data name="tweak.ai.clickToDo.title" xml:space="preserve"><value>Turn off Click to Do</value></data>
+  <data name="tweak.ai.clickToDo.why" xml:space="preserve"><value>Click to Do analyses what is on your screen to suggest AI actions. This turns it off with Microsoft's policy. Only present on Copilot+ PCs.</value></data>
+  <data name="tweak.ai.paint.title" xml:space="preserve"><value>Turn off AI features in Paint</value></data>
+  <data name="tweak.ai.paint.why" xml:space="preserve"><value>Turns off Cocreator, Image Creator and Generative fill in Paint. Normal drawing and editing stay.</value></data>
+  <data name="tweak.ai.notepad.title" xml:space="preserve"><value>Turn off AI features in Notepad</value></data>
+  <data name="tweak.ai.notepad.why" xml:space="preserve"><value>Turns off Copilot writing features in Notepad. Notepad itself stays.</value></data>
+  <data name="tweak.ai.edgeCopilot.title" xml:space="preserve"><value>Turn off Copilot in Edge</value></data>
+  <data name="tweak.ai.edgeCopilot.why" xml:space="preserve"><value>Turns off the Edge sidebar that hosts Copilot and stops Copilot reading the page you are on. Edge itself is not removed or changed otherwise.</value></data>
+  <data name="tweak.ai.edgeCopilot.warning" xml:space="preserve"><value>The whole Edge sidebar goes, including any sidebar apps you use.</value></data>
+  <data name="tweak.ai.searchHighlights.title" xml:space="preserve"><value>Turn off search highlights</value></data>
+  <data name="tweak.ai.searchHighlights.why" xml:space="preserve"><value>Stops the search box from downloading and showing daily online content and suggestions.</value></data>
+  <data name="tweak.ai.m365CopilotApp.title" xml:space="preserve"><value>Remove the Microsoft 365 Copilot app</value></data>
+  <data name="tweak.ai.m365CopilotApp.why" xml:space="preserve"><value>Removes the Microsoft 365 Copilot app (formerly the Office app). Word, Excel and the other Office programs are separate and stay.</value></data>
+  <data name="tweak.ai.m365CopilotApp.warning" xml:space="preserve"><value>If you open your Office files from this app, keep it.</value></data>
+  <data name="journal.undoOne.title" xml:space="preserve"><value>Undo this change?</value></data>
+  <data name="journal.undoOne.entry" xml:space="preserve"><value>PC Doctor will put this one setting back to the value it had before. If something else changed it since, nothing is overwritten and you are told.</value></data>
+  <data name="journal.undoOne.batch" xml:space="preserve"><value>PC Doctor will put back every setting that was changed together with this one. If something else changed any of them since, those are not overwritten and you are told.</value></data>
+  <data name="journal.undoOne.button" xml:space="preserve"><value>Undo</value></data>
+  <data name="repairs.sfc.ask" xml:space="preserve"><value>Run System File Checker?</value></data>
+  <data name="repairs.sfc.consent" xml:space="preserve"><value>Windows' own tool (sfc /scannow) checks protected system files and replaces damaged ones with good copies. It can take 10 to 30 minutes and uses the disk while it runs. You can cancel it.</value></data>
+  <data name="repairs.sfc.button" xml:space="preserve"><value>Run it</value></data>
+  <data name="repairs.verifierReset.consent" xml:space="preserve"><value>This turns Driver Verifier off for every driver. It takes effect after a restart.</value></data>
+  <data name="repairs.verifierReset.button" xml:space="preserve"><value>Turn it off</value></data>
+  <data name="bench.consent.title" xml:space="preserve"><value>Start the measurement?</value></data>
+  <data name="bench.consent.body" xml:space="preserve"><value>For a few minutes PC Doctor will load the processor and memory on purpose, and the disk too if the disk test is ticked (it writes a temporary test file and deletes it). The PC will feel slow and the fans may speed up. Nothing is changed or installed. It stops by itself, and you can cancel at any time.</value></data>
+  <data name="bench.consent.button" xml:space="preserve"><value>Start</value></data>
+  <data name="bench.latency.consent.title" xml:space="preserve"><value>Trace driver delays?</value></data>
+  <data name="bench.latency.consent.body" xml:space="preserve"><value>Windows will record driver activity for a short time, with administrator rights, to find which driver causes stutter. The recording stays on this PC and is deleted after it is read. Nothing is changed.</value></data>
+  <data name="history.schedule.consent.title" xml:space="preserve"><value>Change the scheduled check?</value></data>
+  <data name="history.schedule.consent.on" xml:space="preserve"><value>PC Doctor will add one task to Windows Task Scheduler, in the folder "PC Doctor". It runs a read-only Health Check at that time, only looks, changes nothing, and tells you quietly if something new turns up. You can turn it off here at any time.</value></data>
+  <data name="history.schedule.consent.off" xml:space="preserve"><value>PC Doctor will remove its task from Windows Task Scheduler. No more automatic checks will run.</value></data>
+  <data name="history.schedule.consent.button" xml:space="preserve"><value>OK, do it</value></data>
+  <data name="tweak.apps.tips.title" xml:space="preserve"><value>Remove Tips</value></data>
+  <data name="tweak.apps.tips.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.feedbackHub.title" xml:space="preserve"><value>Remove Feedback Hub</value></data>
+  <data name="tweak.apps.feedbackHub.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.cortana.title" xml:space="preserve"><value>Remove Cortana</value></data>
+  <data name="tweak.apps.cortana.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.maps.title" xml:space="preserve"><value>Remove Maps</value></data>
+  <data name="tweak.apps.maps.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.people.title" xml:space="preserve"><value>Remove People</value></data>
+  <data name="tweak.apps.people.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.skype.title" xml:space="preserve"><value>Remove Skype</value></data>
+  <data name="tweak.apps.skype.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.3dViewer.title" xml:space="preserve"><value>Remove 3D Viewer</value></data>
+  <data name="tweak.apps.3dViewer.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.mixedReality.title" xml:space="preserve"><value>Remove Mixed Reality Portal</value></data>
+  <data name="tweak.apps.mixedReality.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.linkedIn.title" xml:space="preserve"><value>Remove LinkedIn</value></data>
+  <data name="tweak.apps.linkedIn.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.devHome.title" xml:space="preserve"><value>Remove Dev Home</value></data>
+  <data name="tweak.apps.devHome.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.powerAutomate.title" xml:space="preserve"><value>Remove Power Automate</value></data>
+  <data name="tweak.apps.powerAutomate.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.moviesTv.title" xml:space="preserve"><value>Remove Movies &amp; TV</value></data>
+  <data name="tweak.apps.moviesTv.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.todo.title" xml:space="preserve"><value>Remove Microsoft To Do</value></data>
+  <data name="tweak.apps.todo.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.family.title" xml:space="preserve"><value>Remove Microsoft Family</value></data>
+  <data name="tweak.apps.family.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.bingSearch.title" xml:space="preserve"><value>Remove the Bing web search add-on</value></data>
+  <data name="tweak.apps.bingSearch.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.xbox.title" xml:space="preserve"><value>Remove the Xbox app</value></data>
+  <data name="tweak.apps.xbox.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.xbox.warning" xml:space="preserve"><value>Keep it if you play PC Game Pass or Xbox games: they need it.</value></data>
+  <data name="tweak.apps.phoneLink.title" xml:space="preserve"><value>Remove Phone Link</value></data>
+  <data name="tweak.apps.phoneLink.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.phoneLink.warning" xml:space="preserve"><value>Keep it if you read phone messages or notifications on this PC.</value></data>
+  <data name="tweak.apps.outlookNew.title" xml:space="preserve"><value>Remove the new Outlook</value></data>
+  <data name="tweak.apps.outlookNew.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.outlookNew.warning" xml:space="preserve"><value>Keep it if this is where you read your email. Accounts set up in it will need setting up again after a reinstall.</value></data>
+  <data name="tweak.apps.teams.title" xml:space="preserve"><value>Remove Microsoft Teams</value></data>
+  <data name="tweak.apps.teams.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.teams.warning" xml:space="preserve"><value>Keep it if you use Teams for work, school or calls.</value></data>
+  <data name="tweak.apps.quickAssist.title" xml:space="preserve"><value>Remove Quick Assist</value></data>
+  <data name="tweak.apps.quickAssist.why" xml:space="preserve"><value>Windows does not depend on this app. It is removed for every user and can be put back from the Microsoft Store.</value></data>
+  <data name="tweak.apps.quickAssist.warning" xml:space="preserve"><value>Keep it if someone helps you with this PC remotely through Quick Assist.</value></data>
   <data name="app.title" xml:space="preserve"><value>PC Doctor</value></data>
   <data name="action.healthCheck" xml:space="preserve"><value>Health Check</value></data>
   <data name="action.healthCheck.tip" xml:space="preserve"><value>Read-only. Does not need administrator rights.</value></data>
@@ -777,7 +872,7 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="page.optimize.eyebrow" xml:space="preserve"><value>Debloat</value></data>
   <data name="page.optimize.subtitle" xml:space="preserve"><value>Turn off ads, suggestions and preinstalled extras. Everything is detected first, previewed exactly, journaled, and undoable. Measured speed gains from debloating are usually within noise; the Performance page can check yours.</value></data>
   <data name="tweak.presets.title" xml:space="preserve"><value>Presets</value></data>
-  <data name="tweak.presets.body" xml:space="preserve"><value>Recommended is safe for most people. Limited adds update and power behaviour changes. Advanced items are never part of a preset: tick each one yourself and read its tradeoff. A restore point is created before any change.</value></data>
+  <data name="tweak.presets.body" xml:space="preserve"><value>Recommended is safe for most people. Limited adds update and power behaviour changes. Windows AI features and extra apps are not in a preset: choose them from the list below. Advanced items are never part of a preset: tick each one yourself and read its tradeoff. A restore point is created before any change.</value></data>
   <data name="tweak.preset.recommended" xml:space="preserve"><value>Apply Recommended</value></data>
   <data name="tweak.preset.limited" xml:space="preserve"><value>Apply Recommended + Limited</value></data>
   <data name="tweak.preset.custom" xml:space="preserve"><value>Apply selected</value></data>
@@ -857,12 +952,6 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="tweak.power.fastStartupOff.title" xml:space="preserve"><value>Turn off Fast Startup</value></data>
   <data name="tweak.power.fastStartupOff.why" xml:space="preserve"><value>Shutting down really shuts down, so drivers and updates load fresh. It fixes some wake and dual-boot problems.</value></data>
   <data name="tweak.power.fastStartupOff.warning" xml:space="preserve"><value>Starting from a shut-down PC takes a few seconds longer.</value></data>
-  <data name="tweak.ai.recallOff.title" xml:space="preserve"><value>Turn off Recall (by policy)</value></data>
-  <data name="tweak.ai.recallOff.why" xml:space="preserve"><value>Recall saves snapshots of your screen to search later. This turns it off with Microsoft's documented policies.</value></data>
-  <data name="tweak.ai.recallOff.warning" xml:space="preserve"><value>Only matters on Copilot+ PCs that have Recall. Existing snapshots are not deleted by this; delete them in Settings &gt; Privacy &amp; security &gt; Recall.</value></data>
-  <data name="tweak.ai.copilotApp.title" xml:space="preserve"><value>Remove the Copilot app</value></data>
-  <data name="tweak.ai.copilotApp.why" xml:space="preserve"><value>Removes the Copilot app for every user. Copilot in Edge and Office is separate.</value></data>
-  <data name="tweak.ai.copilotApp.warning" xml:space="preserve"><value>The Copilot key on new keyboards will do nothing until you reinstall it.</value></data>
   <data name="tweak.service.searchIndexing.title" xml:space="preserve"><value>Turn off search indexing</value></data>
   <data name="tweak.service.searchIndexing.why" xml:space="preserve"><value>Stops the background indexer. Searching files and Outlook mail becomes much slower.</value></data>
   <data name="tweak.service.searchIndexing.warning" xml:space="preserve"><value>Rarely worth it on an SSD: indexing is light, and searches without it scan every folder.</value></data>
@@ -872,9 +961,6 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="tweak.service.sysMain.title" xml:space="preserve"><value>Turn off SysMain (Superfetch)</value></data>
   <data name="tweak.service.sysMain.why" xml:space="preserve"><value>Stops the service that preloads frequently used apps into memory.</value></data>
   <data name="tweak.service.sysMain.warning" xml:space="preserve"><value>"SysMain slows down SSDs" is a myth: it usually makes apps start faster. Turn it off only to test a specific problem.</value></data>
-  <data name="tweak.security.memoryIntegrityOff.title" xml:space="preserve"><value>Turn off Memory integrity (for gaming performance)</value></data>
-  <data name="tweak.security.memoryIntegrityOff.why" xml:space="preserve"><value>Memory integrity costs about 5% on average in games on some CPUs (more on older ones without MBEC/GMET). Measure it on the Performance page before and after.</value></data>
-  <data name="tweak.security.memoryIntegrityOff.warning" xml:space="preserve"><value>Microsoft: with memory integrity off "your device may be vulnerable to threats". To turn it back on, undo this from the Changes page. If Windows ever fails to start, open the Windows Recovery Environment, then Command Prompt, and set HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled back to 1.</value></data>
   <data name="m8.name" xml:space="preserve"><value>Temperatures and fans</value></data>
   <data name="m8.check.pawnio" xml:space="preserve"><value>Low-level sensor driver (PawnIO)</value></data>
   <data name="m8.pawnio.yes" xml:space="preserve"><value>PawnIO is installed, so CPU temperatures can be read.</value></data>

@@ -53,11 +53,13 @@ public sealed partial class ChangesViewModel(AppServices services) : PageViewMod
 
     [RelayCommand]
     private Task UndoEntry(JournalItemViewModel? item) =>
-        item is null ? Task.CompletedTask : Undo(new UndoRequest(UndoScope.Entry, item.Entry.Id, Force: false));
+        item is null || !ConsentDialog.Ask(Loc.Get("journal.undoOne.title"), Loc.Get("journal.undoOne.entry"), Loc.Get("journal.undoOne.button"))
+            ? Task.CompletedTask : Undo(new UndoRequest(UndoScope.Entry, item.Entry.Id, Force: false));
 
     [RelayCommand]
     private Task UndoBatch(JournalItemViewModel? item) =>
-        item is null ? Task.CompletedTask : Undo(new UndoRequest(UndoScope.Batch, item.Entry.BatchId, Force: false));
+        item is null || !ConsentDialog.Ask(Loc.Get("journal.undoOne.title"), Loc.Get("journal.undoOne.batch"), Loc.Get("journal.undoOne.button"))
+            ? Task.CompletedTask : Undo(new UndoRequest(UndoScope.Batch, item.Entry.BatchId, Force: false));
 
     [RelayCommand]
     private Task UndoEverything() =>

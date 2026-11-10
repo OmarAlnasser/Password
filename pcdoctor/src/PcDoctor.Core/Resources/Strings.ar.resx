@@ -4,6 +4,101 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="tweak.found.title" xml:space="preserve"><value>ميزات الذكاء الاصطناعي والإضافات الموجودة على هذا الجهاز</value></data>
+  <data name="tweak.found.body" xml:space="preserve"><value>هذه قائمة فقط. لم يتغيّر أي شيء. هذه ميزات الذكاء الاصطناعي والإضافات المثبّتة مسبقاً الموجودة أو التي لم تُوقَف بعد والتي لا يعتمد عليها Windows. معظمها يستهلك القليل عند الخمول، فالفائدة غالباً فوضى أقل ونشاط خلفي أقل ومشاركة بيانات أقل؛ قِس من صفحة الأداء إن أردت أرقاماً. حدّد ما تريد إزالته ثم اضغط «تطبيق المحدد»: سترى كل تغيير بدقة ويجب أن تؤكد قبل حدوث أي شيء.</value></data>
+  <data name="tweak.found.none" xml:space="preserve"><value>لم يُعثر على ميزات ذكاء اصطناعي أو إضافات قابلة للإزالة من القائمة على هذا الجهاز.</value></data>
+  <data name="tweak.found.count" xml:space="preserve"><value>عُثر على {0}</value></data>
+  <data name="tweak.found.tick" xml:space="preserve"><value>تحديد كل ما في هذه القائمة</value></data>
+  <data name="tweak.found.ticked" xml:space="preserve"><value>تم تحديد {0}. لم يتغيّر شيء بعد: اضغط «تطبيق المحدد» للمراجعة والتأكيد. تُرك {1} من العناصر المتقدمة؛ حدّدها واحداً واحداً بعد قراءة مقايضتها.</value></data>
+  <data name="tweak.found.never" xml:space="preserve"><value>لن يظهر في هذه القائمة أبداً: Windows Update وMicrosoft Defender وMicrosoft Store وEdge وWebView2 وكل ما يحتاجه Windows ليعمل.</value></data>
+  <data name="tweak.ai.copilotButton.title" xml:space="preserve"><value>إخفاء زر Copilot من شريط المهام</value></data>
+  <data name="tweak.ai.copilotButton.why" xml:space="preserve"><value>يزيل زر Copilot من شريط المهام لحسابك. مثل المفتاح في الإعدادات &gt; التخصيص &gt; شريط المهام.</value></data>
+  <data name="tweak.ai.copilotPolicy.title" xml:space="preserve"><value>إيقاف Windows Copilot (عبر السياسة)</value></data>
+  <data name="tweak.ai.copilotPolicy.why" xml:space="preserve"><value>يضبط سياسة Microsoft «إيقاف Windows Copilot» لحسابك.</value></data>
+  <data name="tweak.ai.copilotPolicy.warning" xml:space="preserve"><value>تقول Microsoft إن هذه السياسة تخص لوحة Copilot المدمجة القديمة. في الإصدارات الأحدث أصبح Copilot تطبيقاً: أزِل تطبيق Copilot أيضاً.</value></data>
+  <data name="tweak.ai.copilotApp.title" xml:space="preserve"><value>إزالة تطبيق Copilot</value></data>
+  <data name="tweak.ai.copilotApp.why" xml:space="preserve"><value>يزيل تطبيق Copilot لكل المستخدمين. أما Copilot في Edge وOffice فمنفصل.</value></data>
+  <data name="tweak.ai.copilotApp.warning" xml:space="preserve"><value>لن يفعل مفتاح Copilot في لوحات المفاتيح الحديثة شيئاً حتى تعيد تثبيته.</value></data>
+  <data name="tweak.ai.recallOff.title" xml:space="preserve"><value>إيقاف Recall (عبر السياسة)</value></data>
+  <data name="tweak.ai.recallOff.why" xml:space="preserve"><value>يحفظ Recall لقطات من شاشتك للبحث فيها لاحقاً، وهذا يستهلك المعالج والذاكرة والقرص. يوقفه هذا بسياسات Microsoft الموثّقة؛ وتقول Microsoft إن Windows يزيل مكوّن Recall بعد إعادة التشغيل.</value></data>
+  <data name="tweak.ai.recallOff.warning" xml:space="preserve"><value>يهم فقط على أجهزة Copilot+ التي فيها Recall. تحقق بعدها من زوال اللقطات القديمة في الإعدادات &gt; الخصوصية والأمان &gt; Recall واللقطات.</value></data>
+  <data name="tweak.ai.clickToDo.title" xml:space="preserve"><value>إيقاف Click to Do</value></data>
+  <data name="tweak.ai.clickToDo.why" xml:space="preserve"><value>يحلل Click to Do ما على شاشتك ليقترح إجراءات ذكاء اصطناعي. يوقفه هذا بسياسة Microsoft. موجود فقط على أجهزة Copilot+.</value></data>
+  <data name="tweak.ai.paint.title" xml:space="preserve"><value>إيقاف ميزات الذكاء الاصطناعي في الرسام</value></data>
+  <data name="tweak.ai.paint.why" xml:space="preserve"><value>يوقف Cocreator وImage Creator والتعبئة التوليدية في الرسام. يبقى الرسم والتحرير العادي.</value></data>
+  <data name="tweak.ai.notepad.title" xml:space="preserve"><value>إيقاف ميزات الذكاء الاصطناعي في المفكرة</value></data>
+  <data name="tweak.ai.notepad.why" xml:space="preserve"><value>يوقف ميزات الكتابة بـCopilot في المفكرة. تبقى المفكرة نفسها.</value></data>
+  <data name="tweak.ai.edgeCopilot.title" xml:space="preserve"><value>إيقاف Copilot في Edge</value></data>
+  <data name="tweak.ai.edgeCopilot.why" xml:space="preserve"><value>يوقف الشريط الجانبي في Edge الذي يستضيف Copilot ويمنع Copilot من قراءة الصفحة التي تتصفحها. لا يُزال Edge ولا يتغيّر فيه شيء آخر.</value></data>
+  <data name="tweak.ai.edgeCopilot.warning" xml:space="preserve"><value>يختفي الشريط الجانبي في Edge كاملاً، بما فيه أي تطبيقات جانبية تستخدمها.</value></data>
+  <data name="tweak.ai.searchHighlights.title" xml:space="preserve"><value>إيقاف أبرز عناصر البحث</value></data>
+  <data name="tweak.ai.searchHighlights.why" xml:space="preserve"><value>يمنع مربع البحث من تنزيل وعرض محتوى واقتراحات يومية من الإنترنت.</value></data>
+  <data name="tweak.ai.m365CopilotApp.title" xml:space="preserve"><value>إزالة تطبيق Microsoft 365 Copilot</value></data>
+  <data name="tweak.ai.m365CopilotApp.why" xml:space="preserve"><value>يزيل تطبيق Microsoft 365 Copilot (تطبيق Office سابقاً). أما Word وExcel وبقية برامج Office فمنفصلة وتبقى.</value></data>
+  <data name="tweak.ai.m365CopilotApp.warning" xml:space="preserve"><value>إن كنت تفتح ملفات Office من هذا التطبيق فأبقِه.</value></data>
+  <data name="journal.undoOne.title" xml:space="preserve"><value>التراجع عن هذا التغيير؟</value></data>
+  <data name="journal.undoOne.entry" xml:space="preserve"><value>سيعيد طبيب الحاسوب هذا الإعداد إلى قيمته السابقة. إن غيّره شيء آخر منذ ذلك الحين فلن يُستبدل شيء وسيتم إخبارك.</value></data>
+  <data name="journal.undoOne.batch" xml:space="preserve"><value>سيعيد طبيب الحاسوب كل الإعدادات التي تغيّرت مع هذا الإعداد. إن غيّر شيء آخر أياً منها منذ ذلك الحين فلن تُستبدل وسيتم إخبارك.</value></data>
+  <data name="journal.undoOne.button" xml:space="preserve"><value>تراجع</value></data>
+  <data name="repairs.sfc.ask" xml:space="preserve"><value>تشغيل مدقق ملفات النظام؟</value></data>
+  <data name="repairs.sfc.consent" xml:space="preserve"><value>أداة Windows نفسها (sfc /scannow) تفحص ملفات النظام المحمية وتستبدل التالف منها بنسخ سليمة. قد تستغرق 10 إلى 30 دقيقة وتستخدم القرص أثناء عملها. يمكنك إلغاؤها.</value></data>
+  <data name="repairs.sfc.button" xml:space="preserve"><value>شغّلها</value></data>
+  <data name="repairs.verifierReset.consent" xml:space="preserve"><value>يوقف هذا Driver Verifier لكل التعريفات. يسري بعد إعادة التشغيل.</value></data>
+  <data name="repairs.verifierReset.button" xml:space="preserve"><value>أوقفه</value></data>
+  <data name="bench.consent.title" xml:space="preserve"><value>بدء القياس؟</value></data>
+  <data name="bench.consent.body" xml:space="preserve"><value>لبضع دقائق سيحمّل طبيب الحاسوب المعالج والذاكرة عمداً، والقرص أيضاً إن كان اختبار القرص محدداً (يكتب ملف اختبار مؤقتاً ثم يحذفه). سيبدو الجهاز بطيئاً وقد تتسارع المراوح. لا يتغيّر شيء ولا يُثبَّت شيء. يتوقف تلقائياً ويمكنك الإلغاء في أي وقت.</value></data>
+  <data name="bench.consent.button" xml:space="preserve"><value>ابدأ</value></data>
+  <data name="bench.latency.consent.title" xml:space="preserve"><value>تتبّع تأخيرات التعريفات؟</value></data>
+  <data name="bench.latency.consent.body" xml:space="preserve"><value>سيسجّل Windows نشاط التعريفات لوقت قصير، بصلاحيات المسؤول، لمعرفة أي تعريف يسبب التقطّع. يبقى التسجيل على هذا الجهاز ويُحذف بعد قراءته. لا يتغيّر شيء.</value></data>
+  <data name="history.schedule.consent.title" xml:space="preserve"><value>تغيير الفحص المجدول؟</value></data>
+  <data name="history.schedule.consent.on" xml:space="preserve"><value>سيضيف طبيب الحاسوب مهمة واحدة إلى «مجدول المهام» في Windows، في المجلد «PC Doctor». تُجري فحصاً صحياً للقراءة فقط في ذلك الوقت، تنظر فقط ولا تغيّر شيئاً، وتخبرك بهدوء إن ظهر جديد. يمكنك إيقافها من هنا في أي وقت.</value></data>
+  <data name="history.schedule.consent.off" xml:space="preserve"><value>سيزيل طبيب الحاسوب مهمته من «مجدول المهام» في Windows. لن تُجرى فحوص تلقائية بعد الآن.</value></data>
+  <data name="history.schedule.consent.button" xml:space="preserve"><value>موافق، نفّذ</value></data>
+  <data name="tweak.apps.tips.title" xml:space="preserve"><value>إزالة «تلميحات»</value></data>
+  <data name="tweak.apps.tips.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.feedbackHub.title" xml:space="preserve"><value>إزالة «مركز الملاحظات»</value></data>
+  <data name="tweak.apps.feedbackHub.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.cortana.title" xml:space="preserve"><value>إزالة Cortana</value></data>
+  <data name="tweak.apps.cortana.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.maps.title" xml:space="preserve"><value>إزالة «الخرائط»</value></data>
+  <data name="tweak.apps.maps.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.people.title" xml:space="preserve"><value>إزالة «الأشخاص»</value></data>
+  <data name="tweak.apps.people.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.skype.title" xml:space="preserve"><value>إزالة Skype</value></data>
+  <data name="tweak.apps.skype.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.3dViewer.title" xml:space="preserve"><value>إزالة «عارض ثلاثي الأبعاد»</value></data>
+  <data name="tweak.apps.3dViewer.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.mixedReality.title" xml:space="preserve"><value>إزالة «مدخل الواقع المختلط»</value></data>
+  <data name="tweak.apps.mixedReality.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.linkedIn.title" xml:space="preserve"><value>إزالة LinkedIn</value></data>
+  <data name="tweak.apps.linkedIn.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.devHome.title" xml:space="preserve"><value>إزالة Dev Home</value></data>
+  <data name="tweak.apps.devHome.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.powerAutomate.title" xml:space="preserve"><value>إزالة Power Automate</value></data>
+  <data name="tweak.apps.powerAutomate.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.moviesTv.title" xml:space="preserve"><value>إزالة «الأفلام والتلفزيون»</value></data>
+  <data name="tweak.apps.moviesTv.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.todo.title" xml:space="preserve"><value>إزالة Microsoft To Do</value></data>
+  <data name="tweak.apps.todo.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.family.title" xml:space="preserve"><value>إزالة Microsoft Family</value></data>
+  <data name="tweak.apps.family.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.bingSearch.title" xml:space="preserve"><value>إزالة إضافة بحث الويب Bing</value></data>
+  <data name="tweak.apps.bingSearch.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.xbox.title" xml:space="preserve"><value>إزالة تطبيق Xbox</value></data>
+  <data name="tweak.apps.xbox.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.xbox.warning" xml:space="preserve"><value>أبقِه إن كنت تلعب ألعاب PC Game Pass أو Xbox: فهي تحتاجه.</value></data>
+  <data name="tweak.apps.phoneLink.title" xml:space="preserve"><value>إزالة «ربط الهاتف»</value></data>
+  <data name="tweak.apps.phoneLink.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.phoneLink.warning" xml:space="preserve"><value>أبقِه إن كنت تقرأ رسائل هاتفك أو إشعاراته على هذا الجهاز.</value></data>
+  <data name="tweak.apps.outlookNew.title" xml:space="preserve"><value>إزالة Outlook الجديد</value></data>
+  <data name="tweak.apps.outlookNew.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.outlookNew.warning" xml:space="preserve"><value>أبقِه إن كان هذا مكان قراءة بريدك. الحسابات المعدّة فيه تحتاج إعداداً جديداً بعد إعادة التثبيت.</value></data>
+  <data name="tweak.apps.teams.title" xml:space="preserve"><value>إزالة Microsoft Teams</value></data>
+  <data name="tweak.apps.teams.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.teams.warning" xml:space="preserve"><value>أبقِه إن كنت تستخدم Teams للعمل أو الدراسة أو المكالمات.</value></data>
+  <data name="tweak.apps.quickAssist.title" xml:space="preserve"><value>إزالة «المساعدة السريعة»</value></data>
+  <data name="tweak.apps.quickAssist.why" xml:space="preserve"><value>لا يعتمد Windows على هذا التطبيق. يُزال لكل المستخدمين ويمكن إعادته من Microsoft Store.</value></data>
+  <data name="tweak.apps.quickAssist.warning" xml:space="preserve"><value>أبقِه إن كان أحد يساعدك في هذا الجهاز عن بُعد عبر «المساعدة السريعة».</value></data>
   <data name="app.title" xml:space="preserve"><value>طبيب الحاسوب</value></data>
   <data name="action.healthCheck" xml:space="preserve"><value>فحص الصحة</value></data>
   <data name="action.healthCheck.tip" xml:space="preserve"><value>للقراءة فقط. لا يحتاج صلاحيات المسؤول.</value></data>
@@ -777,7 +872,7 @@
   <data name="page.optimize.eyebrow" xml:space="preserve"><value>إزالة الزوائد</value></data>
   <data name="page.optimize.subtitle" xml:space="preserve"><value>أوقف الإعلانات والاقتراحات والإضافات المثبتة مسبقاً. يُكتشف كل شيء أولاً، ويُعرض بدقة قبل التطبيق، ويُسجَّل، ويمكن التراجع عنه. مكاسب السرعة المقيسة من إزالة الزوائد تقع عادة ضمن تذبذب القياس؛ يمكن لصفحة الأداء التحقق من ذلك على جهازك.</value></data>
   <data name="tweak.presets.title" xml:space="preserve"><value>الإعدادات المسبقة</value></data>
-  <data name="tweak.presets.body" xml:space="preserve"><value>الموصى به آمن لمعظم الناس. المحدود يضيف تغييرات في سلوك التحديث والطاقة. عناصر المتقدم ليست جزءاً من أي إعداد مسبق: فعّل كل واحد بنفسك واقرأ مقايضته. تُنشأ نقطة استعادة قبل أي تغيير.</value></data>
+  <data name="tweak.presets.body" xml:space="preserve"><value>الموصى به آمن لمعظم الناس. المحدود يضيف تغييرات في سلوك التحديث والطاقة. ميزات الذكاء الاصطناعي في Windows والتطبيقات الإضافية ليست ضمن أي إعداد مسبق: اخترها من القائمة أدناه. عناصر المتقدم ليست جزءاً من أي إعداد مسبق: فعّل كل واحد بنفسك واقرأ مقايضته. تُنشأ نقطة استعادة قبل أي تغيير.</value></data>
   <data name="tweak.preset.recommended" xml:space="preserve"><value>تطبيق الموصى به</value></data>
   <data name="tweak.preset.limited" xml:space="preserve"><value>تطبيق الموصى به + المحدود</value></data>
   <data name="tweak.preset.custom" xml:space="preserve"><value>تطبيق المحدد</value></data>
@@ -857,12 +952,6 @@
   <data name="tweak.power.fastStartupOff.title" xml:space="preserve"><value>إيقاف بدء التشغيل السريع</value></data>
   <data name="tweak.power.fastStartupOff.why" xml:space="preserve"><value>يصبح إيقاف التشغيل إيقافاً حقيقياً، فتُحمَّل التعريفات والتحديثات من جديد. يحل بعض مشكلات الاستيقاظ وتعدد أنظمة الإقلاع.</value></data>
   <data name="tweak.power.fastStartupOff.warning" xml:space="preserve"><value>يستغرق البدء من جهاز مطفأ بضع ثوانٍ أطول.</value></data>
-  <data name="tweak.ai.recallOff.title" xml:space="preserve"><value>إيقاف Recall (عبر السياسة)</value></data>
-  <data name="tweak.ai.recallOff.why" xml:space="preserve"><value>يحفظ Recall لقطات من شاشتك للبحث فيها لاحقاً. يوقفه هذا عبر سياسات مايكروسوفت الموثّقة.</value></data>
-  <data name="tweak.ai.recallOff.warning" xml:space="preserve"><value>يهم فقط على أجهزة Copilot+ التي فيها Recall. لا يحذف هذا اللقطات الموجودة؛ احذفها من الإعدادات &gt; الخصوصية والأمان &gt; Recall.</value></data>
-  <data name="tweak.ai.copilotApp.title" xml:space="preserve"><value>إزالة تطبيق Copilot</value></data>
-  <data name="tweak.ai.copilotApp.why" xml:space="preserve"><value>يزيل تطبيق Copilot لكل المستخدمين. أما Copilot في Edge وOffice فمنفصل.</value></data>
-  <data name="tweak.ai.copilotApp.warning" xml:space="preserve"><value>لن يفعل مفتاح Copilot في لوحات المفاتيح الحديثة شيئاً حتى تعيد تثبيته.</value></data>
   <data name="tweak.service.searchIndexing.title" xml:space="preserve"><value>إيقاف فهرسة البحث</value></data>
   <data name="tweak.service.searchIndexing.why" xml:space="preserve"><value>يوقف المفهرس في الخلفية. يصبح البحث في الملفات وبريد Outlook أبطأ كثيراً.</value></data>
   <data name="tweak.service.searchIndexing.warning" xml:space="preserve"><value>نادراً ما يستحق ذلك على قرص SSD: الفهرسة خفيفة، والبحث بدونها يفحص كل مجلد.</value></data>
@@ -872,9 +961,6 @@
   <data name="tweak.service.sysMain.title" xml:space="preserve"><value>إيقاف SysMain (Superfetch)</value></data>
   <data name="tweak.service.sysMain.why" xml:space="preserve"><value>يوقف الخدمة التي تحمّل التطبيقات المستخدمة كثيراً إلى الذاكرة مسبقاً.</value></data>
   <data name="tweak.service.sysMain.warning" xml:space="preserve"><value>"SysMain يبطئ أقراص SSD" خرافة: عادة يجعل التطبيقات تبدأ أسرع. أوقفه فقط لاختبار مشكلة محددة.</value></data>
-  <data name="tweak.security.memoryIntegrityOff.title" xml:space="preserve"><value>إيقاف سلامة الذاكرة (لأداء الألعاب)</value></data>
-  <data name="tweak.security.memoryIntegrityOff.why" xml:space="preserve"><value>تكلّف سلامة الذاكرة نحو 5% في المتوسط في الألعاب على بعض المعالجات (وأكثر على المعالجات الأقدم دون MBEC/GMET). قِسها في صفحة الأداء قبل وبعد.</value></data>
-  <data name="tweak.security.memoryIntegrityOff.warning" xml:space="preserve"><value>مايكروسوفت: مع إيقاف سلامة الذاكرة "قد يكون جهازك عرضة للتهديدات". لإعادة تشغيلها تراجع عن ذلك من صفحة التغييرات. وإن فشل ويندوز في البدء يوماً، فافتح بيئة استرداد ويندوز ثم موجه الأوامر، وأعد قيمة HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity\Enabled إلى 1.</value></data>
   <data name="m8.name" xml:space="preserve"><value>الحرارة والمراوح</value></data>
   <data name="m8.check.pawnio" xml:space="preserve"><value>برنامج تشغيل المستشعرات منخفض المستوى (PawnIO)</value></data>
   <data name="m8.pawnio.yes" xml:space="preserve"><value>PawnIO مثبّت، لذا يمكن قراءة حرارة المعالج.</value></data>

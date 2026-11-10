@@ -24,7 +24,7 @@ public sealed class TweakTests : IDisposable
 
     private sealed class FakeAppx(params string[] present) : IAppxAccess
     {
-        public bool IsPresent(string prefix) => present.Any(p => p.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+        public bool IsPresent(string prefix) => present.Any(p => string.Equals(p.Split('_')[0], prefix, StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -47,6 +47,67 @@ public sealed class TweakTests : IDisposable
         ]);
         Assert.Equal(5, TweakEngine.Violations(bad).Count);
         Assert.Null(TweakEngine.Plan(bad, ["x1"], Win11Pro, Context(new FakeRegistry(), new FakeServices())));
+    }
+
+    [Fact]
+    public void Security_features_can_never_be_turned_off_by_a_catalog()
+    {
+        var bad = new TweakCatalog(1,
+        [
+            new Tweak { Id = "s1", Category = "x", Tier = Tier.Advanced, Actions = [new RegistryAction("HKLM", @"SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity", "Enabled", "DWord", "0")] },
+            new Tweak { Id = "s2", Category = "x", Tier = Tier.Advanced, Actions = [new RegistryAction("HKLM", @"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", "EnableLUA", "DWord", "0")] },
+            new Tweak { Id = "s3", Category = "x", Tier = Tier.Advanced, Actions = [new RegistryAction("HKLM", @"SOFTWARE\Policies\Microsoft\Windows\System", "EnableSmartScreen", "DWord", "0")] },
+            new Tweak { Id = "s4", Category = "x", Tier = Tier.Advanced, Actions = [new RegistryAction("HKLM", @"SYSTEM\CurrentControlSet\Services\WinDefend", "Start", "DWord", "4")] },
+            new Tweak { Id = "s5", Category = "x", Tier = Tier.Advanced, Actions = [new AppxAction("MicrosoftWindows.Client.CBS", "x")] },
+        ]);
+        Assert.Equal(5, TweakEngine.Violations(bad).Count);
+        Assert.DoesNotContain(Catalog.Tweaks, t => t.Id.Contains("memoryIntegrity", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void Windows_ai_and_extra_apps_are_never_applied_by_a_preset_button()
+    {
+        var ai = Catalog.Tweaks.Where(t => t.Category == "ai").ToList();
+        Assert.True(ai.Count >= 9);
+        Assert.Contains(ai, t => t.Id == "ai.recallOff");
+        Assert.Contains(ai, t => t.Id == "ai.copilotApp");
+        var limited = TweakEngine.Preset(Catalog, "limited", Win11Pro);
+        Assert.DoesNotContain(limited, t => t.Category == "ai");
+        Assert.DoesNotContain(limited, t => t.Category == "apps" && t.Tier != Tier.Recommended);
+        // Every app removal names one exact package and a Store ID to put it back.
+        foreach (var x in Catalog.Tweaks.SelectMany(t => t.Actions).OfType<AppxAction>())
+        {
+            Assert.False(string.IsNullOrWhiteSpace(x.StoreId));
+            Assert.DoesNotContain("*", x.PackageFamilyPrefix);
+        }
+        Assert.Equal(Catalog.Tweaks.SelectMany(t => t.Actions).OfType<AppxAction>().Count(),
+            Catalog.Tweaks.SelectMany(t => t.Actions).OfType<AppxAction>().Select(x => x.PackageFamilyPrefix).Distinct(StringComparer.OrdinalIgnoreCase).Count());
+    }
+
+    /// <summary>The rule "tell first, then ask": no page may send a change to the Broker without a consent dialog just before it.</summary>
+    [Fact]
+    public void Every_change_request_in_the_app_is_preceded_by_a_consent_dialog()
+    {
+        string[] changes = ["new TweakApplyRequest(", "new ApplyFixRequest(", "new AutorunDisableRequest(", "new QuarantineRestoreRequest(", "Scheduler.Apply(", "new UndoRequest(",
+            "JobKind.Sfc)", "JobKind.DismRestoreHealth)", "JobKind.VerifierReset)", "JobKind.VerifierEnable", "JobKind.ChkdskFix", "JobKind.DefenderOffline", "JobKind.LatencyTrace"];
+        var checkedSites = 0;
+        foreach (var file in Directory.EnumerateFiles(Path.Combine(Fixtures.SourceRoot, "src", "PcDoctor.App"), "*.cs", SearchOption.AllDirectories)
+                     .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")))
+        {
+            var lines = File.ReadAllLines(file);
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (!changes.Any(c => lines[i].Contains(c, StringComparison.Ordinal)))
+                {
+                    continue;
+                }
+                checkedSites++;
+                var before = string.Join("\n", lines[Math.Max(0, i - 45)..(i + 1)]);
+                Assert.True(before.Contains("ConsentDialog.Ask(", StringComparison.Ordinal) || before.Contains("AskSfc()", StringComparison.Ordinal),
+                    $"{Path.GetFileName(file)}:{i + 1} changes the PC without asking first");
+            }
+        }
+        Assert.True(checkedSites >= 8);
     }
 
     [Fact]

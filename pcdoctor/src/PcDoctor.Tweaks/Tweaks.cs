@@ -81,12 +81,17 @@ public static class TweakEngine
     [
         "Windows Defender\\DisableAntiSpyware", "Windows Defender\\Real-Time Protection", "\\Spynet", "TamperProtection", "Exclusions",
         "WindowsUpdate\\AU\\NoAutoUpdate", "DisableWindowsUpdateAccess", "SetDisableUXWUAccess", "PagingFiles", "FeatureSettingsOverride",
+        // Security features PC Doctor never turns off, whatever a catalog says: memory integrity / VBS, SmartScreen, UAC, exploit mitigations.
+        "DeviceGuard", "HypervisorEnforcedCodeIntegrity", "DisableRealtimeMonitoring", "DisableAntiVirus", "EnableSmartScreen", "SmartScreenEnabled",
+        "Policies\\System\\EnableLUA", "MitigationOptions", "Windows Defender Security Center", "\\Services\\wuauserv", "\\Services\\WinDefend",
     ];
 
     private static readonly string[] ProtectedServices = ["wuauserv", "BITS", "WinDefend", "WdNisSvc", "Sense", "mpssvc", "UsoSvc", "WaaSMedicSvc", "TrustedInstaller"];
 
     private static readonly string[] ProtectedApps =
-        ["Microsoft.WindowsStore", "Microsoft.DesktopAppInstaller", "Microsoft.WebView2", "Microsoft.MicrosoftEdge", "Microsoft.SecHealthUI", "Microsoft.VCLibs", "Microsoft.UI.Xaml", "Microsoft.NET"];
+        ["Microsoft.WindowsStore", "Microsoft.DesktopAppInstaller", "Microsoft.WebView2", "Microsoft.MicrosoftEdge", "Microsoft.SecHealthUI", "Microsoft.VCLibs", "Microsoft.UI.Xaml", "Microsoft.NET",
+         "Microsoft.StorePurchaseApp", "Microsoft.WindowsAppRuntime", "Microsoft.Windows.ShellExperienceHost", "Microsoft.Windows.StartMenuExperienceHost", "MicrosoftWindows.Client",
+         "Microsoft.Windows.Search", "Microsoft.AAD.BrokerPlugin", "Microsoft.Windows.CloudExperienceHost", "Microsoft.LockApp", "Microsoft.AccountsControl", "windows.immersivecontrolpanel"];
 
     /// <summary>Validates the catalog itself. A catalog that breaks a rule is rejected entirely.</summary>
     public static IReadOnlyList<string> Violations(TweakCatalog catalog)
@@ -197,7 +202,8 @@ public static class TweakEngine
     public static IReadOnlyList<Tweak> Preset(TweakCatalog catalog, string preset, OsInfo os) => preset switch
     {
         "recommended" => catalog.Tweaks.Where(t => t.Tier == Tier.Recommended && Applies(t, os)).ToList(),
-        "limited" => catalog.Tweaks.Where(t => t.Tier is Tier.Recommended or Tier.Limited && Applies(t, os)).ToList(),
+        // Windows AI features and extra apps are picked from the checklist, item by item: one button never removes a pile of apps.
+        "limited" => catalog.Tweaks.Where(t => (t.Tier == Tier.Recommended || (t.Tier == Tier.Limited && t.Category is not ("ai" or "apps"))) && Applies(t, os)).ToList(),
         // Advanced is never a preset: each Advanced item is chosen and confirmed on its own.
         _ => [],
     };

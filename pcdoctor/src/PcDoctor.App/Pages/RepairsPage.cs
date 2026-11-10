@@ -89,8 +89,14 @@ public sealed partial class RepairsViewModel : PageViewModel
                 return;
             }
         }
-        await Job<SfcResult>(JobKind.Sfc);
+        if (AskSfc())
+        {
+            await Job<SfcResult>(JobKind.Sfc);
+        }
     }
+
+    /// <summary>SFC replaces damaged system files, so it is explained and confirmed like every other change.</summary>
+    private static bool AskSfc() => ConsentDialog.Ask(Loc.Get("repairs.sfc.ask"), Loc.Get("repairs.sfc.consent"), Loc.Get("repairs.sfc.button"));
 
     [RelayCommand(CanExecute = nameof(CanRun))]
     private Task DismCheck() => Job<DismResult>(JobKind.DismCheckHealth);
@@ -105,7 +111,7 @@ public sealed partial class RepairsViewModel : PageViewModel
             : Task.CompletedTask;
 
     [RelayCommand(CanExecute = nameof(CanRun))]
-    private Task Sfc() => Job<SfcResult>(JobKind.Sfc);
+    private Task Sfc() => AskSfc() ? Job<SfcResult>(JobKind.Sfc) : Task.CompletedTask;
 
     [RelayCommand(CanExecute = nameof(CanRun))]
     private Task ChkdskScan() => Job<ChkdskResult>(JobKind.ChkdskScan);
@@ -176,6 +182,10 @@ public sealed partial class RepairsViewModel : PageViewModel
     [RelayCommand(CanExecute = nameof(CanVerifier))]
     private async Task VerifierReset()
     {
+        if (!ConsentDialog.Ask(Loc.Get("repairs.verifier.title"), Loc.Get("repairs.verifierReset.consent"), Loc.Get("repairs.verifierReset.button")))
+        {
+            return;
+        }
         if (await Job<SimpleJobResult>(JobKind.VerifierReset) is { ExitCode: 0 })
         {
             OfferRestart();
