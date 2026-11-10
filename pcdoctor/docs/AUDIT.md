@@ -42,6 +42,7 @@ test suite and the Windows CI job.
 
 **Detection quality**
 - New: startup entries that make a Microsoft-signed tool run hidden/encoded commands or download and run something (PowerShell, mshta, regsvr32, rundll32, certutil, bitsadmin, msiexec, script hosts). Tested against a labelled set of 12 abusive and 14 ordinary command lines.
+- Startup entries switched off in Task Manager are read as disabled; shortcut arguments are kept and judged; Brave and Vivaldi extensions are listed; one unreadable location costs one category, not the scan; the persistence reader no longer leaks a registry handle per lookup.
 - No "no antivirus" Critical when the state could not be read.
 - The user root-certificate store no longer reports every machine-wide root.
 - A sign-in accessibility tool whose signature could not be checked is no longer a Critical alarm.
@@ -55,9 +56,9 @@ test suite and the Windows CI job.
 These were found and are not fixed yet.
 
 - "Microsoft-signed" is decided from the signer name; the chain root is not yet pinned to a Microsoft root.
-- Startup entries disabled in Task Manager (`StartupApproved`) are not read; `.lnk` arguments are dropped; startup script files are not sent to AMSI; Brave, Opera and Vivaldi extensions are not listed.
+- Startup script files are not sent to AMSI; Opera extensions are not listed.
 - WMI event subscriptions are not read through the Broker, so they are never checked without elevation.
-- Persistence and security readers catch too few exception types in places: one unreadable key can drop a whole category.
+- The security reader catches too few exception types in places: one unreadable key can drop a whole check.
 - Hosts-file check can flag ordinary entries that contain a sensitive word.
 - File inventory: memory use on very large disks, non-NTFS volumes silently skipped, walk runs at normal priority in the app process.
 - CBS.log is read fully into memory; debugger output is not capped; symbol cache grows without limit.
