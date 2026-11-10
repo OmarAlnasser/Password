@@ -20,7 +20,12 @@
                                  BorderBrush="{DynamicResource OutlineBrush}" FlowDirection="LeftToRight" AutomationProperties.Name="{loc:Loc drivers.ask.key}" />
                 </DockPanel>
                 <TextBlock Text="{loc:Loc drivers.ask.keyNote}" Style="{StaticResource Text.Caption}" Margin="0,6,0,12" />
-                <Button Style="{StaticResource Btn.Ghost}" Content="{loc:Loc drivers.ask.skip}" Command="{Binding SkipCommand}" HorizontalAlignment="Left" />
+                <TextBlock Text="{loc:Loc drivers.cc.body}" Style="{StaticResource Text.Body}" Margin="0,0,0,10" />
+                <WrapPanel>
+                    <Button Style="{StaticResource Btn.Ghost}" Content="{loc:Loc drivers.cc.use}" Command="{Binding UseClaudeCodeCommand}" Margin="0,0,10,8" />
+                    <Button Style="{StaticResource Btn.Ghost}" Content="{loc:Loc drivers.ask.skip}" Command="{Binding SkipCommand}" Margin="0,0,10,8" />
+                </WrapPanel>
+                <TextBlock Text="{Binding Status}" Style="{StaticResource Text.Caption}" AutomationProperties.LiveSetting="Polite" />
             </StackPanel>
         </c:Card>
 
@@ -34,7 +39,7 @@
                             Visibility="{Binding AiMode, Converter={StaticResource BoolToVisibility}}" />
                     <Button Style="{StaticResource Btn.Text}" Content="{loc:Loc drivers.changeChoice}" Command="{Binding ChangeChoiceCommand}" Margin="0,0,10,8" />
                     <Button Style="{StaticResource Btn.Text}" Content="{loc:Loc drivers.key.remove}" Command="{Binding RemoveKeyCommand}" Margin="0,0,10,8"
-                            Visibility="{Binding AiMode, Converter={StaticResource BoolToVisibility}}" />
+                            Visibility="{Binding HasKey, Converter={StaticResource BoolToVisibility}}" />
                 </WrapPanel>
                 <c:ShimmerBar IsIndeterminate="True" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
                 <TextBlock Text="{Binding Status}" Style="{StaticResource Text.Caption}" AutomationProperties.LiveSetting="Polite" />

@@ -1091,6 +1091,15 @@
   <data name="drivers.ai.stopped" xml:space="preserve"><value>أُوقف البحث.</value></data>
   <data name="drivers.ai.title" xml:space="preserve"><value>نتيجة البحث بالذكاء الاصطناعي</value></data>
   <data name="drivers.ai.note" xml:space="preserve"><value>هذه نصيحة كتبها ذكاء اصطناعي وقد تكون خاطئة. لم يثبّت طبيب الحاسوب شيئاً. تأكد من الإصدار في الصفحة الرسمية للشركة المصنّعة، وفضّل Windows Update إن عرض التعريف نفسه.</value></data>
+  <data name="drivers.cc.body" xml:space="preserve"><value>لا تملك مفتاح API؟ إن كان Claude Code مثبّتاً ومسجّل الدخول على هذا الحاسوب، يستطيع طبيب الحاسوب سؤاله بدلاً من ذلك. يستخدم هذا اشتراكك في Claude ولا يحتاج مفتاحاً.</value></data>
+  <data name="drivers.cc.use" xml:space="preserve"><value>استخدم Claude Code على هذا الحاسوب</value></data>
+  <data name="drivers.cc.notFound" xml:space="preserve"><value>لم يُعثر على Claude Code على هذا الحاسوب. ثبّته وسجّل الدخول أولاً، أو اختر خياراً آخر.</value></data>
+  <data name="drivers.cc.saved" xml:space="preserve"><value>سيسأل طبيب الحاسوب Claude Code على هذا الحاسوب. لم يُرسل شيء.</value></data>
+  <data name="drivers.cc.signIn" xml:space="preserve"><value>Claude Code غير مسجّل الدخول. افتح Claude Code وسجّل الدخول ثم حاول مجدداً.</value></data>
+  <data name="drivers.mode.claudeCode" xml:space="preserve"><value>المصادر الرسمية، مع بحث عبر Claude Code على هذا الحاسوب</value></data>
+  <data name="drivers.cc.consent" xml:space="preserve"><value>سيشغّل طبيب الحاسوب Claude Code على هذا الحاسوب مرة واحدة، ويعطيه القائمة التالية فقط، ويطلب منه البحث في مواقع الشركات المصنّعة نفسها وMicrosoft. يعمل في مجلد فارغ ولا يُسمح له إلا بالبحث وقراءة صفحات الويب. لا يحصل على اسمك ولا اسم حاسوبك ولا الأرقام التسلسلية ولا الملفات. لا يُنزَّل ولا يُثبَّت شيء. يُحتسب هذا من استخدام اشتراكك في Claude، ويوقفه طبيب الحاسوب عند وصول الإجابة.
+
+{0}</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>
