@@ -23,6 +23,8 @@ public static class AppModules
     /// <summary>Every scan module, in report order.</summary>
     public static IReadOnlyList<IModule> Create(AppServices services) =>
     [
+        // First, before the other checks start working, so the sample shows the PC as the user left it.
+        new PcDoctor.Modules.Activity.ActivityModule(),
         SecurityModule.ForWindows(Path.Combine(ProgramDataFolder, "config", "os-support.json")),
         MalwareModule.ForWindows(),
         PersistenceScanModule.ForWindows(() => VirusTotal(services)),

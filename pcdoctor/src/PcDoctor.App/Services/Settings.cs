@@ -6,6 +6,9 @@ namespace PcDoctor.App.Services;
 
 public enum ThemeChoice { System, Light, Dark }
 
+/// <summary>How the driver advisor works. It asks once; "official only" never contacts any AI service.</summary>
+public enum DriverAdviceMode { NotAsked, OfficialOnly, Ai }
+
 /// <summary>Per-user settings in %LOCALAPPDATA%\PCDoctor\settings.json. PC Doctor sends no telemetry; there is no switch to turn it on.</summary>
 public sealed record AppSettings
 {
@@ -30,15 +33,25 @@ public sealed record AppSettings
     /// <summary>The user's VirusTotal key, encrypted with DPAPI for this Windows user (never stored in clear).</summary>
     public string? VirusTotalKeyProtected { get; init; }
 
-    public string? ReadVirusTotalKey()
+    /// <summary>Driver advisor: official sources only unless the user gave their own AI key.</summary>
+    public DriverAdviceMode DriverAdvice { get; init; } = DriverAdviceMode.NotAsked;
+
+    /// <summary>The user's own AI key for driver research, encrypted with DPAPI for this Windows user (never stored in clear).</summary>
+    public string? DriverAiKeyProtected { get; init; }
+
+    public string? ReadVirusTotalKey() => Unprotect(VirusTotalKeyProtected);
+
+    public string? ReadDriverAiKey() => Unprotect(DriverAiKeyProtected);
+
+    private static string? Unprotect(string? value)
     {
-        if (string.IsNullOrEmpty(VirusTotalKeyProtected))
+        if (string.IsNullOrEmpty(value))
         {
             return null;
         }
         try
         {
-            var bytes = System.Security.Cryptography.ProtectedData.Unprotect(Convert.FromBase64String(VirusTotalKeyProtected), null,
+            var bytes = System.Security.Cryptography.ProtectedData.Unprotect(Convert.FromBase64String(value), null,
                 System.Security.Cryptography.DataProtectionScope.CurrentUser);
             return System.Text.Encoding.UTF8.GetString(bytes);
         }

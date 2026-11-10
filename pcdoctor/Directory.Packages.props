@@ -1,6 +1,7 @@
 <Project>
   <ItemGroup>
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageVersion Include="Anthropic" Version="13.8.0" />
     <PackageVersion Include="System.Management" Version="10.0.2" />
     <PackageVersion Include="LibreHardwareMonitorLib" Version="0.9.6" />
     <PackageVersion Include="System.Diagnostics.EventLog" Version="8.0.1" />

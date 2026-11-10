@@ -1,0 +1,74 @@
+<UserControl x:Class="PcDoctor.App.Views.DriversView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:PcDoctor.App.Localization"
+             xmlns:c="clr-namespace:PcDoctor.App.Controls"
+             xmlns:v="clr-namespace:PcDoctor.App.Views">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </UserControl.Resources>
+    <StackPanel>
+        <v:PageHeader />
+
+        <c:Card IsFeatured="True" IsInteractive="False" Margin="0,0,0,16" Visibility="{Binding ShowQuestion, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <TextBlock Text="{loc:Loc drivers.ask.title}" Style="{StaticResource Text.TitleMedium}" AutomationProperties.HeadingLevel="Level2" />
+                <TextBlock Text="{loc:Loc drivers.ask.body}" Style="{StaticResource Text.Body}" Margin="0,6,0,12" />
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Primary}" Content="{loc:Loc drivers.ask.useKey}" Click="OnSaveKey" Margin="10,0,0,0" />
+                    <PasswordBox x:Name="AiKey" MinHeight="40" Padding="12,8" Background="{DynamicResource Surface2}" Foreground="{DynamicResource Ink}"
+                                 BorderBrush="{DynamicResource OutlineBrush}" FlowDirection="LeftToRight" AutomationProperties.Name="{loc:Loc drivers.ask.key}" />
+                </DockPanel>
+                <TextBlock Text="{loc:Loc drivers.ask.keyNote}" Style="{StaticResource Text.Caption}" Margin="0,6,0,12" />
+                <Button Style="{StaticResource Btn.Ghost}" Content="{loc:Loc drivers.ask.skip}" Command="{Binding SkipCommand}" HorizontalAlignment="Left" />
+            </StackPanel>
+        </c:Card>
+
+        <c:Card IsInteractive="False" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="{Binding ModeText}" Style="{StaticResource Text.TitleMedium}" />
+                <TextBlock Text="{loc:Loc drivers.rule}" Style="{StaticResource Text.Body}" Margin="0,6,0,12" />
+                <WrapPanel>
+                    <Button Style="{StaticResource Btn.Primary}" Content="{loc:Loc drivers.openWu}" Command="{Binding OpenWindowsUpdateCommand}" Margin="0,0,10,8" />
+                    <Button Style="{StaticResource Btn.Ghost}" Content="{loc:Loc drivers.ai.ask}" Command="{Binding AskAiCommand}" Margin="0,0,10,8"
+                            Visibility="{Binding AiMode, Converter={StaticResource BoolToVisibility}}" />
+                    <Button Style="{StaticResource Btn.Text}" Content="{loc:Loc drivers.changeChoice}" Command="{Binding ChangeChoiceCommand}" Margin="0,0,10,8" />
+                    <Button Style="{StaticResource Btn.Text}" Content="{loc:Loc drivers.key.remove}" Command="{Binding RemoveKeyCommand}" Margin="0,0,10,8"
+                            Visibility="{Binding AiMode, Converter={StaticResource BoolToVisibility}}" />
+                </WrapPanel>
+                <c:ShimmerBar IsIndeterminate="True" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
+                <TextBlock Text="{Binding Status}" Style="{StaticResource Text.Caption}" AutomationProperties.LiveSetting="Polite" />
+            </StackPanel>
+        </c:Card>
+
+        <c:Card IsInteractive="False" Margin="0,0,0,16" Visibility="{Binding HasAdvice, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel>
+                <TextBlock Text="{loc:Loc drivers.ai.title}" Style="{StaticResource Text.TitleMedium}" />
+                <TextBlock Text="{loc:Loc drivers.ai.note}" Style="{StaticResource Text.Caption}" Margin="0,4,0,10" />
+                <TextBox Text="{Binding Advice, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" BorderThickness="0" Background="Transparent"
+                         Foreground="{DynamicResource Ink}" AutomationProperties.Name="{loc:Loc drivers.ai.title}" />
+            </StackPanel>
+        </c:Card>
+
+        <TextBlock Text="{loc:Loc drivers.list}" Style="{StaticResource SectionHeader}" Margin="0,6,0,10" />
+        <TextBlock Text="{loc:Loc drivers.empty}" Style="{StaticResource Text.Body}" Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVisibility}}" />
+        <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <c:Card Padding="14,10" Margin="0,0,0,8" IsInteractive="False">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Text}" Content="{loc:Loc drivers.row.official}" VerticalAlignment="Center"
+                                    Command="{Binding DataContext.OpenOfficialCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"
+                                    Visibility="{Binding HasOfficial, Converter={StaticResource BoolToVisibility}}" />
+                            <StackPanel>
+                                <TextBlock Text="{Binding Device}" Style="{StaticResource Text.TitleMedium}" FontSize="14.5" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Detail}" Style="{StaticResource Text.Caption}" />
+                                <TextBlock Text="{Binding Age}" Style="{StaticResource Text.Caption}" />
+                            </StackPanel>
+                        </DockPanel>
+                    </c:Card>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

@@ -129,6 +129,7 @@ public partial class App : Application
         new RepairsViewModel(services),
         new PerformanceViewModel(services),
         new OptimizeViewModel(services),
+        new DriversViewModel(services),
         new SensorsViewModel(services),
         new FilesViewModel(services),
         new HistoryViewModel(services),

@@ -15,6 +15,7 @@
     <Content Include="Fonts\OFL-*.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Anthropic" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" />
   </ItemGroup>
@@ -36,5 +37,6 @@
     <ProjectReference Include="..\PcDoctor.Modules.Sensors\PcDoctor.Modules.Sensors.csproj" />
     <!-- The Broker ships next to the app; the app checks for it there and nowhere else. -->
     <ProjectReference Include="..\PcDoctor.Broker\PcDoctor.Broker.csproj" />
+    <ProjectReference Include="..\PcDoctor.Modules.Activity\PcDoctor.Modules.Activity.csproj" />
   </ItemGroup>
 </Project>

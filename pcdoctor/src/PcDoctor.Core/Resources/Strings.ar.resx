@@ -1030,6 +1030,67 @@
   <data name="m11.win11eos.title" xml:space="preserve"><value>توقف ويندوز 11 {0} عن تلقي تحديثات الأمان في {1}</value></data>
   <data name="m11.win11eos.why" xml:space="preserve"><value>يتلقى كل إصدار من ويندوز 11 تحديثات الأمان لفترة محددة. بعدها تبقى الثغرات المكتشفة حديثاً مفتوحة على هذا الجهاز.</value></data>
   <data name="m11.win11eos.action" xml:space="preserve"><value>ثبّت أحدث إصدار من ويندوز 11 من الإعدادات &gt; Windows Update. إن لم يُعرض فقد يكون الجهاز محجوزاً لسبب توافق يوضحه Windows Update.</value></data>
+  <data name="m14.name" xml:space="preserve"><value>ما الذي يستخدم هذا الجهاز الآن</value></data>
+  <data name="m14.check.cpu" xml:space="preserve"><value>استخدام المعالج</value></data>
+  <data name="m14.cpu.detail" xml:space="preserve"><value>مشغول بنسبة {0}% خلال عيّنة مدتها {1} ثوانٍ. الأكثر نشاطاً: {2}</value></data>
+  <data name="m14.check.memory" xml:space="preserve"><value>استخدام الذاكرة</value></data>
+  <data name="m14.memory.detail" xml:space="preserve"><value>{0}% من {1} غ.ب مستخدمة. الأكبر: {2}</value></data>
+  <data name="m14.check.unreadable" xml:space="preserve"><value>عمليات محمية</value></data>
+  <data name="m14.unreadable.detail" xml:space="preserve"><value>تعذّرت قراءة {0} عمليات بلا صلاحيات المسؤول. لم تُحتسب أعلاه.</value></data>
+  <data name="m14.cpuHog.title" xml:space="preserve"><value>كان {0} يستخدم {1}% من المعالج خلال عيّنة مدتها {2} ثوانٍ</value></data>
+  <data name="m14.cpuHog.why" xml:space="preserve"><value>البرنامج الذي يُبقي المعالج مشغولاً بهذا القدر يُبطئ كل شيء آخر ويرفع صوت المراوح. هذه عيّنة قصيرة واحدة: ربما كان يؤدي عملاً حقيقياً في تلك اللحظة، كتحديث أو فحص.</value></data>
+  <data name="m14.cpuHog.action" xml:space="preserve"><value>أعد الفحص بعد بضع دقائق. إن بقي البرنامج نفسه مشغولاً هكذا وأنت لا تستخدمه فأغلقه أو أعد تشغيله، وابحث عنه إن لم تتعرف عليه.</value></data>
+  <data name="m14.memLow.title" xml:space="preserve"><value>{0}% فقط من الذاكرة متاحة</value></data>
+  <data name="m14.memLow.why" xml:space="preserve"><value>عند نفاد الذاكرة ينقل Windows البيانات إلى القرص، فتتأخر استجابة البرامج. تسرد الأدلة البرامج الأكثر استخداماً.</value></data>
+  <data name="m14.memLow.action" xml:space="preserve"><value>أغلق البرامج أو علامات تبويب المتصفح التي لا تستخدمها. إن تكرر ذلك مع برامجك المعتادة فزيادة الذاكرة ستفيد.</value></data>
+  <data name="m14.handles.title" xml:space="preserve"><value>{0} يحتفظ بـ{1} مؤشراً، وهذا يدل غالباً على تسرّب</value></data>
+  <data name="m14.handles.why" xml:space="preserve"><value>المؤشرات هي الطريقة التي يُبقي بها البرنامج الملفات والنوافذ وغيرها مفتوحة. عدد بهذا الارتفاع يعني غالباً أن البرنامج يفتح أشياء ولا يتركها، فيستهلك الذاكرة ببطء حتى يُعاد تشغيله. بعض البرامج تحتفظ بالكثير بشكل مشروع.</value></data>
+  <data name="m14.handles.action" xml:space="preserve"><value>أعد تشغيل ذلك البرنامج. إن ارتفع العدد مجدداً خلال يوم أو يومين فحدّثه أو أبلغ صانعه.</value></data>
+  <data name="m14.memHeavy.title" xml:space="preserve"><value>{0} يستخدم {1} غ.ب من الذاكرة</value></data>
+  <data name="m14.memHeavy.why" xml:space="preserve"><value>برنامج واحد يستخدم حصة كبيرة من ذاكرة هذا الجهاز. هذا طبيعي للألعاب والمحررات والمتصفحات كثيرة التبويبات. يكون مشكلة فقط إذا استمر المقدار في الازدياد والبرنامج خامل، وهذا شكل تسرّب الذاكرة.</value></data>
+  <data name="m14.memHeavy.action" xml:space="preserve"><value>إن لم تتوقع ذلك فأعد تشغيل البرنامج وقارن الرقم في الفحص التالي.</value></data>
+  <data name="history.schedule.signIn" xml:space="preserve"><value>في كل مرة أسجّل الدخول</value></data>
+  <data name="history.schedule.consent.signIn" xml:space="preserve"><value>سيضيف طبيب الحاسوب مهمة واحدة إلى «مجدول المهام» في Windows، في المجلد «PC Doctor». بعد دقيقتين من تسجيل دخولك تُجري فحصاً صحياً للقراءة فقط، يشمل ما يستخدم المعالج والذاكرة. تنظر فقط ولا تغيّر شيئاً، وتُغلق نفسها عند الانتهاء، وتخبرك بهدوء إن ظهر جديد مهم. لا تبقى تعمل في الخلفية. يمكنك إيقافها من هنا في أي وقت.</value></data>
+  <data name="page.drivers.title" xml:space="preserve"><value>التعريفات</value></data>
+  <data name="page.drivers.eyebrow" xml:space="preserve"><value>مستشار التعريفات</value></data>
+  <data name="page.drivers.subtitle" xml:space="preserve"><value>اعرض تعريفات عتادك وأين توجد التحديثات الرسمية. طبيب الحاسوب ينصح فقط: لا ينزّل ولا يثبّت أي تعريف.</value></data>
+  <data name="drivers.ask.title" xml:space="preserve"><value>هل لديك مفتاح API للذكاء الاصطناعي؟</value></data>
+  <data name="drivers.ask.body" xml:space="preserve"><value>بمفتاح Anthropic API الخاص بك يستطيع طبيب الحاسوب البحث عن أحدث تعريف رسمي لكل جهاز في مواقع الشركات المصنّعة نفسها. بدون مفتاح، تخطَّ هذه الخطوة: يكتفي طبيب الحاسوب بالمصادر الرسمية — Windows Update وصفحة كل شركة مصنّعة — ولا يتصل بأي خدمة ذكاء اصطناعي إطلاقاً.</value></data>
+  <data name="drivers.ask.key" xml:space="preserve"><value>مفتاح API الخاص بك</value></data>
+  <data name="drivers.ask.useKey" xml:space="preserve"><value>استخدم مفتاحي</value></data>
+  <data name="drivers.ask.keyNote" xml:space="preserve"><value>يُحفظ المفتاح مشفّراً لحساب Windows الخاص بك فقط ولا يُعرض مرة أخرى. يُحتسب الاستخدام على حسابك لدى مزوّد الذكاء الاصطناعي. لا يُرسل شيء حتى تضغط زر البحث وتوافق.</value></data>
+  <data name="drivers.ask.skip" xml:space="preserve"><value>تخطٍّ — المصادر الرسمية فقط</value></data>
+  <data name="drivers.mode.official" xml:space="preserve"><value>المصادر الرسمية فقط</value></data>
+  <data name="drivers.mode.ai" xml:space="preserve"><value>المصادر الرسمية، مع بحث بالذكاء الاصطناعي بمفتاحك</value></data>
+  <data name="drivers.rule" xml:space="preserve"><value>Windows Update هو المكان الأكثر أماناً للحصول على التعريفات. لبطاقة الرسوميات، أو إن لم يجد Windows Update شيئاً، استخدم صفحة الشركة المصنّعة نفسها. تجنّب برامج تحديث التعريفات ومواقع التنزيل التي لا تتبع الشركة المصنّعة. التعريف الذي يعمل لا يحتاج إلى استبدال لمجرد أنه قديم.</value></data>
+  <data name="drivers.openWu" xml:space="preserve"><value>افتح التحديثات الاختيارية في Windows Update</value></data>
+  <data name="drivers.changeChoice" xml:space="preserve"><value>غيّر اختياري</value></data>
+  <data name="drivers.key.remove" xml:space="preserve"><value>احذف مفتاحي</value></data>
+  <data name="drivers.key.empty" xml:space="preserve"><value>اكتب مفتاحك أولاً، أو اختر التخطي.</value></data>
+  <data name="drivers.key.saved" xml:space="preserve"><value>حُفظ المفتاح مشفّراً. لم يُرسل شيء.</value></data>
+  <data name="drivers.key.removed" xml:space="preserve"><value>حُذف المفتاح. المصادر الرسمية فقط.</value></data>
+  <data name="drivers.skip.saved" xml:space="preserve"><value>المصادر الرسمية فقط. لن يُتصل بأي خدمة ذكاء اصطناعي.</value></data>
+  <data name="drivers.list" xml:space="preserve"><value>تعريفات العتاد على هذا الحاسوب</value></data>
+  <data name="drivers.empty" xml:space="preserve"><value>تعذّرت قراءة تعريفات الشركات المصنّعة هنا.</value></data>
+  <data name="drivers.unreadable" xml:space="preserve"><value>لم يعطِ Windows قائمة التعريفات. لم يتغير شيء.</value></data>
+  <data name="drivers.row.detail" xml:space="preserve"><value>{0} · الإصدار {1} · بتاريخ {2}</value></data>
+  <data name="drivers.row.age" xml:space="preserve"><value>عمره نحو {0} سنوات</value></data>
+  <data name="drivers.row.official" xml:space="preserve"><value>الصفحة الرسمية</value></data>
+  <data name="drivers.ai.ask" xml:space="preserve"><value>ابحث عن تعريفات أحدث بالذكاء الاصطناعي</value></data>
+  <data name="drivers.ai.consent.title" xml:space="preserve"><value>هل تُرسل هذه القائمة للبحث بالذكاء الاصطناعي؟</value></data>
+  <data name="drivers.ai.consent" xml:space="preserve"><value>سيرسل طبيب الحاسوب القائمة التالية فقط إلى Anthropic API بمفتاحك، ويطلب البحث في مواقع الشركات المصنّعة نفسها وMicrosoft. لا يرسل اسمك ولا اسم حاسوبك ولا الأرقام التسلسلية ولا الملفات ولا العناوين. لا يُنزَّل ولا يُثبَّت شيء. يستخدم هذا حسابك الخاص وقد يكلّف مبلغاً صغيراً.
+
+{0}</value></data>
+  <data name="drivers.ai.consent.ok" xml:space="preserve"><value>أرسل القائمة</value></data>
+  <data name="drivers.ai.working" xml:space="preserve"><value>يجري البحث في المواقع الرسمية. قد يستغرق دقيقة أو دقيقتين.</value></data>
+  <data name="drivers.ai.done" xml:space="preserve"><value>انتهى البحث. تحقق من كل اقتراح في الصفحة الرسمية قبل تثبيت أي شيء.</value></data>
+  <data name="drivers.ai.badKey" xml:space="preserve"><value>لم تقبل خدمة الذكاء الاصطناعي هذا المفتاح. تحقق منه، أو احذفه للبقاء مع المصادر الرسمية.</value></data>
+  <data name="drivers.ai.busy" xml:space="preserve"><value>خدمة الذكاء الاصطناعي تحدّ من الطلبات الآن. حاول لاحقاً.</value></data>
+  <data name="drivers.ai.declined" xml:space="preserve"><value>لم تُجب خدمة الذكاء الاصطناعي عن هذا الطلب. استخدم الصفحات الرسمية أدناه.</value></data>
+  <data name="drivers.ai.failed" xml:space="preserve"><value>تعذّر إكمال البحث. لم يتغير شيء. استخدم الصفحات الرسمية أدناه.</value></data>
+  <data name="drivers.ai.stopped" xml:space="preserve"><value>أُوقف البحث.</value></data>
+  <data name="drivers.ai.title" xml:space="preserve"><value>نتيجة البحث بالذكاء الاصطناعي</value></data>
+  <data name="drivers.ai.note" xml:space="preserve"><value>هذه نصيحة كتبها ذكاء اصطناعي وقد تكون خاطئة. لم يثبّت طبيب الحاسوب شيئاً. تأكد من الإصدار في الصفحة الرسمية للشركة المصنّعة، وفضّل Windows Update إن عرض التعريف نفسه.</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>كل شيء يبقى على هذا الجهاز</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>الأقسام</value></data>
