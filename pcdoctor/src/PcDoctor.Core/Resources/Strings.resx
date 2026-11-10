@@ -1091,6 +1091,15 @@ Only do this if you are sure it is a false positive.</value></data>
   <data name="drivers.ai.stopped" xml:space="preserve"><value>Research stopped.</value></data>
   <data name="drivers.ai.title" xml:space="preserve"><value>AI research result</value></data>
   <data name="drivers.ai.note" xml:space="preserve"><value>This is advice written by an AI and it can be wrong. PC Doctor installed nothing. Confirm the version on the maker's official page, and prefer Windows Update when it offers the same driver.</value></data>
+  <data name="drivers.cc.body" xml:space="preserve"><value>No API key? If Claude Code is installed and signed in on this PC, PC Doctor can ask it instead. That uses your Claude subscription and needs no key.</value></data>
+  <data name="drivers.cc.use" xml:space="preserve"><value>Use Claude Code on this PC</value></data>
+  <data name="drivers.cc.notFound" xml:space="preserve"><value>Claude Code was not found on this PC. Install it and sign in first, or choose another option.</value></data>
+  <data name="drivers.cc.saved" xml:space="preserve"><value>PC Doctor will ask Claude Code on this PC. Nothing has been sent.</value></data>
+  <data name="drivers.cc.signIn" xml:space="preserve"><value>Claude Code is not signed in. Open Claude Code, sign in, then try again.</value></data>
+  <data name="drivers.mode.claudeCode" xml:space="preserve"><value>Official sources, plus research through Claude Code on this PC</value></data>
+  <data name="drivers.cc.consent" xml:space="preserve"><value>PC Doctor will start Claude Code on this PC once, give it only the list below, and ask it to search the makers' own websites and Microsoft. It runs in an empty folder and may only search and read web pages. It does not get your name, your PC's name, serial numbers or files. Nothing is downloaded or installed. This counts against your Claude subscription's usage, and PC Doctor stops it when the answer is in.
+
+{0}</value></data>
   <data name="app.wordmark" xml:space="preserve"><value>PC DOCTOR</value></data>
   <data name="shell.privacy" xml:space="preserve"><value>Everything stays on this PC</value></data>
   <data name="shell.navigation" xml:space="preserve"><value>Sections</value></data>

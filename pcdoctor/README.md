@@ -36,7 +36,9 @@ The audit record is in `docs/AUDIT.md`.
 sticks to official sources: Windows Update optional updates and each maker's own page, and it contacts
 no AI service. With the user's own Anthropic API key (stored with DPAPI, never in clear) it can research
 newer drivers, limited to makers' sites and Microsoft, only after showing the exact list it will send
-and getting a yes. In both modes PC Doctor never downloads or installs a driver.
+and getting a yes. A third choice needs no key: if Claude Code is installed and signed in on the PC,
+PC Doctor can ask it instead (started once per question in an empty folder, web search and page reading
+only, stopped when the answer is in). In every mode PC Doctor never downloads or installs a driver.
 
 **Run at sign-in.** History → schedule → "Every time I sign in" adds one least-privilege task that runs
 the read-only Health Check two minutes after sign-in and then exits. Nothing stays in the background.

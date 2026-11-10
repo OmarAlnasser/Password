@@ -7,7 +7,7 @@ namespace PcDoctor.App.Services;
 public enum ThemeChoice { System, Light, Dark }
 
 /// <summary>How the driver advisor works. It asks once; "official only" never contacts any AI service.</summary>
-public enum DriverAdviceMode { NotAsked, OfficialOnly, Ai }
+public enum DriverAdviceMode { NotAsked, OfficialOnly, Ai, ClaudeCode }
 
 /// <summary>Per-user settings in %LOCALAPPDATA%\PCDoctor\settings.json. PC Doctor sends no telemetry; there is no switch to turn it on.</summary>
 public sealed record AppSettings

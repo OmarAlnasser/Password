@@ -33,6 +33,7 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
 
     [ObservableProperty] private bool _showQuestion;
     [ObservableProperty] private bool _aiMode;
+    [ObservableProperty] private bool _hasKey;
     [ObservableProperty] private bool _isBusy;
     [ObservableProperty] private bool _isEmpty;
     [ObservableProperty] private string _status = "";
@@ -42,12 +43,15 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
     private bool _loaded;
     private CancellationTokenSource? _asking;
 
-    public string ModeText => Loc.Get(AiMode ? "drivers.mode.ai" : "drivers.mode.official");
+    private bool UsesClaudeCode => Services.Settings.DriverAdvice == DriverAdviceMode.ClaudeCode;
+
+    public string ModeText => Loc.Get(UsesClaudeCode ? "drivers.mode.claudeCode" : AiMode ? "drivers.mode.ai" : "drivers.mode.official");
 
     public override void OnShown()
     {
         ShowQuestion = Services.Settings.DriverAdvice == DriverAdviceMode.NotAsked;
-        AiMode = Services.Settings.DriverAdvice == DriverAdviceMode.Ai && Services.Settings.DriverAiKeyProtected is not null;
+        HasKey = Services.Settings.DriverAdvice == DriverAdviceMode.Ai && Services.Settings.DriverAiKeyProtected is not null;
+        AiMode = HasKey || UsesClaudeCode;
         OnPropertyChanged(nameof(ModeText));
         if (!_loaded)
         {
@@ -98,7 +102,25 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
         Services.UpdateSettings(s => s with { DriverAdvice = DriverAdviceMode.Ai, DriverAiKeyProtected = AppSettings.ProtectKey(key) });
         ShowQuestion = false;
         AiMode = true;
+        HasKey = true;
         Status = Loc.Get("drivers.key.saved");
+        OnPropertyChanged(nameof(ModeText));
+    }
+
+    /// <summary>No key: use Claude Code that is already installed and signed in on this PC.</summary>
+    [RelayCommand]
+    private void UseClaudeCode()
+    {
+        if (ClaudeCodeCli.Find() is null)
+        {
+            Status = Loc.Get("drivers.cc.notFound");
+            return;
+        }
+        Services.UpdateSettings(s => s with { DriverAdvice = DriverAdviceMode.ClaudeCode });
+        ShowQuestion = false;
+        AiMode = true;
+        HasKey = false;
+        Status = Loc.Get("drivers.cc.saved");
         OnPropertyChanged(nameof(ModeText));
     }
 
@@ -108,6 +130,7 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
         Services.UpdateSettings(s => s with { DriverAdvice = DriverAdviceMode.OfficialOnly });
         ShowQuestion = false;
         AiMode = false;
+        HasKey = false;
         Status = Loc.Get("drivers.skip.saved");
         OnPropertyChanged(nameof(ModeText));
     }
@@ -121,6 +144,7 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
         _asking?.Cancel();
         Services.UpdateSettings(s => s with { DriverAdvice = DriverAdviceMode.OfficialOnly, DriverAiKeyProtected = null });
         AiMode = false;
+        HasKey = false;
         Advice = "";
         HasAdvice = false;
         Status = Loc.Get("drivers.key.removed");
@@ -155,15 +179,22 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
     [RelayCommand]
     private async Task AskAi()
     {
-        if (IsBusy || Rows.Count == 0 || Services.Settings.ReadDriverAiKey() is not { } key)
+        if (IsBusy || Rows.Count == 0)
         {
+            return;
+        }
+        var claudeCode = UsesClaudeCode ? ClaudeCodeCli.Find() : null;
+        var key = UsesClaudeCode ? null : Services.Settings.ReadDriverAiKey();
+        if (claudeCode is null && key is null)
+        {
+            Status = Loc.Get(UsesClaudeCode ? "drivers.cc.notFound" : "drivers.ai.badKey");
             return;
         }
         var drivers = Rows.Select(r => r.Driver).ToList();
         var windows = Environment.OSVersion.Version.ToString();
         // Show exactly what leaves this PC, and ask, before anything is sent.
         if (!ConsentDialog.Ask(Loc.Get("drivers.ai.consent.title"),
-                Loc.Format("drivers.ai.consent", DriverAdvice.DeviceList(drivers, windows)), Loc.Get("drivers.ai.consent.ok")))
+                Loc.Format(claudeCode is not null ? "drivers.cc.consent" : "drivers.ai.consent", DriverAdvice.DeviceList(drivers, windows)), Loc.Get("drivers.ai.consent.ok")))
         {
             return;
         }
@@ -174,13 +205,16 @@ public sealed partial class DriversViewModel(AppServices services) : PageViewMod
         try
         {
             var arabic = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar";
-            var result = await DriverAi.AskAsync(key, DriverAdvice.Prompt(drivers, windows, arabic), DriverAdvice.AllowedDomains, cts.Token);
+            var prompt = DriverAdvice.Prompt(drivers, windows, arabic);
+            var result = claudeCode is not null
+                ? await ClaudeCodeCli.AskAsync(claudeCode, prompt, cts.Token)
+                : await DriverAi.AskAsync(key!, prompt, DriverAdvice.AllowedDomains, cts.Token);
             Advice = result.Outcome == DriverAiOutcome.Answered ? result.Text : "";
             HasAdvice = Advice.Length > 0;
             Status = result.Outcome switch
             {
                 DriverAiOutcome.Answered => Loc.Get("drivers.ai.done"),
-                DriverAiOutcome.BadKey => Loc.Get("drivers.ai.badKey"),
+                DriverAiOutcome.BadKey => Loc.Get(claudeCode is not null ? "drivers.cc.signIn" : "drivers.ai.badKey"),
                 DriverAiOutcome.Busy => Loc.Get("drivers.ai.busy"),
                 DriverAiOutcome.Declined => Loc.Get("drivers.ai.declined"),
                 _ => cts.IsCancellationRequested ? Loc.Get("drivers.ai.stopped") : Loc.Get("drivers.ai.failed"),
